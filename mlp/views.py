@@ -217,22 +217,39 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 if KML_file_extension.lower() == "kmz":
                     # grab image names from XML
                     image_tags = table.xpath("//img/@src")
-                    # loop through each attachment
-                    for attachment in image_tags:
-                        # find the relevant attachment
+                    # grab the name of the first image
+                    try:
+                        image_tag = image_tags[0]
+                        # grab the file info from the zip list
                         for file_info in KMZ_file.filelist:
-                            if attachment == file_info.orig_filename:
-                                # extract file from kmz to the working directory
-                                attachment_file = KMZ_file.extract(file_info)
-                                # calculate new file name based on record id and original name
-                                new_file_name = str(mlp_occ.id) + "_" + file_info.orig_filename
-                                # calculate destination directory
-                                complete_name = os.path.join(KML_file_path, "imports/" + new_file_name)
-                                # move file
-                                shutil.move(attachment_file, complete_name)
-                                # save image name to DB
-                                mlp_occ.image = new_file_name
+                            if image_tag == file_info.orig_filename:
+                                #image_file_info = KMZ_file.filelist[KMZ_file.filelist.index(image_tag)]
+                                # grab the image file itself
+                                image_file = KMZ_file.extract(file_info)
+                                mlp_occ.image = image_file
                                 mlp_occ.save()
+                                break
+                    except IndexError:
+                        pass
+
+                    # loop through each attachment
+                    # for attachment in image_tags:
+                    #     # find the relevant attachment
+                    #     for file_info in KMZ_file.filelist:
+                    #         if attachment == file_info.orig_filename:
+                    #             # extract file from kmz to the working directory
+                    #             attachment_file = KMZ_file.extract(file_info)  # get a file object
+                    #             # calculate new file name based on record id and original name
+                    #             new_file_name = str(mlp_occ.id) + "_" + file_info.orig_filename
+                    #             # calculate destination directory
+                    #             #complete_name = os.path.join(KML_file_path, "imports/" + new_file_name)
+                    #             # move file
+                    #             #shutil.move(attachment_file, complete_name)
+                    #             # save image name to DB
+                    #             mlp_occ.image = new_file_name
+                    #             mlp_occ.save()
+                    #             break
+                    #         break
 
 
         return super(UploadKMLView, self).form_valid(form)
