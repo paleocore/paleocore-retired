@@ -1,4 +1,4 @@
 paleocore
 =========
 
-## This is the paleocore project.
+## This is the codebase for the paleocore project.
