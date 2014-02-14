@@ -58,6 +58,7 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'base',
     'polls',
 )
 
@@ -81,8 +82,13 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
+        'NAME': 'paleocore_dev',
+        'USER': 'webdev',   # 'webdev' is the user for the local development server
+        'PASSWORD': 'password',   # password for local postgres server
+        #'HOST': 'paleocore-qa.tacc.utexas.edu',   # hostname for TACC development server
+        'HOST': 'localhost',   # for local development server
+        'PORT': '5432',   # default Postgres port
     }
 }
 
@@ -102,9 +108,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
 STATIC_URL = '/static/'  # See also STATIC_ROOT entry in Django Fiber section
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+# Path and URL for user uploaded media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 ###########################
 ## Django Fiber Settings ##
@@ -143,3 +152,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_FINDERS = DEFAULT_SETTINGS.STATICFILES_FINDERS + (
     'compressor.finders.CompressorFinder',
 )
+

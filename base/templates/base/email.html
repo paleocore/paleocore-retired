@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<form action={{ returnURL }} method="post" id="message_form">{% csrf_token %}
+
+    <h2>Compose your email message</h2>
+    Subject: <input type="text" name="subject"/><br>
+    Message:<textarea name="message" rows="10" cols="30" form="message_form"></textarea><br>
+
+    {%  if emails %}
+        <h2>Your email will be sent to the following users.<h2>
+        <ul>
+        <!--This template needs to work for several admin forms that will have differnet-->
+        <!--querysets, so I use if statements to deal with the different situations-->
+        {%  for r in emails %}
+            {% if r.person %}
+            <li> {{ r.person.user.email }}</li>
+            {% endif %}
+
+            {% if r.user %}
+            <li>{{ r.user.email }}</li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+    {%  for r in emails %}
+    <input type="hidden" name="{{ action_checkbox_name }}" value="{{ r.id }}" />
+    {% endfor %}
+
+    <input type="hidden" name="action" value="send_emails" />
+    <input type="submit" name="apply" value="Send Email" />
+</form>
+
+{% endblock %}
