@@ -19,6 +19,7 @@
 		font-size: 14pt;
 		line-height: 1.75em;
 		color: #4c4c4c;
+        color: #666666; /* customized for PaleoCore */
 	}
 
 	h1,h2,h3,h4
@@ -37,17 +38,18 @@
 	strong
 	{
 		color: #1d1d1d;
+        font-weight: 600; /* customized for PaleoCore */
 	}
 
 	a
 	{
-		color: #478903;
-		text-decoration: underline;
+		color: #f65d20;   /* customized for PaleoCore */
+		text-decoration: none;  /* customized from underline to none */
 	}
 
 	a:hover
 	{
-		text-decoration: none;
+		text-decoration: underline;  /* customized form none to underline */
 	}
 
 /* Reusable */

@@ -8,7 +8,15 @@
         <div class="row">
             <div class="3u">
 
-                <!-- Left Sidebar -->
+                <!-- SubNav Sidebar -->
+
+                    <section>
+                        <nav class="sidenav">
+                            {% show_menu "mainmenu" 2 4 %}
+                        </nav>
+                    </section>
+
+                <!-- Additional Sidebar Items -->
 
                     <section class="last">
                         {% show_page_content "left1" %}

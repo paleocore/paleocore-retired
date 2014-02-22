@@ -17,11 +17,15 @@
 		<script src="{% static 'base/arcana_js/config.js' %}"></script>
 		<script src="{% static 'base/arcana_js/skel.min.js' %}"></script>
 		<script src="{% static 'base/arcana_js/skel-panels.min.js' %}"></script>
-		<noscript>
+
+        <!-- Include custom PaleoCore css -->
+        <link rel="stylesheet" href="{%  static 'css/paleocore.css' %}" />
+
+        <noscript>
 			<link rel="stylesheet" href="{% static 'base/arcana_css/skel-noscript.css' %}" />
 			<link rel="stylesheet" href="{% static 'base/arcana_css/style.css' %}" />
 			<link rel="stylesheet" href="{%  static 'base/arcana_css/style-desktop.css' %}" />
-            <link rel="stylesheet" href="{%  static 'base/arcana_css/paleocore.css' %}" />
+            <link rel="stylesheet" href="{%  static 'css/paleocore.css' %}" />
 		</noscript>
 		<!--[if lte IE 9]><link rel="stylesheet" href="{%  static 'base/arcana_css/style-ie9.css' %}" /><![endif]-->
 		<!--[if lte IE 8]><script src="{% static 'base/arcana_js/html5shiv.js' %}"></script><![endif]-->
@@ -30,7 +34,6 @@
 	<body>
 
 		<!-- Header -->
-
 			<div id="header-wrapper">
 				<header class="container" id="site-header">
 					<div class="row">
@@ -40,53 +43,21 @@
 							</div>
 							<nav id="nav">
                                 {% show_menu "mainmenu" 1 1 %}
-                                <!-- original nav elements
-								<ul>
-									<li class="current_page_item"><a href="index.html">Homepage</a></li>
-									<li><a href="threecolumn1.html">Three Column #1</a></li>
-									<li><a href="threecolumn2.html">Three Column #2</a></li>
-									<li><a href="twocolumn1.html">Two Column #1</a></li>
-									<li><a href="twocolumn2.html">Two Column #2</a></li>
-									<li><a href="onecolumn.html">One Column</a></li>
-								</ul>
-								-->
 							</nav>
 						</div>
 					</div>
 				</header>
 			</div>
-
-        <!-- Breadcrumbs TO BE DEVELOPED -->
-            <!--
-
-			<div id="main-wrapper">
-				<header class="container">
-					<div>
-                        <nav id="breadcrumbs" class="clearfix">
-                            <ul>
-                                {% for fiber_page in fiber_current_pages %}
-                                <li>
-                                    <a href="{{ fiber_page.get_absolute_url }}">{{ fiber_page.title }}</a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </nav>
-
-                    </div>
-				</header>
-			</div>
-			-->
+        <!-- End Header -->
 
 		<!-- Main -->
+             {% block main_content %}
+             {% endblock %}
+        <!-- End Main -->
 
-
-			<div id="main-wrapper">
-				<div class="container">
-
-                    {% block main_content %}
-                    {% endblock %}
-
-                    <!-- Simple Footer -->
+        <!-- Footer -->
+            <div id="footer-wrapper">
+				<footer class="container" id="site-footer">
 					<div class="row">
 						<div class="12u">
 							<div id="copyright">
@@ -96,6 +67,7 @@
 					</div>
 				</footer>
 			</div>
+        <!-- End Footer -->
 
 	</body>
 </html>

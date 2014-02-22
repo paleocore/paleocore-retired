@@ -1,0 +1,42 @@
+/* Custom PaleoCore CSS */
+
+/* The following elements do not have their styles defined
+in the Arcana style sheets and so are added here */
+
+ol {
+display: block;
+list-style-type: decimal;
+list-style-position: inside;
+margin-before: 1em;
+margin-after: 1em;
+margin-start: 0;
+margin-end: 0;
+padding-start: 40px;
+}
+
+ul {
+display: block;
+list-style-type: square;
+list-style-position: inside;
+margin-before: 1em;
+margin-after: 1em;
+margin-start: 0;
+margin-end: 0;
+padding-start: 40px;
+}
+
+li {
+display: list-item;
+text-align: -webkit-match-parent;
+}
+
+.sidenav ul {
+display: block;
+list-style-type: none;
+list-style-position: inside;
+margin-before: 1em;
+margin-after: 1em;
+margin-start: 0;
+margin-end: 0;
+padding-start: 40px;
+}
