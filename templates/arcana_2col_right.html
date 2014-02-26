@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+{% extends "arcana_base.html" %}
+{% load fiber_tags %}
+
+{% block main_content %}
+			<div id="main-wrapper" class="subpage">
+				<div class="container">
+					<div class="row">
+						<div class="9u skel-cell-important">
+					
+							<!-- Content -->
+
+								<article class="first">
+                                    {% show_page_content %}
+								
+									<h2>Two Column #1 (right-hand sidebar)</h2>
+
+									<p>Suspendisse faucibus dictum tellus id posuere. Cras quis eros tellus, id posuere lacus. 
+									Praesent ac est eros. Aliquam eleifend nunc ut neque consequat quis suscipit elit tincidunt. 
+									Fusce interdum gravida tincidunt. Sed et ante nec ligula fringilla condimentum. Mauris vel 
+									sem ac ligula sed lorem vestibulum ornare vel sed nibh. Fusce rhoncus tincidunt ante, non hendrerit 
+									magna vestibulum quis. Integer vel enim sem phasellus tempus lorem.</p>
+
+									<p>Maecenas vel mauris sit amet augue accumsan tempor non in sapien. Nulla facilisi. Aliquam
+									imperdiet sem et orci adipiscing vehicula sagittis metus consectetur. Mauris a dui dolor magna 
+									tristique condimentum nec ut ligula. Sed eu arcu in neque porta iaculis. Mauris fermentum velit 
+									sit amet leo convallis consectetur. Ut vel libero dui, eu vehicula velit. Maecenas et justo 
+									vitae lacus venenatis vehicula. Ut eget posuere arcu dolore blandit.</p>
+
+									<p>Aenean nec turpis ac ligula posuere eleifend sed a eros. Integer nec nibh interdum nulla 
+									fringilla ultricies. Integer semper felis eu ante congue dignissim. Praesent rhoncus nulla 
+									sed felis rhoncus et iaculis risus mattis. Nam sed purus dui, a egestas enim. Donec facilisis, 
+									enim id fermentum mattis, tellus libero ultricies massa, eu bibendum augue ipsum sit amet 
+									ligula. Proin porta sagittis erat ac pharetra. Aenean ultricies enim id mi lacinia rhoncus. 
+									Nunc volutpat, turpis vel porta tincidunt, lectus metus fermentum lectus, sed sodales erat 
+									nisi non dolor. Pellentesque vitae felis eget turpis rutrum malesuada in non quam. Mauris 
+									at lorem vel nunc tristique scelerisque sit amet id nisl. Donec at nisi magna, in pretium 
+									ligula. Sed lacus augue, sagittis et gravida viverra, imperdiet eget elit. Morbi malesuada 
+									ligula. Proin porta sagittis erat ac pharetra. Aenean ultricies enim id mi lacinia rhoncus. 
+									Nunc volutpat, turpis vel porta tincidunt, lectus metus fermentum lectus, sed sodales erat 
+									imperdiet sem et orci adipiscing vehicula sagittis metus consectetur. Mauris a dui dolor magna 
+									tristique condimentum nec ut ligula. Sed eu arcu in neque porta iaculis. Mauris fermentum velit 
+									sit amet leo convallis consectetur. Ut vel libero dui, eu vehicula velit. Maecenas et justo 
+									nisi non dolor. Pellentesque vitae felis eget turpis rutrum malesuada in non quam. Mauris 
+									at lorem vel nunc tristique scelerisque sit amet id nisl. Donec at nisi magna, in pretium 
+									ligula. Sed lacus augue, sagittis et gravida viverra, imperdiet eget elit. Morbi malesuada 
+									mauris eu eros rutrum blandit. Cras malesuada rutrum sem, ac vehicula diam volutpat ac. 
+									Vestibulum sed tortor purus. Phasellus in lectus fringilla tellus porttitor vehicula 
+									ut fermentum metus lorem ipsum dolor sit amet lorem ipsum dolor sit amet nullam consequat
+									lorem ipsum dolor sit amet consequat veroeros etiam.</p>
+
+								</article>							
+
+						</div>
+						<div class="3u">
+						
+							<!-- Right Sidebar -->
+
+								<section class="last">
+                                    {% show_page_content "left1" %}
+                                    {% show_page_content "left2" %}
+									<h3>Ipsum Dolor</h3>
+									<p>
+										Vehicula fermentum ligula at pretium. Suspendisse semper iaculis eros, eu aliquam 
+										iaculis. Phasellus ultrices diam sit amet orci lacinia sed consequat. 							
+									</p>
+									<ul class="link-list">
+										<li><a href="#">Sed dolore viverra</a></li>
+										<li><a href="#">Ligula non varius</a></li>
+										<li><a href="#">Dis parturient montes</a></li>
+										<li><a href="#">Nascetur ridiculus</a></li>
+									</ul>
+								</section>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+{% endblock %}

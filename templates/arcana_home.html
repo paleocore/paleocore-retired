@@ -1,4 +1,4 @@
-{% extends "base/arcana_base.html" %}
+{% extends "arcana_base.html" %}
 {% load fiber_tags %}
 {% load staticfiles %}
 
@@ -11,7 +11,7 @@
         <div class="row">
             <div class="12u">
                 <div id="banner">
-                    <a href="#"><img src="{% static 'base/paleocore_images/banner_images/banner.jpg' %}" alt="" /></a>
+                    <a href="#"><img src="{% static 'paleocore_images/banner_images/banner.jpg' %}" alt="" /></a>
                     <div class="caption">
                         <span><strong>PaleoCore</strong>: Towards a Data Standard for Paleoanthropology</span>
                         <!-- Big Blue Button
@@ -28,25 +28,21 @@
             <div class="row">
                 <div class="3u">
                     <section class="first">
-                        <h2>{%  show_page_content "col1_title" %}</h2>
                         {% show_page_content "col1_stub" %}
                     </section>
                 </div>
                 <div class="3u">
                     <section>
-                        <h2>{%  show_page_content "col2_title" %}</h2>
                         {% show_page_content "col2_stub" %}
                     </section>
                 </div>
                 <div class="3u">
                     <section>
-                        <h2>{%  show_page_content "col3_title" %}</h2>
                         {% show_page_content "col3_stub" %}
                     </section>
                 </div>
                 <div class="3u">
                     <section class="last">
-                        <h2>{%  show_page_content "col4_title" %}</h2>
                         {% show_page_content "col4_stub" %}
                     </section>
                 </div>

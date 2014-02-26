@@ -1,46 +1,40 @@
-<!DOCTYPE html>
-{% load fiber_tags %}
-{% load staticfiles %}
-<html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>{% block title %}{{ fiber_page.title }}{% endblock %}</title>
-	<link rel="stylesheet" href="{% static 'css/base.css' %}">
-</head>
-<body class="{% block body_class %}{{ fiber_page.title|slugify }}{% endblock %}">
-	<div id="wpr-page">
-		<div id="page">
-			<header>
-				<div id="logo">PaleoCore</div>
-				<nav id="mainmenu" class="clearfix">
-					{% show_menu "mainmenu" 1 1 %}
-				</nav>
-			</header>
-			<aside id="aside-left">
-				<nav id="submenu">
-					{% show_menu "mainmenu" 2 3 %}
-				</nav>
-			</aside>
-			<section id="main">
-				<nav id="breadcrumbs" class="clearfix">
-					<ul>
-						{% for fiber_page in fiber_current_pages %}
-						<li>
-							<a href="{{ fiber_page.get_absolute_url }}">{{ fiber_page.title }}</a>
-						</li>
-						{% endfor %}
-					</ul>
-				</nav>
-				<article>
-					{% show_page_content "main" %}
-				</article>
-			</section>
-			<aside id="aside-right">
-				{% show_page_content "aside" %}
+<!DOCTYPE HTML>
+<!--
+This template is identical to arcana_2col_left.html. It is the default PaleoCore page template.
+Fiber pages that do not have a template declared will use this template by default.
+-->
 
-				{% show_content "address" %}
-			</aside>
-		</div>
-	</div>
-</body>
-</html>
+{% extends "arcana_base.html" %}
+{% load fiber_tags %}
+
+{% block main_content %}
+<div id="main-wrapper" class="subpage">
+    <div class="container">
+        <div class="row">
+            <div class="3u">
+
+                <!-- Left Sidebar -->
+
+                    <section class="last">
+                        {% show_page_content "left1" %}
+                        {% show_page_content "left2" %}
+                    </section>
+
+            </div>
+            <div class="9u skel-cell-important">
+
+                <!-- Content -->
+
+                    <article class="first">
+
+                        {% show_page_content "main" %}
+
+                    </article>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

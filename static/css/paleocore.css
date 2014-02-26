@@ -4,39 +4,82 @@
 in the Arcana style sheets and so are added here */
 
 ol {
-display: block;
-list-style-type: decimal;
-list-style-position: inside;
-margin-before: 1em;
-margin-after: 1em;
-margin-start: 0;
-margin-end: 0;
-padding-start: 40px;
+    display: block;
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-before: 1em;
+    margin-after: 1em;
+    margin-start: 0;
+    margin-end: 0;
+    padding-start: 40px;
 }
 
 ul {
-display: block;
-list-style-type: square;
-list-style-position: inside;
-margin-before: 1em;
-margin-after: 1em;
-margin-start: 0;
-margin-end: 0;
-padding-start: 40px;
+    display: block;
+    list-style-type: square;
+    list-style-position: inside;
+    margin-before: 1em;
+    margin-after: 1em;
+    margin-start: 0;
+    margin-end: 0;
+    padding-start: 40px;
 }
 
 li {
-display: list-item;
-text-align: -webkit-match-parent;
+    display: list-item;
+    text-align: -webkit-match-parent;
 }
 
+/*
 .sidenav ul {
-display: block;
-list-style-type: none;
-list-style-position: inside;
-margin-before: 1em;
-margin-after: 1em;
-margin-start: 0;
-margin-end: 0;
-padding-start: 40px;
+    display: block;
+    list-style-type: none;
+    list-style-position: inside;
+    margin-before: 1em;
+    margin-after: 1em;
+    margin-start: 0;
+    margin-end: 0;
+    padding-start: 40px;
+    font-size: 1.6em;
+}
+
+/* Sidenav */
+
+.sidenav ul {
+	width: 120px;
+    display: block;
+    list-style-type: none;
+}
+
+.sidenav ul li {
+	margin: 0.5em 0;
+}
+
+.sidenav ul li ul {
+	margin: 0.5em 0;
+}
+
+.sidenav ul li ul li {
+	margin-left: 15px;
+}
+
+.sidenav ul li a {
+	display: block;
+	line-height: 120%;
+    text-decoration: none;
+    color: #666666;
+}
+
+.sidenav ul li a:hover,
+.sidenav ul li.current a {
+	color: #f65d20;
+}
+
+.sidenav ul li.current ul li a {
+	color: #666;
+}
+
+.sidenav ul li.current ul li a:hover,
+.sidenav ul li ul li.current a {
+	color: #f65d20;
 }

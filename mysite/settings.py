@@ -47,8 +47,9 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
-    'base',
-    'polls',
+    'base',  # main site app
+    'meetings',  # manage meetings, abstracts and authors
+    'polls',  # test app
 )
 
 # These entries extended by entries below in Django Fiber section
