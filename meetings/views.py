@@ -1,21 +1,27 @@
-
-
 # Create your views here.
-# Create your views here.
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+# Using class based views.
+
+from django.shortcuts import get_object_or_404
 from django.views import generic
-from django.utils import timezone
+from models import *
+from django.core.urlresolvers import reverse
+from fiber.views import FiberPageMixin
 
-from models import Poll, Choice
+
+class AbstractIndexView(FiberPageMixin, generic.ListView):
+    # A class to combine the context for the fiber page with the general context.
+    def get_fiber_page_url(self):
+        return reverse('meetings:index', args=[self.meeting])
 
 
-
-class IndexView(generic.ListView):
-    template_name = 'meetings/index.html'
-    context_object_name = 'latest_poll_list'
+class IndexView(AbstractIndexView):
+    template_name = 'meetings/abstracts.html'
+    context_object_name = 'abstracts'
 
     def get_queryset(self):
-        """Return the last five published polls."""
-        return Poll.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+        # build a query set of abstracts for a given meeting. The meeting_name is passed from meetings/urls.py
+        self.meeting = get_object_or_404(Meeting, title=self.kwargs["meeting_name"])
+
+        """Return a list of abstracts for the current meeting"""
+        return Abstract.objects.filter(meeting=self.meeting)
+

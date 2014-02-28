@@ -17,7 +17,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_PATH, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -113,8 +113,8 @@ STATIC_URL = '/static/'  # See also STATIC_ROOT entry in Django Fiber section
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 # Path and URL for user uploaded media files
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+
+
 
 ###########################
 ## Django Fiber Settings ##

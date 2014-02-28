@@ -16,6 +16,12 @@
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
+    <option name="TEMPLATE_FOLDERS">
+      <list>
+        <option value="$MODULE_DIR$/meetings/templates" />
+        <option value="$MODULE_DIR$/meetings/templates/meetings" />
+      </list>
+    </option>
   </component>
 </module>
 

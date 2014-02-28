@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
     # App URLS
     url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
+    url(r'^workshops/', include('meetings.urls', namespace="meetings")),
 
     # Admin URLS
     url(r'^admin/', include(admin.site.urls)),
