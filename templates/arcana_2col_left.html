@@ -2,7 +2,7 @@
 {% extends "arcana_base.html" %}
 {% load fiber_tags %}
 
-{% block main_content %}
+{% block page_content %}
 <div id="main-wrapper" class="subpage">
     <div class="container">
         <div class="row">
@@ -13,6 +13,7 @@
                     <section class="last">
                         {% show_page_content "left1" %}
                         {% show_page_content "left2" %}
+                        {% block left_sidebar %}{% endblock %}
                     </section>
 
             </div>
@@ -23,6 +24,7 @@
                     <article class="first">
 
                         {% show_page_content "main" %}
+                        {% block main_content %}{% endblock %}
 
                     </article>
 
