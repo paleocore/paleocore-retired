@@ -1,0 +1,60 @@
+{% extends "arcana_base.html" %}
+{% load fiber_tags %}
+{% load staticfiles %}
+
+{% block main_content %}
+<div id="main-wrapper">
+    <div class="container">
+
+        <!-- Banner -->
+
+        <div class="row">
+            <div class="12u">
+                <div id="banner">
+                    <a href="#"><img src="{% static 'paleocore_images/banner_images/banner.jpg' %}" alt="" /></a>
+                    <div class="caption">
+                        <span><strong>PaleoCore</strong>: Towards a Data Standard for Paleoanthropology</span>
+                        <!-- Big Blue Button
+                        <a href="#" class="button">Find Out More!</a>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Features -->
+
+            <div class="row">
+                <div class="3u">
+                    <section class="first">
+                        {% show_page_content "col1_stub" %}
+                    </section>
+                </div>
+                <div class="3u">
+                    <section>
+                        {% show_page_content "col2_stub" %}
+                    </section>
+                </div>
+                <div class="3u">
+                    <section>
+                        {% show_page_content "col3_stub" %}
+                    </section>
+                </div>
+                <div class="3u">
+                    <section class="last">
+                        {% show_page_content "col4_stub" %}
+                    </section>
+                </div>
+            </div>
+
+        <!-- Divider -->
+
+            <div class="row">
+                <div class="12u">
+                    <div class="divider divider-top"></div>
+                </div>
+            </div>
+    </div>
+</div>
+{% endblock %}

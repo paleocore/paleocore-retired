@@ -58,8 +58,9 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
-    'base',
-    'polls',
+    'base',  # main site app
+    'meetings',  # manage meetings, abstracts and authors
+    'polls',  # test app
 )
 
 # These entries extended by entries below in Django Fiber section
@@ -86,7 +87,6 @@ DATABASES = {
         'NAME': 'paleocore_dev',
         'USER': 'webdev',   # 'webdev' is the user for the local development server
         'PASSWORD': 'password',   # password for local postgres server
-        #'HOST': 'paleocore-qa.tacc.utexas.edu',   # hostname for TACC development server
         'HOST': 'localhost',   # for local development server
         'PORT': '5432',   # default Postgres port
     }

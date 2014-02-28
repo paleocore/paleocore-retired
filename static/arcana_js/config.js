@@ -6,7 +6,7 @@
 
 window._skel_config = {
 	preset: 'standard',
-	prefix: '/static/arcana_css/style',
+	prefix: '/static/arcana_css/style',  /* point to the static css style sheets */
 	resetCSS: true
 };
 

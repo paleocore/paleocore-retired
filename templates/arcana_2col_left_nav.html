@@ -1,9 +1,4 @@
 <!DOCTYPE HTML>
-<!--
-This template is identical to arcana_2col_left.html. It is the default PaleoCore page template.
-Fiber pages that do not have a template declared will use this template by default.
--->
-
 {% extends "arcana_base.html" %}
 {% load fiber_tags %}
 
@@ -13,7 +8,16 @@ Fiber pages that do not have a template declared will use this template by defau
         <div class="row">
             <div class="3u">
 
-                <!-- Left Sidebar -->
+                <!-- SubNav Sidebar -->
+
+                    <section>
+                        {% show_page_content "nav_title" %}
+                        <nav class="sidenav">
+                            {% show_menu "mainmenu" 2 4 %}
+                        </nav>
+                    </section>
+
+                <!-- Additional Sidebar Items -->
 
                     <section class="last">
                         {% show_page_content "left1" %}
