@@ -37,6 +37,7 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+POSTGIS_VERSION = (2, 0, 1)
 
 # Application definition
 
@@ -86,8 +87,8 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
         'NAME': 'paleocore_dev',
         'USER': 'webdev',   # 'webdev' is the user for the local development server
-        'PASSWORD': 'password',   # password for local postgres server
-        'HOST': 'localhost',   # for local development server
+        'PASSWORD': 'N9n8CmHg',   # password for local postgres server
+        'HOST': 'paleocore-qa.tacc.utexas.edu',   # for local development server
         'PORT': '5432',   # default Postgres port
     }
 }
