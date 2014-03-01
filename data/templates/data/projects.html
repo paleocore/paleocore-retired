@@ -1,0 +1,10 @@
+{% extends "arcana_2col_left_nav.html" %}
+{% block main_content %}
+    {% for project in project_list %}
+        <img src="{{ project.logo.url }}">
+        <h3>{{ project.title }}</h3>
+        <p>{{ project.abstract }}</p>
+
+    {% endfor %}
+
+{% endblock %}

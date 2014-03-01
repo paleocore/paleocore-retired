@@ -60,6 +60,7 @@ INSTALLED_APPS = (
 
     # Project Apps
     'base',  # main site app
+    'data',  # manage projects and project data
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # test app
 )
@@ -85,11 +86,16 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
+        'PORT': '5432',   # default Postgres port
         'NAME': 'paleocore_dev',
         'USER': 'webdev',   # 'webdev' is the user for the local development server
-        'PASSWORD': 'N9n8CmHg',   # password for local postgres server
-        'HOST': 'paleocore-qa.tacc.utexas.edu',   # for local development server
-        'PORT': '5432',   # default Postgres port
+
+        # TACC SETTINGS
+        #'PASSWORD': 'N9n8CmHg',   # password for local postgres server
+        #'HOST': 'paleocore-qa.tacc.utexas.edu',   # for local development server
+
+        # LOCAL SETTINGS
+        'HOST': 'localhost'
     }
 }
 

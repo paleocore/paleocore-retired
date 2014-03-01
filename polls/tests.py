@@ -1,5 +1,3 @@
-from django.test import TestCase
-
 # Create your tests here.
 import datetime
 
@@ -8,6 +6,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from polls.models import Poll
+
 
 class PollMethodTests(TestCase):
 
@@ -35,6 +34,7 @@ class PollMethodTests(TestCase):
         new_poll = Poll(pub_date=timezone.now() - datetime.timedelta(hours=1))
         self.assertEqual(new_poll.was_published_recently(), True)
 
+
 def create_poll(question, days):
     """
     Creates a poll with the given `question` published the given number of
@@ -43,6 +43,7 @@ def create_poll(question, days):
     """
     return Poll.objects.create(question=question,
         pub_date=timezone.now() + datetime.timedelta(days=days))
+
 
 class PollInddexViewTests(TestCase):
     def test_index_view_with_no_polls(self):
