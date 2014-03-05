@@ -7,9 +7,11 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
+import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 gettext = lambda s: s
@@ -28,7 +30,7 @@ MEDIA_URL = "/media/"
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0!vdm@wj&wl$i@)9+m40+xw642v^l1y_&fhfh9)ri!r0bjw=)a'
+SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -91,11 +93,11 @@ DATABASES = {
         'USER': 'webdev',   # 'webdev' is the user for the local development server
 
         # TACC SETTINGS
-        #'PASSWORD': 'N9n8CmHg',   # password for local postgres server
-        #'HOST': 'paleocore-qa.tacc.utexas.edu',   # for local development server
+        'PASSWORD': secrets.WEBDEV_PASSWORD,   # password for local postgres server
+        'HOST': secrets.WEBDEV_HOST,   # for local development server
 
         # LOCAL SETTINGS
-        'HOST': 'localhost'
+        #'HOST': 'localhost'
     }
 }
 
@@ -117,6 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'  # See also STATIC_ROOT entry in Django Fiber section
 TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
 
 # Path and URL for user uploaded media files
 
