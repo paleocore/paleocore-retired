@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib import admin
+from models import *  # import database models from models.py
+from django.forms import TextInput, Textarea  # import custom form widgets
 
-# Register your models here.
 
-from models import *
-from django.forms import TextInput, Textarea
-
+###################
+## Biology Admin ##
+###################
 
 biology_fieldsets = (
 ('Taxonomy', {
@@ -19,6 +19,39 @@ class biologyInline(admin.TabularInline):
     extra = 0
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
+
+
+class biologyAdmin(admin.ModelAdmin):
+    list_display = ("id","occurrence","tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","lowest_level_identification")
+    list_filter = ("family",)
+    search_fields = ("lowest_level_identification",)
+    readonly_fields = ("id",)
+    fieldsets = biology_fieldsets
+
+
+#####################
+## Hydrology Admin ##
+#####################
+
+class hydrologyAdmin(admin.ModelAdmin):
+    list_display = ("id","size")
+    search_fields = ("id",)
+    list_filter = ("size",)
+
+
+#####################
+## Locality Admin ##
+#####################
+
+class localityAdmin(admin.ModelAdmin):
+    list_display = ("collectioncode","paleolocalitynumber","paleosublocality")
+    list_filter = ("collectioncode",)
+    search_fields = ("paleolocalitynumber",)
+
+
+######################
+## Occurrence Admin ##
+######################
 
 occurrence_fieldsets =(
 ('Curatorial', {
@@ -121,5 +154,23 @@ class occurrenceAdmin(admin.ModelAdmin):
             return render_move_form()
     move_selected.short_description = "Move the selected points."
 
+
+#####################
+## Taxonomy Admin  ##
+#####################
+
+class taxonomyAdmin(admin.ModelAdmin):
+    list_display = ("id","rank","tax_class","tax_order","family","subfamily","tribe","genus")
+    search_fields = ("tax_class","tax_order","family","subfamily","tribe","genus")
+    list_filter = ("rank",)
+
+
+############################
+## Register Admin Classes ##
+############################
+
+admin.site.register(drp_biology, biologyAdmin)
+admin.site.register(drp_hydrology, hydrologyAdmin)
+admin.site.register(drp_locality, localityAdmin)
 admin.site.register(drp_occurrence, occurrenceAdmin)
-admin.site.register(drp_biology)
+admin.site.register(drp_taxonomy, taxonomyAdmin)
