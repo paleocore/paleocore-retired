@@ -44,13 +44,14 @@ POSTGIS_VERSION = (2, 0, 1)
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.admin',  # enables django admin
+    'django.contrib.auth',  # enable django authentication module
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'django.contrib.gis',  # enables geodjango
 
     # Django Fiber Apps
     'django.contrib.staticfiles',
@@ -61,10 +62,12 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'drp',   # Dikika Research Project geospatial app
     'base',  # main site app
     'data',  # manage projects and project data
     'meetings',  # manage meetings, abstracts and authors
-    'polls',  # test app
+    'polls',  # django tutorial app
+    'world',  # geodjango tutorial app
 )
 
 # These entries extended by entries below in Django Fiber section
@@ -98,8 +101,20 @@ DATABASES = {
 
         # LOCAL SETTINGS
         #'HOST': 'localhost'
+    },
+
+    'drp_carmen': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'drp',
+        'USER': 'sde',                      # Not used with sqlite3.
+        'PASSWORD': secrets.SDE_PASSWORD,                  # Not used with sqlite3.
+        'HOST': secrets.SDE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# Points to the location of the database router configuration file
+DATABASE_ROUTERS = ['database_routers.paleocore_router.PaleocoreRouter']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
