@@ -24,7 +24,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-# MEDIA_URL = "/media/"
+MEDIA_URL = "/media/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -62,9 +62,8 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'turkana',  # Turkana Project Data
     'drp',   # Dikika Research Project geospatial app
-    'turkana',
-    'omo',
     'base',  # main site app
     'data',  # manage projects and project data
     'meetings',  # manage meetings, abstracts and authors

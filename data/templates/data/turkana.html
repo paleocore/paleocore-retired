@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load fiber_tags %}
+
+{% block main_content %}
+    {%  if turkana_list %}
+        <table>
+        {% for row in turkana_list %}
+            <tr>
+                <td>{{ row.id }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        {% else %}
+        No data to display
+    {% endif %}
+{% endblock %}

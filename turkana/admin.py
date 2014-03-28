@@ -1,7 +1,12 @@
 from django.contrib.gis import admin
 
-from paleocore.turkana.models import turkana
+from turkana.models import Turkana
 
 
-turkana_adminsite = admin.AdminSite("turkana_adminsite")
-turkana_adminsite.register(turkana)
+class TurkanaAdmin(admin.ModelAdmin):
+    list_display = list((Turkana.fields_to_display()))
+
+
+
+
+admin.site.register(Turkana, TurkanaAdmin)

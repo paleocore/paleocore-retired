@@ -1,6 +1,7 @@
 from django.db import models
 
-class turkana(models.Model):
+
+class Turkana(models.Model):
     museum = models.CharField(max_length=200, blank=True, null=True)
     specimen_prefix = models.CharField(max_length=200, blank=True, null=True)
     specimen_number = models.IntegerField(blank=True, null=True)
