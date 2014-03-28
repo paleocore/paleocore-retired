@@ -22,4 +22,3 @@ class IndexView(AbstractIndexView):
 
         """Return a list of abstracts for the current meeting"""
         return Project.objects.all()
-
