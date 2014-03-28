@@ -6,7 +6,14 @@
         <table>
         {% for row in turkana_list %}
             <tr>
-                <td>{{ row.id }}</td>
+                <td>{{ row.record_number }}</td>
+                <td>{{ row.year_found }}</td>
+                <td>{{ row.study_area }}</td>
+                <td>{{ row.formation }}</td>
+                <td>{{ row.member }}</td>
+                <td>{{ row.genus }}</td>
+                <td>{{ row.species }}</td>
+                <td>{{ row.body_element }}</td>
             </tr>
         {% endfor %}
         </table>
