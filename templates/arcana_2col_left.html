@@ -13,16 +13,7 @@ Fiber pages that do not have a template declared will use this template by defau
         <div class="row">
             <div class="3u">
 
-                <!-- SubNav Sidebar -->
-
-                    <section>
-                        {% show_page_content "nav_title" %}
-                        <nav class="sidenav">
-                            {% show_menu "mainmenu" 2 4 %}
-                        </nav>
-                    </section>
-
-                <!-- Additional Sidebar Items -->
+                <!-- Left Sidebar -->
 
                     <section class="last">
                         {% show_page_content "left1" %}
@@ -36,8 +27,10 @@ Fiber pages that do not have a template declared will use this template by defau
                 <!-- Content -->
 
                     <article class="first">
+
                         {% show_page_content "main" %}
                         {% block main_content %}{% endblock %}
+
                     </article>
 
             </div>
