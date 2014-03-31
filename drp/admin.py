@@ -1,7 +1,11 @@
 from django.contrib import admin
 from models import *  # import database models from models.py
 from django.forms import TextInput, Textarea  # import custom form widgets
+from django.http import HttpResponse
+import unicodecsv
+from django.core.exceptions import ObjectDoesNotExist
 
+import csv,cStringIO, codecs
 
 ###################
 ## Biology Admin ##
@@ -98,7 +102,33 @@ class occurrenceAdmin(admin.ModelAdmin):
     }
     #change_form_template = "occurrence_change_form.html"
     actions = ["move_selected", "get_nearest_locality"]
-    actions = ["get_nearest_locality"]
+    actions = ["get_nearest_locality", "create_data_csv"]
+
+    #admin action to download data in csv format
+    def create_data_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="DRP_data.csv"'
+        writer = unicodecsv.writer(response)
+        o = drp_occurrence()  # create an empty instance of an occurrence object
+        b = drp_biology()  # create an empty instance of a biology object
+
+        """
+        For now this method handles all occurrences and corresponding
+        data from the biology table for faunal occurrences.
+        """
+        writer.writerow(o.__dict__.keys()+b.__dict__.keys())  # fetch field names and write to the first row
+
+        for occurrence in queryset.all():  # iterate through the occurrence instances selected in the admin
+            try:  # try writing drp_occurrence values and associated drp_biology values
+                writer.writerow(occurrence.__dict__.values()+occurrence.drp_biology.__dict__.values())
+            except ObjectDoesNotExist:  # Django specific exception
+                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values)
+            except:
+                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values
+
+        return response
+
+    create_data_csv.short_description = "Download Selected to .csv"
 
     #admin action to get nearest locality
     def get_nearest_locality(self,request, queryset):
