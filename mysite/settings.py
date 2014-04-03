@@ -66,9 +66,10 @@ INSTALLED_APPS = (
     'drp',   # Dikika Research Project geospatial app
     'base',  # main site app
     'data',  # manage projects and project data
+    'schema', # paleocore schema
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
-    'world',  # geodjango tutorial app
+    #'world',  # geodjango tutorial app
 )
 
 # These entries extended by entries below in Django Fiber section
@@ -122,13 +123,13 @@ DATABASE_ROUTERS = ['database_routers.paleocore_router.PaleocoreRouter']
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
