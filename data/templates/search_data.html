@@ -1,0 +1,14 @@
+<table id='search_data_table'>
+    <tr>
+        {% for field in fields %}
+            <td>{{ field }}</td>
+        {% endfor %}
+    </tr>
+    {% for datum_attributes in datum_attributes_lists %}
+        <tr>
+            {% for attribute in datum_attributes %}
+                <td>{{ attribute }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

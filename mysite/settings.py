@@ -68,7 +68,7 @@ INSTALLED_APPS = (
     'data',  # manage projects and project data
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
-    'world',  # geodjango tutorial app
+    #'world',  # geodjango tutorial app
 )
 
 # These entries extended by entries below in Django Fiber section
