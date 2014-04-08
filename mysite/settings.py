@@ -37,7 +37,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.paleocore.org']
 
 POSTGIS_VERSION = (2, 0, 1)
 

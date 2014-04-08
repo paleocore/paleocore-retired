@@ -17,8 +17,6 @@ urlpatterns = patterns('',
     url(r'^workshops/', include('meetings.urls', namespace="meetings")),
     url(r'^data/', include('data.urls', namespace="data")),  # note the lack of a terminal dollar sign in the re
 
-
-
     # Admin URLS
     url(r'^admin/', include(admin.site.urls)),
 
