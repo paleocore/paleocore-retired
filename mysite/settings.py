@@ -131,7 +131,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'  # See also STATIC_ROOT entry in Django Fiber section
@@ -157,6 +156,9 @@ TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + (
     'django.core.context_processors.request',
 )
 
+# Overrides default Fiber permissions class to prevent all staff users
+# from gaining access to CMS
+PERMISSION_CLASS='mysite.fiberPermissions.FiberPermissions'
 
 """
 Added to appropriate section above
