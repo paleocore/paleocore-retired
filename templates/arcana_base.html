@@ -29,6 +29,24 @@
 		</noscript>
 		<!--[if lte IE 9]><link rel="stylesheet" href="{%  static 'arcana_css/style-ie9.css' %}" /><![endif]-->
 		<!--[if lte IE 8]><script src="{% static 'arcana_js/html5shiv.js' %}"></script><![endif]-->
+
+        <!-- jquery library file -->
+        <script type='text/javascript' src='/static/javascript/jquery_1_10_2.js'></script>
+        <!-- jquery-ui library file -->
+        <script type='text/javascript' src='/static/javascript/jquery-ui_1_10_3.js'></script>
+        <!-- jquery-color library file -->
+        <script type='text/javascript' src='/static/javascript/jquery-color.js'></script>
+        <!-- jquery cookie library file -->
+        <script type='text/javascript' src='/static/javascript/jquery.cookie.js'></script>
+
+        <!-- jquery-ui stylesheet -->
+        <link rel='stylesheet' href='/static/css/jquery-ui.css' />
+
+        <!-- jqx stylesheet and scripts-->
+        <link rel='stylesheet' href='/static/jqwidgets/styles/jqx.base.css' />
+        <script type='text/javascript' src='/static/jqwidgets/jqxcore.js'></script>
+
+        {% block extra_style %} {% endblock %}
     </head>
 
 	<body>
