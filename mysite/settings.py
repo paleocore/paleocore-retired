@@ -69,7 +69,6 @@ INSTALLED_APPS = (
     'schema', # paleocore schema
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
-    #'world',  # geodjango tutorial app
 )
 
 # These entries extended by entries below in Django Fiber section
