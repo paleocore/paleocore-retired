@@ -8,7 +8,11 @@ from django.db.models import Q, get_app, get_models
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 
-apps = {'turkana': 'default'}
+"""
+Define the apps that should be listed on the data page and included in
+global searches.
+"""
+apps = {'turkana': 'default', 'drp': 'drp_carmen'}
 
 projects = {}
 
@@ -25,7 +29,7 @@ class AbstractIndexView(FiberPageMixin, generic.ListView):
 
 
 class IndexView(AbstractIndexView):
-    template_name = 'data/templates/projects.html'
+    template_name = 'data/projects.html'
     context_object_name = 'project_list'
 
     def get_queryset(self):
@@ -68,7 +72,7 @@ def project_data_display(request, project_name):
 
         site_data = project.objects.all()
 
-        return render_to_response('project_data_display.html', {'fields': fields,
+        return render_to_response('data/project_data_display.html', {'fields': fields,
                                                                 'project_name': project_name,
                                                                 'selector_choices': selector_choices,
                                                                 'data': site_data}, RequestContext(request))
@@ -88,7 +92,7 @@ def project_data_display(request, project_name):
             for item in query_set:
                 datum_attributes_lists.append([item[field] for field in fields])
 
-            return render_to_response('project_data_display.html',
+            return render_to_response('data/project_data_display.html',
                                       {'datum_attributes_lists': datum_attributes_lists, 'fields': fields},
                                       RequestContext(request))
 
