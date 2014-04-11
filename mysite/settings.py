@@ -62,6 +62,7 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'mlp',
     'turkana',  # Turkana Project Data
     'drp',   # Dikika Research Project geospatial app
     'base',  # main site app
