@@ -7,41 +7,47 @@ from django.contrib.gis.db import models
 
 
 occurrence_fieldsets =(
-('Curatorial', {
-'fields': (('barcode','catalognumber'),
-           ("objectid",'fieldnumber','yearcollected',"datelastmodified"),
-           ("collectioncode","paleolocalitynumber","itemnumber","itempart"))
-}),
+    ('Curatorial', {
+        'fields': (('barcode', 'catalog_number'),
+                   ('objectid', 'field_number', 'year_collected', 'date_last_modified'),
+                   ("collection_code", "item_number", "item_part"))
+    }),
 
-('Occurrence Details', {
-'fields': (('basisofrecord','itemtype','disposition','preparationstatus'),
-           ('itemdescription','itemscientificname'),
-           ('remarks'))
-}),
-('Provenience', {
-'fields': (#("strat_upper","distancefromupper"),
-           #("strat_lower","distancefromlower"),
-           #("strat_found","distancefromfound"),
-           #("strat_likely","distancefromlikely"),
-           ("analyticalunit","analyticalunit2","analyticalunit3"),
-           ("insitu","ranked"),
-           ("stratigraphicmember",),
-           ("point_x","point_y"),
-           ('shape'))
-}),
+    ('Occurrence Details', {
+        'fields': (('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
+                   ('collecting_method', 'finder', 'collector', 'individual_count'),
+                   ('item_description', 'item_scientific_name', 'image'),
+                   ('problem', 'problem_comment'),
+                   ('remarks'))
+    }),
+    ('Taphonomic Details', {
+        'fields': (
+            ('weathering', 'surface_modification')
+        )
+    }),
+    ('Provenience', {
+        'fields': (('analytical_unit',),
+                   ('in_situ', 'ranked'),
+                   ('point_x', 'point_y'),
+                   ('shape'))
+    })
 )
 
-class occurrenceAdmin(admin.ModelAdmin):
-    list_display = ('objectid', 'stratigraphicmember', "catalognumber", "barcode", 'basisofrecord', 'itemtype',
-                    'collector', "itemscientificname", "itemdescription", "point_x", "point_y", "yearcollected",
-                    "fieldnumber", "datelastmodified")
 
-    #note: autonumber fields like objectid are not editable, and can't be added to fieldsets unless specified as read only.
-    #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
-    readonly_fields = ("objectid", "fieldnumber", "point_x", "point_y", "catalognumber", "datelastmodified")
+class OccurrenceAdmin(admin.ModelAdmin):
+    list_display = ('objectid', 'catalog_number', 'barcode', 'basis_of_record', 'item_type', 'collecting_method',
+                    'collector', 'item_scientific_name', 'item_description', 'point_x', 'point_y', 'year_collected',
+                    'field_number', 'date_last_modified', 'in_situ')
 
-    list_filter = ["basisofrecord","yearcollected","stratigraphicmember","collectioncode","itemtype"]
-    search_fields = ("objectid","itemscientificname","barcode","catalognumber")
+    """
+    Autonumber fields like objectid are not editable, and can't be added to fieldsets unless specified as read only.
+    also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in
+    fieldset or fields
+    """
+    readonly_fields = ('objectid', 'field_number', 'point_x', 'point_y', 'catalog_number', 'date_last_modified')
+
+    list_filter = ['basis_of_record', 'year_collected', 'item_type']
+    search_fields = ('objectid', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     #inlines = (biologyInline,) - no biology table...yet  TODO Add biology table
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
@@ -49,8 +55,11 @@ class occurrenceAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
     }
 
+    # Set pagination to show 500 entries per page
+    list_per_page = 1000
+
 
 ############################
 ## Register Admin Classes ##
 ############################
-admin.site.register(Occurrence, occurrenceAdmin)
+admin.site.register(Occurrence, OccurrenceAdmin)

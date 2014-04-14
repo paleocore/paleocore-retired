@@ -3,7 +3,7 @@ from django.forms.widgets import Textarea, TextInput
 from django.forms import ModelForm
 
 # Create your models here.
-
+#TODO move to choices.py
 COUNTRY_CHOICES = (
     ('United States of America', ('United States of America')),
     ('Afghanistan', ('Afghanistan')),
@@ -314,7 +314,7 @@ class Author(models.Model):
 
 
 ### Model Forms ###
-
+# TODO move to forms.py
 
 class AbstractForm(ModelForm):
     class Meta:
