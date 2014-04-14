@@ -29,7 +29,7 @@ occurrence_fieldsets =(
         'fields': (('analytical_unit',),
                    ('in_situ', 'ranked'),
                    ('point_x', 'point_y'),
-                   ('shape'))
+                   ('geom'))
     })
 )
 
