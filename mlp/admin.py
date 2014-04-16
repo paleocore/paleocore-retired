@@ -9,6 +9,7 @@ from django.contrib.gis.db import models
 ###################
 
 biology_fieldsets = (
+    (None, {'fields':(('occurrence',))}),
     ('Element', {'fields':(('side',))}),
 ('Taxonomy', {
 'fields': (('tax_class',),('tax_order',),('family',),('subfamily',),('tribe',),('genus','specificepithet'),("id"))
