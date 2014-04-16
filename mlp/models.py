@@ -194,17 +194,17 @@ class Biology(models.Model):
 
     def __unicode__(self):
         if(self.genus):
-            return str(self.genus) + " " + str(self.specificepithet).replace("None","")
+            return str(self.genus) + " " + str(self.specificepithet).replace("None", "")
         elif self.tribe:
-            return str(self.tribe).replace("None","")
+            return str(self.tribe).replace("None", "")
         elif self.subfamily:
-            return str(self.subfamily).replace("None","")
+            return str(self.subfamily).replace("None", "")
         elif self.family:
-            return str(self.family).replace("None","")
+            return str(self.family).replace("None", "")
         elif self.tax_order:
-            return str(self.tax_order).replace("None","")
+            return str(self.tax_order).replace("None", "")
         else:
-            return str(self.tax_class).replace("None","")
+            return str(self.tax_class).replace("None", "")
 
     def save(self):
         # if not self.id:#if this is a fresh save with no id yet
