@@ -47,7 +47,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'field_number', 'point_x', 'point_y', 'date_last_modified')
     list_editable = ['problem']
 
-    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'problem']
+    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     #inlines = (biologyInline,) - no biology table...yet  TODO Add biology table
     fieldsets = occurrence_fieldsets
