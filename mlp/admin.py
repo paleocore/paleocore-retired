@@ -9,7 +9,7 @@ from django.contrib.gis.db import models
 occurrence_fieldsets =(
     ('Curatorial', {
         'fields': (('barcode', 'catalog_number'),
-                   ('objectid', 'field_number', 'year_collected', 'date_last_modified'),
+                   ('id', 'field_number', 'year_collected', 'date_last_modified'),
                    ("collection_code", "item_number", "item_part"))
     }),
 
@@ -35,19 +35,20 @@ occurrence_fieldsets =(
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    list_display = ('objectid', 'catalog_number', 'barcode', 'basis_of_record', 'item_type', 'collecting_method',
+    list_display = ('id', 'catalog_number', 'barcode', 'basis_of_record', 'item_type', 'collecting_method',
                     'collector', 'item_scientific_name', 'item_description', 'point_x', 'point_y', 'year_collected',
-                    'field_number', 'date_last_modified', 'in_situ')
+                    'field_number', 'date_last_modified', 'in_situ', 'problem')
 
     """
-    Autonumber fields like objectid are not editable, and can't be added to fieldsets unless specified as read only.
+    Autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in
     fieldset or fields
     """
-    readonly_fields = ('objectid', 'field_number', 'point_x', 'point_y', 'catalog_number', 'date_last_modified')
+    readonly_fields = ('id', 'field_number', 'point_x', 'point_y', 'date_last_modified')
+    list_editable = ['problem']
 
-    list_filter = ['basis_of_record', 'year_collected', 'item_type']
-    search_fields = ('objectid', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
+    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'problem']
+    search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     #inlines = (biologyInline,) - no biology table...yet  TODO Add biology table
     fieldsets = occurrence_fieldsets
     formfield_overrides = {

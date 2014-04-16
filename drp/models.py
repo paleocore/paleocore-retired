@@ -5,6 +5,7 @@ from datetime import datetime
 basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
 itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
 
+
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class drp_occurrence(models.Model):
     id = models.AutoField("Occurrence ID",primary_key=True,db_column="catalognumbernumeric",null=False,blank=True)
