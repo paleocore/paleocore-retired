@@ -17,3 +17,10 @@ COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Denne Reed", "Denne Reed"),
                      ("Jonathan Wynn", "Jonathan Wynn")
 )
+
+SIDE_VOCABULARY = (("Left", "Left"),
+                   ("Right", "Right"),
+                   ("Both", "Both"),
+                   ("Axial", "Axial"),  # a median, unsided element
+                   ("Unknown", "Unknown")
+)

@@ -96,7 +96,7 @@ class drp_occurrence(models.Model):
     def save(self):#custom save method for occurrence
         theCatalogNumber = str(self.collectioncode) + "-" + str(self.paleolocalitynumber) + str(self.paleosublocality) + "-" + str(self.itemnumber) + str(self.itempart)
         self.catalognumber = theCatalogNumber.replace("None","")
-        self.datelastmodified = datetime.now()
+        self.datelastmodified = datetime.now()  # TODO change datelastmodified autonow option to accomplish this
 
         #call the normal drp_occurrence save method using alternate database
         super(drp_occurrence, self).save(using="drp_carmen")
@@ -167,6 +167,7 @@ class drp_biology(models.Model):
     lm3width = models.FloatField(null=True,blank=True)
     element = models.CharField(null=True,blank=True,max_length=50)
     elementmodifier = models.CharField(null=True,blank=True,max_length=50)
+    # TODO convert this field to boolean
     uli1 = models.IntegerField()
     uli2 = models.IntegerField()
     uli3 = models.IntegerField()
