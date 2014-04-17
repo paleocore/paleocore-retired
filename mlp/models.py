@@ -62,7 +62,16 @@ class Occurrence(models.Model):
         verbose_name_plural = 'MLP Occurrences'
 
     def __unicode__(self):
-        return str(self.id)
+        """
+        What is the best string representation for an occurrence instance?
+        All collected items have catalogue numbers, but observations do not
+        This method retuns the catalog number if it exists, or a string with the id value
+        if there is no catalog number.
+        """
+        if self.catalog_number:
+            return self.catalog_number
+        else:
+            return "item "+str(self.id)
 
     def point_X(self):
         return self.geom.x
