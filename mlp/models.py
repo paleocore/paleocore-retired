@@ -62,7 +62,7 @@ class Occurrence(models.Model):
         verbose_name_plural = 'MLP Occurrences'
 
     def __unicode__(self):
-        return self.catalog_number
+        return str(self.id)
 
     def point_X(self):
         return self.geom.x

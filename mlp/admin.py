@@ -78,7 +78,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
 
     list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
-    inlines = (BiologyInline,)
+    inlines = [BiologyInline,]
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size': '25'})},
