@@ -116,7 +116,7 @@ class drp_occurrence(models.Model):
         # The DRP database is in the SDE schema in order to make it compatible with
         # ArcGIS 10.1. Django does not handle PostGIS DB schemas natively. This is a
         # work-around to point Django to the right location for the data tables.
-        db_table='"sde"."drp_occurrence"'
+        db_table='drp_occurrence'
         ordering = ["collectioncode", "paleolocalitynumber", "itemnumber", "itempart"]
 
 
@@ -240,7 +240,7 @@ class drp_biology(models.Model):
     class Meta:
         verbose_name = "DRP Biology"
         verbose_name_plural = "DRP Biology"
-        db_table='"sde"."drp_biology"'
+        db_table='drp_biology'
 
     def __unicode__(self):
         if(self.genus):
@@ -377,7 +377,7 @@ class drp_hydrology(models.Model):
     class Meta:
         verbose_name = "DRP Hydrology"
         verbose_name_plural = "DRP Hydrology"
-        db_table='"sde"."drp_hydrology"'
+        db_table = 'drp_hydrology'
 
 class drp_locality(models.Model):
     paleolocalitynumber = models.IntegerField(null=True,blank=True)
@@ -399,7 +399,7 @@ class drp_locality(models.Model):
     class Meta:
         verbose_name = "DRP Locality"
         verbose_name_plural = "DRP Localities"
-        db_table='"sde"."drp_locality"'
+        db_table='drp_locality'
         ordering=("collectioncode","paleolocalitynumber","paleosublocality")
 
 
@@ -422,4 +422,4 @@ class drp_taxonomy(models.Model):
     class Meta:
         verbose_name = "Taxonomy"
         verbose_name_plural = "Taxonomy"
-        db_table='"sde"."drp_taxonomy"'
+        db_table='drp_taxonomy'
