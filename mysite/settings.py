@@ -95,22 +95,20 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
         'PORT': '5432',   # default Postgres port
         'NAME': 'paleocore_dev',
-        'USER': 'webdev',   # 'webdev' is the user for the local development server
+        'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
 
         # TACC SETTINGS
-        'PASSWORD': secrets.WEBDEV_PASSWORD,   # password for local postgres server
-        'HOST': secrets.WEBDEV_HOST,   # for local development server
+        'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
+        'HOST': secrets.DEFAULT_HOST,   # for local development server
 
-        # LOCAL SETTINGS
-        #'HOST': 'localhost'
     },
 
     'drp_carmen': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'drp',
-        'USER': 'sde',                      # Not used with sqlite3.
-        'PASSWORD': secrets.SDE_PASSWORD,                  # Not used with sqlite3.
-        'HOST': secrets.SDE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'NAME': 'drp_dev',
+        'USER': secrets.DRP_USER,                      # Not used with sqlite3.
+        'PASSWORD': secrets.DRP_PASSWORD,                  # Not used with sqlite3.
+        'HOST': secrets.DRP_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
