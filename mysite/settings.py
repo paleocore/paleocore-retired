@@ -7,6 +7,7 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
+# Import sensitive data from separate file not on GitHub
 import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -95,21 +96,20 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
         'PORT': '5432',   # default Postgres port
         'NAME': 'paleocore_dev',
-        'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
-
-        # TACC SETTINGS
-        'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
-        'HOST': secrets.DEFAULT_HOST,   # for local development server
+        'USER': secrets.DEFAULT_USER,   # user, password, host data in secrets.py
+        'PASSWORD': secrets.DEFAULT_PASSWORD,
+        'HOST': secrets.DEFAULT_HOST,
 
     },
 
     'drp_carmen': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Postgres PostGIS spatial database backend
+        'PORT': '5432',  # default Postgres port
         'NAME': 'drp_dev',
-        'USER': secrets.DRP_USER,                      # Not used with sqlite3.
-        'PASSWORD': secrets.DRP_PASSWORD,                  # Not used with sqlite3.
-        'HOST': secrets.DRP_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+        'USER': secrets.DRP_USER,  # user, password, host data in secrets.py
+        'PASSWORD': secrets.DRP_PASSWORD,
+        'HOST': secrets.DRP_HOST,
+
     }
 }
 
