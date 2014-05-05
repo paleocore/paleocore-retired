@@ -28,7 +28,7 @@ class biologyInline(admin.TabularInline):
 class biologyAdmin(admin.ModelAdmin):
     list_display = ("id","occurrence","tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","lowest_level_identification")
     list_filter = ("family",)
-    search_fields = ("lowest_level_identification",)
+    search_fields = ("id","tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","occurrence__id")
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
 
