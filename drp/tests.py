@@ -5,6 +5,10 @@ from django.core.urlresolvers import reverse
 from datetime import datetime
 from django.utils import timezone
 
+class AddDeleteOccurrence(TestCase):
+    def setUp(self):
+        newRecord = drp_occurrence(geom=Point(1,1))
+        newRecord.save()
 
 # def create_drp_occurrence():
 #     new_occurrence = drp_occurrence(id=29, barcode=9999, basisofrecord="FossilSpecimen", itemtype="Floral",
