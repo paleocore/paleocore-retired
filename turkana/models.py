@@ -108,3 +108,6 @@ class Turkana(models.Model):
     def __unicode__(self):
         return str(self.museum) + "-" +  str(self.specimen_prefix) + "-" +  str(self.specimen_number)
 
+    class Meta:
+        verbose_name_plural = 'Turkana'
+        ordering = ['formation', 'study_area', 'member']
