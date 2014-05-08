@@ -98,10 +98,11 @@ class occurrenceAdmin(admin.ModelAdmin):
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size':'25'})},
-        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
     }
+    list_per_page = 500  # show 500 records per page
     #change_form_template = "occurrence_change_form.html"
-    actions = ["move_selected", "get_nearest_locality"]
+    actions = ["move_selected", "get_nearest_locality"]  # TODO clarify actions
     actions = ["get_nearest_locality", "create_data_csv"]
 
     #admin action to download data in csv format
@@ -161,11 +162,12 @@ class occurrenceAdmin(admin.ModelAdmin):
 
 
     #admin action to move points to specified x and y coordinates
+    # TODO test and implement. Not currently active.
     def move_selected(self,request,queryset):
         returnURL="/admin/drp/drp_occurrence/"
         def render_move_form():
             t=loader.get_template("move_points.html")
-            c = RequestContext(request, {'returnURL':returnURL,'selectedPoints':queryset, 'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,})
+            c = RequestContext(request, {'returnURL': returnURL, 'selectedPoints': queryset, 'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,})
             return HttpResponse(t.render(c))
 
         if "apply" in request.POST:#if move form has been completed
