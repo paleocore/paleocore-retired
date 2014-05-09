@@ -7,14 +7,7 @@ from models import *
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 
-
-class AbstractIndexView(FiberPageMixin, generic.ListView):
-    # A class to combine the context for the fiber page with the general context.
-    def get_fiber_page_url(self):
-        return reverse('meetings:index', args=[self.meeting])
-
-
-class IndexView(AbstractIndexView):
+class IndexView(FiberPageMixin, generic.ListView):
     template_name = 'meetings/abstracts.html'
     context_object_name = 'abstracts'
 
@@ -25,3 +18,5 @@ class IndexView(AbstractIndexView):
         """Return a list of abstracts for the current meeting"""
         return Abstract.objects.filter(meeting=self.meeting)
 
+    def get_fiber_page_url(self):
+        return reverse('meetings:index', args=[self.meeting])
