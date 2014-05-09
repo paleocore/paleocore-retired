@@ -109,5 +109,5 @@ class Turkana(models.Model):
         return str(self.museum) + "-" + str(self.specimen_prefix) + "-" + str(self.specimen_number)
 
     class Meta:
-        verbose_name_plural = 'Turkana'
+        verbose_name_plural = 'Turkana Data'
         ordering = ['formation', 'study_area', 'member']
