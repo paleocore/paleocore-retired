@@ -106,7 +106,7 @@ class Turkana(models.Model):
         return fields
 
     def __unicode__(self):
-        return str(self.museum) + "-" +  str(self.specimen_prefix) + "-" +  str(self.specimen_number)
+        return str(self.museum) + "-" + str(self.specimen_prefix) + "-" + str(self.specimen_number)
 
     class Meta:
         verbose_name_plural = 'Turkana'
