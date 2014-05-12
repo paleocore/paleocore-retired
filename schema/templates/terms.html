@@ -1,4 +1,7 @@
 {% extends "arcana_2col_left_nav.html" %}
+{% block main_content %}
+{% load diagrams%}
+{% load cms_content %}
 
 {% if form.errors %}
 
@@ -85,7 +88,7 @@
             {% for termView in m.termViews %}
                 <tr>
                     <td class="baseProject">
-                        <a href="/term/{{ termView.id }}/">{{ termView.name }}</a>
+                        <a href="/schema/term/{{ termView.id }}/">{{ termView.name }}</a>
                     </td>
                     {% if "definition" in m.showColumns %}
                         <td class="baseProject" style="font-size: 8pt; font-weight: normal">

@@ -29,76 +29,76 @@ def classes(request,category):
                                 {"matching_terms":matching_terms,"matching_class":matching_class},
                                 RequestContext(request))
 
-def ontologyTree(request,categoryID=0):
-
-    return render_to_response("ontologyTree.html",
-                            {"categoryID":categoryID},
-                              RequestContext(request))
-def ontology(request):
-    return render_to_response("ontology.html",
-                            {},
-                              RequestContext(request))
-
-def verticalOntologyTree(request):
-    return render_to_response("verticalOntologyTree.html",
-                            {},
-                              RequestContext(request))
-
-def ontologyJSONtree(request):
-
-    response = HttpResponse(mimetype='application/json')
-
-    theParents=[]
-    theChildren=[]
-    categories = TermCategory.objects.filter(tree_visibility=True)
-    for category in categories:
-        if category.parent:
-            theParents.append(category.parent.id)
-            theChildren.append(category.id)
-        else:
-            theParents.append("NONE")
-            theChildren.append(category.id)
-    links=zip(theParents,theChildren)
-    parents, children = zip(*links)
-
-    def get_nodes(node):
-        d = {}
-
-        if get_parent(node) != "NONE":
-            d["name"] = TermCategory.objects.get(pk=node).name
-            d["URL"] = "/ontology/" + str(node)
-            d["categoryID"] =  node
-        else:
-            try:
-                d["name"] = TermCategory.objects.get(pk=node).name
-                d["URL"] = "/ontology/" + str(node)
-                d["categoryID"] =  node
-            except:
-                d["name"] = ""
-                d["URL"] = "/ontology/"
-                d["categoryID"] =  ""
-
-
-        if get_children(node):
-            d['children'] = [get_nodes(child) for child in get_children(node)]
-        return d
-
-    def get_children(node):
-        return [x[1] for x in links if x[0] == node]
-
-    def get_parent(node):
-        try:
-            return [x[0] for x in links if x[1] == node][0]
-        except:
-            return "NONE"
-
-
-
-    tree = get_nodes("NONE")
-
-    response.write(json.dumps(tree, indent=4))
-
-    return response
+# def ontologyTree(request,categoryID=0):
+#
+#     return render_to_response("ontologyTree.html",
+#                             {"categoryID":categoryID},
+#                               RequestContext(request))
+# def ontology(request):
+#     return render_to_response("ontology.html",
+#                             {},
+#                               RequestContext(request))
+#
+# def verticalOntologyTree(request):
+#     return render_to_response("verticalOntologyTree.html",
+#                             {},
+#                               RequestContext(request))
+#
+# def ontologyJSONtree(request):
+#
+#     response = HttpResponse(mimetype='application/json')
+#
+#     theParents=[]
+#     theChildren=[]
+#     categories = TermCategory.objects.filter(tree_visibility=True)
+#     for category in categories:
+#         if category.parent:
+#             theParents.append(category.parent.id)
+#             theChildren.append(category.id)
+#         else:
+#             theParents.append("NONE")
+#             theChildren.append(category.id)
+#     links=zip(theParents,theChildren)
+#     parents, children = zip(*links)
+#
+#     def get_nodes(node):
+#         d = {}
+#
+#         if get_parent(node) != "NONE":
+#             d["name"] = TermCategory.objects.get(pk=node).name
+#             d["URL"] = "/ontology/" + str(node)
+#             d["categoryID"] =  node
+#         else:
+#             try:
+#                 d["name"] = TermCategory.objects.get(pk=node).name
+#                 d["URL"] = "/ontology/" + str(node)
+#                 d["categoryID"] =  node
+#             except:
+#                 d["name"] = ""
+#                 d["URL"] = "/ontology/"
+#                 d["categoryID"] =  ""
+#
+#
+#         if get_children(node):
+#             d['children'] = [get_nodes(child) for child in get_children(node)]
+#         return d
+#
+#     def get_children(node):
+#         return [x[1] for x in links if x[0] == node]
+#
+#     def get_parent(node):
+#         try:
+#             return [x[0] for x in links if x[1] == node][0]
+#         except:
+#             return "NONE"
+#
+#
+#
+#     tree = get_nodes("NONE")
+#
+#     response.write(json.dumps(tree, indent=4))
+#
+#     return response
 
 
 def terms(request):
@@ -129,7 +129,7 @@ def terms(request):
                         projectView.name = termRelationship.related_term.project.name
                         projectView.relatedTermRelationship = termRelationship
                         termView.projectsWithRelatedTerms.append(projectView)
-        request.session['compareView'] = m
+        #request.session['compareView'] = m
     else:
         if request.session.get('compareView'):
             m = request.session['compareView']
