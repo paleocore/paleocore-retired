@@ -128,6 +128,7 @@ class Term(models.Model):
     uses_controlled_vocabulary = models.BooleanField(default=False)
     controlled_vocabulary = models.CharField(null=True, blank=True, max_length=75)
     controlled_vocabulary_url = models.CharField(null=True, blank=True, max_length=155)
+    uri = models.CharField(null=True, blank=True, max_length=255)
 
     def relatedTermCount(self):
         return self.term_relationships.all().count()
