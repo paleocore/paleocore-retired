@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate,login
 #                                     geom="POINT (658198.7081000003963709 1222366.8992999996989965)")
 #     return(new_occurrence)
 
+
 def create_django_page_tree():
         mainmenu=Page(title='mainmenu')
         mainmenu.save()
@@ -28,6 +29,7 @@ def create_django_page_tree():
         tools.save()
         standards = Page(title='standards', parent=mainmenu, url='standards', template_name='')
         standards.save()
+
 
 class OccurrenceMethodsTests(TestCase):
     """
