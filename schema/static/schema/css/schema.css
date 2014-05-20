@@ -1,0 +1,25 @@
+td {
+    padding-left:10px;
+    padding-right:10px;
+}
+
+table.center {
+    margin-left:auto;
+    margin-right:auto;
+    text-align:left;
+  }
+
+.button-inline {
+    display:inline;
+}
+
+.thirty-px-padding-div {
+    display:block;
+    height:30px;
+}
+
+.alertText {
+    background-color:#38C3FF;
+    border-radius:4px;
+
+}
