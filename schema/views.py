@@ -16,8 +16,7 @@ from django.views import generic
 from models import *
 from schema.models import Term
 from django.core.urlresolvers import reverse
-from fiber.views import FiberPageMixin
-from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import permission_required
 
 class IndexView(FiberPageMixin, generic.ListView):
     template_name = 'projects/terms.html'
@@ -198,31 +197,58 @@ def fetchAll(cursor):
         for row in cursor.fetchall()
     ]
 
+def term(request, id):
+    t = Term.objects.get(id=id)
+    pCount = Project.objects.count()
+    return render_to_response('term.html', {'t': t, 'pCount': pCount}, RequestContext(request))
+
+@permission_required("schema.add_Term",login_url="/login/")
+def addTerm(request,referringCategory=None):
+
+    initialValues={"project":5,"status":2}
+    if referringCategory:
+        initialValues["category"] = referringCategory
+        theCategory = TermCategory.objects.get(pk=referringCategory)
+
+    termForm = modelform_factory(Term, exclude=("U",), widgets={"controlled_vocabulary":forms.Textarea})
+
+    if request.method == "POST":
+        form = termForm(request.POST)
+        if form.is_valid():
+            savedCategory = form.cleaned_data["category"].id
+            form.save()
+            messages.add_message(request, messages.INFO, 'Success! Term was saved.')
+            return HttpResponseRedirect(reverse('schema:ontologyClass', args=(savedCategory,)))
+        else:
+            messages.add_message(request, messages.INFO, 'Please correct the errors below.')
+
+    else:
+        form = termForm(initial = initialValues)#initial values are Paleocore for project and "standard" for status
+
+    return render_to_response('addTerm.html',
+                              {"form":form, "referringCategory":theCategory},
+                              RequestContext(request))
 # def term(request, id):
 #     t = Term.objects.get(id=id)
 #     pCount = Project.objects.count()
 #     return render_to_response('terms.html', {'t': t, 'pCount': pCount}, RequestContext(request))
 
+@permission_required("schema.add_TermCategory",login_url="/login/")
 def addClass(request):
-    termCategoryForm = modelform_factory(TermCategory,exclude=("is_occurrence",),widgets={"description":forms.Textarea})
-    if not request.user.is_authenticated():
-        return render_to_response('anonymous_user.html',{"referringPageURL":"/addClass/"},RequestContext(request))
-    else:
-        if request.user.has_perm("paleoschema.add_term"):
-            if request.method == "POST":
-                form = termCategoryForm(request.POST)
-                if form.is_valid():
-                    form.save()
-                    messages.add_message(request, messages.INFO, 'Success! Class was saved.')
-                    return HttpResponseRedirect("/ontology/")
-                else:
-                    messages.add_message(request, messages.INFO, 'Please correct the errors below.')
-            else:
-                form = termCategoryForm()
+    termCategoryForm = modelform_factory(TermCategory,widgets={"description":forms.Textarea})
+    if request.method == "POST":
+        form = termCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.add_message(request, messages.INFO, 'Success! Class was saved.')
+            return HttpResponseRedirect(reverse("schema:ontology"))
         else:
-            return HttpResponseRedirect("/data/drp/nopermission/")
+            messages.add_message(request, messages.INFO, 'Please correct the errors below.')
+    else:
+        form = termCategoryForm()
 
 
-        return render_to_response('addClass.html',
+
+    return render_to_response('addClass.html',
                               {"form":form},
                               RequestContext(request))

@@ -57,7 +57,7 @@
             {% endif %}
 
             <div class="thirty-px-padding-div"></div>
-            <a class="button button-inline " href="/schema/addTerm/{{ matching_class.id }}">+ Add New Term</a>
+            <a class="button button-inline" href={% url "schema:addTerm" matching_class.id %}>+ Add New Term</a>
             <div class="thirty-px-padding-div"></div>
 
             <h3 style="padding-top: 20px;">Join the Discussion about the '{{ matching_class.name }}' class.</h3>
