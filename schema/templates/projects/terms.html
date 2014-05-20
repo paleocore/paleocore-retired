@@ -1,0 +1,7 @@
+{% extends "arcana_2col_left_nav.html" %}
+{% block main_content %}
+    {% for term in terms %}
+        <h3>{{ term.name }}</h3>
+        <p>{{ term.definition }}</p>
+    {% endfor %}
+{% endblock %}
