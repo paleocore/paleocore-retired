@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'login', #simple app for validating users in views
     'mlp',
     'turkana',  # Turkana Project Data
     'drp',   # Dikika Research Project geospatial app
