@@ -7,6 +7,8 @@ Fiber pages that do not have a template declared will use this template by defau
 {% extends "arcana_base.html" %}
 {% load fiber_tags %}
 
+{% block extra_style %}{% endblock %}
+
 {% block page_content %}
 <div id="main-wrapper" class="subpage">
     <div class="container">
