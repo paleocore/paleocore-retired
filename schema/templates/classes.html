@@ -6,8 +6,14 @@
 
 <div id="main-wrapper" class="subpage">
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+               <p class="alertText">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
         {% if not matching_class %}
-            <h2 class="alertText">You have requested a class that doesn't exist in PaleoCore yet.<h2>
+            <h2>You have requested a class that doesn't exist in PaleoCore yet.<h2>
 
         {% else %}
 
@@ -22,7 +28,7 @@
                     </div>
 
                     <div class="7u" style="text-align:center">
-                        <h2 class="alertText">Terms in the '{{ matching_class.name }}' class.</h2>
+                        <h2>Terms in the '{{ matching_class.name }}' class.</h2>
 
 
                        <table class="center">
@@ -46,7 +52,7 @@
 
             {% else %}
 
-                    <h2 class="alertText">There are no '{{ matching_class.name }}' terms in PaleoCore yet.</h2>
+                    <h2>There are no '{{ matching_class.name }}' terms in PaleoCore yet.</h2>
 
             {% endif %}
 

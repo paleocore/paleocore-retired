@@ -17,3 +17,9 @@ table.center {
     display:block;
     height:30px;
 }
+
+.alertText {
+    background-color:#38C3FF;
+    border-radius:4px;
+
+}

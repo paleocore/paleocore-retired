@@ -11,6 +11,7 @@ from django.contrib import messages
 from django import forms
 from fiber.models import ContentItem
 from django.contrib.auth import authenticate,login
+from django.core.urlresolvers import reverse
 
 def standard(request):
     categories = TermCategory.objects.all()
@@ -41,10 +42,10 @@ def ontologyTree(request,categoryID=0):
     return render_to_response("ontologyTree.html",
                             {"categoryID":categoryID},
                               RequestContext(request))
-# def ontology(request):
-#     return render_to_response("ontology.html",
-#                             {},
-#                               RequestContext(request))
+def ontology(request):
+    return render_to_response("ontology.html",
+                            {},
+                              RequestContext(request))
 #
 # def verticalOntologyTree(request):
 #     return render_to_response("verticalOntologyTree.html",
@@ -175,14 +176,14 @@ def term(request, id):
     return render_to_response('term.html', {'t': t, 'pCount': pCount}, RequestContext(request))
 
 def addTerm(request,referringCategory=None):
-    termForm = modelform_factory(Term, exclude=("U"), widgets={"controlled_vocabulary":forms.Textarea})
+    termForm = modelform_factory(Term, exclude=("U",), widgets={"controlled_vocabulary":forms.Textarea})
     if request.method == "POST":
         form = termForm(request.POST)
         if form.is_valid():
             savedCategory = form.cleaned_data["category"].id
             form.save()
             messages.add_message(request, messages.INFO, 'Success! Term was saved.')
-            return HttpResponseRedirect("/ontology/" + str(savedCategory))
+            return HttpResponseRedirect(reverse('schema:ontologyClass', args=(savedCategory,)))
         else:
             messages.add_message(request, messages.INFO, 'Please correct the errors below.')
 
@@ -190,10 +191,11 @@ def addTerm(request,referringCategory=None):
         initialValues={"project":5,"status":2}
         if referringCategory:
             initialValues["category"] = referringCategory
+        theCategory = TermCategory.objects.get(pk=referringCategory)
         form = termForm(initial = initialValues)#initial values are Paleocore for project and "standard" for status
 
     return render_to_response('addTerm.html',
-                              {"form":form},
+                              {"form":form, "referringCategory":theCategory},
                               RequestContext(request))
 
 def addClass(request):
