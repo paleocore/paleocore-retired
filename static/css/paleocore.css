@@ -83,3 +83,18 @@ li {
 .sidenav ul li ul li.current a {
 	color: #f65d20;
 }
+
+.alertText {
+    background-color:yellow;
+    border-radius:4px;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.errorlist li {
+    list-style-type:none;
+    background-color:yellow;
+    border-radius:4px;
+    padding-left:10px;
+    padding-right:10px;
+}
