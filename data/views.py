@@ -7,6 +7,7 @@ from fiber.views import FiberPageMixin
 from django.db.models import Q, get_app, get_models
 from django.shortcuts import render_to_response, render
 from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 
 """
 Define the apps that should be listed on the data page and included in
@@ -26,7 +27,6 @@ class AbstractIndexView(FiberPageMixin, generic.ListView):
     # A class to combine the context for the fiber page with the general context.
     def get_fiber_page_url(self):
         return reverse('data:index')
-
 
 class IndexView(AbstractIndexView):
     template_name = 'data/projects.html'

@@ -11,7 +11,27 @@ from django.contrib import messages
 from django import forms
 from fiber.models import ContentItem
 from django.contrib.auth import authenticate,login
+from django.shortcuts import get_object_or_404
+from django.views import generic
+from models import *
+from schema.models import Term
 from django.core.urlresolvers import reverse
+from fiber.views import FiberPageMixin
+from django.core.urlresolvers import reverse
+
+class IndexView(FiberPageMixin, generic.ListView):
+    template_name = 'projects/terms.html'
+    context_object_name = 'terms'
+
+    def get_queryset(self):
+        # build a query set of terms for a given project. The project_name is passed from schema/urls.py
+        self.project = get_object_or_404(Project, name=self.kwargs["project_name"])
+
+        """Return a list of terms for the current project"""
+        return self.project.terms()
+
+    def get_fiber_page_url(self):
+        return reverse('data:index', args=[self.project])
 
 def standard(request):
     categories = TermCategory.objects.all()
@@ -46,6 +66,14 @@ def ontology(request):
     return render_to_response("ontology.html",
                             {},
                               RequestContext(request))
+#
+#     return render_to_response("ontologyTree.html",
+#                             {"categoryID":categoryID},
+#                               RequestContext(request))
+# def ontology(request):
+#     return render_to_response("ontology.html",
+#                             {},
+#                               RequestContext(request))
 #
 # def verticalOntologyTree(request):
 #     return render_to_response("verticalOntologyTree.html",
@@ -170,33 +198,10 @@ def fetchAll(cursor):
         for row in cursor.fetchall()
     ]
 
-def term(request, id):
-    t = Term.objects.get(id=id)
-    pCount = Project.objects.count()
-    return render_to_response('term.html', {'t': t, 'pCount': pCount}, RequestContext(request))
-
-def addTerm(request,referringCategory=None):
-    termForm = modelform_factory(Term, exclude=("U",), widgets={"controlled_vocabulary":forms.Textarea})
-    if request.method == "POST":
-        form = termForm(request.POST)
-        if form.is_valid():
-            savedCategory = form.cleaned_data["category"].id
-            form.save()
-            messages.add_message(request, messages.INFO, 'Success! Term was saved.')
-            return HttpResponseRedirect(reverse('schema:ontologyClass', args=(savedCategory,)))
-        else:
-            messages.add_message(request, messages.INFO, 'Please correct the errors below.')
-
-    else:
-        initialValues={"project":5,"status":2}
-        if referringCategory:
-            initialValues["category"] = referringCategory
-        theCategory = TermCategory.objects.get(pk=referringCategory)
-        form = termForm(initial = initialValues)#initial values are Paleocore for project and "standard" for status
-
-    return render_to_response('addTerm.html',
-                              {"form":form, "referringCategory":theCategory},
-                              RequestContext(request))
+# def term(request, id):
+#     t = Term.objects.get(id=id)
+#     pCount = Project.objects.count()
+#     return render_to_response('terms.html', {'t': t, 'pCount': pCount}, RequestContext(request))
 
 def addClass(request):
     termCategoryForm = modelform_factory(TermCategory,exclude=("is_occurrence",),widgets={"description":forms.Textarea})
