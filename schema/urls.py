@@ -3,7 +3,7 @@ from schema import views
 
 
 urlpatterns = patterns('',
-    url(r'^terms/$', 'schema.views.terms', name="termNoParameter"),
+    url(r'^terms/$', 'schema.views.terms', name="termsNoParameter"),
     url(r'^term/(?P<id>\d+)', 'schema.views.term', name="term"),
     url(r'^addTerm/(?P<referringCategory>\d+)', 'schema.views.addTerm', name="addTerm"),
     url(r'^addClass/', 'schema.views.addClass', name="addClass"),

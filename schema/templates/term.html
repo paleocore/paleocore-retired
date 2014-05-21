@@ -1,11 +1,11 @@
 {% extends "arcana_2col_left_nav.html" %}
 {% block main_content %}
 {% load diagrams%}
-    <h2><strong>{{ t.project }}</strong> term <span class="highlight">{{ t.name }}</span></h2>
-    <br/>
-    <a href="/ontology/{{ t.category.id }}">Return to {{ t.category }} terms</a> or <a href="/admin/paleoschema/term/{{ t.id }}/">Edit "{{ t.name }}" in the admin site.</a>
+    <h2><strong>{{ t.name }}</strong> - {{ t.project }}</h2>
 
-    <table id="terms">
+    <a href={% url "schema:ontologyClass" t.category.id %}>Return to {{ t.category }} terms</a> or <a href="/admin/schema/term/{{ t.id }}/">Edit "{{ t.name }}" in the admin site.</a>
+
+    <table id="terms" style="margin-top:25px;">
         <tr>
             <td style="font-weight: bold;">Field Name</td>
             <td>{{ t.name }}</td>
