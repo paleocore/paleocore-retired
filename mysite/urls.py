@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # App URLS
+    url(r'^schema/', include('schema.urls', namespace="schema")),
     url(r'^login/', include('login.urls', namespace="user_login")),
     url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
     url(r'^workshops/', include('meetings.urls', namespace="meetings")),
