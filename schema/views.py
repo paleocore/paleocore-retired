@@ -17,6 +17,7 @@ from models import *
 from schema.models import Term
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import permission_required
+from fiber.views import FiberPageMixin
 
 class IndexView(FiberPageMixin, generic.ListView):
     template_name = 'projects/terms.html'
