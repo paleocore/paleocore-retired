@@ -7,12 +7,23 @@ from django.conf.urls.static import static
 
 admin.autodiscover()
 
+
+#intitialize API
+from tastypie.api import Api
+from API.API_resources import turkanaResource
+v1_api = Api(api_name='v1')
+v1_api.register(turkanaResource())
+
+
+
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'mysite.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
     # App URLS
+    url(r'^API/', include(v1_api.urls)),
     url(r'^schema/', include('schema.urls', namespace="schema")),
     url(r'^login/', include('login.urls', namespace="user_login")),
     url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
