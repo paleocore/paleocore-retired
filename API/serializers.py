@@ -1,3 +1,8 @@
+##this implements a custom CSV serializer method
+##Resources in API_resources.py can override the default serializer class
+##using serializer=CSVSerializer() in the Meta class
+
+
 import csv
 import StringIO
 from tastypie.serializers import Serializer
@@ -20,7 +25,7 @@ class CSVSerializer(Serializer):
         data = self.to_simple(data, options)
 
         raw_data = StringIO.StringIO()
-        writer = csv.writer(raw_data, quotechar="'")
+        writer = csv.writer(raw_data, quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
 
         if "meta" in data.keys():#if multiple objects are returned
             objects = data.get("objects")
