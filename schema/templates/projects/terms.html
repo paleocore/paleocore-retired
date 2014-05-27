@@ -2,6 +2,16 @@
 {% block main_content %}
     {% for term in terms %}
         <h3>{{ term.name }}</h3>
-        <p>{{ term.definition }}</p>
+        <p>{{ term.definition|safe }}</p>
+        {% if term.uri %}
+            <p>URI: <a href="{{ term.uri }}" target="_blank">{{ term.uri }}</a></p>
+        {% endif %}
+        {% if term.uses_controlled_vocabulary %}
+            <p>Controlled Vocabulary: {{ term.controlled_vocabulary }}
+            {% if term.controlled_vocabulary_url %}
+                <br/>Controlled Vocabulary URL: <a href="{{ term.controlled_vocabulary_url }}" target="_blank">{{ term.controlled_vocabulary_url }}</a>
+            {% endif %}
+            </p>
+        {% endif %}
     {% endfor %}
 {% endblock %}
