@@ -8,7 +8,8 @@ from django.conf.urls.static import static
 admin.autodiscover()
 
 
-#intitialize API
+##intitialize API and register API resources
+##in order to make API urls available
 from tastypie.api import Api
 from API.API_resources import turkanaResource
 v1_api = Api(api_name='v1')
