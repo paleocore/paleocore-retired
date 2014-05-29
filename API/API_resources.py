@@ -1,16 +1,17 @@
 from django.contrib.auth.models import User
-from tastypie.authentication import Authentication
+from tastypie.authentication import Authentication, ApiKeyAuthentication
 from tastypie import fields
 from tastypie.contrib.gis.resources import ModelResource as geoModelResource
 from tastypie.resources import ModelResource, ALL
 from turkana.models import Turkana
-from drp.models import drp_taxonomy
+from drp.models import drp_taxonomy, drp_occurrence
 from serializers import CSVSerializer
+
 
 
 #each resource to be exposed at a particular URL in the API requires a subclass of tastypie.resources.ModelResource
 #these often correspond directly to classes in models.py
-#the queryset can be modidied, as well as the resource name (i.e. the url in the API)
+#the queryset can be modified, as well as the resource name (i.e. the url in the API)
 #as well as which fields can be filtered on, etc
 #these classes are registered to the API in the main urls.py
 
@@ -75,17 +76,16 @@ class turkanaResource(ModelResource):
         serializer = CSVSerializer()
         authentication = Authentication()#this means no authentication, which is OK in this case
 
-# class drp_taxonomyResource(ModelResource):
-#     class Meta:
-#         queryset = drp_taxonomy.objects.all()
-#         allowed_methods=['get']
-#         resource_name = 'drp_taxonomy'
-#
-# class userResource(ModelResource):
-#     class Meta:
-#         queryset = User.objects.all()
-#         resource_name = 'user'
-#         excludes = ['email', 'password', 'is_active', 'is_staff', 'is_superuser']
-#         filtering = {
-#             'username': ALL,
-#         }
+class drp_taxonomyResource(ModelResource):
+    class Meta:
+        queryset = drp_taxonomy.objects.all()
+        allowed_methods=['get']
+        resource_name = 'drp_taxonomy'
+        authentication = ApiKeyAuthentication()
+
+class drp_occurrenceResource(ModelResource):
+    class Meta:
+        queryset = drp_occurrence.objects.all()
+        allowed_methods=['get']
+        resource_name = 'drp_occurrence'
+        authentication = ApiKeyAuthentication()

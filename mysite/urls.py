@@ -11,10 +11,11 @@ admin.autodiscover()
 ##intitialize API and register API resources
 ##in order to make API urls available
 from tastypie.api import Api
-from API.API_resources import turkanaResource
+from API.API_resources import turkanaResource, drp_taxonomyResource, drp_occurrenceResource
 v1_api = Api(api_name='v1')
 v1_api.register(turkanaResource())
-
+v1_api.register(drp_taxonomyResource())
+v1_api.register(drp_occurrenceResource())
 
 
 
