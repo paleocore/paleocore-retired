@@ -63,6 +63,7 @@ INSTALLED_APPS = (
     #'pages',
 
     # Project Apps
+    'API', #so that testing works
     'tastypie', #to create database tables for API keys when syncdb is run
     'login', #simple app for validating users in views
     'mlp',
