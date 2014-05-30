@@ -1,0 +1,1962 @@
+[
+{
+    "pk": 1, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-06T11:17:40.941", 
+        "name": "main", 
+        "created": "2014-02-05T16:37:35.132", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+        "protected": false, 
+        "content_html": "<p>Main content for the home page. This is a django fiber demo site. This content block is called &quot;home content&quot; and it plugs into the &quot;main&quot; hook of the &quot;show_fiber_page&quot; template tag. Most of the content appearing on this page is dynamically generated from the fiber page tree including the navigation links at the top, the bread crumbs and all the content blocks. The only hard coded content is the &quot;PaleoCore&quot; title in the logo tag at the top.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 2, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-25T16:37:56.700", 
+        "name": "", 
+        "created": "2014-02-06T11:17:50.391", 
+        "template_name": "", 
+        "used_on_pages_data": "[]", 
+        "protected": false, 
+        "content_html": "<p>Text form the&nbsp;<a href=\"http://slipsum.com/\">Samuel L. Ipsum generator</a>.&nbsp;The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother&#39;s keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 3, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-31T13:34:49.975", 
+        "name": "", 
+        "created": "2014-02-06T11:18:40.984", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/\", \"title\": \"Data\"}]", 
+        "protected": false, 
+        "content_html": "<p>PaleoCore contributors provide information on their project&#39;s data management and data organization strategies. The PaleoCore team works with contributing projects in order to develop a bottom-up or grass-roots standard based on commonalities in existing data schemes. PaleoCore is also working to bring several legacy databases to the site in a unified format.&nbsp;You can browse Paleocore projects using the navigation bar to the left.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 5, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-04T16:22:22.338", 
+        "name": "col1_stub", 
+        "created": "2014-02-06T16:32:31.672", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}, {\"url\": \"/\", \"title\": \"Home\"}]", 
+        "protected": false, 
+        "content_html": "<h2>About PaleoCore</h2>\r\n\r\n<p>PaleoCore is an initiative to develop data standards and digital infrastructure for paleoanthropology. PaleoCore addresses the common scientific challenge of merging results from independent research programs. <a href=\"/about/\">More...</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 7, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-25T17:15:50.135", 
+        "name": "col2_stub", 
+        "created": "2014-02-06T16:37:20.570", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Community</h2>\r\n\r\n<p>Standards for data collection and management are key aspects of data exchange. The PaleoCore Project is working to develop a standard by gathering input from the research community through a series of symposia and workshops. <a href=\"/workshops/\">More...</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 9, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-04T15:14:18.183", 
+        "name": "col3_stub", 
+        "created": "2014-02-06T16:38:31.323", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Tools</h2>\r\n\r\n<p>Find links to useful software tools for paleo-data collection, management and exchange, including specialized data collection tools for field campaigns and excavations as well as resources for building and managing geospatial databases. <a href=\"/tools/\">More...</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 11, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-31T11:04:17.097", 
+        "name": "col4_stub", 
+        "created": "2014-02-06T16:39:34.086", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/\", \"title\": \"Home\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Data</h2>\r\n\r\n<p>Search and query paleobiology data sets. PaleoCore supports a federated network of data providers. Learn about becoming a data contributor publishing geospatial data sets to help answer big-picture questions about human origins. <a href=\"/data/\">More...</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 12, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-07T16:25:23.490", 
+        "name": "workshops_main_title", 
+        "created": "2014-02-07T16:24:05.027", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/\", \"title\": \"Workshops\"}]", 
+        "protected": false, 
+        "content_html": "<p>Workshops and Symposia</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 13, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-25T17:12:09.649", 
+        "name": "workshops_main_content", 
+        "created": "2014-02-07T16:24:56.376", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/\", \"title\": \"Workshops\"}, {\"url\": \"/workshops/\", \"title\": \"Workshops\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Workshops and Symposia</h2>\r\n\r\n<p>PaleoCore sponsored workshops and symposia are designed to bring together members of the academic community in order to advance the development of data standards, data integration and data exchange between paleoanthropological research projects. Addiitonal information about past and forthcoming workshops are available following the links to the left.&nbsp;Earlier workshops and symposia were designed to target the archaeological or paleontological communities respectively while later meetings target the broader paleoanthropological community and related disciplines.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><img src=\"/media/uploads/images/austin_workshop1.jpg\" title=\"\" /></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The next planned PaleoCore workshop will be held in conjunction with the 2014 TDWG meetings in Nairobi in October of 2014. This workshop will focus on sharing open-source data management technology among African researchers and museum personnel. PaleoCore has developed an open-source specimen management framework and spatial data management system specifically targeted towards museums in developing countries with paleontological and paleoanthropological collections.</p>\r\n\r\n<p>&nbsp;</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 14, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-04T15:14:51.089", 
+        "name": "About_content", 
+        "created": "2014-02-15T21:55:54.084", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/about/\", \"title\": \"About\"}, {\"url\": \"/about/\", \"title\": \"About\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Our Mission</h2>\r\n\r\n<p>PaleoCore addresses the common scientific challenges of discovering and integrating results from independent research programs in order to conduct broad, synthetic analyses. The answers to major scientific questions arise when independent groups can successfully exchange and integrate their data into a comprehensive framework for analysis. The goals of the PaleoCore project are:</p>\r\n\r\n<ol>\r\n\t<li>to develop and publish a data standard for prehistory research.</li>\r\n\t<li>to develop software tools that facilitate researchers&rsquo; ability to collect data directly into databases, especially geospatial databases.</li>\r\n\t<li>to develop a web portal that integrates individual project databases online.</li>\r\n</ol>\r\n\r\n<p><br />\r\nThrough these goals the project seeks, more broadly, to develop tools that support digital infrastructure, data exchange and interoperability in the social and behavioral sciences.</p>\r\n\r\n<h3>The Name</h3>\r\n\r\n<p>The name &quot;PaleoCore&quot; is a reference to existing international data standards such as Dublin Core and Darwin Core. The aim of PaleoCore is not to develop a new standard but rather to suggest modificaitons and extensions to Darwin Core to make it more applicable for paleontological and paleoanthropological&nbsp;applications.</p>\r\n\r\n<h3>Funding</h3>\r\n\r\n<p>PaleoCore&nbsp;is funded by a grant from the National Science Foundation (NSF 726205).</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 15, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-20T15:36:03.282", 
+        "name": "Development_Team_Title", 
+        "created": "2014-02-20T13:30:25.544", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/about/\", \"title\": \"About\"}, {\"url\": \"/about/\", \"title\": \"About\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Development Team</h2>\r\n\r\n<p><strong><a href=\"https://webspace.utexas.edu/dnr266/www/\">Denn&eacute; Reed</a></strong>&nbsp;- PaleoCore Project PI</p>\r\n\r\n<p><strong><a href=\"https://www.utexas.edu/cola/depts/anthropology/faculty/jwk5664\">John Kappelman</a></strong> - PaleoCore Project co-PI&nbsp;</p>\r\n\r\n<p><strong><a href=\"http://www.eva.mpg.de/evolution/staff/mcpherron/\">Shannon McPherron</a></strong> - PaleoCore Project co-PI</p>\r\n\r\n<p><strong><a href=\"https://www.tacc.utexas.edu/staff/tomislav-urban\">Tomislav Urban</a></strong> - PaleoCore lead programmer&nbsp;</p>\r\n\r\n<p><strong>Andrew Barr</strong> - PaleoCore web site developer</p>\r\n\r\n<p><strong>Andrew Cook</strong> - PaleoCore web site developer</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 16, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-20T15:38:12.683", 
+        "name": "", 
+        "created": "2014-02-20T13:31:16.895", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/about/\", \"title\": \"About\"}, {\"url\": \"/about/\", \"title\": \"About\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Contact Information</h2>\r\n\r\n<p>The Paleocore project is based at the University of Texas at Austin:</p>\r\n\r\n<p>Denn&eacute; Reed<br />\r\nDept. of Anthropology<br />\r\n2201 Speedway Stop C3200<br />\r\nAustin, TX 78712<br />\r\n&nbsp;</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 17, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-20T14:09:10.640", 
+        "name": "", 
+        "created": "2014-02-20T14:08:04.103", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/honolulu_2013/\", \"title\": \"Honolulu 2013\"}]", 
+        "protected": false, 
+        "content_html": "<p>Society for American Archaeology Symposium 2013</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 18, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-20T15:00:55.860", 
+        "name": "Honolulu_stub", 
+        "created": "2014-02-20T14:08:37.798", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/honolulu_2013/\", \"title\": \"Honolulu 2013\"}]", 
+        "protected": false, 
+        "content_html": "<p>This symposium was held in conjunction with the 78th Annual Meeting of the Society for American Archaeology on Thursday 4 April 2013 at the Hawaii Convention Center, Honolulu, HI.</p>\r\n\r\n<h3>&nbsp;</h3>\r\n\r\n<h3>Symposium Abstract</h3>\r\n\r\n<h4><strong>Towards A Data Standard for Paleoanthropology</strong></h4>\r\n\r\n<p>Denn&eacute; Reed, Department of Anthropology, Univesity of texas at Austin<br />\r\nShannon McPherron, Max Planck Institute for Evolutionary Anthropology</p>\r\n\r\n<p>Data standards provide the framework by which independent archaeology projects can share and exchange information reliably. Developing widely accepted data standards for archaeology is challenging because currently there is no established process or organization vested with the authority to establish standards. Starting with the short-term goal of bring together human origins databases in east Africa, the long-term goal of this project is to seed the process of developing a broad-based standard for paleolithic archaeology. Contributions to this symposium will fit with one or more of the three main themes 1) existing ontologies and data schemas, 2) the standards creation process, 3) integration with standards in allied fields such as biology and geology. This is an electronic symposium where the contributions are published online one month prior to the symposium and will provide the background for discussions during the meeting. The discussions will aim to 1) identify the most useful ontology for representing paleolithic archaeology data sets, 2) develop a list of terms to be used in the data standard (a data lexicon) and 3) outline a process for drafting, reviewing and ratifying a standard within the research community.</p>\r\n\r\n<p><a href=\"/media/uploads/files/SAA2013_presentations.zip\">download zipped file with all presentations (39 MB)</a></p>\r\n\r\n<h3>Presentation Abstracts</h3>\r\n\r\n<h4>PaleoCore: A data integration initiative for prehistory</h4>\r\n\r\n<p>Denn&eacute; Reed, University of Texas at Austin</p>\r\n\r\n<p>This paper outlines the goals, conceptual structure, and technological framework of the PaleoCore project. PaleoCore seeks to develop a data standard for prehistory that will facilitate the exchange of primary occurrence data across prehistory research projects. Any standard, to be successful, must have support and input from the broad community of prehistory researchers and this is PaleoCore&#39;s first priority. Following the adoption of a standard, the PaleoCore initiative further aims to develop software tools that facilitate geospatial data collection and data management consistent with the standard. Finally, PaleoCore will promote the development of a federated network of prehistory geodatabases that researchers, students and the public can access through the web. This distributed network of data providers is modeled on the system developed by the Global Biodiversity Information Facility (GBIF) for biodiversity research. The synthesis and integration of primary data from multiple sources will open new avenues of big-picture integrative analyses of events in human prehistory and evolution.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Reed_SAA2013.pdf\">download pdf (9 MB)</a></p>\r\n\r\n<h4>Back to the Future: William Henry Holmes and the MSA in the Horn of Africa</h4>\r\n\r\n<p>John Kappelman, University of Texas at Austin&nbsp;<br />\r\nMarvin Kay, University of Arkansas<br />\r\nLawrence Todd, University of Texas at Austin<br />\r\nAbraham Thompson, Colorado State University</p>\r\n\r\n<p>William Henry Holmes&rsquo; publications from the 1890s are the first clear expositions of a production chain approach to stone tool technology. His insights are as useful today as they were then and have justifiably been credited as providing a foundation for the analytical procedures now employed globally. In advocating for their application to the MSA in the Horn of Africa, we examine a linear model of MSA stone tool production and use at sites located along the upper reaches of the Blue Nile River tributaries on the lowland slope of Ethiopia&rsquo;s northwestern plateau. Controlled excavations and surveys at Shinfa River localities reveal that MSA humans exploited raw materials from both river gravel bars and upland basalt flows. Flakes, points, and prismatic blades were produced by Levallois core reduction, while the recycling of extractive tools resulted in mostly maintenance items such as wedges. Coupling an understanding of this production sequence with microscopic use-wear analyses provides new information about how MSA lithic collections can be systematically classified and evaluated.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Kappelman_etal_SAA2013.pptx\">download Powerpoint presentation (17 MB)</a></p>\r\n\r\n<h4>Negotiating trade-offs in establishing standards for data resolution and inter-site comparability: Insights from two projects in eastern Africa</h4>\r\n\r\n<p>Elisabeth Hildebrand, Stony Brook University<br />\r\nSteven Brandt, University of Florida</p>\r\n\r\n<p>Anthropological synthesis entails comparing data across geographic/temporal spans. Archaeological data from different sites are often not comparable due to disparate goals, intellectual traditions, qualitative/quantitative methods and logistical constraints. Differing data sources and degrees of temporal/spatial resolution impede application of uniform data standards across time periods and fieldwork stages. The evolution of two projects in eastern Africa clarifies these challenges and offers potential solutions. At Mochena Borago Rockshelter, SW Ethiopia, state-of-the-art excavation/documentation methods employed since 2006 have yielded the region&rsquo;s first chronometrically secure Late Pleistocene (&gt;50-38ka) technological sequence. In NW Kenya west of Lake Turkana, initial surveys in 2008 were followed by test excavations in 2009, revealing megalithic sites associated with early herding ~4ka. Full-scale excavations in 2012 demonstrated inter-site differences. Each field season witnessed progressive improvements in spatial/temporal resolution as logistics also improved. Adopting internal data standards has proved challenging for both projects: specialists with different geographical/theoretical backgrounds and analytical objectives hold diverse opinions about trade-offs between spatial resolution vs. excavation speed and other issues that require compromises. Both teams struggle to compare new data to those from prior projects in the region. These internal tensions/resolutions exemplify larger dilemmas in the creation of data standards for the discipline.</p>\r\n\r\n<p><a href=\"/media/uploads/files/HildebrandBrandt_SAA2013.pdf\">download pdf (1 MB)</a></p>\r\n\r\n<h4>A comparison of ontologies and data schemas in paleolithic archaeology</h4>\r\n\r\n<p>W. Andrew Barr, University of Texas at Austin<br />\r\nTomislav Urban, University of Texas at Austin<br />\r\nDenn&eacute; Reed, University of Texas at Austin</p>\r\n\r\n<p>Data standards provide a framework for data sharing and can comprise logical ontologies and data schemas. Ontologies provide the logical framework that describes the (often hierarchical) relationships between entities and classes of things, while data schemas provide stable lexicons for referring to those entities along with information about the format in which the information is stored. In this paper we present a comparison of the ontologies and data schema used by a range of archaeological research projects in order to identify the most common ontological relationships and the most useful and prevalent terms used in data schemas. This survey provides the starting point for creating a root set of terms and relationships suitable for a data standard in paleolithic archaeology.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Barr_etal_SAA2013.pdf\">download pdf (1 MB)</a></p>\r\n\r\n<h4>Developing Data Standards for Sharing Data Among Scholars Studying the Paleolithic</h4>\r\n\r\n<p>Kieth Kintigh, Arizona State University</p>\r\n\r\n<p>Francis P. McManamon, Arizona State University</p>\r\n\r\n<p>Collaborative and coordinated studies on any topic require a level of cooperation and collegiality in the use of terms and procedures for sharing data and information. The need for a set of common terms and procedures for Paleolithic studies will enable researchers to develop and undertake comparative analysis much more easily. Such studies have the potential for improving research results, making them more widely applicable and transforming contributions of these results to understanding human diversity and history. The Digital Archaeological Record (tDAR) is an international repository for archaeological data. The repository software allows for flexible description of metadata related to documents, images, and data sets in the archive. Registered users can from collaborative groups that can establish their unique methods of using tDAR to share drafts of documents or data and research results. For data sets there is an &ldquo;ontology tool,&rdquo; which is useful for &ldquo;translating&rdquo; terms used by different researchers to enable more collaborative investigations.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Kintigh_etal_SAA2013.pdf\">download pdf (1 MB)</a></p>\r\n\r\n<h4>Technical considerations of metadata standards for digital spatial archaeological data</h4>\r\n\r\n<p>Erich C. Fisher, Arizona State University<br />\r\nCurtis W. Marean, Arizona State University</p>\r\n\r\n<p>Spatial data are fundamental to modern archaeological methodology. The diversity of data collectors, proprietary file types, and processing techniques, however, creates unique challenges for standardizing how these data are collected, stored, disseminated, and, most importantly, described. Describing data is so critical because no data can be used confidently by other researchers unless there is clear and systematic metadata. Here, we will review several common spatial data types (GPS, RADAR, and total station) and the processing techniques common to each data type. We will then make recommendations on implementing metadata standards and how these data are described in online data repositories and in publication.</p>\r\n\r\n<p><a href=\"/media/uploads/files/FisherMarean_SAA2013.pdf\">download pdf (5 MB)</a></p>\r\n\r\n<h4>Coding the Palaeolithic of East Africa: Problems, Possibilities and Procedures</h4>\r\n\r\n<p>Alison S. Brooks, George Washington University/ Smithsonian Institution<br />\r\nChristian A. Tryon, New York University/Smithsonian Institution</p>\r\n\r\n<p>Since 2002, the Smithsonian&rsquo;s Human Origins Program has developed a database of sites and finds relevant to human evolution from a range of published localities, searchable by location, by time range and by data category: Archaeology, Hominins, Fauna, Chronology, Environment and [Depositional] Context. Archaeological data involving artifacts are most problematic, due largely to a lack of standardization, both in the archaeologists&rsquo; categories and in the shaping, reshaping and/or use of artifacts by their ancient makers. Archaeological taxonomies are developed not to reflect underlying biological or geological processes, but to answer questions about past behavior. These taxonomies may variously reflect past cognitive and technological abilities, intentions, raw materials, use history, cultural practices and other factors.. To improve the utility of this or other databases we suggest a three-stage process: 1.) collecting data on what questions the archaeological community is asking about past behavior in E Africa and what categories of material culture appear to be most useful, most discussed , most agreed on and/or most problematic, 2.) refining a set of questions and a set of relevant categories that appear to be the most useful and commonly held 3.) attempting to apply these categories to the coding of published sites.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Brooks_etal_SAA2013.zip\">download zip file with Powerpoint and text (2 MB)</a></p>\r\n\r\n<h4>Developing a Standardized Methodology for Paleolithic Excavation and Analysis</h4>\r\n\r\n<p>Harold L. Dibble, University of Pennsylvania<br />\r\nShannon P. McPherron\u2028\u2028, Max Planck Institute for Evolutionary Anthropology</p>\r\n\r\n<p>Over the course of excavating a number of Paleolithic sites during the past 25 years, the authors have developed several protocols for data retrieval designed to document an excavation, to help the excavation proceed quickly and efficiently, and to produce data suitable for immediate analysis. Here we present some of these protocols and discuss how they result in high level of data standards which, in turn, allows for strict comparisons and integration of data from all of our sites. The lack of such standards in other excavations, however, severely limits the extent to which data from other sites and studies can be incorporated into meaningful, quantitative analyses. While there is a clear need for more complete publication accompanied by adequate metadata, an important part of the solution is to develop software tools that enforce particular standards while simultaneously facilitating archaeological research.</p>\r\n\r\n<p><a href=\"/media/uploads/files/DibbleMcPherron_SAA2013.pptx\">download Powerpoint (4 MB)</a></p>\r\n\r\n<h4>Metabases and priority</h4>\r\n\r\n<p>Henry Gilbert, California State University, East Bay</p>\r\n\r\n<p>Many have envisioned global paleoanthropology meta(data)bases, but, while technically feasible, there are logistical, institutional, social, and other hurdles to combining and serving data from several source institutions. At the forefront is priority. Non-traditional disseminations of information haven&rsquo;t thus far been afforded high status by review committees, diminishing individual incentive. Additionally, institutions are hesitant to invest time in extra-institutional initiatives with ambiguous returns. In spite of these difficulties, databases now constitute valid publication media, and many multi-institution metabases exist. Some of the lessons learned from these efforts are applicable across disciplines. One such effort, the FOROST metabase (www.forost.org), searches specimens in worldwide forensic osteology collections. Photos, descriptions, diagnoses and life records are the intellectual property of the owning institution. When FOROST-derived material is published, owning institutions, projects, and individuals need to retain priority for the information and images provided. Neither FOROST nor any similar metabase can be cited as prescribed for databases in the MLA and APA guides: At very least, the specimen repository and metabase are essential bibliographic information. Understanding priority and citation has been crucial in the development of FOROST, and this presentation will elaborate how what we have learned can be applied to the development of prehistory metabases.</p>\r\n\r\n<p><a href=\"/media/uploads/files/Gilbert_SAA2013.jpg\">download jpg (1.5 MB)</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 19, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-22T15:58:38.102", 
+        "name": "contact", 
+        "created": "2014-02-22T15:27:51.546", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/about/\", \"title\": \"About\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Contact Paleocore</h3>\r\n\r\n<p>paleocore@paleocore.org</p>\r\n\r\n<p>Denn&eacute; Reed<br />\r\nUniversity of Texas at Austin<br />\r\nDept. of Anthropology<br />\r\n2201 Speedway Stop C3200<br />\r\nAustin, TX 78712</p>\r\n\r\n<h3>Links to Related Projects</h3>\r\n\r\n<ul>\r\n\t<li><a href=\"http://dublincore.org/\">Dublin Core Initiative</a>&nbsp;</li>\r\n\t<li><a href=\"http://www.tdwg.org/\">TDWG</a>&nbsp;</li>\r\n\t<li><a href=\"http://www.gbif.org/\">GBIF</a></li>\r\n</ul>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 20, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-25T16:33:22.483", 
+        "name": "team", 
+        "created": "2014-02-22T15:31:29.143", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/about/\", \"title\": \"About\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Development Team</h3>\r\n\r\n<p><strong>Denn&eacute; Reed</strong> - Principle Investigator<br />\r\n<strong>John Kappelman</strong> - co-PI<br />\r\n<strong>Tomislav Urban</strong> - Lead Developer<br />\r\n<strong>Andrew Barr</strong> - Developer<br />\r\n<strong>Andrew Cook</strong> - Developer</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 21, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-28T17:06:54.447", 
+        "name": "Workshop Navigation Title", 
+        "created": "2014-02-28T11:01:07.389", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/Austin_2013/\", \"title\": \"Austin 2013\"}, {\"url\": \"/workshops/Honolulu_2013/abstracts/\", \"title\": \"abstracts\"}, {\"url\": \"/workshops/Honolulu_2013/\", \"title\": \"Honolulu 2013\"}, {\"url\": \"/workshops/\", \"title\": \"Workshops\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Workshops</h3>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 22, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-02-28T14:37:20.160", 
+        "name": "Honolulu Abstract Title", 
+        "created": "2014-02-28T14:36:49.254", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/Honolulu_2013/abstracts/\", \"title\": \"abstracts\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Symposium Abstracts</h2>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 23, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-11T16:37:03.982", 
+        "name": "", 
+        "created": "2014-03-11T16:37:03.560", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/standards/\", \"title\": \"Standards\"}]", 
+        "protected": false, 
+        "content_html": "<p>Main content for standards page.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 24, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-11T17:15:19.734", 
+        "name": "", 
+        "created": "2014-03-11T16:38:44.128", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/standards/pc/\", \"title\": \"PaleoCore\"}, {\"url\": \"/standards/\", \"title\": \"Standards\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Standards</h3>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 25, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-11T17:10:14.960", 
+        "name": "", 
+        "created": "2014-03-11T17:10:14.525", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/standards/pc/\", \"title\": \"PaleoCore\"}]", 
+        "protected": false, 
+        "content_html": "<p>Paleocore text</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 26, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T15:08:26.260", 
+        "name": "", 
+        "created": "2014-03-28T13:23:23.929", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/Honolulu_2013/\", \"title\": \"Honolulu 2013\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Society for American Archaeology Symposium 2013</h2>\r\n\r\n<p>This symposium was held in conjunction with the 78th Annual Meeting of the Society for American Archaeology on Thursday 4 April 2013 at the Hawaii Convention Center, Honolulu, HI.</p>\r\n\r\n<h2>Symposium Abstract</h2>\r\n\r\n<h3>Towards A Data Standard for Paleoanthropology</h3>\r\n\r\n<p>Denn&eacute; Reed, Department of Anthropology, Univesity of texas at Austin<br />\r\nShannon McPherron, Max Planck Institute for Evolutionary Anthropology</p>\r\n\r\n<p>Data standards provide the framework by which independent archaeology projects can share and exchange information reliably. Developing widely accepted data standards for archaeology is challenging because currently there is no established process or organization vested with the authority to establish standards. Starting with the short-term goal of bring together human origins databases in east Africa, the long-term goal of this project is to seed the process of developing a broad-based standard for paleolithic archaeology. Contributions to this symposium will fit with one or more of the three main themes 1) existing ontologies and data schemas, 2) the standards creation process, 3) integration with standards in allied fields such as biology and geology. This is an electronic symposium where the contributions are published online one month prior to the symposium and will provide the background for discussions during the meeting. The discussions will aim to 1) identify the most useful ontology for representing paleolithic archaeology data sets, 2) develop a list of terms to be used in the data standard (a data lexicon) and 3) outline a process for drafting, reviewing and ratifying a standard within the research community.</p>\r\n\r\n<p><a href=\"/media/uploads/files/SAA2013_presentations.zip\">download zip file with all presentations (39 MB)</a></p>\r\n\r\n<h2>Presentation Abstracts</h2>\r\n\r\n<h3>PaleoCore: A data integration initiative for prehistory</h3>\r\n\r\n<p>Denn&eacute; Reed, University of Texas at Austin</p>\r\n\r\n<p>This paper outlines the goals, conceptual structure, and technological framework of the PaleoCore project. PaleoCore seeks to develop a data standard for prehistory that will facilitate the exchange of primary occurrence data across prehistory research projects. Any standard, to be successful, must have support and input from the broad community of prehistory researchers and this is PaleoCore&#39;s first priority. Following the adoption of a standard, the PaleoCore initiative further aims to develop software tools that facilitate geospatial data collection and data management consistent with the standard. Finally, PaleoCore will promote the development of a federated network of prehistory geodatabases that researchers, students and the public can access through the web. This distributed network of data providers is modeled on the system developed by the Global Biodiversity Information Facility (GBIF) for biodiversity research. The synthesis and integration of primary data from multiple sources will open new avenues of big-picture integrative analyses of events in human prehistory and evolution.</p>\r\n\r\n<h3>Back to the Future: William Henry Holmes and the MSA in the Horn of Africa</h3>\r\n\r\n<p>John Kappelman, University of Texas at Austin&nbsp;<br />\r\nMarvin Kay, University of Arkansas<br />\r\nLawrence Todd, University of Texas at Austin<br />\r\nAbraham Thompson, Colorado State University</p>\r\n\r\n<p>William Henry Holmes&rsquo; publications from the 1890s are the first clear expositions of a production chain approach to stone tool technology. His insights are as useful today as they were then and have justifiably been credited as providing a foundation for the analytical procedures now employed globally. In advocating for their application to the MSA in the Horn of Africa, we examine a linear model of MSA stone tool production and use at sites located along the upper reaches of the Blue Nile River tributaries on the lowland slope of Ethiopia&rsquo;s northwestern plateau. Controlled excavations and surveys at Shinfa River localities reveal that MSA humans exploited raw materials from both river gravel bars and upland basalt flows. Flakes, points, and prismatic blades were produced by Levallois core reduction, while the recycling of extractive tools resulted in mostly maintenance items such as wedges. Coupling an understanding of this production sequence with microscopic use-wear analyses provides new information about how MSA lithic collections can be systematically classified and evaluated.</p>\r\n\r\n<h3>Negotiating trade-offs in establishing standards for data resolution and inter-site comparability: Insights from two projects in eastern Africa</h3>\r\n\r\n<p>Elisabeth Hildebrand, Stony Brook University<br />\r\nSteven Brandt, University of Florida</p>\r\n\r\n<p>Anthropological synthesis entails comparing data across geographic/temporal spans. Archaeological data from different sites are often not comparable due to disparate goals, intellectual traditions, qualitative/quantitative methods and logistical constraints. Differing data sources and degrees of temporal/spatial resolution impede application of uniform data standards across time periods and fieldwork stages. The evolution of two projects in eastern Africa clarifies these challenges and offers potential solutions. At Mochena Borago Rockshelter, SW Ethiopia, state-of-the-art excavation/documentation methods employed since 2006 have yielded the region&rsquo;s first chronometrically secure Late Pleistocene (&gt;50-38ka) technological sequence. In NW Kenya west of Lake Turkana, initial surveys in 2008 were followed by test excavations in 2009, revealing megalithic sites associated with early herding ~4ka. Full-scale excavations in 2012 demonstrated inter-site differences. Each field season witnessed progressive improvements in spatial/temporal resolution as logistics also improved. Adopting internal data standards has proved challenging for both projects: specialists with different geographical/theoretical backgrounds and analytical objectives hold diverse opinions about trade-offs between spatial resolution vs. excavation speed and other issues that require compromises. Both teams struggle to compare new data to those from prior projects in the region. These internal tensions/resolutions exemplify larger dilemmas in the creation of data standards for the discipline.</p>\r\n\r\n<h3>A comparison of ontologies and data schemas in paleolithic archaeology</h3>\r\n\r\n<p>W. Andrew Barr, University of Texas at Austin<br />\r\nTomislav Urban, University of Texas at Austin<br />\r\nDenn&eacute; Reed, University of Texas at Austin</p>\r\n\r\n<p>Data standards provide a framework for data sharing and can comprise logical ontologies and data schemas. Ontologies provide the logical framework that describes the (often hierarchical) relationships between entities and classes of things, while data schemas provide stable lexicons for referring to those entities along with information about the format in which the information is stored. In this paper we present a comparison of the ontologies and data schema used by a range of archaeological research projects in order to identify the most common ontological relationships and the most useful and prevalent terms used in data schemas. This survey provides the starting point for creating a root set of terms and relationships suitable for a data standard in paleolithic archaeology.</p>\r\n\r\n<h3>Developing Data Standards for Sharing Data Among Scholars Studying the Paleolithic</h3>\r\n\r\n<p>Kieth Kintigh, Arizona State University<br />\r\nFrancis P. McManamon, Arizona State University</p>\r\n\r\n<p><span style=\"line-height: 1.6em;\">Collaborative and coordinated studies on any topic require a level of cooperation and collegiality in the use of terms and procedures for sharing data and information. The need for a set of common terms and procedures for Paleolithic studies will enable researchers to develop and undertake comparative analysis much more easily. Such studies have the potential for improving research results, making them more widely applicable and transforming contributions of these results to understanding human diversity and history. The Digital Archaeological Record (tDAR) is an international repository for archaeological data. The repository software allows for flexible description of metadata related to documents, images, and data sets in the archive. Registered users can from collaborative groups that can establish their unique methods of using tDAR to share drafts of documents or data and research results. For data sets there is an &ldquo;ontology tool,&rdquo; which is useful for &ldquo;translating&rdquo; terms used by different researchers to enable more collaborative investigations.</span></p>\r\n\r\n<h3>Technical considerations of metadata standards for digital spatial archaeological data</h3>\r\n\r\n<p>Erich C. Fisher, Arizona State University<br />\r\nCurtis W. Marean, Arizona State University</p>\r\n\r\n<p>Spatial data are fundamental to modern archaeological methodology. The diversity of data collectors, proprietary file types, and processing techniques, however, creates unique challenges for standardizing how these data are collected, stored, disseminated, and, most importantly, described. Describing data is so critical because no data can be used confidently by other researchers unless there is clear and systematic metadata. Here, we will review several common spatial data types (GPS, RADAR, and total station) and the processing techniques common to each data type. We will then make recommendations on implementing metadata standards and how these data are described in online data repositories and in publication.</p>\r\n\r\n<h3>Coding the Palaeolithic of East Africa: Problems, Possibilities and Procedures</h3>\r\n\r\n<p>Alison S. Brooks, George Washington University/ Smithsonian Institution<br />\r\nChristian A. Tryon, New York University/Smithsonian Institution</p>\r\n\r\n<p>Since 2002, the Smithsonian&rsquo;s Human Origins Program has developed a database of sites and finds relevant to human evolution from a range of published localities, searchable by location, by time range and by data category: Archaeology, Hominins, Fauna, Chronology, Environment and [Depositional] Context. Archaeological data involving artifacts are most problematic, due largely to a lack of standardization, both in the archaeologists&rsquo; categories and in the shaping, reshaping and/or use of artifacts by their ancient makers. Archaeological taxonomies are developed not to reflect underlying biological or geological processes, but to answer questions about past behavior. These taxonomies may variously reflect past cognitive and technological abilities, intentions, raw materials, use history, cultural practices and other factors.. To improve the utility of this or other databases we suggest a three-stage process: 1.) collecting data on what questions the archaeological community is asking about past behavior in E Africa and what categories of material culture appear to be most useful, most discussed , most agreed on and/or most problematic, 2.) refining a set of questions and a set of relevant categories that appear to be the most useful and commonly held 3.) attempting to apply these categories to the coding of published sites.</p>\r\n\r\n<h3>Developing a Standardized Methodology for Paleolithic Excavation and Analysis</h3>\r\n\r\n<p>Harold L. Dibble, University of Pennsylvania<br />\r\nShannon P. McPherron , Max Planck Institute for Evolutionary Anthropology</p>\r\n\r\n<p>Over the course of excavating a number of Paleolithic sites during the past 25 years, the authors have developed several protocols for data retrieval designed to document an excavation, to help the excavation proceed quickly and efficiently, and to produce data suitable for immediate analysis. Here we present some of these protocols and discuss how they result in high level of data standards which, in turn, allows for strict comparisons and integration of data from all of our sites. The lack of such standards in other excavations, however, severely limits the extent to which data from other sites and studies can be incorporated into meaningful, quantitative analyses. While there is a clear need for more complete publication accompanied by adequate metadata, an important part of the solution is to develop software tools that enforce particular standards while simultaneously facilitating archaeological research.</p>\r\n\r\n<h3>Metabases and priority</h3>\r\n\r\n<p>Henry Gilbert, California State University, East Bay</p>\r\n\r\n<p>Many have envisioned global paleoanthropology meta(data)bases, but, while technically feasible, there are logistical, institutional, social, and other hurdles to combining and serving data from several source institutions. At the forefront is priority. Non-traditional disseminations of information haven&rsquo;t thus far been afforded high status by review committees, diminishing individual incentive. Additionally, institutions are hesitant to invest time in extra-institutional initiatives with ambiguous returns. In spite of these difficulties, databases now constitute valid publication media, and many multi-institution metabases exist. Some of the lessons learned from these efforts are applicable across disciplines. One such effort, the FOROST metabase (www.forost.org), searches specimens in worldwide forensic osteology collections. Photos, descriptions, diagnoses and life records are the intellectual property of the owning institution. When FOROST-derived material is published, owning institutions, projects, and individuals need to retain priority for the information and images provided. Neither FOROST nor any similar metabase can be cited as prescribed for databases in the MLA and APA guides: At very least, the specimen repository and metabase are essential bibliographic information. Understanding priority and citation has been crucial in the development of FOROST, and this presentation will elaborate how what we have learned can be applied to the development of prehistory metabases.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 27, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:11:32.451", 
+        "name": "", 
+        "created": "2014-03-28T14:01:07.035", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/drp/\", \"title\": \"Dikika Research Project\"}]", 
+        "protected": false, 
+        "content_html": "<p><a href=\"/data/\">Go back to all projects</a></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 28, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-31T11:43:56.399", 
+        "name": "", 
+        "created": "2014-03-28T14:01:38.583", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/drp/\", \"title\": \"Dikika Research Project\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Introduction</h2>\r\n\r\n<p>The Dikika Research Project (DRP) studies Pliocene hominins and paleoenvironments in the Afar Region of northeastern Ethiopia. The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences. Core DRP team members include: Zeresenay Alemseged, Ren&eacute; Bobe, Denis Geraads, Shannon McPherron, Denn&eacute; Reed, Jonathan Wynn. Students who have participated at Dikika include: Andrew Barr, Zelalem Bedaso.</p>\r\n\r\n<p>Dikika is best known for the 3.3Ma juvenile <em>Australopithecus afarensis</em> fossil known as &quot;Selam&quot;. Selam is the most complete fossil skeleton of this species and one of just a handful of juvenile hominin fossil skeletons known.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 29, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:56:49.430", 
+        "name": "", 
+        "created": "2014-03-28T14:02:16.949", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/workshops/Austin_2013/\", \"title\": \"Austin 2013\"}]", 
+        "protected": false, 
+        "content_html": "<h2>PaleoCore Workshop Austin 2013</h2>\r\n\r\n<p>The goal of the workshop is to develop and publish an ontology that models the common concepts and data used in paleoanthropological research. This ontology will serve as the basis for a data standard specification that can be used to exchange, integrate and disseminate data across different research institutions and research teams. The workshop will also preview data collection and analysis tools that the PaleoCore project is developing to help researchers collect, manage and share data more efficiently.</p>\r\n\r\n<h2>Dates</h2>\r\n\r\n<p>Thursday and Friday 7-8 November 2013</p>\r\n\r\n<h2>Location</h2>\r\n\r\n<p>The workshop will be held at the&nbsp;Julius Glickman Conference Center, University of Texas at Austin, Austin Texas, which is located in the Liberal Arts Building (CLA)&nbsp; adjacent to the Student Activities Center (SAC) on the main UT campus. The map below shows the location of the hotel and the conference center. It also shows&nbsp;the best route between them. The conference center is a short (15 minute) walk from the hotel. Shuttle buses will also be available to help transport participants to and from the hotel. &nbsp;Additonal information about the hotel is provided below.</p>\r\n\r\n<h2>Workshop Program&nbsp;</h2>\r\n\r\n<p><strong>Thursday, November 7, 2009</strong></p>\r\n\r\n<p>9:00-9:30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coffee and Introductions<br />\r\n9:30-10:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Discussion of major questions in Paleoanthropology<br />\r\n10:00-10:30&nbsp;&nbsp;&nbsp;&nbsp; Primer on Ontologies, Standards and Schemas<br />\r\n10:30-10:45&nbsp;&nbsp;&nbsp;&nbsp; Coffee Break<br />\r\n10:45-11:15 &nbsp;&nbsp;&nbsp; Workshop Goals, Authorship, MoU<br />\r\n11:15-12:30&nbsp;&nbsp;&nbsp;&nbsp; Ontology Focus Groups</p>\r\n\r\n<p>12:30-1:30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lunch</p>\r\n\r\n<p>1:30-2:00 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ontology Focus Groups<br />\r\n2:00-3:30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group Review of Focus Group Progress<br />\r\n3:30-3:45&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coffee Break<br />\r\n3:45-5:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group Discussion and Technology Demonstrations<br />\r\n5:00-6:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Social<br />\r\n7:30-9:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dinner</p>\r\n\r\n<p><strong>Friday, November 8, 2009</strong></p>\r\n\r\n<p>9:00-9:30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coffee and Introductions<br />\r\n9:30 - 10:45&nbsp;&nbsp;&nbsp;&nbsp; Ontology Focus Groups<br />\r\n10:45-11:00&nbsp;&nbsp;&nbsp;&nbsp; Coffee Break<br />\r\n11:00-12:30&nbsp;&nbsp;&nbsp;&nbsp; Ontology Focus Groups</p>\r\n\r\n<p>12:30-1:30 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Lunch</p>\r\n\r\n<p>1:30-3:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Group Review of Focus Group Progress<br />\r\n3:00-3:15&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coffee Break<br />\r\n3:15-5:00 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Closing Discussion on Synthesis and Next Steps</p>\r\n\r\n<p>6:00-6:45&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TABA Keynote Address: Yohannes Haile-Selassie, Cleveland Museum of Natural History, <em>Woronso-Mille: A New Pliocene Window into the Human Past.</em></p>\r\n\r\n<p>6:45-7:30&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Workshop Closing Reception / TABA Opening Reception<br />\r\n7:30-9:00&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dinner</p>\r\n\r\n<h2>Travel</h2>\r\n\r\n<p>Participants should plan on flying into Austin Bergstrom International Airport on the evening of Wednesday 6 November. All travel arrangements should be booked through the University of Texas travel agency. Hotel reservations have already been made for workshop participants. Save all receipts from any additional travel related expenses such as taxis and other ground transportation. These will be reimbursed after the workshop.</p>\r\n\r\n<p>On arrival participants shoud take a <strong>taxi</strong> to the hotel (listed below) unless other arrangements have been made. Please save all travel related reciepts for reimbursement.</p>\r\n\r\n<h2>Hotel</h2>\r\n\r\n<p>All participants are staying at the Double Tree Hotel near the UT campus.&nbsp;<br />\r\n<strong>PLEASE NOTE</strong> the corrected address and phone number shown below. &nbsp;Earlier communications gave the&nbsp;(incorrect) address for a different Doubletree hotel further north on IH-35.</p>\r\n\r\n<p><a href=\"http://doubletree3.hilton.com/en/hotels/texas/doubletree-by-hilton-hotel-austin-university-area-AUSIMDT/index.html\">Hilton Doubletree Hotel Austin</a> - University Location<br />\r\n1617 IH-35 North, Austin, Texas, 78702, USA<br />\r\nTEL: 1-512-479-4000<br />\r\nFAX: 1-512-479-6400</p>\r\n\r\n<p>The hotel is a short (15 minute) walk from the conference venue and there will also be a shuttle available&nbsp;to transport participants. The shuttle leaves from the hotel at 8:30 AM.</p>\r\n\r\n<h2>Workshop Preparation</h2>\r\n\r\n<p>The workshop has three main goals:</p>\r\n\r\n<p>1. Develop a prioritized list of scientific questions that we can address with large, integrated paleoanthropological data sets.</p>\r\n\r\n<p>2. Develop a provisional standard list of&nbsp;terms (and associated protocols, structured vocabularies, best practices) for recording paleoanthropological occurrences. In preparation for this activity I encourage all participants to familiarize themselves with the <a href=\"http://rs.tdwg.org/dwc/terms/\">Darwin Core</a> biodiversity data standard and the basic principles of ontologies from the <a href=\"http://protege.stanford.edu/publications/ontology_development/ontology101.pdf\">Ontology 101 tutorial&nbsp;pdf</a> (also available in&nbsp;<a href=\"http://protege.stanford.edu/publications/ontology_development/ontology101-noy-mcguinness.html\">html</a> and as a&nbsp;<a href=\"http://protege.stanford.edu/conference/2004/slides/Ontology101_tutorial.pdf\">slide presentation</a>).&nbsp;</p>\r\n\r\n<p>3. Create a set of example data entries based on the provisional standard that illustrate&nbsp;how the provisional data standard is implemented in real-world circumstances.&nbsp;</p>\r\n\r\n<h2>Workshop Participants</h2>\r\n\r\n<table border=\"0\" cellpadding=\"5\" cellspacing=\"5\" style=\"width: 600px;\" width=\"82\">\r\n\t<colgroup>\r\n\t\t<col />\r\n\t</colgroup>\r\n\t<tbody>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;width:109px;\">Andrew Barr</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;width:109px;\">University of Texas at Austin</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Kay Behrensmeyer</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">National Museum of Natural History, Smithsonian</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Steve Brandt</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Florida</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Allison Brooks</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">George Washington University</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Chris Campisano</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Arizona State University</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Sierra Castedo-Rodgers</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Texas at Austin</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Naomi Cleghorn</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Texas at Arlington</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Harold Dibble</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Pennsylvania</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Anthony DiFiore</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Texas at Austin</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Henry Gilbert</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">California State University East Bay</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Yohannes Haileselassie</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Cleveland Museum of Natural History</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Leslea Hlusko</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of California Berkeley</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Erella Hovers</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Hebrew University of Jerusalem</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">John Kappelman</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Texas at Austin</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Marvin Kay</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Arkansas at Fayetteville</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Shannon McPherron</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Max Planck Institute for Evolutionary Anthropology</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Denne Reed</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Texas at Austin</td>\r\n\t\t</tr>\r\n\t\t<tr>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Jim Schindling</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">University of Colorado at Colorado Springs</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Scott Simpson</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Case Western Reserve University</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Denise Su</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Cleveland Muesuem of Natural History</td>\r\n\t\t</tr>\r\n\t\t<tr height=\"15\">\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Larry Todd</td>\r\n\t\t\t<td height=\"15\" style=\"height:20px;\">Colorado State University</td>\r\n\t\t</tr>\r\n\t</tbody>\r\n</table>\r\n\r\n<h2><img src=\"/media/uploads/images/photo4.png\" title=\"\" /></h2>\r\n\r\n<h2>&nbsp;</h2>\r\n\r\n<h2>Workshop Activities and Results</h2>\r\n\r\n<p>The workshop focused on two&nbsp;key tasks:</p>\r\n\r\n<p>1. Developing a list of terms that would comprise the basis for a PaleoCore data standard.<br />\r\n<span style=\"font-size: 13px; line-height: 1.6em;\">2. Mapping the relationships between data entitities and prototyping a data ontology.</span></p>\r\n\r\n<p><strong>\u200bDay 1</strong></p>\r\n\r\n<p>The morning session focused on introductions and the general goals of the workshop and PaleoCore more generally. Discussions on days one and two led to the realization that PaleoCore could serve to:</p>\r\n\r\n<p>1. help standardize how data are collected and managed.<br />\r\n2. facilitate resource discovery and recovery by making data more visible and by linking people to data they may not have known about.<br />\r\n3. eventually facilitate data integration and metadata analyses.</p>\r\n\r\n<p>Workshop participants broke into topic groups&nbsp;on <a href=\"http://paleocore.org/ontology/16\">Archaeology</a>, <a href=\"http://paleocore.org/ontology/17\">Biology</a>, <a href=\"http://paleocore.org/ontology/4\">Location</a> and <a href=\"http://paleocore.org/ontology/5\">Geological Context</a> to develop terms for these classes of data.&nbsp;</p>\r\n\r\n<p><strong>Day 2</strong></p>\r\n\r\n<p>The morning session was dedicated entirely to continued focus group meetings, but this time participants met in two groups: the&nbsp;Archaeology group met together and the participants from the Biology, Location and Geological Context groups all met together. Groups finalized theirs lists of data elements and began creating concept maps. the rough concept maps are presented below. Discussion during the afternoon session was directed towards synthesizing work by the break-out groups.&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<h2>Next Steps</h2>\r\n\r\n<p>1. Refine the terms and ontology -&nbsp;Going forward we will combine the&nbsp;concept maps and begin to develop them into a formal ontology. Similarly we will work towards refining the terms entered into the paleocore database and match them to existing standards where possible.</p>\r\n\r\n<p>2. Set up a PaleoCore&nbsp;task group in&nbsp;Darwin Core.</p>\r\n\r\n<p>3. Plan a workshop in Nairobi in conjunction with the 2014 TDWG meeting.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>The PaleoCore concept map diagrams data entities discussed by the workshop participants. This early version starts to integrate the paleobiological terms with the archaeological terms, but more synthesis is needed. Click the image to download a full-size pdf file.&nbsp;Or download the <a href=\"/media/uploads/files/PaleoCore.vue\">original document in vue format</a>. The vue document was created using the open-source Vue software.</p>\r\n\r\n<p><img src=\"/media/uploads/images/PaleoCore_concept_map.png\" title=\"\" /></p>\r\n\r\n<p>The archaeology data models diagram archaeological concepts and related entities. Click the images to download the full-size pdf files. <a href=\"/media/uploads/files/Paleoarchaeology_Term_map.cmap\">You may also download the original cmap file</a>.&nbsp;The cmap files were created with the <a href=\"http://ftp.ihmc.us/\">cmap</a>&nbsp;data modeling and visualization software.</p>\r\n\r\n<p><img src=\"/media/uploads/images/Final_PaleoTree_Page_1_2.png\" title=\"\" /></p>\r\n\r\n<p><img src=\"/media/uploads/images/Final_PaleoTree_Page_2_1.png\" title=\"\" /></p>\r\n\r\n<p><img src=\"/media/uploads/images/photo1.png\" title=\"\" /></p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><img src=\"/media/uploads/images/photo2.png\" title=\"\" /></p>\r\n\r\n<p><img src=\"/media/uploads/images/photo3.png\" title=\"\" /></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 30, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:23:25.680", 
+        "name": "", 
+        "created": "2014-03-28T14:02:33.724", 
+        "template_name": "", 
+        "used_on_pages_data": "[]", 
+        "protected": false, 
+        "content_html": "<p><img src=\"/media/uploads/images/selam_small.png\" title=\"\" /></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 31, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:24:24.916", 
+        "name": "admin_button", 
+        "created": "2014-03-28T14:03:56.715", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/drp/\", \"title\": \"Dikika Research Project\"}]", 
+        "protected": false, 
+        "content_html": "<a class=\"button\" href=\"/admin/\">Admin Database</a>", 
+        "metadata": null
+    }
+},
+{
+    "pk": 32, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:11:42.338", 
+        "name": "", 
+        "created": "2014-03-28T14:11:42.035", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/turkana/\", \"title\": \"Turkana Database\"}]", 
+        "protected": false, 
+        "content_html": "<p><a href=\"/data/\">Go back to all projects</a></p>", 
+        "metadata": null
+    }
+},
+{
+    "pk": 33, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:11:57.237", 
+        "name": "", 
+        "created": "2014-03-28T14:11:56.945", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/shungura/\", \"title\": \"Omo Shungura Database (American)\"}]", 
+        "protected": false, 
+        "content_html": "<p><a href=\"/data/\">Go back to all projects</a></p>", 
+        "metadata": null
+    }
+},
+{
+    "pk": 34, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:28:02.529", 
+        "name": "", 
+        "created": "2014-03-28T14:15:48.120", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/shungura/\", \"title\": \"Omo Shungura Database (American)\"}]", 
+        "protected": false, 
+        "content_html": "<p>The Omo Shungura Formation in southwestern Ethiopia provides one of the longest records of Plio-Pliocene mammalian evolution in Africa. &nbsp;The Shungura Formation was worked extensively in the 1960s and 1970s by two teams: a French team led by Yves Coppens, and an American team led by F. Clark Howell.&nbsp;The database here represents the fossil collection collected by the American team in the 1960s and 1970s.</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 35, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:24:17.844", 
+        "name": "", 
+        "created": "2014-03-28T14:23:34.709", 
+        "template_name": "", 
+        "used_on_pages_data": "[]", 
+        "protected": false, 
+        "content_html": "<p><img src=\"/media/uploads/images/selam_small.png\" title=\"\" /></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 36, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:24:24.893", 
+        "name": "", 
+        "created": "2014-03-28T14:24:24.569", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/drp/\", \"title\": \"Dikika Research Project\"}]", 
+        "protected": false, 
+        "content_html": "<p><img src=\"/media/uploads/images/selam_small.png\" title=\"\" /></p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 37, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:28:02.505", 
+        "name": "", 
+        "created": "2014-03-28T14:28:02.192", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/shungura/\", \"title\": \"Omo Shungura Database (American)\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Omo Shungura Database (American)</h3>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 38, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:30:46.963", 
+        "name": "", 
+        "created": "2014-03-28T14:28:17.648", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/turkana/\", \"title\": \"Turkana Database\"}]", 
+        "protected": false, 
+        "content_html": "<h3>Turkana Database</h3>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 39, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T16:47:26.504", 
+        "name": "", 
+        "created": "2014-03-28T14:30:46.505", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/turkana/\", \"title\": \"Turkana Database\"}]", 
+        "protected": false, 
+        "content_html": "<p>The Turkana Database contains information on fossil collections from the Turkana Basin in northern Kenya. &nbsp;These data have previously <a href=\"http://www.mnh.si.edu/ete/ETE_Datasets_Turkana.html\">been made available by the ETE program at the Smithsonian Institute</a>.&nbsp;</p>\r\n\r\n<p><a class=\"button\" href=\"/admin/\">Admin Database</a></p>", 
+        "metadata": null
+    }
+},
+{
+    "pk": 40, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-10T16:10:23.435", 
+        "name": "", 
+        "created": "2014-03-28T14:35:50.905", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/tools/\", \"title\": \"Tools\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Tools and Resources</h2>\r\n\r\n<p>This page provides links to helpful data management tools, data discovery portals and data standards webpages and resources.</p>\r\n\r\n<h3>Data Modeling Tools</h3>\r\n\r\n<p><a href=\"http://cmap.ihmc.us/\">Cmap</a>- Open-source conceptual mapping tool.</p>\r\n\r\n<p><a href=\"https://wiki.gnome.org/action/show/Apps/Dia?action=show&amp;redirect=Dia\">Dia</a> - Dia is roughly inspired by the commercial Windows program &#39;Visio,&#39; though more geared towards informal diagrams for casual use. It can be used to draw many different kinds of diagrams.</p>\r\n\r\n<p><a href=\"https://www.lucidchart.com/\">Lucid Chart</a> - diagramming and chart creation software.</p>\r\n\r\n<p><a href=\"http://protege.stanford.edu/\">Prot&eacute;g&eacute;</a> - a free ontology editor and knowledge-base framework.</p>\r\n\r\n<p><a href=\"https://vue.tufts.edu/\">Vue</a> - Visual Understanding Environmet, a visual data modeler from Tufts University.</p>\r\n\r\n<h3>Data Standard Initiatives</h3>\r\n\r\n<p><a href=\"http://guides.archaeologydataservice.ac.uk/\">ADS</a> - Archaeology Data Service</p>\r\n\r\n<p><a href=\"http://www.tdwg.org/activities/darwincore/\">Darwin Core</a> - a biodiversity data standard. A listing of the main Darwin Core terms is <a href=\"http://rs.tdwg.org/dwc/terms/\">here</a>.</p>\r\n\r\n<p><a href=\"http://www.digitalantiquity.org/\">Digital Antiquity</a> - a collaborative non-profit organization devoted to enhancing preservation of and access to irreplaceable archaeological records and data.</p>\r\n\r\n<p><a href=\"http://dublincore.org/\">Dublin Core</a> - a general data standard.</p>\r\n\r\n<p><a href=\"http://www.tdwg.org/\">TDWG</a> - the biodiversity information standards group (TDWG).&nbsp;</p>\r\n\r\n<h3>Data Discovery Portals</h3>\r\n\r\n<p><a href=\"http://arctos.database.museum/\">Arctos</a> - Multi-Institution, Multi-Collection Museum&nbsp;Database</p>\r\n\r\n<p><a href=\"http://www.physanthphylogeny.org/search/\">APPA</a> - Academic Phylogeny of Physical Anthropology</p>\r\n\r\n<p><a href=\"http://olduvai-paleo.org/\">CODI</a>&nbsp;- Comprehensive Olduvai Database Initiative</p>\r\n\r\n<p><a href=\"http://efossils.org/\">eFossils</a> - Online resource for paleoanthropology with time-map interface</p>\r\n\r\n<p><a href=\"http://www.elucy.org/\">eLucy</a> - Online resource for digital data on &quot;Lucy&quot; from Hadar (AL 288)</p>\r\n\r\n<p><a href=\"http://www.eskeletons.org/\">eSkeletons</a> - Online resrouce for comparative osteology</p>\r\n\r\n<p><a href=\"http://www.mnh.si.edu/rc/fieldbooks/\">Fieldbook Project</a>&nbsp;- Smithsonian NMNH project to digitize field notebooks</p>\r\n\r\n<p><a href=\"http://fossilized.org/Human_paleontology/index.php\">Fossilized.org</a> - Paleoanthropology database</p>\r\n\r\n<p><a href=\"http://www.gbif.org/\">GBIF</a> - the Global Biodiversity Inforamation Facility portal</p>\r\n\r\n<p><a href=\"https://issrweb.asu.edu/projects/hadar-geoinformatics-project\">HADAR Geoinformatics Project</a> - A&nbsp;<a href=\"http://gis1.asurite.ad.asu.edu/hadarv3/\">spatial database</a> of fossils form Hadar, Ethiopia</p>\r\n\r\n<p><a href=\"http://herc.berkeley.edu/\">HERC</a> - Human Origins <a href=\"https://middleawash.berkeley.edu/HERC_specimen_db/main_query.php\">fossil cast database</a></p>\r\n\r\n<p><a href=\"http://www.fossilized.org/middle_awash/specimen_db/query.php\">Middle Awash Project Databae</a> - Digital catalog for paleoanthropological fossils from the Middle Awash Project Ethiopia.</p>\r\n\r\n<p><a href=\"https://www.movebank.org/\">Movebank</a>&nbsp;- A data repository for animal tracking</p>\r\n\r\n<p><a href=\"http://www.neoninc.org/\">NEON</a> - National Ecological Observatory Network</p>\r\n\r\n<p><a href=\"http://www.neotomadb.org/\">Neotoma</a> - An online data resource for paleoecologyology</p>\r\n\r\n<p><a href=\"http://www.paleoportal.org/\">PaleoPortal</a> - Data portal for paleontology</p>\r\n\r\n<p><a href=\"http://vertnet.org/index.php\">VertNet</a> - Data portal for vertebrate zoology</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 41, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-03-28T14:48:19.081", 
+        "name": "", 
+        "created": "2014-03-28T14:48:18.610", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/\", \"title\": \"Data\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Projects</h2>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 42, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-11T17:21:08.661", 
+        "name": "", 
+        "created": "2014-04-11T17:20:19.396", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/mlp/\", \"title\": \"Mille-Logya Research Project\"}]", 
+        "protected": false, 
+        "content_html": "<p>The Mille-Logya Research Project (MLP) is a paleoanthropological research effort located in northeastern Ethiopia, just a few kilometers north of Hadar and Dikika. The project was initiated in 2014.</p>\r\n\r\n<p><a class=\"button\" href=\"/admin/\">Admin Database</a></p>", 
+        "metadata": null
+    }
+},
+{
+    "pk": 43, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-04-21T09:19:03.115", 
+        "name": "Using the Admin", 
+        "created": "2014-04-17T15:53:06.375", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/mlp/help/\", \"title\": \"help\"}]", 
+        "protected": false, 
+        "content_html": "<h2>Online Database Administration</h2>\r\n\r\n<p>Each project hosted at Paleocore has a web-based data management interface for updating records in the database. This page provides an introduction to using the administration pages to update entries.&nbsp;</p>\r\n\r\n<h2>Loggin in to the Database Administration Page</h2>\r\n\r\n<p>To log into a project&#39;s admin page click the blue button on the project home page or simply visit www.paleocore.org/admin. Once logged in, click the link to the table you wish to edit.&nbsp;A breadcrumb list shows your location within the hierarchy of admin pages.&nbsp;</p>\r\n\r\n<h2>List View</h2>\r\n\r\n<p>The list view shows a summary of all records in the database&nbsp;and it provides an interface for searching, ordering, filtering and editing database records.&nbsp;</p>\r\n\r\n<h3>Searching Records</h3>\r\n\r\n<p>The search bar at the top of the page searches multiple fields to find recrods. Adding words to the search box further refines the search.&nbsp;</p>\r\n\r\n<h3>Ordering Columns</h3>\r\n\r\n<p>Each column in the database table can be used to order the data and multiple columns can be selected for hierarchical ordering. Clicking on the column header to order by that column. Click on a second column to order by that column as well as the first. In the screen shot below ordering is first by barcode then by catalog_number. When ordering is active the column shows additional buttons to reverse the ordering and to stop ordering.</p>\r\n\r\n<h3>Filtering</h3>\r\n\r\n<p>The panel along the right side of the screen controls filtering of records. Records may be filtered by multiple fields. Choose the All option to remove filtering on a field. New fields can be added for filtering but this requires a programming change and can&#39;t be done through the admin website itself.</p>\r\n\r\n<h3>Selecting Records</h3>\r\n\r\n<p>The checkboxes to the left of each record control record selection. Selected records appear yellow. One can select all records by clicking the topmost checkbox to the left of the column headings. The number of selected records is displayed beside the total number of records, near the top of the page, to the right of the Action dropbdown menu.</p>\r\n\r\n<h3>Admin Actions</h3>\r\n\r\n<p>The Action dropdown menu shows actions that can be performed on selected records. For example, the delete action will remove all selected records from the database. The delete action, even if it is visible, will not work if a user does not have permissions to perform delete actions on the database.</p>\r\n\r\n<p>Editing in List View</p>\r\n\r\n<p>Most fields cannot be changed or edited from the list view. Instead one must click the link for the record to see the detial view where edits can be made. However, some fields, such as the &quot;Problem&quot; field can be edited (checked and unchecked) from the list view without having to go into the detail view, <strong>but it is necessary to click the save button at the bottom right of the list view for the changes to be preserved</strong>.</p>\r\n\r\n<h2>Detail View</h2>\r\n\r\n<p>Clicking the id number for a record in the list view opens a detailed view of the record showing all its attributes. The detail view is the main location for editing records. Make any changes necessary and then click the save button in the bottom right corner to save the changes. Using the browser navigation buttons to leave the page will not save changes!</p>\r\n\r\n<h3>Editing Taxonomic Data</h3>\r\n\r\n<p>The detail view is divided into sections. The bottom most section shows the taxonomic and other biological information for the record. If the record represent a faunal entry you can add and update taxonomic information in this section of the detail view. Type in the name of the most detailed taxonomic field (e.g. family, tribe, genus etc) and when saved the fields for higher taxnomic ranks will be automatically filled in.</p>\r\n\r\n<p>&nbsp;</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 44, 
+    "model": "fiber.contentitem", 
+    "fields": {
+        "content_markup": "", 
+        "updated": "2014-05-30T11:14:06.982", 
+        "name": "", 
+        "created": "2014-05-30T11:14:06.621", 
+        "template_name": "", 
+        "used_on_pages_data": "[{\"url\": \"/data/drp/terms/\", \"title\": \"Terms\"}]", 
+        "protected": false, 
+        "content_html": "<p>Test text for Dikika terms</p>\r\n", 
+        "metadata": null
+    }
+},
+{
+    "pk": 1, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 60, 
+        "updated": "2014-02-05T16:38:50.510", 
+        "meta_keywords": "", 
+        "level": 0, 
+        "parent": null, 
+        "title": "mainmenu", 
+        "url": "", 
+        "template_name": "", 
+        "created": "2014-02-05T16:31:10.461", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 1, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 2, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 3, 
+        "updated": "2014-02-25T16:53:00.779", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "Home", 
+        "url": "/", 
+        "template_name": "arcana_home.html", 
+        "created": "2014-02-05T16:31:20.037", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 2, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 3, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 27, 
+        "updated": "2014-03-31T11:31:13.695", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "Workshops", 
+        "url": "workshops", 
+        "template_name": "", 
+        "created": "2014-02-05T16:32:03.926", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 6, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 4, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 45, 
+        "updated": "2014-03-31T11:32:01.714", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "Data", 
+        "url": "data", 
+        "template_name": "", 
+        "created": "2014-02-05T16:32:20.745", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 28, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 5, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 47, 
+        "updated": "2014-03-31T11:33:01.316", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "Tools", 
+        "url": "tools", 
+        "template_name": "", 
+        "created": "2014-02-05T16:32:34.737", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 46, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 6, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 57, 
+        "updated": "2014-04-03T11:38:34.367", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "Standards", 
+        "url": "standards", 
+        "template_name": "", 
+        "created": "2014-02-05T16:32:52.415", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 48, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 7, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 50, 
+        "updated": "2014-02-05T16:33:31.676", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 6, 
+        "title": "Dublin Core", 
+        "url": "dc", 
+        "template_name": "", 
+        "created": "2014-02-05T16:33:31.676", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 49, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 8, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 52, 
+        "updated": "2014-02-05T16:33:42.894", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 6, 
+        "title": "Darwin Core", 
+        "url": "dwc", 
+        "template_name": "", 
+        "created": "2014-02-05T16:33:42.894", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 51, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 9, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 56, 
+        "updated": "2014-03-11T17:14:50.715", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 6, 
+        "title": "PaleoCore", 
+        "url": "pc", 
+        "template_name": "arcana_2col_left_nav.html", 
+        "created": "2014-02-05T16:33:56.063", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 53, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 10, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 30, 
+        "updated": "2014-03-31T13:36:07.906", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Human Evolution Sites", 
+        "url": "humanev", 
+        "template_name": "", 
+        "created": "2014-02-05T16:36:03.679", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 29, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 11, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 34, 
+        "updated": "2014-03-31T11:32:26.713", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Dikika Research Project", 
+        "url": "drp", 
+        "template_name": "", 
+        "created": "2014-02-05T16:36:17.581", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 31, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 12, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 36, 
+        "updated": "2014-03-31T13:36:16.154", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Hadar Research Project", 
+        "url": "hrp", 
+        "template_name": "", 
+        "created": "2014-02-05T16:36:42.950", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 35, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 14, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 5, 
+        "updated": "2014-03-31T11:31:07.582", 
+        "meta_keywords": "", 
+        "level": 1, 
+        "parent": 1, 
+        "title": "About", 
+        "url": "about", 
+        "template_name": "arcana_2col_left.html", 
+        "created": "2014-02-05T16:39:02.561", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 4, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 15, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 14, 
+        "updated": "2014-03-31T11:31:18.493", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 3, 
+        "title": "Honolulu 2013", 
+        "url": "Honolulu_2013", 
+        "template_name": "", 
+        "created": "2014-02-07T16:04:44.327", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 7, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 16, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 22, 
+        "updated": "2014-03-31T11:31:41.590", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 3, 
+        "title": "Austin 2013", 
+        "url": "Austin_2013", 
+        "template_name": "", 
+        "created": "2014-02-07T16:05:21.456", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 15, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 17, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 28, 
+        "updated": "2014-03-01T11:28:06.659", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 3, 
+        "title": "Nairobi 2014", 
+        "url": "nairobi_2014", 
+        "template_name": "arcana_2col_left_nav.html", 
+        "created": "2014-02-07T16:06:22.011", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 25, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 18, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 9, 
+        "updated": "2014-03-31T11:31:25.416", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 15, 
+        "title": "abstracts", 
+        "url": "abstracts", 
+        "template_name": "", 
+        "created": "2014-02-07T16:08:04.447", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 8, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 19, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 11, 
+        "updated": "2014-03-31T11:31:30.438", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 15, 
+        "title": "details", 
+        "url": "details", 
+        "template_name": "", 
+        "created": "2014-02-07T16:08:16.647", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 10, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 20, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 13, 
+        "updated": "2014-03-31T11:31:36.290", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 15, 
+        "title": "downloads", 
+        "url": "downloads", 
+        "template_name": "", 
+        "created": "2014-02-07T16:08:41.393", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 12, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 21, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 17, 
+        "updated": "2014-03-31T11:31:46.792", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 16, 
+        "title": "abstracts", 
+        "url": "abstracts", 
+        "template_name": "", 
+        "created": "2014-02-07T16:08:56.468", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 16, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 22, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 19, 
+        "updated": "2014-03-31T11:31:51.405", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 16, 
+        "title": "detials", 
+        "url": "details", 
+        "template_name": "", 
+        "created": "2014-02-07T16:09:08.005", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 18, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 23, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 21, 
+        "updated": "2014-03-31T11:31:55.997", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 16, 
+        "title": "downloads", 
+        "url": "downloads", 
+        "template_name": "", 
+        "created": "2014-02-07T16:09:24.225", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 20, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 24, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 27, 
+        "updated": "2014-03-01T11:28:00.425", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 17, 
+        "title": "abstacts", 
+        "url": "abstracts", 
+        "template_name": "arcana_2col_left_nav.html", 
+        "created": "2014-02-07T16:09:38.726", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 26, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 25, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 6, 
+        "updated": "2014-02-22T15:38:46.874", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 14, 
+        "title": "Development Team", 
+        "url": "development_team", 
+        "template_name": "base/arcana_2col_left.html", 
+        "created": "2014-02-22T15:20:07.941", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 5, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 26, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 55, 
+        "updated": "2014-03-11T17:15:01.481", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 9, 
+        "title": "Terms", 
+        "url": "terms", 
+        "template_name": "arcana_2col_left_nav.html", 
+        "created": "2014-03-11T17:13:42.157", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 54, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 27, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 38, 
+        "updated": "2014-03-31T13:36:25.486", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Turkana Database", 
+        "url": "turkana", 
+        "template_name": "", 
+        "created": "2014-03-28T14:10:01.258", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 37, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 28, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 40, 
+        "updated": "2014-03-31T13:36:34.371", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Omo Shungura Database (American)", 
+        "url": "shungura", 
+        "template_name": "", 
+        "created": "2014-03-28T14:10:42.331", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 39, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": false, 
+        "show_in_menu": false, 
+        "metadata": null
+    }
+},
+{
+    "pk": 29, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 44, 
+        "updated": "2014-04-11T17:18:27.579", 
+        "meta_keywords": "", 
+        "level": 2, 
+        "parent": 4, 
+        "title": "Mille-Logya Research Project", 
+        "url": "mlp", 
+        "template_name": "", 
+        "created": "2014-04-11T17:18:27.579", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 41, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 30, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 43, 
+        "updated": "2014-04-17T15:40:55.504", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 29, 
+        "title": "help", 
+        "url": "help", 
+        "template_name": "", 
+        "created": "2014-04-17T15:40:55.504", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 42, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 31, 
+    "model": "fiber.page", 
+    "fields": {
+        "meta_description": "", 
+        "rght": 33, 
+        "updated": "2014-05-30T10:02:28.821", 
+        "meta_keywords": "", 
+        "level": 3, 
+        "parent": 11, 
+        "title": "Terms", 
+        "url": "terms", 
+        "template_name": "", 
+        "created": "2014-05-30T09:54:57.299", 
+        "mark_current_regexes": "", 
+        "redirect_page": null, 
+        "lft": 32, 
+        "protected": false, 
+        "tree_id": 1, 
+        "doc_title": "", 
+        "is_public": true, 
+        "show_in_menu": true, 
+        "metadata": null
+    }
+},
+{
+    "pk": 1, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 1, 
+        "page": 2
+    }
+},
+{
+    "pk": 3, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 3, 
+        "page": 4
+    }
+},
+{
+    "pk": 5, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "home_col1_stub", 
+        "content_item": 5, 
+        "page": 2
+    }
+},
+{
+    "pk": 7, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "col1_stub", 
+        "content_item": 5, 
+        "page": 2
+    }
+},
+{
+    "pk": 9, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "col2_stub", 
+        "content_item": 7, 
+        "page": 2
+    }
+},
+{
+    "pk": 11, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "col3_stub", 
+        "content_item": 9, 
+        "page": 2
+    }
+},
+{
+    "pk": 13, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "col4_stub", 
+        "content_item": 11, 
+        "page": 2
+    }
+},
+{
+    "pk": 14, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main_content", 
+        "content_item": 13, 
+        "page": 3
+    }
+},
+{
+    "pk": 15, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main_title", 
+        "content_item": 12, 
+        "page": 3
+    }
+},
+{
+    "pk": 16, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main_content", 
+        "content_item": 14, 
+        "page": 14
+    }
+},
+{
+    "pk": 20, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left_aside_stub", 
+        "content_item": 15, 
+        "page": 14
+    }
+},
+{
+    "pk": 21, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left_aside_title", 
+        "content_item": 16, 
+        "page": 14
+    }
+},
+{
+    "pk": 22, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main_title", 
+        "content_item": 17, 
+        "page": 15
+    }
+},
+{
+    "pk": 23, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main_content", 
+        "content_item": 18, 
+        "page": 15
+    }
+},
+{
+    "pk": 24, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 1, 
+        "block_name": "left_aside_top", 
+        "content_item": 16, 
+        "page": 14
+    }
+},
+{
+    "pk": 25, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left_aside_top", 
+        "content_item": 15, 
+        "page": 14
+    }
+},
+{
+    "pk": 26, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 14, 
+        "page": 14
+    }
+},
+{
+    "pk": 27, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left1", 
+        "content_item": 20, 
+        "page": 14
+    }
+},
+{
+    "pk": 28, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left2", 
+        "content_item": 19, 
+        "page": 14
+    }
+},
+{
+    "pk": 29, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 13, 
+        "page": 3
+    }
+},
+{
+    "pk": 30, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 21, 
+        "page": 3
+    }
+},
+{
+    "pk": 31, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 21, 
+        "page": 15
+    }
+},
+{
+    "pk": 32, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 21, 
+        "page": 18
+    }
+},
+{
+    "pk": 33, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 22, 
+        "page": 18
+    }
+},
+{
+    "pk": 34, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 21, 
+        "page": 16
+    }
+},
+{
+    "pk": 35, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 23, 
+        "page": 6
+    }
+},
+{
+    "pk": 37, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 24, 
+        "page": 6
+    }
+},
+{
+    "pk": 38, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 25, 
+        "page": 9
+    }
+},
+{
+    "pk": 39, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 24, 
+        "page": 9
+    }
+},
+{
+    "pk": 40, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 26, 
+        "page": 15
+    }
+},
+{
+    "pk": 41, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left1", 
+        "content_item": 27, 
+        "page": 11
+    }
+},
+{
+    "pk": 42, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 28, 
+        "page": 11
+    }
+},
+{
+    "pk": 43, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 29, 
+        "page": 16
+    }
+},
+{
+    "pk": 45, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 2, 
+        "block_name": "main", 
+        "content_item": 31, 
+        "page": 11
+    }
+},
+{
+    "pk": 46, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left1", 
+        "content_item": 32, 
+        "page": 27
+    }
+},
+{
+    "pk": 47, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "left2", 
+        "content_item": 33, 
+        "page": 28
+    }
+},
+{
+    "pk": 48, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 1, 
+        "block_name": "main", 
+        "content_item": 34, 
+        "page": 28
+    }
+},
+{
+    "pk": 50, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 1, 
+        "block_name": "main", 
+        "content_item": 36, 
+        "page": 11
+    }
+},
+{
+    "pk": 51, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 37, 
+        "page": 28
+    }
+},
+{
+    "pk": 52, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 38, 
+        "page": 27
+    }
+},
+{
+    "pk": 53, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 1, 
+        "block_name": "main", 
+        "content_item": 39, 
+        "page": 27
+    }
+},
+{
+    "pk": 54, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 40, 
+        "page": 5
+    }
+},
+{
+    "pk": 55, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "nav_title", 
+        "content_item": 41, 
+        "page": 4
+    }
+},
+{
+    "pk": 56, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 42, 
+        "page": 29
+    }
+},
+{
+    "pk": 57, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 43, 
+        "page": 30
+    }
+},
+{
+    "pk": 58, 
+    "model": "fiber.pagecontentitem", 
+    "fields": {
+        "sort": 0, 
+        "block_name": "main", 
+        "content_item": 44, 
+        "page": 31
+    }
+},
+{
+    "pk": 2, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-04-18T16:27:43.142", 
+        "title": "Test Photo 4 PNG", 
+        "image": "uploads/images/photo4.png", 
+        "created": "2014-04-18T16:27:43.142", 
+        "height": 480, 
+        "width": 640
+    }
+},
+{
+    "pk": 3, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-04-21T09:18:13.097", 
+        "title": "image", 
+        "image": "uploads/images/Screen_Shot_2014-04-21_at_9.17.15_AM.png", 
+        "created": "2014-04-21T09:18:13.097", 
+        "height": 365, 
+        "width": 1114
+    }
+},
+{
+    "pk": 16, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-02-14T12:11:14.514", 
+        "title": "austin_workshop", 
+        "image": "uploads/images/austin_workshop1.jpg", 
+        "created": "2014-02-14T12:11:14.514", 
+        "height": 480, 
+        "width": 640
+    }
+},
+{
+    "pk": 21, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:24:05.719", 
+        "title": "selam_small", 
+        "image": "uploads/images/selam_small.png", 
+        "created": "2014-03-28T14:24:05.719", 
+        "height": 186, 
+        "width": 140
+    }
+},
+{
+    "pk": 25, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:54:50.124", 
+        "title": "image", 
+        "image": "uploads/images/PaleoCore_concept_map.png", 
+        "created": "2014-03-28T14:54:50.124", 
+        "height": 431, 
+        "width": 771
+    }
+},
+{
+    "pk": 26, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:55:07.132", 
+        "title": "image", 
+        "image": "uploads/images/Final_PaleoTree_Page_1_2.png", 
+        "created": "2014-03-28T14:55:07.132", 
+        "height": 824, 
+        "width": 620
+    }
+},
+{
+    "pk": 27, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:55:25.127", 
+        "title": "image", 
+        "image": "uploads/images/Final_PaleoTree_Page_2_1.png", 
+        "created": "2014-03-28T14:55:25.127", 
+        "height": 620, 
+        "width": 824
+    }
+},
+{
+    "pk": 28, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:55:53.938", 
+        "title": "image", 
+        "image": "uploads/images/photo1.png", 
+        "created": "2014-03-28T14:55:53.938", 
+        "height": 480, 
+        "width": 640
+    }
+},
+{
+    "pk": 29, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:56:23.725", 
+        "title": "image", 
+        "image": "uploads/images/photo2.png", 
+        "created": "2014-03-28T14:56:23.725", 
+        "height": 480, 
+        "width": 640
+    }
+},
+{
+    "pk": 30, 
+    "model": "fiber.image", 
+    "fields": {
+        "updated": "2014-03-28T14:56:43.310", 
+        "title": "image", 
+        "image": "uploads/images/photo3.png", 
+        "created": "2014-03-28T14:56:43.310", 
+        "height": 480, 
+        "width": 640
+    }
+},
+{
+    "pk": 1, 
+    "model": "fiber.file", 
+    "fields": {
+        "updated": "2014-03-28T15:09:46.067", 
+        "title": "SAA2013_presentations", 
+        "file": "uploads/files/SAA2013_presentations.zip", 
+        "created": "2014-03-28T15:09:46.067"
+    }
+},
+{
+    "pk": 2, 
+    "model": "fiber.file", 
+    "fields": {
+        "updated": "2014-03-28T14:10:48.436", 
+        "title": "file", 
+        "file": "uploads/files/Reed_SAA2013.pdf", 
+        "created": "2014-03-28T14:10:48.436"
+    }
+},
+{
+    "pk": 3, 
+    "model": "fiber.file", 
+    "fields": {
+        "updated": "2014-03-28T14:13:29.428", 
+        "title": "file", 
+        "file": "uploads/files/Kappelman_etal_SAA2013.pptx", 
+        "created": "2014-03-28T15:13:29.428"
+    }
+}
+]

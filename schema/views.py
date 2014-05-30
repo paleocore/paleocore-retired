@@ -19,8 +19,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import permission_required
 from fiber.views import FiberPageMixin
 
-class IndexView(FiberPageMixin, generic.ListView):
-    template_name = 'projects/terms.html'
+
+class TermsIndexView(FiberPageMixin, generic.ListView):
+    template_name = 'schema/terms.html'
     context_object_name = 'terms'
 
     def get_queryset(self):
@@ -31,7 +32,8 @@ class IndexView(FiberPageMixin, generic.ListView):
         return self.project.terms()
 
     def get_fiber_page_url(self):
-        return reverse('data:index', args=[self.project])
+        return reverse('data:terms_index', args=[self.project])
+
 
 def standard(request):
     categories = TermCategory.objects.all()

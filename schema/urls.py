@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url(r'^ontologyTree/$', 'schema.views.ontologyTree', name="ontologyTreeNoParameter"),
     url(r'^ontologyTree/(?P<categoryID>\d+)','schema.views.ontologyTree', name="ontologyTree"),
     url(r'^ontologyJSONtree/$', 'schema.views.ontologyJSONtree', name="ontologyJSONtree"),
-    url(r'^(?P<project_name>\w+)/terms/$', views.IndexView.as_view(), name='index'),
+    url(r'^(?P<project_name>\w+)/terms/$', views.TermsIndexView.as_view(), name='index'),
 )
 
 # From IndexView of meetings app
