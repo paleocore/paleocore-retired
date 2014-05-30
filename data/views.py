@@ -1,4 +1,4 @@
-import simplejson
+import json
 import re
 from django.views import generic
 from models import *
@@ -68,7 +68,7 @@ def project_data_display(request, project_name):
                 if datum[0] is not None:
                     choices_list[field] += ((datum[0], datum[0]),)
 
-        selector_choices = simplejson.dumps(choices_list)
+        selector_choices = json.dumps(choices_list)
 
         site_data = project.objects.all()
 
