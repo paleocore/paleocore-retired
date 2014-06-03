@@ -1,6 +1,6 @@
 ##this implements a custom CSV serializer method
-##Resources in API_resources.py can override the default serializer class
-##using serializer=CSVSerializer() in the Meta class
+##Resources in API_resources.py can import this to override the default serializer class
+##by including serializer=CSVSerializer() in the Meta class
 
 
 import csv
@@ -25,21 +25,48 @@ class CSVSerializer(Serializer):
         data = self.to_simple(data, options)
 
         raw_data = StringIO.StringIO()
-        writer = csv.writer(raw_data, quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
+        first = True
 
         if "meta" in data.keys():#if multiple objects are returned
             objects = data.get("objects")
-            writer.writerow(objects[0].keys())
 
-            for object in objects:
-                test = object.values()
-                writer.writerow(test)
+            for value in objects:
+                test = {}
+                self.flatten(value, test)
+                if first:
+                    writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
+                    writer.writeheader()
+                    writer.writerow(test)
+                    first=False
+                else:
+                    writer.writerow(test)
         else:
-            writer.writerow(data.values())
+            test = {}
+            self.flatten(data, test)
+            if first:
+                writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
+                writer.writeheader()
+                writer.writerow(test)
+                first=False
+            else:
+                writer.writerow(test)
 
         CSVContent=raw_data.getvalue()
         return CSVContent
 
+    #method to be applied recursively to flatten any dictionaries that get returned from related objects
+    def flatten(self, data, odict = {}):
+        if isinstance(data, list):
+            for value in data:
+                self.flatten(value, odict)
+        elif isinstance(data, dict):
+            for (key, value) in data.items():
+                if not isinstance(value, (dict, list)):
+                    odict[key] = value
+                else:
+                    self.flatten(value, odict)
+
+    #we don't use this because this is a GET only api
     def from_csv(self, content):
         raw_data = StringIO.StringIO(content)
         data = []
