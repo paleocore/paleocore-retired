@@ -4,7 +4,7 @@ from tastypie import fields
 from tastypie.contrib.gis.resources import ModelResource as geoModelResource
 from tastypie.resources import ModelResource, ALL
 from turkana.models import Turkana
-from drp.models import drp_taxonomy, drp_occurrence
+from drp.models import drp_taxonomy, drp_occurrence, drp_biology
 from serializers import CSVSerializer
 
 
@@ -81,11 +81,26 @@ class drp_taxonomyResource(ModelResource):
         queryset = drp_taxonomy.objects.all()
         allowed_methods=['get']
         resource_name = 'drp_taxonomy'
+        serializer = CSVSerializer()
+        authentication = ApiKeyAuthentication()
+
+class drp_biologyResource(ModelResource):
+    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", "occurrence")
+    class Meta:
+        queryset = drp_biology.objects.all()
+        allowed_methods=['get']
+        resource_name = 'drp_biology'
+        serializer = CSVSerializer()
         authentication = ApiKeyAuthentication()
 
 class drp_occurrenceResource(ModelResource):
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", "id")
     class Meta:
         queryset = drp_occurrence.objects.all()
         allowed_methods=['get']
         resource_name = 'drp_occurrence'
+        filtering = {
+            "barcode": ALL,
+        }
+        serializer = CSVSerializer()
         authentication = ApiKeyAuthentication()
