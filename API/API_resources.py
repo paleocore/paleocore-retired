@@ -85,7 +85,7 @@ class drp_taxonomyResource(ModelResource):
         authentication = ApiKeyAuthentication()
 
 class drp_biologyResource(ModelResource):
-    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", "occurrence")
+    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence")
     class Meta:
         queryset = drp_biology.objects.all()
         allowed_methods=['get']
@@ -94,7 +94,7 @@ class drp_biologyResource(ModelResource):
         authentication = ApiKeyAuthentication()
 
 class drp_occurrenceResource(ModelResource):
-    biology = fields.ToOneField("API.API_resources.drp_biologyResource", "id")
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True)
     class Meta:
         queryset = drp_occurrence.objects.all()
         allowed_methods=['get']
