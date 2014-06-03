@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from tastypie.authentication import Authentication, ApiKeyAuthentication
 from tastypie import fields
-from tastypie.contrib.gis.resources import ModelResource as geoModelResource
-from tastypie.resources import ModelResource, ALL
+#from tastypie.contrib.gis.resources import ModelResource as geoModelResource
+from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from turkana.models import Turkana
 from drp.models import drp_taxonomy, drp_occurrence, drp_biology
 from serializers import CSVSerializer
@@ -21,6 +21,7 @@ class turkanaResource(ModelResource):
         queryset = Turkana.objects.all()
         allowed_methods=['get']
         resource_name = 'turkana'
+        #dictionary of fields to allow filtering on, including which filter types are allowed. ALL is a shortcut to allow all filter types for a field
         filtering = {
             'genus': ALL,
             'specimen_number':ALL,
@@ -81,26 +82,85 @@ class drp_taxonomyResource(ModelResource):
         queryset = drp_taxonomy.objects.all()
         allowed_methods=['get']
         resource_name = 'drp_taxonomy'
-        serializer = CSVSerializer()
-        authentication = ApiKeyAuthentication()
+        serializer = CSVSerializer() #custom csv serializer in serializers.py
+        authentication = ApiKeyAuthentication()#will require a username and api_key as url parameters, otherwise return 401 unauthorized
 
 class drp_biologyResource(ModelResource):
-    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence")
+    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence") #foreign key to occurrence
     class Meta:
         queryset = drp_biology.objects.all()
         allowed_methods=['get']
         resource_name = 'drp_biology'
+        filtering = {
+            "barcode": ALL,
+            "tax_class": ALL,
+            "tax_order": ALL,
+            "family": ALL,
+            "tribe": ALL,
+            "genus": ALL,
+            "specificepithet": ALL,
+            "infraspecificepithet": ALL,
+            "infraspecificrank": ALL,
+            "identifiedby": ALL,
+            "identificationqualifier": ALL,
+            "sex": ALL,
+            "lifestage": ALL,
+            "side": ALL,
+            "faunanotes": ALL,
+            "toothupperorlower": ALL,
+            "toothnumber": ALL,
+            "toothtype": ALL,
+        }
         serializer = CSVSerializer()
         authentication = ApiKeyAuthentication()
 
 class drp_occurrenceResource(ModelResource):
-    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True)
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True) #link for the reverse lookup of biology
     class Meta:
         queryset = drp_occurrence.objects.all()
         allowed_methods=['get']
         resource_name = 'drp_occurrence'
         filtering = {
+            "biology": ALL_WITH_RELATIONS, #allows you to filter on biology fields from occurrence API resource
             "barcode": ALL,
+            "basisofrecord": ALL,
+            "itemtype": ALL,
+            "institutionalcode": ALL,
+            "collectioncode": ALL,
+            "paleolocalitynumber": ALL,
+            "paleosublocality": ALL,
+            "itemnumber": ALL,
+            "itempart": ALL,
+            "catalognumber": ALL,
+            "remarks": ALL,
+            "itemscientificname": ALL,
+            "itemdescription": ALL,
+            "continent": ALL,
+            "country": ALL,
+            "stateprovince": ALL,
+            "locality": ALL,
+            "collectingmethod": ALL,
+            "relatedcatalogitems": ALL,
+            "fieldnumber": ALL,
+            "yearcollected": ALL,
+            "individualcount": ALL,
+            "strat_upper": ALL,
+            "distancefromupper": ALL,
+            "strat_lower": ALL,
+            "distancefromlower": ALL,
+            "strat_found": ALL,
+            "distancefromfound": ALL,
+            "strat_likely": ALL,
+            "distancefromlikely": ALL,
+            "stratigraphicmember": ALL,
+            "analyticalunit": ALL,
+            "analyticalunit2": ALL,
+            "analyticalunit3": ALL,
+            "insitu": ALL,
+            "weathering": ALL,
+            "surfacemodification": ALL,
+            "problem": ALL,
+            "problemcomment": ALL,
         }
         serializer = CSVSerializer()
         authentication = ApiKeyAuthentication()
