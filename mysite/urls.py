@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # App URLS
+    url(r'^apikey/', include('API.urls')),
     url(r'^API/', include(v1_api.urls)),
     url(r'^schema/', include('schema.urls', namespace="schema")),
     url(r'^login/', include('login.urls', namespace="user_login")),
