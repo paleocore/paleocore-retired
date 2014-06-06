@@ -115,7 +115,7 @@ class drp_biologyResource(ModelResource):
         authentication = ApiKeyAuthentication()
 
 class drp_occurrenceResource(ModelResource):
-    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True) #link for the reverse lookup of biology
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True, null=True) #link for the reverse lookup of biology
     class Meta:
         queryset = drp_occurrence.objects.all()
         allowed_methods=['get']
@@ -161,6 +161,7 @@ class drp_occurrenceResource(ModelResource):
             "surfacemodification": ALL,
             "problem": ALL,
             "problemcomment": ALL,
+            "geom": ALL,
         }
         serializer = CSVSerializer()
         authentication = ApiKeyAuthentication()
