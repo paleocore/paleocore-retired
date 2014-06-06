@@ -120,6 +120,23 @@ class drp_occurrence(models.Model):
         ordering = ["collectioncode", "paleolocalitynumber", "itemnumber", "itempart"]
 
 
+class drp_images(models.Model):
+    occurrence = models.ForeignKey("drp_occurrence")
+    image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "drp_images"
+
+
+class drp_files(models.Model):
+    occurrence = models.ForeignKey("drp_occurrence")
+    file = models.FileField(upload_to="uploads/files", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "drp_files"
+
 class drp_biology(models.Model):
     id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
     occurrence = models.OneToOneField("drp_occurrence",db_column="catalognumbernumeric")

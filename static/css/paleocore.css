@@ -3,12 +3,13 @@
 /* The following elements do not have their styles defined
 in the Arcana style sheets and so are added here */
 
+/* ordered lists */
 ol {
     display: block;
     list-style-type: decimal;
     list-style-position: inside;
-    margin-before: 1em;
-    margin-after: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
     margin-start: 0;
     margin-end: 0;
     padding-start: 40px;
@@ -28,6 +29,21 @@ ul {
 li {
     display: list-item;
     text-align: -webkit-match-parent;
+}
+
+/* Definition Lists */
+dl {
+    margin-top: 1em;
+    margin-bottom: 1em
+}
+
+dt {
+    font-weight: bold
+}
+
+dd {
+    background:none no-repeat left top;
+	padding-left: 50px;
 }
 
 /*

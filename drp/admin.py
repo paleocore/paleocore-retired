@@ -5,16 +5,38 @@ from django.http import HttpResponse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
 
-import csv,cStringIO, codecs
+
+#################
+## Media Admin ##
+#################
+
+
+class imagesInline(admin.TabularInline):
+    model = drp_images
+    extra = 0
+    readonly_fields = ("id",)
+
+
+class filesInline(admin.TabularInline):
+    model = drp_files
+    extra = 0
+    readonly_fields = ("id",)
 
 ###################
 ## Biology Admin ##
 ###################
 
 biology_fieldsets = (
-('Taxonomy', {
-'fields': (('tax_class',),('tax_order',),('family',),('subfamily',),('tribe',),('genus','specificepithet'),("id"))
-}),
+    ('Taxonomy', {'fields':
+                      (('tax_class',),
+                       ('tax_order',),
+                       ('family',),
+                       ('subfamily',),
+                       ('tribe',),
+                       ('genus', 'specificepithet'),
+                       ('id')
+                      )
+    }),
 )
 
 
@@ -26,9 +48,9 @@ class biologyInline(admin.TabularInline):
 
 
 class biologyAdmin(admin.ModelAdmin):
-    list_display = ("id","occurrence","tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","lowest_level_identification")
+    list_display = ("id", "occurrence", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "lowest_level_identification")
     list_filter = ("family",)
-    search_fields = ("id","tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","occurrence__id")
+    search_fields = ("id", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "occurrence__id")
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
 
@@ -38,7 +60,7 @@ class biologyAdmin(admin.ModelAdmin):
 #####################
 
 class hydrologyAdmin(admin.ModelAdmin):
-    list_display = ("id","size")
+    list_display = ("id", "size")
     search_fields = ("id",)
     list_filter = ("size",)
 
@@ -48,7 +70,7 @@ class hydrologyAdmin(admin.ModelAdmin):
 #####################
 
 class localityAdmin(admin.ModelAdmin):
-    list_display = ("collectioncode","paleolocalitynumber","paleosublocality")
+    list_display = ("collectioncode", "paleolocalitynumber", "paleosublocality")
     list_filter = ("collectioncode",)
     search_fields = ("paleolocalitynumber",)
 
@@ -61,7 +83,7 @@ occurrence_fieldsets =(
 ('Curatorial', {
 'fields': (('barcode','catalognumber'),
            ("id",'fieldnumber','yearcollected',"datelastmodified"),
-           ("collectioncode","paleolocalitynumber","itemnumber","itempart"))
+           ("collectioncode", "paleolocalitynumber", "itemnumber", "itempart"))
 }),
 
 ('Occurrence Details', {
@@ -70,14 +92,14 @@ occurrence_fieldsets =(
            ('remarks'))
 }),
 ('Provenience', {
-'fields': (("strat_upper","distancefromupper"),
-           ("strat_lower","distancefromlower"),
-           ("strat_found","distancefromfound"),
-           ("strat_likely","distancefromlikely"),
-           ("analyticalunit","analyticalunit2","analyticalunit3"),
-           ("insitu","ranked"),
+'fields': (("strat_upper", "distancefromupper"),
+           ("strat_lower", "distancefromlower"),
+           ("strat_found", "distancefromfound"),
+           ("strat_likely", "distancefromlikely"),
+           ("analyticalunit", "analyticalunit2", "analyticalunit3"),
+           ("insitu", "ranked"),
            ("stratigraphicmember",),
-           ("point_X","point_Y"),
+           ("point_X", "point_Y"),
            ('geom'))
 }),
 )
@@ -92,9 +114,9 @@ class occurrenceAdmin(admin.ModelAdmin):
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
     readonly_fields = ("id", "fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
 
-    list_filter = ["basisofrecord","yearcollected","stratigraphicmember","collectioncode","itemtype"]
-    search_fields = ("id","itemscientificname","barcode","catalognumber")
-    inlines = (biologyInline,)
+    list_filter = ["basisofrecord", "yearcollected", "stratigraphicmember", "collectioncode", "itemtype"]
+    search_fields = ("id", "itemscientificname", "barcode", "catalognumber")
+    inlines = (biologyInline, imagesInline, filesInline)
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size':'25'})},
@@ -192,8 +214,8 @@ class occurrenceAdmin(admin.ModelAdmin):
 #####################
 
 class taxonomyAdmin(admin.ModelAdmin):
-    list_display = ("id","rank","tax_class","tax_order","family","subfamily","tribe","genus")
-    search_fields = ("tax_class","tax_order","family","subfamily","tribe","genus")
+    list_display = ("id", "rank", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus")
+    search_fields = ("tax_class", "tax_order", "family", "subfamily", "tribe", "genus")
     list_filter = ("rank",)
 
 
@@ -206,3 +228,8 @@ admin.site.register(drp_hydrology, hydrologyAdmin)
 admin.site.register(drp_locality, localityAdmin)
 admin.site.register(drp_occurrence, occurrenceAdmin)
 admin.site.register(drp_taxonomy, taxonomyAdmin)
+
+reject_notice=''
+a=3
+if (a==3): reject_notice += "a is 3"
+if (a < 4): print "a less than 4"

@@ -284,6 +284,7 @@ ol li {
 	list-style-type: decimal;
 }
 
+
 /* Clearfix boilerplate */
 
 .clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }
