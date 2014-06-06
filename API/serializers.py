@@ -34,8 +34,12 @@ class CSVSerializer(Serializer):
                 test = {}
                 self.flatten(value, test)
                 if first:
-                    writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
-                    writer.writeheader()
+                    writer = csv.DictWriter(raw_data, test.keys(), quotechar="\"", quoting=csv.QUOTE_NONNUMERIC)
+                    #writer.writeheader()
+                    headers = {}
+                    for n in writer.fieldnames:
+                        headers[n] = n
+                    writer.writerow(headers)
                     writer.writerow(test)
                     first=False
                 else:
@@ -44,8 +48,12 @@ class CSVSerializer(Serializer):
             test = {}
             self.flatten(data, test)
             if first:
-                writer = csv.DictWriter(raw_data, test.keys(), quotechar="'", quoting=csv.QUOTE_NONNUMERIC)
-                writer.writeheader()
+                writer = csv.DictWriter(raw_data, test.keys(), quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+                #writer.writeheader() # Python 2.7 only, does not work in production on 2.6
+                headers = {}
+                for n in writer.fieldnames:
+                    headers[n] = n
+                writer.writerow(headers)
                 writer.writerow(test)
                 first=False
             else:
