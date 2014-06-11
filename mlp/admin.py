@@ -2,6 +2,9 @@ from django.contrib import admin
 from models import Occurrence, Biology
 from django.forms import TextInput, Textarea  # import custom form widgets
 from django.contrib.gis.db import models
+from django.http import HttpResponse
+import unicodecsv
+from django.core.exceptions import ObjectDoesNotExist
 
 # Register your models here.
 ###################
@@ -88,6 +91,32 @@ class OccurrenceAdmin(admin.ModelAdmin):
     # Set pagination to show 500 entries per page
     list_per_page = 1000
 
+    actions = ["create_data_csv"]
+    #admin action to download data in csv format
+    def create_data_csv(self, request, queryset):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'
+        writer = unicodecsv.writer(response)
+        o = Occurrence()  # create an empty instance of an occurrence object
+        b = Biology()  # create an empty instance of a biology object
+
+        """
+        For now this method handles all occurrences and corresponding
+        data from the biology table for faunal occurrences.
+        """
+        writer.writerow(o.__dict__.keys()+b.__dict__.keys())  # fetch field names and write to the first row
+
+        for occurrence in queryset.all():  # iterate through the occurrence instances selected in the admin
+            try:  # try writing occurrence values and associated biology values
+                writer.writerow(occurrence.__dict__.values()+occurrence.Biology.__dict__.values())
+            except ObjectDoesNotExist:  # Django specific exception
+                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values)
+            except:
+                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values
+
+        return response
+
+    create_data_csv.short_description = "Download Selected to .csv"
 
 ############################
 ## Register Admin Classes ##
