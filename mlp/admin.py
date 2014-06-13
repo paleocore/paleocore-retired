@@ -92,6 +92,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     list_per_page = 1000
 
     actions = ["create_data_csv"]
+
     #admin action to download data in csv format
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -100,34 +101,47 @@ class OccurrenceAdmin(admin.ModelAdmin):
         o = Occurrence()  # create an empty instance of an occurrence object
         b = Biology()  # create an empty instance of a biology object
 
-        occurrence_fields = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        try:  # try removing the state field from the list
+            occurrence_field_list.remove('_state')  # remove the _state field
+        except ValueError:  # raised if _state field is not in the dictionary list
+            pass
+        try:  # try removing the geom field from the list
+            occurrence_field_list.remove('geom')
+        except ValueError:  # raised if geom field is not in the dictionary list
+            pass
+        # Replace the geom field with two new fields
+        occurrence_field_list.append("point_x")  # add new fields for coordinates of the geom object
+        occurrence_field_list.append("point_y")
+
+        biology_field_list = b.__dict__.keys()  # get biology fields
         try:  # try removing the state field
-            occurrence_fields.remove('_state')  # remove the _state field
+            biology_field_list.remove('_state')
         except ValueError:  # raised if _state field is not in the dictionary list
             pass
 
-        biology_fields = b.__dict__.keys()  # get biology fields
-        try:  # try removing the state field
-            biology_fields.remove('_state')
-        except ValueError:  # raised if _state field is not in the dictionary list
-            pass
+        #################################################################
+        # For now this method handles all occurrences and corresponding #
+        # data from the biology table for faunal occurrences.           #
+        #################################################################
+        writer.writerow(occurrence_field_list+biology_field_list)  # write column headers
 
-        """
-        For now this method handles all occurrences and corresponding
-        data from the biology table for faunal occurrences.
-        """
-        writer.writerow(occurrence_fields+biology_fields)  # fetch field names and write to the first row
+        for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
+            # The next line uses string comprehension to build a list of values for each field
+            occurrence_dict = occurrence.__dict__
+            occurrence_dict['point_x'] = occurrence.geom.get_x()  # translate the occurrence geom object
+            occurrence_dict['point_y'] = occurrence.geom.get_y()
 
-        for occurrence in queryset.all():  # iterate through the occurrence instances selected in the admin
-            occurrence_values = [occurrence.__dict__.get(k) for k in occurrence_fields]
-
-            try:  # Try writieng values for all keys listed in both the occurrence and biology tables
-                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields] +
-                                [occurrence.Biology.__dict__.get(k) for k in biology_fields])
+            # Next we use the field list to fetch the values from the dictionary.
+            # Dictionaries do not have a reliable ordering. This code insures we get the values
+            # in the same order as the field list.
+            try:  # Try writing values for all keys listed in both the occurrence and biology tables
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list] +
+                                [occurrence.Biology.__dict__.get(k) for k in biology_field_list])
             except ObjectDoesNotExist:  # Django specific exception
-                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields])
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list])
             except AttributeError:  # Django specific exception
-                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields])
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list])
 
         return response
 
