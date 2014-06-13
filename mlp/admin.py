@@ -81,7 +81,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
 
     list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
-    inlines = [BiologyInline,]
+    inlines = [BiologyInline, ]
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size': '25'})},
@@ -94,25 +94,40 @@ class OccurrenceAdmin(admin.ModelAdmin):
     actions = ["create_data_csv"]
     #admin action to download data in csv format
     def create_data_csv(self, request, queryset):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'
-        writer = unicodecsv.writer(response)
+        response = HttpResponse(content_type='text/csv')  # declare the response type
+        response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'  # declare the file name
+        writer = unicodecsv.writer(response)  # open a .csv writer
         o = Occurrence()  # create an empty instance of an occurrence object
         b = Biology()  # create an empty instance of a biology object
+
+        occurrence_fields = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        try:  # try removing the state field
+            occurrence_fields.remove('_state')  # remove the _state field
+        except ValueError:  # raised if _state field is not in the dictionary list
+            pass
+
+        biology_fields = b.__dict__.keys()  # get biology fields
+        try:  # try removing the state field
+            biology_fields.remove('_state')
+        except ValueError:  # raised if _state field is not in the dictionary list
+            pass
 
         """
         For now this method handles all occurrences and corresponding
         data from the biology table for faunal occurrences.
         """
-        writer.writerow(o.__dict__.keys()+b.__dict__.keys())  # fetch field names and write to the first row
+        writer.writerow(occurrence_fields+biology_fields)  # fetch field names and write to the first row
 
         for occurrence in queryset.all():  # iterate through the occurrence instances selected in the admin
-            try:  # try writing occurrence values and associated biology values
-                writer.writerow(occurrence.__dict__.values()+occurrence.Biology.__dict__.values())
+            occurrence_values = [occurrence.__dict__.get(k) for k in occurrence_fields]
+
+            try:  # Try writieng values for all keys listed in both the occurrence and biology tables
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields] +
+                                [occurrence.Biology.__dict__.get(k) for k in biology_fields])
             except ObjectDoesNotExist:  # Django specific exception
-                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values)
-            except:
-                writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields])
+            except AttributeError:  # Django specific exception
+                writer.writerow([occurrence.__dict__.get(k) for k in occurrence_fields])
 
         return response
 
