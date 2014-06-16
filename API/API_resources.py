@@ -1,17 +1,19 @@
 from django.contrib.auth.models import User
-from tastypie.authentication import Authentication, ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication, Authentication
+from API.custom_authorization import CustomDjangoAuthorization
+from tastypie.authorization import DjangoAuthorization
 from tastypie import fields
 #from tastypie.contrib.gis.resources import ModelResource as geoModelResource
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from turkana.models import Turkana
-from drp.models import drp_taxonomy, drp_occurrence, drp_biology
-from serializers import CSVSerializer
+from drp.models import drp_taxonomy, drp_occurrence, drp_biology, drp_hydrology, drp_locality
 
 
 
 #each resource to be exposed at a particular URL in the API requires a subclass of tastypie.resources.ModelResource
-#these often correspond directly to classes in models.py
-#the queryset can be modified, as well as the resource name (i.e. the url in the API)
+#these often correspond directly to classes in models.py, but in some cases
+#there are multiple resources for a particular models.py class, with different treatment of related records
+#the queryset can be modified for each resource, as well as the resource name (i.e. the url in the API)
 #as well as which fields can be filtered on, etc
 #these classes are registered to the API in the main urls.py
 
@@ -74,24 +76,48 @@ class turkanaResource(ModelResource):
 
         }
         max_limit=0
-        serializer = CSVSerializer()
-        authentication = Authentication()#this means no authentication, which is OK in this case
+        authentication = Authentication()#this means no authentication, which is OK in this case, because only allowed method is GET
+
+#####DRP API resources
+#####common settings to be used for all DRP API resources
+drp_authentication = ApiKeyAuthentication()#will require a username and api_key as url parameters, otherwise return 401 unauthorized
+drp_authorization = CustomDjangoAuthorization(appname="drp", modelname="drp_occurrence")#look to custom Django Authorization class to determine permissions
+drp_allowed_methods=['get','post']
 
 class drp_taxonomyResource(ModelResource):
     class Meta:
+        max_limit=0
         queryset = drp_taxonomy.objects.all()
-        allowed_methods=['get']
+        allowed_methods= drp_allowed_methods
         resource_name = 'drp_taxonomy'
-        serializer = CSVSerializer() #custom csv serializer in serializers.py
-        authentication = ApiKeyAuthentication()#will require a username and api_key as url parameters, otherwise return 401 unauthorized
+        authorization = drp_authorization
+        authentication = drp_authentication
 
-class drp_biologyResource(ModelResource):
-    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence") #foreign key to occurrence
+class drp_localityResource(ModelResource):
     class Meta:
-        queryset = drp_biology.objects.all()
-        allowed_methods=['get']
-        resource_name = 'drp_biology'
         filtering = {
+            "collectioncode": ALL,
+            "paleolocalitynumber": ALL,
+            "paleosublocalitynumber": ALL,
+        }
+        max_limit=0
+        queryset = drp_locality.objects.all()
+        allowed_methods= drp_allowed_methods
+        resource_name = 'drp_locality'
+        authorization = drp_authorization
+        authentication = drp_authentication
+
+class drp_hydrologyResource(ModelResource):
+    class Meta:
+        max_limit=0
+        queryset = drp_hydrology.objects.all()
+        allowed_methods= drp_allowed_methods
+        resource_name = 'drp_hydrology'
+        authorization = drp_authorization
+        authentication = drp_authentication
+
+####DRP Biology API resources
+drp_biology_filtering = {
             "barcode": ALL,
             "tax_class": ALL,
             "tax_order": ALL,
@@ -111,17 +137,33 @@ class drp_biologyResource(ModelResource):
             "toothnumber": ALL,
             "toothtype": ALL,
         }
-        serializer = CSVSerializer()
-        authentication = ApiKeyAuthentication()
+drp_biology_excludes = ["lrp3","lrp4","llc","lli1","lli2","lli3","lli4","lli5","llm1","llm2","llm3","llp1","llp2","llp3","llp4","lrc","lri1","lri2","lri3","lri4","lri5","lrm1","lrm2","lrm3","lrp1","lrp2","lrp","ulp1","ulp2","ulp3","ulp4","urc","uri1","uri2","uri3","uri4","uri5","urm1","urm2","urm3","urp1","urp2","urp3","urp4","ulc","uli1","uli2","uli3","uli4","uli5","ulm1","ulm2","ulm3"]
 
-class drp_occurrenceResource(ModelResource):
-    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True, null=True) #link for the reverse lookup of biology
+class drp_biologyResource(ModelResource):
+    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence") #foreign key to occurrence
     class Meta:
-        queryset = drp_occurrence.objects.all()
-        allowed_methods=['get']
-        resource_name = 'drp_occurrence'
-        filtering = {
-            "biology": ALL_WITH_RELATIONS, #allows you to filter on biology fields from occurrence API resource
+        queryset = drp_biology.objects.all()
+        max_limit=0
+        allowed_methods=drp_allowed_methods
+        resource_name = 'drp_biology'
+        filtering = drp_biology_filtering
+        excludes = drp_biology_excludes
+        authorization = drp_authorization
+        authentication = drp_authentication
+
+class drp_biology_full_relatedResource(ModelResource):
+    occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence", full=True) #foreign key to occurrence
+    class Meta:
+        queryset = drp_biology.objects.all()
+        max_limit=0
+        allowed_methods=drp_allowed_methods
+        resource_name = 'drp_biology_full_related'
+        filtering = drp_biology_filtering
+        excludes = drp_biology_excludes
+
+
+###drp_occurrence resources
+drp_occurrence_filtering = {
             "barcode": ALL,
             "basisofrecord": ALL,
             "itemtype": ALL,
@@ -163,5 +205,29 @@ class drp_occurrenceResource(ModelResource):
             "problemcomment": ALL,
             "geom": ALL,
         }
-        serializer = CSVSerializer()
-        authentication = ApiKeyAuthentication()
+
+class drp_occurrenceResource(ModelResource):
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", null=True, blank=True) #link for the reverse lookup of biology
+    class Meta:
+        max_limit=0
+        queryset = drp_occurrence.objects.all()
+        allowed_methods=drp_allowed_methods
+        resource_name = 'drp_occurrence'
+        filtering = drp_occurrence_filtering
+        authorization = drp_authorization
+        authentication = drp_authentication
+
+class drp_occurrence_full_relatedResource(ModelResource):
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True, null=True, blank=True) #link for the reverse lookup of biology
+    class Meta:
+        max_limit=0
+        queryset = drp_occurrence.objects.all()
+        allowed_methods=drp_allowed_methods
+        resource_name = 'drp_occurrence_full_related'
+        filtering = drp_occurrence_filtering
+        authorization = drp_authorization
+        authentication = drp_authentication
+
+
+
+

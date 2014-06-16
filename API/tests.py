@@ -4,7 +4,7 @@ from turkana.models import Turkana
 from drp.models import drp_occurrence, drp_biology
 from drp.tests import create_django_page_tree #should probably put this create page tree code in mysite.tests and import for all apps
 from tastypie.models import ApiKey
-
+from django.contrib.auth.models import Permission
 
 class DRPResourceTest(ResourceTestCase):
     fixtures = ['API/fixtures/DRP_API_test_fixture']
@@ -24,22 +24,31 @@ class DRPResourceTest(ResourceTestCase):
         self.assertEqual(drp_occurrence.objects.count(), 1)
         self.assertEqual(drp_biology.objects.count(), 1)
         self.testObject = drp_occurrence.objects.get(catalognumber="DIK-12-1")
+        create_django_page_tree()
 
 
     def get_basic_credentials(self):
         return self.create_basic(username=self.username, password=self.password)
 
-    def test_unauthorized(self):
+    def test_unauthenticated(self):
         self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_occurrence/?format='json'"))
         self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_biology/?format='json'"))
         self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_taxonomy/?format='json'"))
 
-    def test_authorized(self):
-        self.assertHttpOK(self.api_client.get("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
-        self.assertHttpOK(self.api_client.get("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
-        self.assertHttpOK(self.api_client.get("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+    def test_unauthorizedGET(self):
+        self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+        self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+        self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+
+    #need test for authenticated user that lacks post permissions
+    # def test_unauthorizedPOST(self):
+    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+
 
     def test_get_list_json(self):
+        self.user.user_permissions.add(Permission.objects.get(codename="add_drp_occurrence")) #you need add permission to read from the API - see custom_authorization.py
         resp = self.api_client.get("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey))
         self.assertEqual(resp.status_code, 200)
         self.assertValidJSONResponse(resp)
@@ -47,13 +56,6 @@ class DRPResourceTest(ResourceTestCase):
         # make sure correct number of objects returned
         self.assertEqual(len(self.deserialize(resp)['objects']), 1)
 
-    def test_get_list_csv(self):
-        resp = self.api_client.get("/API/v1/drp_occurrence/?format=csv&username={user}&api_key={api}".format(user=self.username, api=self.apikey))
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp["content-type"], "text/csv; charset=utf-8")
-
-        #this is a hacky test to make sure the csv doesn't contain any embeded json objects, i.e. that it has been approproately flattened by the csv serializer
-        self.assertNotContains(resp, "{")
 
 class TurkanaResourceTest(ResourceTestCase):
     # Use ``fixtures`` & ``urls`` as normal. See Django's ``TestCase``
@@ -90,13 +92,6 @@ class TurkanaResourceTest(ResourceTestCase):
         # make sure correct number of objects returned
         self.assertEqual(len(self.deserialize(resp)['objects']), 6)
 
-    def test_get_list_csv(self):
-        resp = self.api_client.get('/API/v1/turkana/?format=csv', authentication=self.get_credentials())
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp["content-type"], "text/csv; charset=utf-8")
-
-        #this is a hacky test to make sure the csv doesn't contain any embeded json objects, i.e. that it has been approproately flattened by the csv serializer
-        self.assertNotContains(resp, "{")
 
     def test_get_detail_json(self):
         resp = self.api_client.get(self.detail_url, format='json', authentication=self.get_credentials())
@@ -106,14 +101,8 @@ class TurkanaResourceTest(ResourceTestCase):
         # Make sure correct number of fields returned
         self.assertEqual(len(self.deserialize(resp)), 99) #99 fields
 
-    def test_get_detail_csv(self):
-        resp = self.api_client.get(self.detail_url + '?format=csv', authentication=self.get_credentials())
-        self.assertEqual(resp.status_code, 200)
-        self.assertEqual(resp["content-type"], "text/csv; charset=utf-8")
-
-        #this is a hacky test to make sure the csv doesn't contain any embeded json objects, i.e. that it has been approproately flattened by the csv serializer
-        self.assertNotContains(resp, "{")
-
     def test_only_get_allowed(self):
         resp = self.api_client.get('/API/v1/turkana/schema/?format=json')
         self.assertEqual(self.deserialize(resp)['allowed_detail_http_methods'],[u'get'])
+
+
