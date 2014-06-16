@@ -19,7 +19,7 @@
                     <h2>Example Usage on the Web</h2>
                     <p>www.paleocore.org/API/v1/someProject/?format=csv&username={{ request.user.username }}&api_key={{ api_key }}</p>
                     <h2>Example Usage with the PaleocoreR package for R</h2>
-                    <p>library(paleocoreR)<br>setPCcredentials(username="{{ request.user.username }}", api_key="{{ api_key }}")<br>getPCdata(project = "turkana")</p>
+                    <p>library(paleocoreR)<br>set_pcore_credentials(username="{{ request.user.username }}", api_key="{{ api_key }}")<br>get_pcore_data(resource = "turkana")</p>
                     <p>For more information on downloading and using the R package, <a href="http://paleocore.github.io/paleocoreR">try this demo.</a></p>
                 </div>
         </div>
