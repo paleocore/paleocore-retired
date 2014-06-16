@@ -286,7 +286,3 @@ admin.site.register(drp_locality, localityAdmin)
 admin.site.register(drp_occurrence, occurrenceAdmin)
 admin.site.register(drp_taxonomy, taxonomyAdmin)
 
-reject_notice=''
-a=3
-if (a==3): reject_notice += "a is 3"
-if (a < 4): print "a less than 4"
