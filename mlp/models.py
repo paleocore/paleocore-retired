@@ -13,12 +13,12 @@ class Occurrence(models.Model):
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False, choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='MLP')
     # Note we're not using localities!
-    item_number = models.CharField("Item Number", max_length=50, null=True, blank=True)
+    item_number = models.CharField("Item #", max_length=50, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
-    catalog_number = models.CharField("Catalog Number", max_length=255, blank=True, null=True)
+    catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     # TODO add richtext field for remarks
     remarks = models.TextField(max_length=255, null=True, blank=True)
-    item_scientific_name = models.CharField("Item Scientific Name", max_length=255, null=True, blank=True)
+    item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Item Description", max_length=255, blank=True, null=True)
     georeference_remarks = models.CharField(max_length=50, null=True, blank=True)
     collecting_method = models.CharField("Collecting Method", max_length=50, blank=True, choices=COLLECTING_METHOD_VOCABULARY, null=False)  # NOT NULL

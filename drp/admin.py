@@ -106,13 +106,28 @@ occurrence_fieldsets =(
 
 
 class occurrenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'stratigraphicmember', "catalognumber", "barcode", 'basisofrecord', 'itemtype',
-                    'collector', "itemscientificname", "itemdescription", "point_X", "point_Y", "yearcollected",
-                    "fieldnumber", "datelastmodified")
+    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
+                    "itemscientificname", 'get_genus','get_family','get_tax_order',"itemdescription", "yearcollected")
+
+    #get taxonomic fields from biology for display
+    def get_genus(self, obj):
+        return obj.drp_biology.genus
+    get_genus.short_description = "genus"
+    get_genus.admin_order_field = "drp_biology__genus"
+
+    def get_family(self, obj):
+        return obj.drp_biology.family
+    get_family.short_description = "family"
+    get_family.admin_order_field = "drp_biology__family"
+
+    def get_tax_order(self, obj):
+        return obj.drp_biology.tax_order
+    get_tax_order.short_description = "order"
+    get_tax_order.admin_order_field = "drp_biology__tax_order"
 
     #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
-    readonly_fields = ("id", "fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
+    readonly_fields = ("id","fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
 
     list_filter = ["basisofrecord", "yearcollected", "stratigraphicmember", "collectioncode", "itemtype"]
     search_fields = ("id", "itemscientificname", "barcode", "catalognumber")

@@ -67,9 +67,23 @@ occurrence_fieldsets =(
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'catalog_number', 'barcode', 'basis_of_record', 'item_type', 'collecting_method',
-                    'collector', 'item_scientific_name', 'item_description', 'point_X', 'point_Y', 'year_collected',
-                    'field_number', 'date_last_modified', 'in_situ', 'problem')
+    list_display = ('id', 'collection_code', 'item_number','barcode', 'basis_of_record', 'item_type', 'collecting_method',
+                    'collector', 'item_scientific_name','get_tax_order','get_family','get_genus', 'item_description', 'year_collected',
+                     'in_situ', 'problem')
+    def get_genus(self, obj):
+        return obj.biology.genus
+    get_genus.short_description = "genus"
+    get_genus.admin_order_field = "biology__genus" #required to enable admin sorting
+
+    def get_family(self, obj):
+        return obj.biology.family
+    get_family.short_description = "family"
+    get_family.admin_order_field = "biology__family"
+
+    def get_tax_order(self, obj):
+        return obj.biology.tax_order
+    get_tax_order.short_description = "order"
+    get_tax_order.admin_order_field = "biology__tax_order"
 
     """
     Autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
