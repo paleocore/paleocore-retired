@@ -40,12 +40,22 @@ class DRPResourceTest(ResourceTestCase):
         self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
         self.assertHttpUnauthorized(self.api_client.get("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
 
-    #need test for authenticated user that lacks post permissions
-    # def test_unauthorizedPOST(self):
-    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
-    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
-    #     self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey)))
+    ##need test for authenticated user that lacks post permissions
+    def test_unauthorizedPOST(self):
+        self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey), data={"geom":"POINT (1 1)"}))
+        self.assertHttpUnauthorized(self.api_client.post("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey), data={"family":"Fungus", "taxon":"fungus","rank":"family", "hierarchysortorder":1}))
+        #can't test biology, because there is no occurrence yet
 
+    def test_authorizedPOST(self):
+        self.user.user_permissions.add(Permission.objects.get(codename="add_drp_occurrence"))
+        self.user.user_permissions.add(Permission.objects.get(codename="add_drp_taxonomy"))
+        self.user.user_permissions.add(Permission.objects.get(codename="add_drp_biology"))
+        self.assertHttpCreated(self.api_client.post("/API/v1/drp_occurrence/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey), data={"geom":"POINT (1 1)"}))
+        self.assertHttpCreated(self.api_client.post("/API/v1/drp_taxonomy/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey), data={"family":"Fungus", "taxon":"fungus","rank":"family", "hierarchysortorder":1}))
+
+        #need to test post for biology with related occurrence, currently doesn't work
+        #ob = drp_occurrence.objects.all()[0] #get an object from the occurrence table to we can try to add a related biology entry
+        #self.assertHttpCreated(self.api_client.post("/API/v1/drp_biology/?format=json&username={user}&api_key={api}".format(user=self.username, api=self.apikey), data={"occurrence":30}))
 
     def test_get_list_json(self):
         self.user.user_permissions.add(Permission.objects.get(codename="add_drp_occurrence")) #you need add permission to read from the API - see custom_authorization.py
