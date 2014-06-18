@@ -13,7 +13,7 @@ class Occurrence(models.Model):
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False, choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='MLP')
     # Note we're not using localities!
-    item_number = models.CharField("Item #", max_length=50, null=True, blank=True)
+    item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     # TODO add richtext field for remarks
