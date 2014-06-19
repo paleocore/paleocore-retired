@@ -8,7 +8,7 @@ itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class drp_occurrence(models.Model):
-    id = models.AutoField("id",primary_key=True,db_column="catalognumbernumeric",null=False,blank=True)
+    id = models.AutoField("id",primary_key=True,db_column="occurrence_id",null=False,blank=True)
     barcode = models.IntegerField("Barcode",null=True, blank=True)
     datelastmodified = models.DateTimeField("Date Last Modified",null=True, blank=True)
     basisofrecord = models.CharField("Basis of Record",null=True, blank=True,max_length=50,choices=basisCHOICES)
@@ -137,9 +137,9 @@ class drp_files(models.Model):
     class Meta:
         db_table = "drp_files"
 
-class drp_biology(models.Model):
-    id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
-    occurrence = models.OneToOneField("drp_occurrence",db_column="catalognumbernumeric")
+class drp_biology(drp_occurrence):
+    biology_id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
+    #occurrence = models.OneToOneField("drp_occurrence",db_column="occurrence_id")
     #taxon = models.ForeignKey("drp_taxonomy")
     kingdom = models.CharField(null=True,blank=True,max_length=50)
     phylum = models.CharField(null=True,blank=True,max_length=50)

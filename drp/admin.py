@@ -26,6 +26,32 @@ class filesInline(admin.TabularInline):
 ## Biology Admin ##
 ###################
 
+occurrence_fieldsets =(
+('Curatorial', {
+'fields': (('barcode','catalognumber'),
+           ("id",'fieldnumber','yearcollected',"datelastmodified"),
+           ("collectioncode", "paleolocalitynumber", "itemnumber", "itempart"))
+}),
+
+('Occurrence Details', {
+'fields': (('basisofrecord','itemtype','disposition','preparationstatus'),
+           ('itemdescription','itemscientificname'),
+           ('remarks'))
+}),
+('Provenience', {
+'fields': (("strat_upper", "distancefromupper"),
+           ("strat_lower", "distancefromlower"),
+           ("strat_found", "distancefromfound"),
+           ("strat_likely", "distancefromlikely"),
+           ("analyticalunit", "analyticalunit2", "analyticalunit3"),
+           ("insitu", "ranked"),
+           ("stratigraphicmember",),
+           ("point_X", "point_Y"),
+           ('geom'))
+}),
+)
+
+
 biology_fieldsets = (
     ('Taxonomy', {'fields':
                       (('tax_class',),
@@ -48,11 +74,28 @@ class biologyInline(admin.TabularInline):
 
 
 class biologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "occurrence", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "lowest_level_identification")
+    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
+                    "itemscientificname", 'genus','family','tax_order',"itemdescription", "yearcollected", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "lowest_level_identification")
     list_filter = ("family",)
-    search_fields = ("id", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "occurrence__id")
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
+
+    #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
+    #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
+    readonly_fields = ("id","fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
+
+    list_filter = ["basisofrecord", "yearcollected", "stratigraphicmember", "collectioncode", "itemtype"]
+    search_fields = ("id", "itemscientificname", "barcode", "catalognumber")
+    inlines = (biologyInline, imagesInline, filesInline)
+    fieldsets = occurrence_fieldsets
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size':'25'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
+    }
+    list_per_page = 500  # show 500 records per page
+    #change_form_template = "occurrence_change_form.html"
+    actions = ["move_selected", "get_nearest_locality"]  # TODO clarify actions
+    actions = ["get_nearest_locality", "create_data_csv"]
 
 
 #####################
@@ -79,30 +122,6 @@ class localityAdmin(admin.ModelAdmin):
 ## Occurrence Admin ##
 ######################
 
-occurrence_fieldsets =(
-('Curatorial', {
-'fields': (('barcode','catalognumber'),
-           ("id",'fieldnumber','yearcollected',"datelastmodified"),
-           ("collectioncode", "paleolocalitynumber", "itemnumber", "itempart"))
-}),
-
-('Occurrence Details', {
-'fields': (('basisofrecord','itemtype','disposition','preparationstatus'),
-           ('itemdescription','itemscientificname'),
-           ('remarks'))
-}),
-('Provenience', {
-'fields': (("strat_upper", "distancefromupper"),
-           ("strat_lower", "distancefromlower"),
-           ("strat_found", "distancefromfound"),
-           ("strat_likely", "distancefromlikely"),
-           ("analyticalunit", "analyticalunit2", "analyticalunit3"),
-           ("insitu", "ranked"),
-           ("stratigraphicmember",),
-           ("point_X", "point_Y"),
-           ('geom'))
-}),
-)
 
 
 class occurrenceAdmin(admin.ModelAdmin):
