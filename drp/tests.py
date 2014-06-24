@@ -111,15 +111,14 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
         self.assertEqual(drp_biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
 
-    def test_drp_occurrence_create_faunal(self):
+    def test_drp_biology_create(self):
         """
         Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
-        starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
+        starting_record_count = drp_biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence.objects.create(
+        new_biology = drp_biology.objects.create(
             barcode = 1111,
             basisofrecord="FossilSpecimen",
             itemtype = "Faunal",
@@ -127,13 +126,14 @@ class OccurrenceMethodsTests(TestCase):
             collectioncode = "COL",
             paleolocalitynumber="1",
             itemnumber="1",
+            family="Bovidae",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
-        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
-        self.assertEqual(drp_biology.objects.count(), starting_record_count_biology+1)  # test that one biology record was added
+        self.assertEqual(drp_biology.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(new_biology.catalognumber, "COL-1-1")  # test catalog number generation in save method
+        self.assertEqual(new_biology.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_biology.point_X(), 658198.7081000003963709)
+
 
     def test_drp_occurrence_create_floral(self):
         """
