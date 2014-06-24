@@ -101,14 +101,15 @@ class drp_occurrence(models.Model):
         #call the normal drp_occurrence save method using alternate database
         super(drp_occurrence, self).save(*args, **kwargs)
 
-        #if itemtype=="Faunal" and does there is no entry in in biology, then add entry to drp_biology.
-        if self.itemtype == "Faunal":
-               try:
-                   drp_biology.objects.get(occurrence=self.id)
-               except drp_biology.DoesNotExist:
-                   #last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
-                   newBiology = drp_biology(occurrence=drp_occurrence.objects.using("drp_carmen").get(pk=self.id))
-                   newBiology.save()
+        ## should be no longer necessary as biology is a subclass of occurrence
+        # #if itemtype=="Faunal" and does there is no entry in in biology, then add entry to drp_biology.
+        # if self.itemtype == "Faunal":
+        #        try:
+        #            drp_biology.objects.get(occurrence=self.id)
+        #        except drp_biology.DoesNotExist:
+        #            #last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
+        #            newBiology = drp_biology(occurrence=drp_occurrence.objects.using("drp_carmen").get(pk=self.id))
+        #            newBiology.save()
 
     class Meta:
         verbose_name = "DRP Occurrence"
@@ -273,13 +274,13 @@ class drp_biology(drp_occurrence):
         else:
             return str(self.tax_class).replace("None","")
 
-    def save(self):
-        if not self.id: #if this is a fresh save with no id yet
-            try: # if biology table is empty this will raise and index error
-                last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
-                self.id = last_bio_ID + 1
-            except IndexError:
-                self.id = 1
+    def save(self, *args, **kwargs):
+        # if not self.id: #if this is a fresh save with no id yet
+        #     try: # if biology table is empty this will raise and index error
+        #         last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
+        #         self.id = last_bio_ID + 1
+        #     except IndexError:
+        #         self.id = 1
 
         #Autopopulate up the taxonomy hierarchy
         #As written, this MASSIVELY violates the Don't Repeat Yourself Princible
