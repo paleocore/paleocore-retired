@@ -1,5 +1,5 @@
 from django.contrib import admin
-from schema.models import Project, Term, TermCategory, TermStatus, TermDataType, TermRelationship, \
+from standard.models import Project, Term, TermCategory, TermStatus, TermDataType, TermRelationship, \
         TermRelationshipType, Comment
 
 class ProjectAdmin(admin.ModelAdmin):

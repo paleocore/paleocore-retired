@@ -1,8 +1,8 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from schema.models import Term, Project, CompareView, TermView, ProjectView, RelateProjectTerms, RelatedTermView, TermCategory#, TermRelationshipView
+from standard.models import Term, Project, CompareView, TermView, ProjectView, RelateProjectTerms, RelatedTermView, TermCategory#, TermRelationshipView
 from django.db.models import Q
-from schema.forms import TermViewForm, RelateProjectsForm, RelateTermsForm
+from standard.forms import TermViewForm, RelateProjectsForm, RelateTermsForm
 from django.forms.models import modelform_factory
 from django.db import connection
 import json
@@ -14,18 +14,31 @@ from django.contrib.auth import authenticate,login
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from models import *
-from schema.models import Term
+from standard.models import Term
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import permission_required
 from fiber.views import FiberPageMixin
 
-
-class TermsIndexView(FiberPageMixin, generic.ListView):
-    template_name = 'schema/terms.html'
+class PaleocoreTermsIndexView(FiberPageMixin, generic.ListView):
+    template_name = 'standard/terms.html'
     context_object_name = 'terms'
 
     def get_queryset(self):
-        # build a query set of terms for a given project. The project_name is passed from schema/urls.py
+        self.project = get_object_or_404(Project, name="PaleoCore")
+
+        """Return a list of terms for Paleocore"""
+        return self.project.terms()
+
+    def get_fiber_page_url(self):
+        return reverse('standard:paleocore_terms_index')
+
+
+class TermsIndexView(FiberPageMixin, generic.ListView):
+    template_name = 'standard/terms.html'
+    context_object_name = 'terms'
+
+    def get_queryset(self):
+        # build a query set of terms for a given project. The project_name is passed from standard/urls.py
         self.project = get_object_or_404(Project, name=self.kwargs["project_name"])
 
         """Return a list of terms for the current project"""
@@ -104,16 +117,16 @@ def ontologyJSONtree(request):
 
         if get_parent(node) != "NONE":
             d["name"] = TermCategory.objects.get(pk=node).name
-            d["URL"] = "/schema/ontology/" + str(node)
+            d["URL"] = "/standard/ontology/" + str(node)
             d["categoryID"] =  node
         else:
             try:
                 d["name"] = TermCategory.objects.get(pk=node).name
-                d["URL"] = "/schema/ontology/" + str(node)
+                d["URL"] = "/standard/ontology/" + str(node)
                 d["categoryID"] =  node
             except:
                 d["name"] = ""
-                d["URL"] = "/schema/ontology/"
+                d["URL"] = "/standard/ontology/"
                 d["categoryID"] =  ""
 
 
@@ -174,7 +187,7 @@ def terms(request):
             form = TermViewForm(initial = { 'baseProject' : m.baseProject.id, 'showProjects' : m.showProjects, 'showColumns' : m.showColumns} )
         else:
             form = TermViewForm()
-    return render_to_response('terms.html', {'m': m, 'form': form}, RequestContext(request))
+    return render_to_response('standard/terms.html', {'m': m, 'form': form}, RequestContext(request))
 
 def termRelationsList(request):
     r = []
@@ -205,7 +218,7 @@ def term(request, id):
     pCount = Project.objects.count()
     return render_to_response('term.html', {'t': t, 'pCount': pCount}, RequestContext(request))
 
-@permission_required("schema.add_Term",login_url="/login/")
+@permission_required("standard.add_Term",login_url="/login/")
 def addTerm(request,referringCategory=None):
 
     initialValues={"project":5,"status":2}
@@ -221,7 +234,7 @@ def addTerm(request,referringCategory=None):
             savedCategory = form.cleaned_data["category"].id
             form.save()
             messages.add_message(request, messages.INFO, 'Success! Term was saved.')
-            return HttpResponseRedirect(reverse('schema:ontologyClass', args=(savedCategory,)))
+            return HttpResponseRedirect(reverse('standard:ontologyClass', args=(savedCategory,)))
         else:
             messages.add_message(request, messages.INFO, 'Please correct the errors below.')
 
@@ -236,7 +249,7 @@ def addTerm(request,referringCategory=None):
 #     pCount = Project.objects.count()
 #     return render_to_response('terms.html', {'t': t, 'pCount': pCount}, RequestContext(request))
 
-@permission_required("schema.add_TermCategory",login_url="/login/")
+@permission_required("standard.add_TermCategory",login_url="/login/")
 def addClass(request):
     termCategoryForm = modelform_factory(TermCategory,widgets={"description":forms.Textarea})
     if request.method == "POST":
@@ -244,7 +257,7 @@ def addClass(request):
         if form.is_valid():
             form.save()
             messages.add_message(request, messages.INFO, 'Success! Class was saved.')
-            return HttpResponseRedirect(reverse("schema:ontology"))
+            return HttpResponseRedirect(reverse("standard:ontology"))
         else:
             messages.add_message(request, messages.INFO, 'Please correct the errors below.')
     else:

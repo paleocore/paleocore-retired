@@ -32,7 +32,7 @@ urlpatterns = patterns('',
     # App URLS
     url(r'^apikey/', include('API.urls')),
     url(r'^API/', include(v1_api.urls)),
-    url(r'^schema/', include('schema.urls', namespace="schema")),
+    url(r'^standard/', include('standard.urls', namespace="standard")),
     url(r'^login/', include('login.urls', namespace="user_login")),
     url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
     url(r'^workshops/', include('meetings.urls', namespace="meetings")),

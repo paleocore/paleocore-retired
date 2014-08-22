@@ -1,7 +1,7 @@
 from django.test import TestCase
 from data.models import Project
 from django.core.urlresolvers import reverse
-from schema.models import Term, Project
+from standard.models import Term, Project
 
 
 # # Factory method to create a fiber page tree with five pages.

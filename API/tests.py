@@ -112,7 +112,7 @@ class TurkanaResourceTest(ResourceTestCase):
         self.assertEqual(len(self.deserialize(resp)), 99) #99 fields
 
     def test_only_get_allowed(self):
-        resp = self.api_client.get('/API/v1/turkana/schema/?format=json')
+        resp = self.api_client.get('/API/v1/turkana/standard/?format=json')
         self.assertEqual(self.deserialize(resp)['allowed_detail_http_methods'],[u'get'])
 
 

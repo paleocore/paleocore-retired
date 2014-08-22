@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from data import views
-from schema import views as schema_views
+from standard import views as schema_views
 
 
 urlpatterns = patterns('data.views',

@@ -114,7 +114,7 @@ class drp_occurrence(models.Model):
     class Meta:
         verbose_name = "DRP Occurrence"
         verbose_name_plural = "DRP Occurrences"
-        # The DRP database is in the SDE schema in order to make it compatible with
+        # The DRP database is in the SDE standard in order to make it compatible with
         # ArcGIS 10.1. Django does not handle PostGIS DB schemas natively. This is a
         # work-around to point Django to the right location for the data tables.
         db_table='drp_occurrence'

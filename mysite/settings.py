@@ -71,7 +71,7 @@ INSTALLED_APPS = (
     'drp',   # Dikika Research Project geospatial app
     'base',  # main site app
     'data',  # manage projects and project data
-    'schema', # paleocore schema
+    'standard', # paleocore standard
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
 )
@@ -97,16 +97,18 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
+        #'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'PORT': '5432',   # default Postgres port
+        #'NAME': 'C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\paleocore.db',
         'NAME': 'paleocore_dev',
         'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
 
         # TACC SETTINGS
         'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
-        'HOST': secrets.DEFAULT_HOST,   # for local development server
+        #'HOST': secrets.DEFAULT_HOST,   # for local development server
 
         # LOCAL SETTINGS
-        #'HOST': 'localhost'
+        'HOST': 'localhost'
     },
 
     'drp_carmen': {

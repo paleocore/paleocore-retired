@@ -1,7 +1,7 @@
 
 {% extends "base.html" %}
 {% load static %}
-{% block extra_style %}<link rel="stylesheet" href="{%  static 'schema/css/schema.css' %}" />{% endblock %}
+{% block extra_style %}<link rel="stylesheet" href="{%  static 'standard/css/standard.css' %}" />{% endblock %}
 {% block page_content %}
 
 <div id="main-wrapper" class="subpage">
@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="5u">
 
-                       <iframe width="110%" height="1500" scrolling="no" src= {% url "schema:ontologyTree" matching_class.id  %} >
+                       <iframe width="110%" height="1500" scrolling="no" src= {% url "standard:ontologyTree" matching_class.id  %} >
                        </iframe>
 
                     </div>
@@ -40,7 +40,7 @@
                        {% for term in matching_terms %}
 
                                 <tr>
-                                    <td><a href={% url 'schema:term' term.id %}>{{ term.name }}</a></td>
+                                    <td><a href={% url 'standard:term' term.id %}>{{ term.name }}</a></td>
                                     <td>{{ term.definition }}</td>
                                 </tr>
 
@@ -57,7 +57,7 @@
             {% endif %}
 
             <div class="thirty-px-padding-div"></div>
-            <a class="button button-inline" href={% url "schema:addTerm" matching_class.id %}>+ Add New Term</a>
+            <a class="button button-inline" href={% url "standard:addTerm" matching_class.id %}>+ Add New Term</a>
             <div class="thirty-px-padding-div"></div>
 
             <h3 style="padding-top: 20px;">Join the Discussion about the '{{ matching_class.name }}' class.</h3>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main_content %}
     {% for term in terms %}
-        <h3>{{ term.name }}</h3>
+        <h3><a href="term/{{ term.id }}">{{ term.name }}</a></h3>
         <p>{{ term.definition|safe }}</p>
         {% if term.uri %}
             <p>URI: <a href="{{ term.uri }}" target="_blank">{{ term.uri }}</a></p>

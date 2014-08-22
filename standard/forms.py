@@ -1,5 +1,5 @@
 from django import forms
-from schema.models import Project, TermCategory
+from standard.models import Project, TermCategory
 
 SHOW_COLUMNS = (
     ('definition','Field Definitions'),

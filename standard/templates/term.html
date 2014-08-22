@@ -3,7 +3,7 @@
 {% load diagrams%}
     <h2><strong>{{ t.name }}</strong> - {{ t.project }}</h2>
 
-    <a href={% url "schema:ontologyClass" t.category.id %}>Return to {{ t.category }} terms</a> or <a href="/admin/schema/term/{{ t.id }}/">Edit "{{ t.name }}" in the admin site.</a>
+    <a href={% url "standard:ontologyClass" t.category.id %}>Return to {{ t.category }} terms</a> or <a href="/admin/schema/term/{{ t.id }}/">Edit "{{ t.name }}" in the admin site.</a>
 
     <table id="terms" style="margin-top:25px;">
         <tr>

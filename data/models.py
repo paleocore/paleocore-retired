@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Project(models.Model):
+
     title = models.CharField(max_length=200, null=False, blank=False)
     short_title = models.CharField(max_length=200, null=False, blank=False)
     principle_investigator = models.CharField(max_length=200, null=True, blank=True)
