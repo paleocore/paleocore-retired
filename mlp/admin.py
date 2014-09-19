@@ -90,7 +90,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in
     fieldset or fields
     """
-    readonly_fields = ('id', 'field_number', 'point_X', 'point_Y', 'date_last_modified')
+    readonly_fields = ('id', 'point_X', 'point_Y', 'date_last_modified')
     list_editable = ['problem']
 
     list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem']

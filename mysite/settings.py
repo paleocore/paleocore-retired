@@ -105,10 +105,10 @@ DATABASES = {
 
         # TACC SETTINGS
         'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
-        #'HOST': secrets.DEFAULT_HOST,   # for local development server
+        'HOST': secrets.DEFAULT_HOST,   # for local development server
 
         # LOCAL SETTINGS
-        'HOST': 'localhost'
+        #'HOST': 'localhost'
     },
 
     'drp_carmen': {
