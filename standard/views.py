@@ -24,10 +24,8 @@ class PaleocoreTermsIndexView(FiberPageMixin, generic.ListView):
     context_object_name = 'terms'
 
     def get_queryset(self):
-        self.project = get_object_or_404(Project, name="PaleoCore")
-
         """Return a list of terms for Paleocore"""
-        return self.project.terms()
+        return Term.objects.filter(status=2)  # Get all terms that have status = "Standard"
 
     def get_fiber_page_url(self):
         return reverse('standard:paleocore_terms_index')

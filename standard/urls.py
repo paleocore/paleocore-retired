@@ -4,8 +4,13 @@ from standard import views
 
 
 urlpatterns = patterns('',
+    # e.g. /standard/
     url(r'^$', standard_views.PaleocoreTermsIndexView.as_view(), name="paleocore_terms_index"),
+
+    # e.g. /standard/term/3/
     url(r'^term/(?P<id>\d+)', 'standard.views.term', name="term"),
+
+    # e.g. /addTerm/PaleoCore/
     url(r'^addTerm/(?P<referringCategory>\d+)', 'standard.views.addTerm', name="addTerm"),
     url(r'^addClass/', 'standard.views.addClass', name="addClass"),
     url(r'^addTerm/', 'standard.views.addTerm', name="addTermNoParameter"),
