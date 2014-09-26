@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 {% block main_content %}
+    <div class="content" id="content">
+    {%  regroup terms by category as terms_list %}
+
+    <table>
+    <th>Group</th><th>Attributes</th>
+    {% for category in terms_list %}
+        <tr>
+            <td class="content" id="content">{{ category.grouper }}</td>
+            <td>{% for term in category.list %}<a href="{{ term.uri }}">{{ term.name }}</a>,{% endfor %}</td>
+        </tr>
+
+
+
+        {% comment %}
+        {% if term.project.name == "ABCDEFG" %}abc:
+        {% elif term.project.name == "Dublin Core" %}dc:
+        {% elif term.project.name == "Darwin Core" %}dwc:
+        {% endif %}
+        {% endcomment %}
+
+
+
+    {% endfor %}
+    </table>
+    </div>
+    {% comment %}
     {% for term in terms %}
         <h3><a href="term/{{ term.id }}">{{ term.name }}</a></h3>
         <p>{{ term.definition|safe }}</p>
@@ -14,4 +40,5 @@
             </p>
         {% endif %}
     {% endfor %}
+    {% endcomment %}
 {% endblock %}

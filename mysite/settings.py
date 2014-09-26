@@ -62,18 +62,23 @@ INSTALLED_APPS = (
     'fiber',
     #'pages',
 
-    # Project Apps
-    'API', #so that testing works
-    'tastypie', #to create database tables for API keys when syncdb is run
-    'login', #simple app for validating users in views
-    'mlp',
-    'turkana',  # Turkana Project Data
-    'drp',   # Dikika Research Project geospatial app
+    # PaleoCore Apps
+    'API',  # so that testing works
+    'tastypie',  # to create database tables for API keys when syncdb is run
+    'login',  # simple app for validating users in views
     'base',  # main site app
     'data',  # manage projects and project data
-    'standard', # paleocore standard
+    'standard',  # paleocore standard
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
+    'efossils',
+
+    # Data Apps
+    'mlp',
+    'drp',   # Dikika Research Project geospatial app
+    'turkana',  # Turkana Project Data
+    'austin',
+
 )
 
 # These entries extended by entries below in Django Fiber section
