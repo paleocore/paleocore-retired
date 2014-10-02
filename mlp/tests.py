@@ -28,7 +28,7 @@ class OccurrenceMethodsTests(TestCase):
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 691311.7081000003963709)
+        self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
 
     def test_mlp_create_method(self):
         """
@@ -42,4 +42,4 @@ class OccurrenceMethodsTests(TestCase):
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 691311.7081000003963709)
+        self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
