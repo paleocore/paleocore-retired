@@ -12,11 +12,18 @@ from django.core.exceptions import ObjectDoesNotExist
 ###################
 
 biology_fieldsets = (
-    (None, {'fields':(('occurrence',))}),
-    ('Element', {'fields':(('side',))}),
-('Taxonomy', {
-'fields': (('tax_class',),('tax_order',),('family',),('subfamily',),('tribe',),('genus','specificepithet'),("id"))
-}),
+    (None, {
+        'fields': (('occurrence',), )
+    }),
+
+    ('Element', {
+        'fields': (('side',), )
+    }),
+
+    ('Taxonomy', {
+        'fields': (('tax_class',), ('tax_order',), ('family',), ('subfamily',), ('tribe',),
+                   ('genus', 'specificepithet'), ("id",))
+    }),
 )
 
 
@@ -28,7 +35,8 @@ class BiologyInline(admin.TabularInline):
 
 
 class BiologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "side", "occurrence", "tax_class","tax_order","family","subfamily","tribe","genus","specificepithet","lowest_level_identification")
+    list_display = ("id", "side", "occurrence", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus",
+                    "specificepithet", "lowest_level_identification")
     list_filter = ("family", "side")
     search_fields = ("lowest_level_identification",)
     readonly_fields = ("id",)
@@ -38,7 +46,7 @@ class BiologyAdmin(admin.ModelAdmin):
 ## Occurrence Admin ##
 ######################
 
-occurrence_fieldsets =(
+occurrence_fieldsets = (
     ('Curatorial', {
         'fields': (('barcode', 'catalog_number'),
                    ('id', 'field_number', 'year_collected', 'date_last_modified'),
@@ -50,7 +58,7 @@ occurrence_fieldsets =(
                    ('collecting_method', 'finder', 'collector', 'individual_count'),
                    ('item_description', 'item_scientific_name', 'image'),
                    ('problem', 'problem_comment'),
-                   ('remarks'))
+                   ('remarks', ))
     }),
     ('Taphonomic Details', {
         'fields': (
@@ -61,19 +69,20 @@ occurrence_fieldsets =(
         'fields': (('analytical_unit',),
                    ('in_situ', 'ranked'),
                    ('point_x', 'point_y'),
-                   ('geom'))
+                   ('geom', ))
     })
 )
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'collection_code', 'item_number','barcode', 'basis_of_record', 'item_type', 'collecting_method',
-                    'collector', 'item_scientific_name','get_tax_order','get_family','get_genus', 'item_description', 'year_collected',
-                     'in_situ', 'problem')
+    list_display = ('id', 'collection_code', 'item_number', 'barcode', 'basis_of_record', 'item_type',
+                    'collecting_method', 'collector', 'item_scientific_name','get_tax_order', 'get_family', 'get_genus',
+                    'item_description', 'year_collected', 'in_situ', 'problem')
+
     def get_genus(self, obj):
         return obj.biology.genus
     get_genus.short_description = "genus"
-    get_genus.admin_order_field = "biology__genus" #required to enable admin sorting
+    get_genus.admin_order_field = "biology__genus"  # required to enable admin sorting
 
     def get_family(self, obj):
         return obj.biology.family
@@ -86,7 +95,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     get_tax_order.admin_order_field = "biology__tax_order"
 
     """
-    Autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
+    Auto-number fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     also, any dynamically created fields (e.g. point_x) in models.py must be declared as read only to be included in
     fieldset or fields
     """
@@ -107,7 +116,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
 
     actions = ["create_data_csv"]
 
-    #admin action to download data in csv format
+    # admin action to download data in csv format
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'  # declare the file name
