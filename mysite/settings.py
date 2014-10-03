@@ -77,7 +77,7 @@ INSTALLED_APPS = (
     'mlp',
     'drp',   # Dikika Research Project geospatial app
     'turkana',  # Turkana Project Data
-    'austin',
+    # 'austin',
 
 )
 
@@ -105,6 +105,7 @@ DATABASES = {
         #'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'PORT': '5432',   # default Postgres port
         #'NAME': 'C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\paleocore.db',
+        #'NAME': 'paleocore_qa',
         'NAME': 'paleocore_dev',
         'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
 
