@@ -9,7 +9,31 @@ from django.contrib.auth import authenticate,login
 from django.contrib.admin.sites import AdminSite
 
 
-# Create your tests here.
+###################
+# Factory Methods #
+###################
+def create_django_page_tree():
+    mainmenu=Page(title='mainmenu')
+    mainmenu.save()
+    Home = Page(title='Home', parent=mainmenu, url='home', template_name='arcana_home.html')
+    Home.save()
+    data = Page(title='Data', parent=Home, url='data', template_name='')
+    data.save()
+    MLP = Page(title='MLP', parent=Home, url='mlp', template_name='')
+    data.save()
+    Upload = Page(title='Upload', parent=MLP, url='upload', template_name='')
+    data.save()
+    kml = Page(title='Data', parent=Upload, url='kml', template_name='')
+    data.save()
+    #members=Page(title='members', parent=home, url='members', template_name='base/members')
+    #members.save()
+    #meetings = Page(title='meetings', parent=mainmenu, url='meetings', template_name='')
+    #meetings.save()
+
+
+######################################
+# Tests for models and their methods #
+######################################
 class OccurrenceMethodsTests(TestCase):
     """
     Test mlp Occurrence instance creation and methods
@@ -43,3 +67,17 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
+
+
+###################
+# Page View Tests #
+###################
+class MLPViewTests(TestCase):
+    """
+    Test MLP page views with Django-Fiber
+    """
+    def test_mlp_home_view(self):
+        create_django_page_tree()
+        response = self.client.get(reverse('mlp:mlp_upload_kml'))  # this line fails!
+        #self.assertEqual(response.status_code, 200)
+        #self.assertQuerysetEqual(response.context['meeting_list'], [])
