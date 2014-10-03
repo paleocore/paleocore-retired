@@ -37,13 +37,17 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
         kmldoc = kmlf.read()  # read() loads entire file as one string
         kmlf.close()
         k.from_string(kmldoc)
+        features = k._features
 
-        features = list(k._features[0]._features)
-        #chop off the folder feature
-        occurrences = features[1:len(features)-1]
-        for f in occurrences:
-            table = etree.fromstring(f.description)
-            attributes = table.xpath("//text")
+        f2 = list(features[0].features())
+        firstFeature = f2[1]
+        occurences = f2[1:]
+        for firstFeature in occurences:
+
+            firstFeatureName = firstFeature.name
+            firstFeatureDescription = firstFeature.description
+            table = etree.fromstring(firstFeatureDescription)
+            attributes = table.xpath("//text()")
             # TODO test attributes is even length
             attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
@@ -59,10 +63,10 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
             mlp_occ.item_type = attributes_dict.get("Item Type")
             mlp_occ.remarks = attributes_dict.get("Remarks")
             mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-            field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
+            field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"),"%b %d, %Y, %H:%M %p" )
             mlp_occ.field_number = field_number_datetime
 
-            utmPoint = utm.from_latlon(f.geometry.y, f.geometry.x)
+            utmPoint = utm.from_latlon(firstFeature.geometry.y, firstFeature.geometry.x)
             pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637) # WKT
             mlp_occ.geom = pnt
             mlp_occ.save()
