@@ -28,6 +28,9 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
+
+        # TODO parse the kml file more smartly to locate the first palcemark and work from there.
+        # TODO ingest kmz and kml. See the zipfile python library
         KML_file = self.request.FILES['kmlfileUpload']
         KML_file_name = self.request.FILES['kmlfileUpload'].name
         kml_file_on_disk = default_storage.save(KML_file_name, ContentFile(KML_file.read()))
@@ -42,7 +45,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         f2 = list(features[0].features())
         firstFeature = f2[1]
-        occurrences = f2[1:]
+        occurrences = f2[0:]
 
         for firstFeature in occurrences:
 
