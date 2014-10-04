@@ -6,6 +6,7 @@ class UploadKMLForm(forms.Form):
         label='Upload a kml file, *.kml',
     )
 
+
 class UploadForm(forms.Form):
     shapefileUpload = forms.FileField(
         label='Upload a shape file, *.shp',

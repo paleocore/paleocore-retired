@@ -18,11 +18,12 @@ from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.geos import GEOSGeometry
 import utm
 
+
 class UploadKMLView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
-    success_url = 'mlp/upload/kml'
+    success_url = '/mlp/confirmation/'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -41,8 +42,9 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         f2 = list(features[0].features())
         firstFeature = f2[1]
-        occurences = f2[1:]
-        for firstFeature in occurences:
+        occurrences = f2[1:]
+
+        for firstFeature in occurrences:
 
             firstFeatureName = firstFeature.name
             firstFeatureDescription = firstFeature.description
@@ -53,22 +55,48 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
             mlp_occ = Occurrence()
 
+            ###################
+            # REQUIRED FIELDS #
+            ###################
+            # TODO validate no duplicate barcodes
             mlp_occ.barcode = attributes_dict.get("Barcode")
-            mlp_occ.basis_of_record = attributes_dict.get("Basis Of Record")
-            mlp_occ.collecting_method = attributes_dict.get("Collection Method")
-            mlp_occ.collector = attributes_dict.get("Collector")
-            mlp_occ.individual_count = attributes_dict.get("Count")
-            mlp_occ.item_description = attributes_dict.get("Description")
-            mlp_occ.in_situ = attributes_dict.get("In Situ")
+            # TODO validate values match structured vocabulary in mysite.ontologies.BASIS_OF_RECORD_VOCABULARY
+            if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
+                mlp_occ.basis_of_record = "FossilSpecimen"
+            elif attributes_dict.get("Basis Of Record") in ("Observation", "HumanObservation"):
+                mlp_occ.basis_of_record = "HumanObservation"
+
+            #mlp_occ.basis_of_record = attributes_dict.get("Basis Of Record")
+
+            # TODO validate values match structured vocabular in mysite.ontologies.ITEM_TYPE_VOCABULARY
             mlp_occ.item_type = attributes_dict.get("Item Type")
-            mlp_occ.remarks = attributes_dict.get("Remarks")
-            mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-            field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"),"%b %d, %Y, %H:%M %p" )
+
+            field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
             mlp_occ.field_number = field_number_datetime
 
             utmPoint = utm.from_latlon(firstFeature.geometry.y, firstFeature.geometry.x)
-            pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637) # WKT
+            pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637)  # WKT
             mlp_occ.geom = pnt
+
+            #######################
+            # NON-REQUIRED FIELDS #
+            #######################
+            mlp_occ.item_number = mlp_occ.barcode
+            mlp_occ.catalog_number = "MLP-" + str(mlp_occ.item_number)
+            mlp_occ.remarks = attributes_dict.get("Remarks")
+            mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
+            mlp_occ.item_description = attributes_dict.get("Description")
+
+            mlp_occ.collecting_method = attributes_dict.get("Collection Method")
+            mlp_occ.collector = attributes_dict.get("Collector")
+            mlp_occ.individual_count = attributes_dict.get("Count")
+            mlp_occ.year_collected = mlp_occ.field_number.year
+
+            if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
+                mlp_occ.in_situ = False
+            elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
+                mlp_occ.in_situ = True
+
             mlp_occ.save()
 
         return super(UploadKMLView, self).form_valid(form)
@@ -77,13 +105,19 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
         return reverse('mlp:mlp_upload_kml')
 
 
+class Confirmation(FiberPageMixin, generic.ListView):
+    template_name = 'mlp/confirmation.html'
+    model = Occurrence
+
+    def get_fiber_page_url(self):
+        return reverse('mlp:upload_confirmation')
 
 
 class UploadView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/upload.html'
     form_class = UploadForm
     context_object_name = 'upload'
-    success_url = 'mlp/upload'
+    success_url = 'confirmation'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
