@@ -75,8 +75,8 @@ occurrence_fieldsets = (
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'collection_code', 'item_number', 'barcode', 'basis_of_record', 'item_type',
-                    'collecting_method', 'collector', 'item_scientific_name','get_tax_order', 'get_family', 'get_genus',
+    list_display = ('id', 'barcode', 'field_number', 'basis_of_record', 'collection_code', 'item_number',   'item_type',
+                    'collecting_method', 'collector', 'item_scientific_name', 'get_tax_order', 'get_family', 'get_genus',
                     'item_description', 'year_collected', 'in_situ', 'problem')
 
     def get_genus(self, obj):
@@ -102,7 +102,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'point_x', 'point_y', 'date_last_modified')
     list_editable = ['problem']
 
-    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem']
+    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     inlines = [BiologyInline, ]
     fieldsets = occurrence_fieldsets
