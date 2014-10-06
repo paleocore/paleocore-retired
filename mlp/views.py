@@ -4,19 +4,17 @@ from django.conf import settings
 from django.views import generic
 import os
 from models import *
-from standard.models import Term
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import permission_required
 from fiber.views import FiberPageMixin
 import shapefile
 from mlp.forms import UploadForm, UploadKMLForm
 from fastkml import kml
+from fastkml import Placemark
 from lxml import etree
-import django.contrib.gis
 import datetime
-from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.geos import GEOSGeometry
 import utm
+from zipfile import ZipFile
 
 
 class UploadKMLView(FiberPageMixin, generic.FormView):
@@ -31,76 +29,83 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         # TODO parse the kml file more smartly to locate the first palcemark and work from there.
         # TODO ingest kmz and kml. See the zipfile python library
-        KML_file = self.request.FILES['kmlfileUpload']
-        KML_file_name = self.request.FILES['kmlfileUpload'].name
-        kml_file_on_disk = default_storage.save(KML_file_name, ContentFile(KML_file.read()))
+        KML_file_upload = self.request.FILES['kmlfileUpload']
+        KML_file_upload_name = self.request.FILES['kmlfileUpload'].name
+        KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]
+        KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]
+
+        default_storage.save(KML_file_upload_name, ContentFile(KML_file_upload.read()))
         KML_file_path = os.path.join(settings.MEDIA_ROOT)
 
-        k = kml.KML()
-        kmlf = open(KML_file_path + "/" + KML_file_name, 'r')
-        kmldoc = kmlf.read()  # read() loads entire file as one string
-        kmlf.close()
-        k.from_string(kmldoc)
-        features = k._features
+        KML_file = kml.KML()
+        if KML_file_extension == "kmz":
+            KMZ_file = ZipFile(KML_file_path + "/" + KML_file_upload_name, 'r')
+            KML_document = KMZ_file.open('doc.kml', 'r').read()
+        else:
+            KML_document = open(KML_file_path + "/" + KML_file_upload_name, 'r').read()  # read() loads entire file as one string
 
-        f2 = list(features[0].features())
-        firstFeature = f2[1]
-        occurrences = f2[0:]
+        KML_file.from_string(KML_document)
+        # get the top level features object (this is essentially the layers list)
+        layers = KML_file._features
+        # We expect only a single layer (i.e. occurrences)
+        # get the first element and then get the features associated with that layer.
+        occurrences = list(layers[0].features())
 
-        for firstFeature in occurrences:
+        for o in occurrences:
 
-            firstFeatureName = firstFeature.name
-            firstFeatureDescription = firstFeature.description
-            table = etree.fromstring(firstFeatureDescription)
-            attributes = table.xpath("//text()")
-            # TODO test attributes is even length
-            attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
+            # Check to make sure that the object is a Placemark, filter out folder objects
+            if type(o) is Placemark:
 
-            mlp_occ = Occurrence()
+                table = etree.fromstring(o.description)
+                attributes = table.xpath("//text()")
+                # TODO test attributes is even length
+                attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-            ###################
-            # REQUIRED FIELDS #
-            ###################
-            # TODO validate no duplicate barcodes
-            mlp_occ.barcode = attributes_dict.get("Barcode")
-            # TODO validate values match structured vocabulary in mysite.ontologies.BASIS_OF_RECORD_VOCABULARY
-            if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
-                mlp_occ.basis_of_record = "FossilSpecimen"
-            elif attributes_dict.get("Basis Of Record") in ("Observation", "HumanObservation"):
-                mlp_occ.basis_of_record = "HumanObservation"
+                mlp_occ = Occurrence()
 
-            #mlp_occ.basis_of_record = attributes_dict.get("Basis Of Record")
+                ###################
+                # REQUIRED FIELDS #
+                ###################
+                # TODO validate no duplicate barcodes
+                mlp_occ.barcode = attributes_dict.get("Barcode")
+                # TODO validate values match structured vocabulary in mysite.ontologies.BASIS_OF_RECORD_VOCABULARY
+                if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
+                    mlp_occ.basis_of_record = "FossilSpecimen"
+                elif attributes_dict.get("Basis Of Record") in ("Observation", "HumanObservation"):
+                    mlp_occ.basis_of_record = "HumanObservation"
 
-            # TODO validate values match structured vocabular in mysite.ontologies.ITEM_TYPE_VOCABULARY
-            mlp_occ.item_type = attributes_dict.get("Item Type")
+                #mlp_occ.basis_of_record = attributes_dict.get("Basis Of Record")
 
-            field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
-            mlp_occ.field_number = field_number_datetime
+                # TODO validate values match structured vocabular in mysite.ontologies.ITEM_TYPE_VOCABULARY
+                mlp_occ.item_type = attributes_dict.get("Item Type")
 
-            utmPoint = utm.from_latlon(firstFeature.geometry.y, firstFeature.geometry.x)
-            pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637)  # WKT
-            mlp_occ.geom = pnt
+                field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
+                mlp_occ.field_number = field_number_datetime
 
-            #######################
-            # NON-REQUIRED FIELDS #
-            #######################
-            mlp_occ.item_number = mlp_occ.barcode
-            mlp_occ.catalog_number = "MLP-" + str(mlp_occ.item_number)
-            mlp_occ.remarks = attributes_dict.get("Remarks")
-            mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-            mlp_occ.item_description = attributes_dict.get("Description")
+                utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
+                pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637)  # WKT
+                mlp_occ.geom = pnt
 
-            mlp_occ.collecting_method = attributes_dict.get("Collection Method")
-            mlp_occ.collector = attributes_dict.get("Collector")
-            mlp_occ.individual_count = attributes_dict.get("Count")
-            mlp_occ.year_collected = mlp_occ.field_number.year
+                #######################
+                # NON-REQUIRED FIELDS #
+                #######################
+                mlp_occ.item_number = mlp_occ.barcode
+                mlp_occ.catalog_number = "MLP-" + str(mlp_occ.item_number)
+                mlp_occ.remarks = attributes_dict.get("Remarks")
+                mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
+                mlp_occ.item_description = attributes_dict.get("Description")
 
-            if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
-                mlp_occ.in_situ = False
-            elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
-                mlp_occ.in_situ = True
+                mlp_occ.collecting_method = attributes_dict.get("Collection Method")
+                mlp_occ.collector = attributes_dict.get("Collector")
+                mlp_occ.individual_count = attributes_dict.get("Count")
+                mlp_occ.year_collected = mlp_occ.field_number.year
 
-            mlp_occ.save()
+                if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
+                    mlp_occ.in_situ = False
+                elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
+                    mlp_occ.in_situ = True
+
+                mlp_occ.save()
 
         return super(UploadKMLView, self).form_valid(form)
 
