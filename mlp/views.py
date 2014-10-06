@@ -7,15 +7,43 @@ from models import *
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 import shapefile
-from mlp.forms import UploadForm, UploadKMLForm
+from mlp.forms import UploadForm, UploadKMLForm #, DownloadKMLForm
 from fastkml import kml
 from fastkml import Placemark
 from lxml import etree
 import datetime
 from django.contrib.gis.geos import GEOSGeometry
-import utm
 from zipfile import ZipFile
+from shapely.geometry import Point, LineString, Polygon
+from django.http import HttpResponse
 
+# class DownloadKMLView(FiberPageMixin, generic.FormView):
+#     template_name = 'mlp/download_kml.html'
+#     form_class = DownloadKMLForm
+#     context_object_name = 'download'
+#     success_url = '/mlp/confirmation/'
+#
+#     def form_valid(self, form):
+#         k = kml.KML()
+#         ns = '{http://www.opengis.net/kml/2.2}'
+#         d = kml.Document(ns, 'docid', 'doc name', 'doc description')
+#         f = kml.Folder(ns, 'fid', 'f name', 'f description')
+#         k.append(d)
+#         d.append(f)
+#         nf = kml.Folder(ns, 'nested-fid', 'nested f name', 'nested f description')
+#         f.append(nf)
+#         f2 = kml.Folder(ns, 'id2', 'name2', 'description2')
+#         d.append(f2)
+#         p = kml.Placemark(ns, 'id', 'name', 'description')
+#         p.geometry =  Polygon([(0, 0, 0), (1, 1, 0), (1, 0, 1)])
+#         f2.append(p)
+#         r = k.to_string(prettyprint=True)
+#         response = HttpResponse(r, mimetype='text/plain')
+#         response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
+#         return response
+#
+#     def get_fiber_page_url(self):
+#         return reverse('mlp:mlp_download_kml')
 
 class UploadKMLView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/upload_kml.html'
@@ -82,8 +110,8 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 field_number_datetime = datetime.datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
                 mlp_occ.field_number = field_number_datetime
 
-                utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
-                pnt = GEOSGeometry("POINT (" + str(utmPoint[0]) + " " + str(utmPoint[1]) + ")", 32637)  # WKT
+                #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
+                pnt = GEOSGeometry("POINT (" + str(o.geometry.y) + " " + str(o.geometry.x) + ")", 4326)  # WKT
                 mlp_occ.geom = pnt
 
                 #######################

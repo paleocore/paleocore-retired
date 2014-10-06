@@ -6,6 +6,13 @@ class UploadKMLForm(forms.Form):
         label='Upload a kml file, *.kml',
     )
 
+# class DownloadKMLForm(forms.Form):
+#     FILE_TYPE_CHOICES = ('KML', 'KMZ')
+#     kmlfileDownload = forms.MultipleChoiceField(
+#         required=False,
+#         widget=forms.CheckboxSelectMultiple,
+#         choices=FILE_TYPE_CHOICES
+#     )
 
 class UploadForm(forms.Form):
     shapefileUpload = forms.FileField(
