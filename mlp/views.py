@@ -111,7 +111,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 mlp_occ.field_number = field_number_datetime
 
                 #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
-                pnt = GEOSGeometry("POINT (" + str(o.geometry.y) + " " + str(o.geometry.x) + ")", 4326)  # WKT
+                pnt = GEOSGeometry("POINT (" + str(o.geometry.x) + " " + str(o.geometry.y) + ")", 4326)  # WKT
                 mlp_occ.geom = pnt
 
                 #######################
