@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from polls.models import Poll
-
+from fiber.models import Page
 
 class PollMethodTests(TestCase):
 
@@ -45,7 +45,12 @@ def create_poll(question, days):
         pub_date=timezone.now() + datetime.timedelta(days=days))
 
 
-class PollInddexViewTests(TestCase):
+def create_fiber_page_tree():
+    mainmenu=Page(title='mainmenu')
+    mainmenu.save()
+
+
+class PollIndexViewTests(TestCase):
     def test_index_view_with_no_polls(self):
         """
         If no polls exist, an appropriate message should be displayed.
@@ -101,21 +106,36 @@ class PollInddexViewTests(TestCase):
              ['<Poll: Past poll 2.>', '<Poll: Past poll 1.>']
         )
 
-# class PollDetailViewTests(TestCase):
-#     def test_detail_view_with_a_future_poll(self):
-#         """
-#         The detail view of a poll with a pub_date in the future should
-#         return a 404 not found.
-#         """
-#         future_poll = create_poll(question='Future poll.', days=5)
-#         response = self.client.get(reverse('polls:detail', args=(future_poll.id,)))
-#         self.assertEqual(response.status_code, 404)
-#
-#     def test_detail_view_with_a_past_poll(self):
-#         """
-#         The detail view of a poll with a pub_date in the past should display
-#         the poll's question.
-#         """
-#         past_poll = create_poll(question='Past Poll.', days=-5)
-#         response = self.client.get(reverse('polls:detail', args=(past_poll.id,)))
-#         self.assertContains(response, past_poll.question, status_code=200)
+
+class PollDetailViewTests(TestCase):
+    def test_detail_view_with_one_poll1(self):
+        """
+        The detail view should return status 200 if a poll exists
+        """
+        question = "Am I poll 1"
+        create_poll(question=question, days=-1)
+        current_poll = Poll.objects.get(question=question)
+        create_fiber_page_tree()
+        response = self.client.get(reverse('polls:detail', args=[current_poll.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_view_with_a_future_poll(self):
+        """
+        The detail view of a poll with a pub_date in the future should
+        return a 404 not found.
+        """
+        future_poll = create_poll(question='Future poll.', days=5)
+        create_fiber_page_tree()
+        response = self.client.get(reverse('polls:detail', args=(future_poll.id,)))
+        self.assertEqual(response.status_code, 404)
+
+    def test_detail_view_with_a_past_poll(self):
+        """
+        The detail view of a poll with a pub_date in the past should display
+        the poll's question.
+        """
+        past_poll = create_poll(question='Past Poll.', days=-5)
+        create_fiber_page_tree()
+        response = self.client.get(reverse('polls:detail', args=(past_poll.id,)))
+        self.assertContains(response, past_poll.question, status_code=200)
+

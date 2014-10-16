@@ -3,7 +3,7 @@ from django import forms
 
 class UploadKMLForm(forms.Form):
     kmlfileUpload = forms.FileField(
-        label='Upload a kml file, *.kml',
+        label='Upload a kml/kmz file, *.kml or *.kmz ',
     )
 
 # class DownloadKMLForm(forms.Form):
