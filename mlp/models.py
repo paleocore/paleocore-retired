@@ -77,10 +77,10 @@ class Occurrence(models.Model):
             return "item "+str(self.id)
 
     def point_x(self):
-        return self.geom.x
+        return self.geom.coords[1]
 
     def point_y(self):
-        return self.geom.y
+        return self.geom.coords[0]
 
     @staticmethod
     def fields_to_display():

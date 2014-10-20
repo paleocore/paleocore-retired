@@ -4,46 +4,85 @@ from django.conf import settings
 from django.views import generic
 import os
 from models import *
+from models import Occurrence
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 import shapefile
-from mlp.forms import UploadForm, UploadKMLForm #, DownloadKMLForm
+from mlp.forms import UploadForm, UploadKMLForm, DownloadKMLForm
 from fastkml import kml
 from fastkml import Placemark
 from lxml import etree
 import datetime
 from django.contrib.gis.geos import GEOSGeometry
+import utm
 from zipfile import ZipFile
 from shapely.geometry import Point, LineString, Polygon
 from django.http import HttpResponse
 
-# class DownloadKMLView(FiberPageMixin, generic.FormView):
-#     template_name = 'mlp/download_kml.html'
-#     form_class = DownloadKMLForm
-#     context_object_name = 'download'
-#     success_url = '/mlp/confirmation/'
-#
-#     def form_valid(self, form):
-#         k = kml.KML()
-#         ns = '{http://www.opengis.net/kml/2.2}'
-#         d = kml.Document(ns, 'docid', 'doc name', 'doc description')
-#         f = kml.Folder(ns, 'fid', 'f name', 'f description')
-#         k.append(d)
-#         d.append(f)
-#         nf = kml.Folder(ns, 'nested-fid', 'nested f name', 'nested f description')
-#         f.append(nf)
-#         f2 = kml.Folder(ns, 'id2', 'name2', 'description2')
-#         d.append(f2)
-#         p = kml.Placemark(ns, 'id', 'name', 'description')
-#         p.geometry =  Polygon([(0, 0, 0), (1, 1, 0), (1, 0, 1)])
-#         f2.append(p)
-#         r = k.to_string(prettyprint=True)
-#         response = HttpResponse(r, mimetype='text/plain')
-#         response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
-#         return response
-#
-#     def get_fiber_page_url(self):
-#         return reverse('mlp:mlp_download_kml')
+class DownloadKMLView(FiberPageMixin, generic.FormView):
+    template_name = 'mlp/download_kml.html'
+    form_class = DownloadKMLForm
+    context_object_name = 'download'
+    success_url = '/mlp/confirmation/'
+
+    def form_valid(self, form):
+        k = kml.KML()
+        ns = '{http://www.opengis.net/kml/2.2}'
+        d = kml.Document(ns, 'docid', 'doc name', 'doc description')
+        f = kml.Folder(ns, 'fid', 'f name', 'f description')
+        k.append(d)
+        d.append(f)
+        nf = kml.Folder(ns, 'nested-fid', 'nested f name', 'nested f description')
+        f.append(nf)
+        f2 = kml.Folder(ns, 'id2', 'name2', 'description2')
+        d.append(f2)
+        p = kml.Placemark(ns, 'id', 'name', 'description')
+        os = Occurrence.objects.all()
+        for o in os:
+            if (o.geom):
+                p = kml.Placemark(ns, 'id', 'name', 'description')
+                coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
+                pnt = Point([coord[1], coord[0]])
+                p.name = str(o.barcode)
+                d = "<![CDATA[<table>"
+                openrow = "<tr><td>"
+                middlerow = "</td><td>"
+                closerow = "</td></tr>"
+
+                d += openrow
+                d += ''.join(("Basis of Record", middlerow))
+                d += ''.join(filter(None, (o.basis_of_record, closerow, openrow)))
+                d += ''.join(("Time", middlerow))
+                d += ''.join(filter(None, (str(o.field_number), closerow, openrow)))
+                d += ''.join(("Item Type", middlerow))
+                d += ''.join(filter(None, (o.item_type, closerow, openrow)))
+                d += ''.join(("Collector", middlerow))
+                d += ''.join(filter(None, (o.collector, closerow, openrow)))
+                d += ''.join(("Collection Method", middlerow))
+                d += ''.join(filter(None, (o.collecting_method, closerow, openrow)))
+                d += ''.join(("Count", middlerow))
+                d += ''.join(filter(None, (str(o.individual_count), closerow, openrow)))
+                d += ''.join(("Bar Code", middlerow))
+                d += ''.join(filter(None, (str(o.barcode), closerow, openrow)))
+                d += ''.join(("Scientific Name", middlerow))
+                d += ''.join(filter(None, (o.item_scientific_name, closerow, openrow)))
+                d += ''.join(("Description", middlerow))
+                d += ''.join(filter(None, (o.item_description, closerow, openrow)))
+                d += ''.join(("Remarks", middlerow))
+                d += ''.join(filter(None, (o.remarks, closerow, openrow)))
+                d += ''.join(("In Situ", middlerow))
+                d += ''.join(filter(None, (str(o.in_situ), closerow)))
+                d += "</table>]]>"
+                p.description = d
+                p.geometry = pnt
+                f2.append(p)
+        r = k.to_string(prettyprint=True)
+        response = HttpResponse(r, mimetype='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
+        return response
+
+    def get_fiber_page_url(self):
+        return reverse('mlp:mlp_download_kml')
 
 class UploadKMLView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/upload_kml.html'
