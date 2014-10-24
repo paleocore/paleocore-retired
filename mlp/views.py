@@ -29,15 +29,15 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
         k = kml.KML()
         ns = '{http://www.opengis.net/kml/2.2}'
         d = kml.Document(ns, 'docid', 'MLP Observations', 'KML Document')
-        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains placemarks for specimens and observations.')
+        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains place marks for specimens and observations.')
         k.append(d)
         d.append(f)
         os = Occurrence.objects.all()
         for o in os:
             if (o.geom):
                 p = kml.Placemark(ns, 'id', 'name', 'description')
-                coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
-                pnt = Point([coord[1], coord[0]])
+                #coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
+                pnt = Point(o.geom.coords[0], o.geom.coords[1])
                 p.name = o.__str__()
                 d = "<![CDATA[<table>"
                 openrow = "<tr><td>"
