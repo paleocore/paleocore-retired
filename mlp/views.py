@@ -28,25 +28,20 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
     def form_valid(self, form):
         k = kml.KML()
         ns = '{http://www.opengis.net/kml/2.2}'
-        d = kml.Document(ns, 'docid', 'doc name', 'doc description')
-        f = kml.Folder(ns, 'fid', 'f name', 'f description')
+        d = kml.Document(ns, 'docid', 'MLP Observations', 'KML Document')
+        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains placemarks for specimens and observations.')
         k.append(d)
         d.append(f)
-        nf = kml.Folder(ns, 'nested-fid', 'nested f name', 'nested f description')
-        f.append(nf)
-        f2 = kml.Folder(ns, 'id2', 'name2', 'description2')
-        d.append(f2)
-        p = kml.Placemark(ns, 'id', 'name', 'description')
         os = Occurrence.objects.all()
         for o in os:
             if (o.geom):
                 p = kml.Placemark(ns, 'id', 'name', 'description')
                 coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
                 pnt = Point([coord[1], coord[0]])
-                p.name = str(o.barcode)
+                p.name = o.__str__()
                 d = "<![CDATA[<table>"
                 openrow = "<tr><td>"
-                middlerow = "</td><td>"
+                middlerow = "</td><td style='font-weight:bold'>"
                 closerow = "</td></tr>"
 
                 d += openrow
@@ -72,10 +67,10 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
                 d += ''.join(filter(None, (o.remarks, closerow, openrow)))
                 d += ''.join(("In Situ", middlerow))
                 d += ''.join(filter(None, (str(o.in_situ), closerow)))
-                d += "</table>]]>"
+                d += "</table>"
                 p.description = d
                 p.geometry = pnt
-                f2.append(p)
+                f.append(p)
         r = k.to_string(prettyprint=True)
         response = HttpResponse(r, mimetype='text/plain')
         response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
@@ -173,6 +168,11 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                     mlp_occ.in_situ = True
 
                 mlp_occ.save()
+
+                # Now look for images
+                #photos = attributes_dict.get("Photos")
+                #if (photos):
+
 
         return super(UploadKMLView, self).form_valid(form)
 
