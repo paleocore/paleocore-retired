@@ -3,6 +3,7 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from django.views import generic
 import os
+import shutil
 from models import *
 from models import Occurrence
 from django.core.urlresolvers import reverse
@@ -99,6 +100,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
         default_storage.save(KML_file_upload_name, ContentFile(KML_file_upload.read()))
         KML_file_path = os.path.join(settings.MEDIA_ROOT)
 
+        # TODO: Check for file extension other than kml or kmz
         KML_file = kml.KML()
         if KML_file_extension == "kmz":
             KMZ_file = ZipFile(KML_file_path + "/" + KML_file_upload_name, 'r')
@@ -211,9 +213,26 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
                 # TODO If item type is Fauna or Flora add to Biology table
 
-                # Now look for images
-                #photos = attributes_dict.get("Photos")
-                #if (photos):
+                # Now look for images if this is a KMZ
+                if KML_file_extension.lower() == "kmz":
+                    # grab image names from XML
+                    image_tags = table.xpath("//img/@src")
+                    # loop through each attachment
+                    for attachment in image_tags:
+                        # find the relevant attachment
+                        for file_info in KMZ_file.filelist:
+                            if attachment == file_info.orig_filename:
+                                # extract file from kmz to the working directory
+                                attachment_file = KMZ_file.extract(file_info)
+                                # calculate new file name based on record id and original name
+                                new_file_name = str(mlp_occ.id) + "_" + file_info.orig_filename
+                                # calculate destination directory
+                                complete_name = os.path.join(KML_file_path, "imports/" + new_file_name)
+                                # move file
+                                shutil.move(attachment_file, complete_name)
+                                # save image name to DB
+                                mlp_occ.image = new_file_name
+                                mlp_occ.save()
 
 
         return super(UploadKMLView, self).form_valid(form)
