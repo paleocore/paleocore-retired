@@ -152,7 +152,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
                 # Field Number
                 try:
-                    mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %H:%M %p")
+                    mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
                 except ValueError:
                     mlp_occ.field_number = datetime.now()
                     mlp_occ.problem = True
