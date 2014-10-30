@@ -208,11 +208,6 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
                     mlp_occ.in_situ = True
 
-                mlp_occ.save()
-                feature_count += 1
-
-                # TODO If item type is Fauna or Flora add to Biology table
-
                 # Now look for images if this is a KMZ
                 if KML_file_extension.lower() == "kmz":
                     # grab image names from XML
@@ -225,12 +220,20 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                             if image_tag == file_info.orig_filename:
                                 #image_file_info = KMZ_file.filelist[KMZ_file.filelist.index(image_tag)]
                                 # grab the image file itself
-                                image_file = KMZ_file.extract(file_info)
+                                image_file = KMZ_file.extract(file_info, "uploads/images/mlp")
+                                #os.rename(image_file.)
                                 mlp_occ.image = image_file
-                                mlp_occ.save()
+                                #mlp_occ.save()
                                 break
                     except IndexError:
                         pass
+
+                mlp_occ.save()
+                feature_count += 1
+
+                # TODO If item type is Fauna or Flora add to Biology table
+
+
 
                     # loop through each attachment
                     # for attachment in image_tags:
