@@ -208,6 +208,8 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
                     mlp_occ.in_situ = True
 
+                image_file = ""
+                image_added = False
                 # Now look for images if this is a KMZ
                 if KML_file_extension.lower() == "kmz":
                     # grab image names from XML
@@ -218,22 +220,28 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                         # grab the file info from the zip list
                         for file_info in KMZ_file.filelist:
                             if image_tag == file_info.orig_filename:
-                                #image_file_info = KMZ_file.filelist[KMZ_file.filelist.index(image_tag)]
                                 # grab the image file itself
-                                image_file = KMZ_file.extract(file_info, "uploads/images/mlp")
-                                #os.rename(image_file.)
-                                mlp_occ.image = image_file
-                                #mlp_occ.save()
+                                image_file = KMZ_file.extract(file_info, "media/uploads/images/mlp")
+                                image_added = True
                                 break
                     except IndexError:
                         pass
 
                 mlp_occ.save()
+                # need to save record before adding image in order to obtain the DB ID
+                if image_added:
+                    # strip off the file name from the path
+                    image_path = image_file[:image_file.rfind(os.sep)]
+                    # construct new file name
+                    new_file_name = image_path + os.sep + str(mlp_occ.id) + "_" + image_tag
+                    # rename extracted file with DB record ID
+                    os.rename(image_file, new_file_name)
+                    # need to strip off "media" folder from relative path saved to DB
+                    mlp_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
+                    mlp_occ.save()
                 feature_count += 1
 
                 # TODO If item type is Fauna or Flora add to Biology table
-
-
 
                     # loop through each attachment
                     # for attachment in image_tags:
