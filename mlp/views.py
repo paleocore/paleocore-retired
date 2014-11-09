@@ -20,6 +20,7 @@ from zipfile import ZipFile
 from shapely.geometry import Point, LineString, Polygon
 from django.http import HttpResponse
 
+
 class DownloadKMLView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/download_kml.html'
     form_class = DownloadKMLForm
@@ -80,6 +81,7 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
     def get_fiber_page_url(self):
         return reverse('mlp:mlp_download_kml')
 
+
 class UploadKMLView(FiberPageMixin, generic.FormView):
     template_name = 'mlp/upload_kml.html'
     form_class = UploadKMLForm
@@ -90,20 +92,21 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
 
-        # TODO parse the kml file more smartly to locate the first palcemark and work from there.
+        # TODO parse the kml file more smartly to locate the first placemark and work from there.
         # TODO ingest kmz and kml. See the zipfile python library
-        KML_file_upload = self.request.FILES['kmlfileUpload']
-        KML_file_upload_name = self.request.FILES['kmlfileUpload'].name
-        KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]
-        KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]
+        KML_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on the file
+        KML_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
+        KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]  # get the file name no extension
+        KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]  # get the file extension
 
-        default_storage.save(KML_file_upload_name, ContentFile(KML_file_upload.read()))
+        #default_storage.save(KML_file_upload_name, ContentFile(KML_file_upload.read()))  # save a temp copy of the file to the default location, /media/
         KML_file_path = os.path.join(settings.MEDIA_ROOT)
 
         # TODO: Check for file extension other than kml or kmz
         KML_file = kml.KML()
         if KML_file_extension == "kmz":
-            KMZ_file = ZipFile(KML_file_path + "/" + KML_file_upload_name, 'r')
+            KMZ_file = ZipFile(KML_file_upload, 'r')
+            #KMZ_file = ZipFile(KML_file_path + "/" + KML_file_upload_name, 'r')
             KML_document = KMZ_file.open('doc.kml', 'r').read()
         else:
             KML_document = open(KML_file_path + "/" + KML_file_upload_name, 'r').read()  # read() loads entire file as one string
@@ -152,7 +155,8 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
                 # Field Number
                 try:
-                    mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
+                    mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
+                    mlp_occ.year_collected = mlp_occ.field_number.year  # set the year collected form field number
                 except ValueError:
                     mlp_occ.field_number = datetime.now()
                     mlp_occ.problem = True
@@ -163,6 +167,9 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                         mlp_occ.problem_comment = error_string
 
                 #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
+
+                # Process point, comes in as well known text string
+                # Assuming point is in GCS WGS84 datum = SRID 4326
                 pnt = GEOSGeometry("POINT (" + str(o.geometry.x) + " " + str(o.geometry.y) + ")", 4326)  # WKT
                 mlp_occ.geom = pnt
 
@@ -175,6 +182,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 mlp_occ.remarks = attributes_dict.get("Remarks")
                 mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
                 mlp_occ.item_description = attributes_dict.get("Description")
+
 
                 # Validate Collecting Method
                 collection_method = attributes_dict.get("Collection Method")
@@ -208,6 +216,9 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
                     mlp_occ.in_situ = True
 
+                ##############
+                # Save Image #
+                ##############
                 image_file = ""
                 image_added = False
                 # Now look for images if this is a KMZ
