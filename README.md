@@ -15,6 +15,7 @@ Django_Fiber==0.13 installs the following dependencies
     django-mptt==0.6.0  
     djangorestframework==2.3.8  
     easy-thumbnails==1.4  
+   
 unicodecsv==0.9.4  
 simplejson==3.4.1  
 django-tastypie==0.11.1  
@@ -22,6 +23,7 @@ pyshp==1.2.1
 fastkml==0.9  depends on:  
     pygeoif==0.1.4  
     dateutil==2.2  
+      
 lxml==3.4.0  
 utm==0.3.1  
 Shapely==1.4.3  
