@@ -5,6 +5,7 @@ from django.contrib.gis.db import models
 from django.http import HttpResponse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
+import utm
 
 # Register your models here.
 ###################
@@ -68,16 +69,22 @@ occurrence_fieldsets = (
     ('Provenience', {
         'fields': (('analytical_unit',),
                    ('in_situ', 'ranked'),
+                   # These following fields are based on methods and must be listed as read only fields below
                    ('point_x', 'point_y'),
+                   ('easting', 'northing'),
                    ('geom', ))
     })
 )
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    list_display = ('id', 'barcode', 'field_number', 'basis_of_record', 'collection_code', 'item_number',   'item_type',
-                    'collecting_method', 'collector', 'item_scientific_name', 'get_tax_order', 'get_family', 'get_genus',
-                    'item_description', 'year_collected', 'in_situ', 'problem')
+    # list_display = ('barcode', 'field_number', 'basis_of_record', 'collection_code', 'item_number',   'item_type',
+    #                 'collecting_method', 'collector', 'item_scientific_name', 'get_tax_order', 'get_family', 'get_genus',
+    #                 'item_description', 'year_collected', 'in_situ', 'problem')
+    list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
+                    'collecting_method', 'collector', 'item_scientific_name',
+                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition','point_x','point_y')
+    list_display_links = ['barcode', 'field_number']
 
     def get_genus(self, obj):
         return obj.biology.genus
@@ -99,10 +106,10 @@ class OccurrenceAdmin(admin.ModelAdmin):
     also, any dynamically created fields (e.g. point_x) in models.py must be declared as read only to be included in
     fieldset or fields
     """
-    readonly_fields = ('id', 'point_x', 'point_y', 'date_last_modified')
-    list_editable = ['problem']
+    readonly_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
+    list_editable = ['problem', 'disposition']
 
-    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number']
+    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number', 'disposition']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     inlines = [BiologyInline, ]
     fieldsets = occurrence_fieldsets
@@ -114,7 +121,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
     # Set pagination to show 500 entries per page
     list_per_page = 1000
 
-    actions = ["create_data_csv"]
+    actions = ["create_data_csv", "manually_change_coordinates"]
 
     # admin action to download data in csv format
     def create_data_csv(self, request, queryset):
