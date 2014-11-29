@@ -77,7 +77,7 @@ INSTALLED_APPS = (
     'mlp',
     'drp',   # Dikika Research Project geospatial app
     'turkana',  # Turkana Project Data
-    'austin',
+    #'austin',
 
 )
 
