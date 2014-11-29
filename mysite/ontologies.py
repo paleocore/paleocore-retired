@@ -6,17 +6,15 @@ COLLECTING_METHOD_VOCABULARY = (("Surface Standard", "Surface Standard"),
                                 ("Surface Complete", "Surface Complete"),
                                 ("Exploratory Survey", "Exploratory Survey"),
                                 ("Dry Screen 5mm", "Dry Screen 5mm"),
-                                ("Dry Screen 2mm","Dry Screen 2mm"),
-                                ("Wet Screen 1mm", "Wet Screen 1mm")
-)
+                                ("Dry Screen 2mm", "Dry Screen 2mm"),
+                                ("Wet Screen 1mm", "Wet Screen 1mm"))
 
 COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Rene Bobe", "Rene Bobe"),
                      ("Denis Geraads", "Denis Geraads"),
                      ("Shannon McPherron", "Shannon McPherron"),
                      ("Denne Reed", "Denne Reed"),
-                     ("Jonathan Wynn", "Jonathan Wynn")
-)
+                     ("Jonathan Wynn", "Jonathan Wynn"))
 
 SIDE_VOCABULARY = (("Left", "Left"),
                    ("Right", "Right"),

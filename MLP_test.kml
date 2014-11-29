@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>MLP_occurrence</name>
+	<Style id="GS_87">
+		<IconStyle>
+			<color>ff2420ed</color>
+			<Icon>
+				<href>http://giskit.garafa.com/icons/pin_CircleNoLines.png</href>
+			</Icon>
+			<hotSpot x="0.5" y="0.5" xunits="fraction" yunits="fraction"/>
+		</IconStyle>
+		<LineStyle>
+			<color>ff2420ed</color>
+			<width>3</width>
+		</LineStyle>
+		<PolyStyle>
+			<color>7f0000ff</color>
+		</PolyStyle>
+	</Style>
+	<Folder>
+		<name>MLP_occurrence</name>
+	</Folder>
+	<Placemark>
+		<name>MLP_occurrence 1</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 12:36 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>787</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Isolated molar fragment</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/14.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8391407065191,11.5848681610102,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 2</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Observation</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 12:49 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>0</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Mammalian</td></tr><tr><td valign="top">Description</td><td>Vertebral and costal fragments</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/15.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8390032631573,11.5849503971948,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 3</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 12:59 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>722</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Suidae</td></tr><tr><td valign="top">Description</td><td>Isolated molar fragment</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/16.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8387522401587,11.5849216824918,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 4</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 1:09 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>387</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Proximal femur</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/17.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8387270650894,11.5848711225797,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 5</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 1:27 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>726</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Suidae</td></tr><tr><td valign="top">Description</td><td>Metapodial fragments</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/18.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8386949618926,11.5849871165945,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 6</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 1:41 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>795</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Mammalian</td></tr><tr><td valign="top">Description</td><td>?postcranial fragment
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/19.jpg"/><br/><img src="MLP_occurrence/20.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8390369262156,11.5844825820379,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 7</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 1:49 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>799</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Mammalian</td></tr><tr><td valign="top">Description</td><td>Distal metapodial
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/23.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8390332482048,11.5844335625063,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 8</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Observation</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 2:00 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>0</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Horn core tip</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/24.jpg"/><br/><img src="MLP_occurrence/25.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8391533524902,11.5844912265547,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 9</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 2:07 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>754</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>-None Selected-</td></tr><tr><td valign="top">Description</td><td>Gastropoda </td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/26.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8390223864681,11.5845828681092,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 10</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 2:17 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>791</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Horn core fragment
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/27.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8390093376317,11.5843773765977,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 11</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 2:27 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>738</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Molar fragment</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/28.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8389082926542,11.5843346426804,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 12</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Jan 17, 2014, 2:56 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>20</td></tr><tr><td valign="top">Barcode</td><td>778</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Bovidae</td></tr><tr><td valign="top">Description</td><td>Skeleton</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/29.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8347985367144,11.585712612831,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 13</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Feb 12, 2014, 4:26 PM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Method</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>0</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>No Fossils At This Location</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.8035033096706,11.5352557004181,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 14</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Apr 5, 2014, 7:33 PM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Surface Standard</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>0</td></tr><tr><td valign="top">Barcode</td><td>1234</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>-None Selected-</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-97.80329704284669,30.3303608512998,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 15</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>May 6, 2014, 8:31 PM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Surface Standard</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>0</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Equidae</td></tr><tr><td valign="top">Description</td><td>
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/31.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>40.7031203155716,11.4047297822798,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 16</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>May 21, 2014, 8:11 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>5788</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Primate</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/32.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-77.0350170135498,38.9079326272028,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 17</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>May 22, 2014, 11:58 AM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>566</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Mammalian</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td>N/A</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-77.0291805267334,38.9013869365808,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 18</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>May 23, 2014, 4:30 PM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>0</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Girafidae</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-97.7358341217041,30.284641051717,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 19</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>May 27, 2014, 8:51 PM</td></tr><tr><td valign="top">Item Type</td><td>Fauna</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Exploratory Survey</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>1111</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Equidae</td></tr><tr><td valign="top">Description</td><td>N/A</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>N/A</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td>N/A</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-122.4658870697021,37.7635905203792,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 20</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Collection</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Sep 4, 2014, 12:45 PM</td></tr><tr><td valign="top">Item Type</td><td>Flora</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Surface Standard</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>11121</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Carnivora</td></tr><tr><td valign="top">Description</td><td>Horn core
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>Blah
+
+</td></tr><tr><td valign="top">In Situ</td><td>YES</td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-97.74072647094728,30.2864198541539,0</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark>
+		<name>MLP_occurrence 21</name>
+		<description><![CDATA[<table><tr><td valign="top">Basis Of Record</td><td>Observation</td></tr><tr bgcolor='3aafe8'><td valign="top">Time</td><td>Sep 4, 2014, 12:48 PM</td></tr><tr><td valign="top">Item Type</td><td>Geology</td></tr><tr bgcolor='3aafe8'><td valign="top">Collector</td><td>Denne Reed</td></tr><tr><td valign="top">Collection Method</td><td>Dry Screen 5 Mm</td></tr><tr bgcolor='3aafe8'><td valign="top">Count</td><td>1</td></tr><tr><td valign="top">Barcode</td><td>222</td></tr><tr bgcolor='3aafe8'><td valign="top">Scientific Name</td><td>Cercopithecidae</td></tr><tr><td valign="top">Description</td><td>Ree
+</td></tr><tr bgcolor='3aafe8'><td valign="top">Remarks</td><td>BBC
+
+</td></tr><tr><td valign="top">In Situ</td><td>NO</td></tr><tr bgcolor='3aafe8'><td valign="top">Photos</td><td><img src="MLP_occurrence/33.jpg"/><br/></td></tr></table>]]></description>
+		<styleUrl>#GS_87</styleUrl>
+		<Point>
+			<coordinates>-97.74132789869329,30.2865690226363,0</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>
