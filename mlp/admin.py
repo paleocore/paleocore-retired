@@ -2,7 +2,8 @@ from django.contrib import admin
 from models import Occurrence, Biology
 from django.forms import TextInput, Textarea  # import custom form widgets
 from django.contrib.gis.db import models
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
 import utm
@@ -121,7 +122,14 @@ class OccurrenceAdmin(admin.ModelAdmin):
     # Set pagination to show 500 entries per page
     list_per_page = 1000
 
-    actions = ["create_data_csv", "manually_change_coordinates"]
+    actions = ["create_data_csv", "change_xy"]
+
+    #admin action to manually enter coordinates
+    def change_xy(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        redirectURL = reverse("mlp:change_xy")
+        return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
+    change_xy.short_description = "Manually change coordinates for a point"
 
     # admin action to download data in csv format
     def create_data_csv(self, request, queryset):

@@ -13,5 +13,6 @@ urlpatterns = patterns('',
 
     # e.g. /mlp/upload/
     url(r'^upload/shapefile/', mlp_views.UploadView.as_view(), name="mlp_upload"),
+    url(r'^change_xy/', mlp_views.ChangeXYView, name="change_xy"),
 
 )

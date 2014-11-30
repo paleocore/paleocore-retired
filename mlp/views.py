@@ -9,7 +9,7 @@ from models import Occurrence
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 import shapefile
-from mlp.forms import UploadForm, UploadKMLForm, DownloadKMLForm
+from mlp.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
 from fastkml import kml
 from fastkml import Placemark
 from lxml import etree
@@ -19,6 +19,9 @@ import utm
 from zipfile import ZipFile
 from shapely.geometry import Point, LineString, Polygon
 from django.http import HttpResponse
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
+from django.contrib import messages
 
 
 class DownloadKMLView(FiberPageMixin, generic.FormView):
@@ -316,3 +319,33 @@ class UploadView(FiberPageMixin, generic.FormView):
 
     def get_fiber_page_url(self):
         return reverse('mlp:mlp_upload')
+
+def ChangeXYView(request):
+    if request.method == "POST":
+        form = ChangeXYForm(request.POST)
+        if form.is_valid():
+            obs = Occurrence.objects.get(pk=request.POST["DB_id"])
+            latlong = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]),37,"N")
+            pnt = GEOSGeometry("POINT (" + str(latlong[1]) + " " + str(latlong[0]) + ")", 4326)  # WKT
+            obs.geom = pnt
+            obs.save()
+            messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number )
+            return redirect("/admin/mlp/occurrence")
+    else:
+        selected = list(request.GET.get("ids", "").split(","))
+        if len(selected) > 1:
+            messages.error(request,"You can't change the coordinates of multiple points at once.")
+            return redirect("/admin/mlp/occurrence")
+        selected_object = Occurrence.objects.get(pk=int(selected[0]))
+        initialData = { "DB_id":selected_object.id,
+                        "barcode":selected_object.barcode,
+                        "old_easting":selected_object.easting,
+                        "old_northing":selected_object.northing,
+                        "item_scientific_name":selected_object.item_scientific_name,
+                        "item_description":selected_object.item_description
+                    }
+        theForm = ChangeXYForm(initial = initialData)
+        return render_to_response('mlp/changeXY.html',
+                                {"theForm":theForm},
+                              RequestContext(request))
+

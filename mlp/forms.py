@@ -1,4 +1,6 @@
 from django import forms
+from mlp.models import Occurrence
+import utm
 
 
 class UploadKMLForm(forms.Form):
@@ -27,3 +29,13 @@ class UploadForm(forms.Form):
     shapefileDataUpload = forms.FileField(
         label='Upload shape file data, *.dbf',
     )
+
+class ChangeXYForm(forms.ModelForm):
+    class Meta:
+        model = Occurrence
+        fields = ["barcode", "item_scientific_name", "item_description"]
+    DB_id = forms.IntegerField( max_value=100000)
+    old_easting = forms.DecimalField(max_digits=12)
+    old_northing = forms.DecimalField(max_digits=12)
+    new_easting = forms.DecimalField(max_digits=12)
+    new_northing = forms.DecimalField(max_digits=12)
