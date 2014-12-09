@@ -79,28 +79,10 @@ occurrence_fieldsets = (
 
 
 class OccurrenceAdmin(admin.ModelAdmin):
-    # list_display = ('barcode', 'field_number', 'basis_of_record', 'collection_code', 'item_number',   'item_type',
-    #                 'collecting_method', 'collector', 'item_scientific_name', 'get_tax_order', 'get_family', 'get_genus',
-    #                 'item_description', 'year_collected', 'in_situ', 'problem')
     list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
                     'collecting_method', 'collector', 'item_scientific_name',
-                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition','point_x','point_y')
+                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition', 'point_x', 'point_y')
     list_display_links = ['barcode', 'field_number']
-
-    def get_genus(self, obj):
-        return obj.biology.genus
-    get_genus.short_description = "genus"
-    get_genus.admin_order_field = "biology__genus"  # required to enable admin sorting
-
-    def get_family(self, obj):
-        return obj.biology.family
-    get_family.short_description = "family"
-    get_family.admin_order_field = "biology__family"
-
-    def get_tax_order(self, obj):
-        return obj.biology.tax_order
-    get_tax_order.short_description = "order"
-    get_tax_order.admin_order_field = "biology__tax_order"
 
     """
     Auto-number fields like id are not editable, and can't be added to fieldsets unless specified as read only.
@@ -110,7 +92,8 @@ class OccurrenceAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
     list_editable = ['problem', 'disposition']
 
-    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number', 'disposition']
+    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number',
+                   'disposition']
     search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
     inlines = [BiologyInline, ]
     fieldsets = occurrence_fieldsets
@@ -119,7 +102,7 @@ class OccurrenceAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
     }
 
-    # Set pagination to show 500 entries per page
+    # Set pagination to show more entries per page
     list_per_page = 1000
 
     actions = ["create_data_csv", "change_xy"]
@@ -167,8 +150,13 @@ class OccurrenceAdmin(admin.ModelAdmin):
         for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
             # The next line uses string comprehension to build a list of values for each field
             occurrence_dict = occurrence.__dict__
-            occurrence_dict['point_x'] = occurrence.geom.get_x()  # translate the occurrence geom object
-            occurrence_dict['point_y'] = occurrence.geom.get_y()
+            # Check that instance has geom
+            try:
+                occurrence_dict['point_x'] = occurrence.geom.get_x()  # translate the occurrence geom object
+                occurrence_dict['point_y'] = occurrence.geom.get_y()
+            except AttributeError:  # If no geom data exists write None to the dictionary
+                occurrence_dict['point_x'] = None
+                occurrence_dict['point_y'] = None
 
             # Next we use the field list to fetch the values from the dictionary.
             # Dictionaries do not have a reliable ordering. This code insures we get the values
