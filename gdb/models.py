@@ -4,7 +4,7 @@ from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, 
 
 
 class Occurrence(models.Model):
-    specimen_number = models.IntegerField(primary_key=True)  # NOT NULL
+    specimen_number = models.AutoField(primary_key=True)  # NOT NULL
     cm_specimen_number = models.IntegerField(null=True, blank=True)  # CM SPec #
     locality = models.ForeignKey("Locality", to_field="locality_number")
     date_collected = models.DateField(blank=True, null=True, editable=True)
@@ -17,8 +17,8 @@ class Occurrence(models.Model):
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/gdb", null=True)
 
     # Disposition fields
-    loan_date = models.DateTimeField()
-    loan_recipient = models.CharField(max_length=200)
+    loan_date = models.DateField(null=True, blank=True)
+    loan_recipient = models.CharField(null=True, blank=True, max_length=255)
     on_loan = models.BooleanField(default=False)  # Loan Status
 
     # Geospatial
@@ -45,21 +45,21 @@ class Biology(Occurrence):
     subfamily = models.CharField(null=True, blank=True, max_length=50)
     tribe = models.CharField(null=True, blank=True, max_length=50)
     genus = models.CharField(null=True, blank=True, max_length=50)
-    specificepithet = models.CharField("Species Name", null=True, blank=True, max_length=50)  # Species
-    infraspecificepithet = models.CharField(null=True, blank=True, max_length=50)
-    infraspecificrank = models.CharField(null=True, blank=True, max_length=50)
+    specific_epithet = models.CharField("Species Name", null=True, blank=True, max_length=50)  # Species
+    infraspecific_epithet = models.CharField(null=True, blank=True, max_length=50)
+    infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
     # Identification fields
-    authoryearofscientificname = models.CharField(null=True, blank=True, max_length=50)
-    nomenclaturalcode = models.CharField(null=True, blank=True, max_length=50)
-    identificationqualifier = models.CharField(null=True, blank=True, max_length=50)
-    identifiedby = models.CharField(null=True, blank=True, max_length=100)
-    dateidentified = models.DateTimeField(null=True, blank=True)
-    typestatus = models.CharField(null=True, blank=True, max_length=50)
+    author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
+    nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
+    identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
+    identified_by = models.CharField(null=True, blank=True, max_length=100)
+    date_identified = models.DateTimeField(null=True, blank=True)
+    type_status = models.CharField(null=True, blank=True, max_length=50)
     # Description fields
     sex = models.CharField(null=True, blank=True, max_length=50)
-    lifestage = models.CharField(null=True, blank=True, max_length=50)
+    life_stage = models.CharField(null=True, blank=True, max_length=50)
     preparations = models.CharField(null=True, blank=True, max_length=50)
-    morphobanknum = models.IntegerField(null=True, blank=True)
+    morphobank_num = models.IntegerField(null=True, blank=True)
     element = models.CharField(null=True, blank=True, max_length=50)
     side = models.CharField(null=True, blank=True, max_length=50)
     attributes = models.CharField(null=True, blank=True, max_length=50)
@@ -76,7 +76,7 @@ class Biology(Occurrence):
     forelimb = models.CharField(null=True, blank=True, max_length=50)
     hindlimb = models.CharField(null=True, blank=True, max_length=50)
     NALMA = models.CharField(null=True, blank=True, max_length=50)
-    sub_age = models.CharField(null=True, blank=True, max_length=50)
+    sub_age = models.CharField(null=True, blank=True, max_length=50)  # Subage
 
 
 class Locality(models.Model):
