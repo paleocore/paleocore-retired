@@ -2,6 +2,7 @@ from django.contrib.gis.db import models
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
     COLLECTOR_CHOICES, SIDE_VOCABULARY
 from drp.models import drp_taxonomy
+import utm
 
 
 class Occurrence(models.Model):
@@ -31,13 +32,10 @@ class Occurrence(models.Model):
     geom = models.GeometryField(srid=4326, blank=True, null=True)
 
     def __unicode__(self):
-        """
-        What is the best string representation for an occurrence instance?
-        All collected items have catalogue numbers, but observations do not
-        This method returns the catalog number if it exists, or a string with the id value
-        if there is no catalog number.
-        """
-        return self.catalog_number
+        return str(self.specimen_number)
+
+    class Meta:
+        verbose_name = "GDB Occurrence"
 
 
 class Biology(Occurrence):
@@ -83,6 +81,11 @@ class Biology(Occurrence):
     NALMA = models.CharField(null=True, blank=True, max_length=50)
     sub_age = models.CharField(null=True, blank=True, max_length=50)  # Subage
 
+    class Meta:
+        verbose_name = "GDB Biology"
+        verbose_name_plural = "GDB Biology Items"
+
+
 
 class Locality(models.Model):
     locality_number = models.AutoField(primary_key=True)  # NOT NULL
@@ -109,6 +112,63 @@ class Locality(models.Model):
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/gdb", null=True)
     geom = models.GeometryField(srid=4326, blank=True, null=True)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+
+    def __unicode__(self):
+        """
+        This method returns the locality number and name if both exist, or a string with
+        just the locality number if there is no name.
+        """
+        if self.name:
+            return str(self.locality_number)+"-"+self.name
+        else:
+            return str(self.locality_number)
+
+    def update_geom_from_verbatim(self):
+        if self.verbatim_latitude is not None:
+            lat_dms = self.verbatim_latitude
+            lon_dms = self.verbatim_longitude
+            lat_string = lat_dms.split()
+            lon_string = lon_dms.split()
+            if len(lat_string) == 4 and len(lon_string) == 4:
+                lat_dd = (float(lat_string[2])/60+float(lat_string[1]))/60+float(lat_string[0])
+                if lat_string[3]=="S":
+                    lat_dd *= -1  # southern latitudes should be negative
+                lon_dd = (float(lon_string[2])/60+float(lon_string[1]))/60+float(lon_string[0])
+                if lon_string[3]=="W":
+                    lon_dd *= -1
+            return "POINT ("+str(lon_dd)+" "+str(lat_dd)+")"
+
+    def point_x(self):
+        try:
+            return self.geom.coords[1]
+        except:
+            return 0
+
+    def point_y(self):
+        try:
+            return self.geom.coords[0]
+        except:
+            return 0
+
+    def easting(self):
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[0]
+        except:
+            return 0
+
+    def northing(self):
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[1]
+        except:
+            return 0
+
+
+    class Meta:
+        verbose_name_plural = "GDB Localities"
+
+
 
 
 
