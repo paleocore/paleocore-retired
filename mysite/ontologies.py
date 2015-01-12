@@ -30,11 +30,11 @@ SKULL_BONES = (("complete skull", "complete skull"),
                    ("parietal", "parietal"))
 
 VERTEBRATE_CLASSES = (("Mammalia", "Mammalia"),
-                   ("Reptilia", "Reptilia"),
-                   ("Aves", "Aves"),
-                   ("Pisces", "Pisces"),
-                   ("Amphibia", "Amphibia"),
-                   ("Assorted", "Assorted"))
+                      ("Reptilia", "Reptilia"),
+                      ("Aves", "Aves"),
+                      ("Pisces", "Pisces"),
+                      ("Amphibia", "Amphibia"),
+                      ("Assorted", "Assorted"))
 
 MAMMALIAN_ORDERS = (("Primates", "Primates"),
                    ("Condylarthra", "Condylarthra"),
