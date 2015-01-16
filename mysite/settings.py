@@ -77,6 +77,8 @@ INSTALLED_APPS = (
     'mlp',
     'drp',   # Dikika Research Project geospatial app
     'turkana',  # Turkana Project Data
+    'gdb',
+    'taxonomy'
     #'austin',
 
 )
@@ -116,18 +118,18 @@ DATABASES = {
         #'HOST': 'localhost'
     },
 
-    'drp_carmen': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'drp_dev',
-        'USER': secrets.DRP_USER,                      # Not used with sqlite3.
-        'PASSWORD': secrets.DRP_PASSWORD,                  # Not used with sqlite3.
-        'HOST': secrets.DRP_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-    }
+    # 'drp_carmen': {
+    #     'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+    #     'NAME': 'drp_dev',
+    #     'USER': secrets.DRP_USER,                      # Not used with sqlite3.
+    #     'PASSWORD': secrets.DRP_PASSWORD,                  # Not used with sqlite3.
+    #     'HOST': secrets.DRP_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+    #     'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+    # }
 }
 
 # Points to the location of the database router configuration file
-DATABASE_ROUTERS = ['database_routers.paleocore_router.PaleocoreRouter']
+#DATABASE_ROUTERS = ['database_routers.paleocore_router.PaleocoreRouter']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

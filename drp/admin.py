@@ -54,12 +54,7 @@ occurrence_fieldsets =(
 
 biology_fieldsets = (
     ('Taxonomy', {'fields':
-                      (('tax_class',),
-                       ('tax_order',),
-                       ('family',),
-                       ('subfamily',),
-                       ('tribe',),
-                       ('genus', 'specificepithet'),
+                      (('taxon',),
                        ('id')
                       )
     }),
@@ -75,7 +70,7 @@ class biologyInline(admin.TabularInline):
 
 class biologyAdmin(admin.ModelAdmin):
     list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
-                    "itemscientificname", 'genus','family','tax_order',"itemdescription", "yearcollected", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus", "specificepithet", "lowest_level_identification")
+                    "scientific_name", 'taxon', )
     list_filter = ("family",)
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
@@ -126,23 +121,23 @@ class localityAdmin(admin.ModelAdmin):
 
 class occurrenceAdmin(admin.ModelAdmin):
     list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
-                    "itemscientificname", 'get_genus','get_family','get_tax_order',"itemdescription", "yearcollected")
+                    "itemscientificname", "itemdescription", "yearcollected")
 
     #get taxonomic fields from biology for display
-    def get_genus(self, obj):
-        return obj.drp_biology.genus
-    get_genus.short_description = "genus"
-    get_genus.admin_order_field = "drp_biology__genus"
-
-    def get_family(self, obj):
-        return obj.drp_biology.family
-    get_family.short_description = "family"
-    get_family.admin_order_field = "drp_biology__family"
-
-    def get_tax_order(self, obj):
-        return obj.drp_biology.tax_order
-    get_tax_order.short_description = "order"
-    get_tax_order.admin_order_field = "drp_biology__tax_order"
+    # def get_genus(self, obj):
+    #     return obj.drp_biology.genus
+    # get_genus.short_description = "genus"
+    # get_genus.admin_order_field = "drp_biology__genus"
+    #
+    # def get_family(self, obj):
+    #     return obj.drp_biology.family
+    # get_family.short_description = "family"
+    # get_family.admin_order_field = "drp_biology__family"
+    #
+    # def get_tax_order(self, obj):
+    #     return obj.drp_biology.tax_order
+    # get_tax_order.short_description = "order"
+    # get_tax_order.admin_order_field = "drp_biology__tax_order"
 
     #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
@@ -305,8 +300,8 @@ class occurrenceAdmin(admin.ModelAdmin):
 #####################
 
 class taxonomyAdmin(admin.ModelAdmin):
-    list_display = ("id", "rank", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus")
-    search_fields = ("tax_class", "tax_order", "family", "subfamily", "tribe", "genus")
+    list_display = ("id", "rank", "taxon")
+    search_fields = ("taxon",)
     list_filter = ("rank",)
 
 

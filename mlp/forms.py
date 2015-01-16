@@ -1,5 +1,5 @@
 from django import forms
-from mlp.models import Occurrence
+from mlp.models import mlp_occurrence
 import utm
 
 
@@ -32,7 +32,7 @@ class UploadForm(forms.Form):
 
 class ChangeXYForm(forms.ModelForm):
     class Meta:
-        model = Occurrence
+        model = mlp_occurrence
         fields = ["barcode", "item_scientific_name", "item_description"]
     DB_id = forms.IntegerField( max_value=100000)
     old_easting = forms.DecimalField(max_digits=12)

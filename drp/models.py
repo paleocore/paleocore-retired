@@ -1,6 +1,7 @@
 # This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
 from datetime import datetime
+from taxonomy.models import Taxon
 
 basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
 itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
@@ -8,7 +9,7 @@ itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class drp_occurrence(models.Model):
-    id = models.AutoField("id",primary_key=True,db_column="occurrence_id",null=False,blank=True)
+    #id = models.AutoField("id",primary_key=True,db_column="id",null=False,blank=True)
     barcode = models.IntegerField("Barcode",null=True, blank=True)
     datelastmodified = models.DateTimeField("Date Last Modified",null=True, blank=True)
     basisofrecord = models.CharField("Basis of Record",null=True, blank=True,max_length=50,choices=basisCHOICES)
@@ -139,18 +140,18 @@ class drp_files(models.Model):
         db_table = "drp_files"
 
 class drp_biology(drp_occurrence):
-    biology_id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
+    #biology_id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
     #occurrence = models.OneToOneField("drp_occurrence",db_column="occurrence_id")
     #taxon = models.ForeignKey("drp_taxonomy")
-    kingdom = models.CharField(null=True,blank=True,max_length=50)
-    phylum = models.CharField(null=True,blank=True,max_length=50)
-    tax_class = models.CharField("Class",null=True,blank=True,max_length=50,db_column="class")
-    tax_order = models.CharField("Order",null=True,blank=True,max_length=50,db_column="order_")
-    family = models.CharField(null=True,blank=True,max_length=50)
-    subfamily = models.CharField(null=True,blank=True,max_length=50)
-    tribe = models.CharField(null=True,blank=True,max_length=50)
-    genus = models.CharField(null=True,blank=True,max_length=50)
-    specificepithet = models.CharField("Species Name",null=True,blank=True,max_length=50)
+    #kingdom = models.CharField(null=True,blank=True,max_length=50)
+    #phylum = models.CharField(null=True,blank=True,max_length=50)
+    #tax_class = models.CharField("Class",null=True,blank=True,max_length=50,db_column="class")
+    #tax_order = models.CharField("Order",null=True,blank=True,max_length=50,db_column="order_")
+    #family = models.CharField(null=True,blank=True,max_length=50)
+    #subfamily = models.CharField(null=True,blank=True,max_length=50)
+    #tribe = models.CharField(null=True,blank=True,max_length=50)
+    #genus = models.CharField(null=True,blank=True,max_length=50)
+    #specificepithet = models.CharField("Species Name",null=True,blank=True,max_length=50)
     infraspecificepithet = models.CharField(null=True,blank=True,max_length=50)
     infraspecificrank = models.CharField(null=True,blank=True,max_length=50)
     authoryearofscientificname = models.CharField(null=True,blank=True,max_length=50)
@@ -238,6 +239,8 @@ class drp_biology(drp_occurrence):
     lrm1 = models.IntegerField(null=True, blank=True)
     lrm2 = models.IntegerField(null=True, blank=True)
     lrm3 = models.IntegerField(null=True, blank=True)
+    scientific_name = models.CharField(max_length=255)
+    taxon = models.ForeignKey(Taxon)
 
     def lowest_level_identification(self):
         if(self.genus):
@@ -252,8 +255,6 @@ class drp_biology(drp_occurrence):
             return str(self.tax_order).replace("None","")
         else:
             return str(self.tax_class).replace("None","")
-
-
 
     class Meta:
         verbose_name = "DRP Biology"

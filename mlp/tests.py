@@ -1,5 +1,5 @@
 from django.test import TestCase
-from mlp.models import Occurrence, Biology
+from mlp.models import mlp_occurrence, mlp_biology
 from fiber.models import Page
 from django.core.urlresolvers import reverse
 from datetime import datetime
@@ -42,15 +42,15 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test mlp_occurrence instance save method with the simplest possible attributes.
         """
-        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = mlp_occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs six bits of data.
         # Using the instance creation and then save methods
-        new_occurrence = Occurrence(id=1, item_type="Faunal", basis_of_record="HumanObservation",
+        new_occurrence = mlp_occurrence(id=1, item_type="Faunal", basis_of_record="HumanObservation",
                                     collecting_method="Surface Standard", field_number=datetime.now(),
                                     geom="POINT (691311.7081000003963709 1272538.8992999996989965)")
         new_occurrence.save()
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(mlp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
 
@@ -59,24 +59,24 @@ class OccurrenceMethodsTests(TestCase):
         Test Occurrence instance create method with simple set of attributes.
         :return:
         """
-        starting_record_count = Occurrence.objects.count()
-        new_occurrence = Occurrence.objects.create(id=1, item_type="Faunal", basis_of_record="HumanObservation",
+        starting_record_count = mlp_occurrence.objects.count()
+        new_occurrence = mlp_occurrence.objects.create(id=1, item_type="Faunal", basis_of_record="HumanObservation",
                                     collecting_method="Surface Standard", field_number=datetime.now(),
                                     geom="POINT (691311.7081000003963709 1272538.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(mlp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
 
     def test_mlp_create_method_invalid_item_type(self):
         """
         """
-        starting_record_count = Occurrence.objects.count()
-        new_occurrence = Occurrence.objects.create(id=1, item_type="Fake", basis_of_record="HumanObservation",
+        starting_record_count = mlp_occurrence.objects.count()
+        new_occurrence = mlp_occurrence.objects.create(id=1, item_type="Fake", basis_of_record="HumanObservation",
                                     collecting_method="Surface Standard", field_number=datetime.now(),
                                     geom="POINT (691311.7081000003963709 1272538.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(mlp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
         self.assertEqual(new_occurrence.item_type, "Fake")
@@ -84,8 +84,8 @@ class OccurrenceMethodsTests(TestCase):
     def test_mlp_save_method_valid_item_type(self):
         """
         """
-        starting_record_count = Occurrence.objects.count()
-        new_occurrence = Occurrence()
+        starting_record_count = mlp_occurrence.objects.count()
+        new_occurrence = mlp_occurrence()
         new_occurrence.item_type = "Faunal"
         new_occurrence.basis_of_record = "HumanObservation"
         new_occurrence.collecting_method = "Surface Standard"
@@ -94,7 +94,7 @@ class OccurrenceMethodsTests(TestCase):
         new_occurrence.save()
 
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(mlp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
         self.assertEqual(new_occurrence.item_type, "Faunal")
@@ -102,8 +102,8 @@ class OccurrenceMethodsTests(TestCase):
     def test_mlp_save_method_invalid_item_type(self):
         """
         """
-        starting_record_count = Occurrence.objects.count()
-        new_occurrence = Occurrence()
+        starting_record_count = mlp_occurrence.objects.count()
+        new_occurrence = mlp_occurrence()
         new_occurrence.item_type = "Fake"
         new_occurrence.basis_of_record = "HumanObservation"
         new_occurrence.collecting_method = "Surface Standard"
@@ -112,7 +112,7 @@ class OccurrenceMethodsTests(TestCase):
         new_occurrence.save()
 
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(mlp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 691311.7081000003963709)
         self.assertEqual(new_occurrence.item_type, "Fake")

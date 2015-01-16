@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Occurrence, Biology
+from models import mlp_occurrence, mlp_biology
 from django.forms import TextInput, Textarea  # import custom form widgets
 from django.contrib.gis.db import models
 from django.http import HttpResponse, HttpResponseRedirect
@@ -14,32 +14,27 @@ import utm
 ###################
 
 biology_fieldsets = (
-    (None, {
-        'fields': (('occurrence',), )
-    }),
 
     ('Element', {
         'fields': (('side',), )
     }),
 
     ('Taxonomy', {
-        'fields': (('tax_class',), ('tax_order',), ('family',), ('subfamily',), ('tribe',),
-                   ('genus', 'specificepithet'), ("id",))
+        'fields': (('taxon',), ("id",))
     }),
 )
 
 
 class BiologyInline(admin.TabularInline):
-    model = Biology
+    model = mlp_biology
     extra = 0
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
 
 
 class BiologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "side", "occurrence", "tax_class", "tax_order", "family", "subfamily", "tribe", "genus",
-                    "specificepithet", "lowest_level_identification")
-    list_filter = ("family", "side")
+    list_display = ("id", "side", "taxon")
+    #list_filter = ("family", "side")
     search_fields = ("lowest_level_identification",)
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
@@ -119,8 +114,8 @@ class OccurrenceAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
-        o = Occurrence()  # create an empty instance of an occurrence object
-        b = Biology()  # create an empty instance of a biology object
+        o = mlp_occurrence()  # create an empty instance of an occurrence object
+        b = mlp_biology()  # create an empty instance of a biology object
 
         occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
@@ -176,5 +171,5 @@ class OccurrenceAdmin(admin.ModelAdmin):
 ############################
 ## Register Admin Classes ##
 ############################
-admin.site.register(Occurrence, OccurrenceAdmin)
-admin.site.register(Biology, BiologyAdmin)
+admin.site.register(mlp_occurrence, OccurrenceAdmin)
+admin.site.register(mlp_biology, BiologyAdmin)
