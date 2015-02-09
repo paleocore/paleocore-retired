@@ -2,7 +2,7 @@ from django.contrib.gis.db import models
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
     COLLECTOR_CHOICES, SIDE_VOCABULARY
 from drp.models import drp_taxonomy
-from taxonomy.models import Taxon
+from taxonomy.models import Taxon, IdentificationQualifier
 from uuid import uuid4
 import os
 import utm
@@ -208,8 +208,8 @@ class mlp_biology(mlp_occurrence):
     lrm1 = models.BooleanField(default=False)
     lrm2 = models.BooleanField(default=False)
     lrm3 = models.BooleanField(default=False)
-    scientific_name = models.CharField(max_length=255)
     taxon = models.ForeignKey(Taxon)
+    identification_qualifier = models.ForeignKey(IdentificationQualifier)
 
     # def lowest_level_identification(self):
     #     if self.taxon.rank.name == "Genus":

@@ -1,7 +1,7 @@
 # This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
 from datetime import datetime
-from taxonomy.models import Taxon
+from taxonomy.models import Taxon, IdentificationQualifier
 
 basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
 itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
@@ -239,8 +239,8 @@ class drp_biology(drp_occurrence):
     lrm1 = models.IntegerField(null=True, blank=True)
     lrm2 = models.IntegerField(null=True, blank=True)
     lrm3 = models.IntegerField(null=True, blank=True)
-    scientific_name = models.CharField(max_length=255)
     taxon = models.ForeignKey(Taxon)
+    identification_qualifier = models.ForeignKey(IdentificationQualifier)
 
     # def lowest_level_identification(self):
     #     if(self.genus):

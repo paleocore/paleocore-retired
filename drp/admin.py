@@ -69,8 +69,8 @@ class biologyInline(admin.TabularInline):
 
 
 class biologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
-                    "scientific_name", 'taxon', )
+    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",
+                    'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype', 'taxon', )
     list_filter = ("family",)
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
