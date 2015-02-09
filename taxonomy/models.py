@@ -42,10 +42,11 @@ class Taxon(models.Model):
 
     def __unicode__(self):
         if self.rank.name == 'Species':
-            return self.parent.name + " " + self.name
+            return "[" + self.rank.name + "] " + self.parent.name + " " + self.name
         else:
-            return str(self.name)
+            return "[" + self.rank.name + "] " + str(self.name)
 
     class Meta:
         verbose_name = "Taxon"
         verbose_name_plural = "taxa"
+        ordering = ['rank__ordinal', 'name']
