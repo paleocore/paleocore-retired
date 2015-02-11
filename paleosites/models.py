@@ -72,3 +72,4 @@ class Site_plus_dates(Site):
         proxy = True
         managed = True
         verbose_name = "Sites and dates"
+        verbose_name_plural = "Sites and dates"
