@@ -16,7 +16,7 @@ def home(request):
             search_result = True
             search_result_n = 1
             form = SiteSearch
-            return render(request,'index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
+            return render(request, 'paleosites_index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
         if request.GET.get('download','')=="sites":
             response = HttpResponse(content_type='text/csv;charset=utf-8')
             response['Content-Disposition'] = 'attachment; filename="Sites.csv"'
@@ -99,7 +99,7 @@ def home(request):
         form = SiteSearch
         search_result = False
         search_result_n = 0
-    return render(request,'index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
+    return render(request, 'paleosites_index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
 
 
 def all_kml(request):
