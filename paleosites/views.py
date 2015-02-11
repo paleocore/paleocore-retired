@@ -11,17 +11,21 @@ def home(request):
     sites = Site.objects.all().count
     dates = Date.objects.all().count
     if request.method == 'GET':
-        if request.GET.get('sitename',''):
-            points_to_map = Site.objects.filter(site__exact=request.GET.get('sitename',''))
+        if request.GET.get('sitename', ''):
+            points_to_map = Site.objects.filter(site__exact=request.GET.get('sitename', ''))
             search_result = True
             search_result_n = 1
             form = SiteSearch
-            return render(request, 'paleosites_index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
-        if request.GET.get('download','')=="sites":
+            return render(request, 'paleosites_index.html', {'sites': sites, 
+                                                             'dates': dates, 
+                                                             'map_points': points_to_map,
+                                                             'form': form, 'search_result': search_result, 
+                                                             'search_result_n': search_result_n, })
+        if request.GET.get('download', '') == "sites":
             response = HttpResponse(content_type='text/csv;charset=utf-8')
             response['Content-Disposition'] = 'attachment; filename="Sites.csv"'
-            writer = csv.writer(response,dialect='excel')
-            writer.writerow(["ID","Site","Country","DataSource","Latitude","Longitude","Altitude","Notes"])
+            writer = csv.writer(response, dialect='excel')
+            writer.writerow(["ID", "Site", "Country", "DataSource", "Latitude", "Longitude", "Altitude", "Notes"])
             for a_site in Site.objects.all():
                 if a_site.map_location:
                     longitude = a_site.map_location.x
@@ -37,13 +41,16 @@ def home(request):
                     notes = ""
                 else:
                     notes = a_site.notes
-                writer.writerow([a_site.id,a_site.site.encode("utf-8"),a_site.country.name.encode("utf-8"),a_site.data_source,latitude,longitude,altitude,notes.encode("utf-8")])
+                writer.writerow([a_site.id, a_site.site.encode("utf-8"), a_site.country.name.encode("utf-8"),
+                                 a_site.data_source, latitude, longitude, altitude, notes.encode("utf-8")])
             return response
-        if request.GET.get('download','')=="dates":
+        if request.GET.get('download', '') == "dates":
             response = HttpResponse(content_type='text/csv;charset=utf-8')
             response['Content-Disposition'] = 'attachment; filename="Dates.csv"'
-            writer = csv.writer(response,dialect='excel')
-            writer.writerow(["Site","Layer","Industry","Industry_2","Industry_3","Cat_No","date","sd_plus","sd_minus","sample","technique","corrected_date_BP","plus","minus","hominid_remains","bibliography","Notes","intcal09_max","intcal09_min"])
+            writer = csv.writer(response, dialect='excel')
+            writer.writerow(["Site", "Layer", "Industry", "Industry_2", "Industry_3", "Cat_No", "date", "sd_plus",
+                             "sd_minus", "sample", "technique", "corrected_date_BP", "plus", "minus",
+                             "hominid_remains", "bibliography", "Notes", "intcal09_max", "intcal09_min"])
             for a_date in Date.objects.all():
                 if not(a_date.notes):
                     notes = ""
@@ -81,7 +88,10 @@ def home(request):
                     cat_no = ""
                 else:
                     cat_no = a_date.cat_no.encode("utf-8")
-                writer.writerow([a_date.site,layer,industry,industry_2,industry_3,cat_no,a_date.date,a_date.sd_plus,a_date.sd_minus,sample,a_date.technique,a_date.corrected_date_BP,a_date.plus,a_date.minus,hominid,bibliography,notes,a_date.intcal09_max,a_date.intcal09_min])
+                writer.writerow([a_date.site, layer, industry, industry_2, industry_3, cat_no, a_date.date,
+                                 a_date.sd_plus, a_date.sd_minus, sample, a_date.technique, a_date.corrected_date_BP,
+                                 a_date.plus, a_date.minus, hominid, bibliography, notes,
+                                 a_date.intcal09_max, a_date.intcal09_min])
             return response
     if request.method == 'POST':
         form = SiteSearch(request.POST)
@@ -99,7 +109,12 @@ def home(request):
         form = SiteSearch
         search_result = False
         search_result_n = 0
-    return render(request, 'paleosites_index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
+    return render(request, 'paleosites_index.html', {'sites': sites,
+                                                     'dates': dates,
+                                                     'map_points': points_to_map,
+                                                     'form': form,
+                                                     'search_result': search_result,
+                                                     'search_result_n': search_result_n, })
 
 
 def all_kml(request):
