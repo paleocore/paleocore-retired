@@ -6,6 +6,7 @@ from forms import SiteSearch
 from django.http import HttpResponse, HttpResponseRedirect
 import csv
 
+
 def home(request):
     sites = Site.objects.all().count
     dates = Date.objects.all().count
@@ -100,9 +101,11 @@ def home(request):
         search_result_n = 0
     return render(request,'index.html',{'sites': sites,'dates': dates,'map_points' : points_to_map, 'form': form, 'search_result': search_result, 'search_result_n': search_result_n,})
 
+
 def all_kml(request):
     locations = Site.objects.kml()
     return render_to_kml("placemarks.kml", {'places' : locations})
+
 
 def map_page(request):
     lcount = Site.objects.all().count()
