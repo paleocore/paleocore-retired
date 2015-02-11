@@ -17,6 +17,7 @@ Django_Fiber==0.13 installs the following dependencies
     djangorestframework==2.3.8  
     easy-thumbnails==1.4  
    
+django-countries==3.1.1
 unicodecsv==0.9.4  
 simplejson==3.4.1  
 django-tastypie==0.11.1  
