@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Content-Script-Type" content="text/javascript">
+<meta name="Content-Style-Type" content="text/css">
+<link href="http://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" />
+<style>
+	body { font-family: 'Roboto', sans-serif; font-weight: 300;background-color:#f9f9f9; color:black}
+	h4 { font-family: 'Roboto', sans-serif; font-weight: 500; margin:0px; color: white; background-color:#669900 }
+	h2 { font-family: 'Roboto', sans-serif; font-weight: 500; margin:0px; color: white; background-color:#669900; vertical-align:middle }
+	a { text-decoration: none;}
+	a:link {color: #606060;}
+	a:visited {color: #303030;}
+	a:hover {color: #669900; }
+	input {font-family: 'Roboto', sans-serif; font-weight: 500; color: #000000;}
+	#content {margin:10 auto; width:100%; background-color:#669900}
+	#banner {margin:10 auto; width:90%; height: 65px; background-color:#669900; line-height:4em }
+	#column1 {float:left; margin:10; width:25%;}
+	#column2 {float:left; margin:10; width:70%;}
+	#column2narrow {float:left; margin:10; width:55%;}
+	#column3 {float:left; margin:10; width:15%;}
+    input[type=submit] {font-family: 'Roboto', sans-serif; font-weight: 500; color: #ffffff; padding:2px 12px; background:#669900; border:0 none;cursor:pointer; }
+    ul {list-style: none;    padding:0;    margin:0;}
+    li {padding-left: 1em;    text-indent: -.7em;}
+    li:before {content: "- ";    color: #669900;}</style>
+<script src="http://openlayers.org/api/OpenLayers.js"></script>
+<script type="text/javascript">
+    var map, base_layer, kml;
+    function init(){
+        map = new OpenLayers.Map('map');
+        var wms = new OpenLayers.Layer.WMS("OpenLayers WMS","http://vmap0.tiles.osgeo.org/wms/vmap0",{'layers':'basic'} );
+        map.addLayer(wms);
+        var layer = new OpenLayers.Layer.Vector("My Layer", {style: OpenLayers.Feature.Vector.style["default"]});
+        map.addLayer(layer);
+        {% for a_site in map_points %}
+            {% if a_site.map_location %}
+                var point = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point({{ a_site.map_location.x }},{{ a_site.map_location.y }}));
+                layer.addFeatures([point]);
+            {%  endif %}
+        {% endfor %}
+        map.zoomToExtent(layer.getDataExtent());
+        }
+</script>
+</head>
+<body onload="init()">
+<div id="content">
+<div id="banner">
+<h2>Sites Spatial + Radiocarbon Database</h2>
+</div>
+</div>
+<div id="column1">
+<p><a href="http://127.0.0.1:8000/admin/GIS/site/">{{ sites }} site records</a>.<br>
+   <a href="http://127.0.0.1:8000/admin/GIS/date/"> {{ dates }} date records</a>.</p>
+    <p></p>Goto database <a href="http://127.0.0.1:8000/admin">Admin</a></p>
+    <br><p>Download:</p>
+    <ul><li>SQLite database</li>
+    <li><a href="index.html?download=sites">Sites as CSV</a></li>
+    <li><a href="index.html?download=dates">Dates as CSV</a></li></ul>
+    <p>Data Sources:
+    <ul><li><a href="http://www.oldstoneage.com/">OSA Research Group</a></li>
+    <li><a href="http://paleoanthro.org/journal/volumes/2011/">F. d'Errico, W. E. Banks, M. Vanhaeren, V. Laroulandie, and M. Langlais (2011) "PACEA Geo-Referenced Radiocarbon Database" PaleoAnthropology 2011:1-12</a></li>
+    <li><a href="http://www.esc.cam.ac.uk/research/research-groups/oistage3/stage-three-project-database-downloads">OIS 3 Research Project</a></li></ul></p>
+    <br><p>Become a contributor, questions or comments, contact <a href="mailto:mcpherron@eva.mpg.de">Shannon P. McPherron</a></p>
+</div>
+{% if search_result %}
+    <div id="column2narrow">
+    <form action="/index" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+    <div id="map" style="width: 100%; height: 70%;"></div>
+    </div>
+    <div id=""column3">
+        <br><br>
+        {% if search_result_n == 1 %}
+            {% for a_site in map_points %}
+                Site : {{  a_site.site }}<br>
+                Site Type : {{  a_site.site_type }}<br>
+                Longitude : {{  a_site.map_location.x }}<br>
+                Latitude : {{  a_site.map_location.y }}<br>
+                Altitude : {{  a_site.altitude }}<br>
+                Country :  {{  a_site.country.name }}<br>
+                Data Source :  {{  a_site.data_source }}<br>
+                <br>
+                <a href="/admin/GIS/site/{{ a_site.id }}/">Edit this record</a>
+            {% endfor %}
+        {% else %}
+            {{ search_result_n }} matches
+            {% for a_site in map_points %}
+                {% if a_site.map_location %}
+                    <p><a href="/index.html?sitename={{ a_site.site}}">{{ a_site.site }}</a></p>
+                {%  endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+{%   else %}
+    <div id="column2">
+    <form action="/index" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit" />
+    </form>
+    <div id="map" style="width: 100%; height: 70%;"></div>
+    </div>
+{%   endif %}
+</body>
+</html>
