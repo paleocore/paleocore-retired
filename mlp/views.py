@@ -5,7 +5,7 @@ from django.views import generic
 import os
 import shutil
 from models import *
-from models import Occurrence
+from models import mlp_occurrence
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 import shapefile
@@ -37,7 +37,7 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
         f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains place marks for specimens and observations.')
         k.append(d)
         d.append(f)
-        os = Occurrence.objects.all()
+        os = mlp_occurrence.objects.all()
         for o in os:
             if (o.geom):
                 p = kml.Placemark(ns, 'id', 'name', 'description')
@@ -133,7 +133,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 # TODO test attributes is even length
                 attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-                mlp_occ = Occurrence()
+                mlp_occ = mlp_occurrence()
 
                 ###################
                 # REQUIRED FIELDS #
@@ -285,7 +285,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
 class Confirmation(FiberPageMixin, generic.ListView):
     template_name = 'mlp/confirmation.html'
-    model = Occurrence
+    model = mlp_occurrence
 
     def get_fiber_page_url(self):
         return reverse('mlp:upload_confirmation')
@@ -324,7 +324,7 @@ def ChangeXYView(request):
     if request.method == "POST":
         form = ChangeXYForm(request.POST)
         if form.is_valid():
-            obs = Occurrence.objects.get(pk=request.POST["DB_id"])
+            obs = mlp_occurrence.objects.get(pk=request.POST["DB_id"])
             latlong = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]),37,"N")
             pnt = GEOSGeometry("POINT (" + str(latlong[1]) + " " + str(latlong[0]) + ")", 4326)  # WKT
             obs.geom = pnt
@@ -336,7 +336,7 @@ def ChangeXYView(request):
         if len(selected) > 1:
             messages.error(request,"You can't change the coordinates of multiple points at once.")
             return redirect("/admin/mlp/occurrence")
-        selected_object = Occurrence.objects.get(pk=int(selected[0]))
+        selected_object = mlp_occurrence.objects.get(pk=int(selected[0]))
         initialData = { "DB_id":selected_object.id,
                         "barcode":selected_object.barcode,
                         "old_easting":selected_object.easting,
