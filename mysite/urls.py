@@ -38,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
     url(r'^workshops/', include('meetings.urls', namespace="meetings")),
     url(r'^data/', include('data.urls', namespace="data")),  # note the lack of a terminal dollar sign in the re
+    url(r'^paleosites/', include('paleosites.urls', namespace="paleosites")),
 
     # Admin URLS
     url(r'^admin/', include(admin.site.urls)),

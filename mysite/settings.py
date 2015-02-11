@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
     'efossils',
+    'paleosites',
 
     # Data Apps
     'mlp',
