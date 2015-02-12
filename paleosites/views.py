@@ -10,6 +10,7 @@ import csv
 def home(request):
     sites = Site.objects.all().count
     dates = Date.objects.all().count
+    search_result_n = 0
     if request.method == 'GET':
         if request.GET.get('sitename', ''):
             points_to_map = Site.objects.filter(site__exact=request.GET.get('sitename', ''))
