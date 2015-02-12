@@ -31,7 +31,7 @@ class Site(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'sites'
+        #db_table = 'sites'
 
     def __unicode__(self):
         return u'%s, %s' % (self.site, self.country)
@@ -61,7 +61,7 @@ class Date(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'dates'
+        #db_table = 'dates'
 
     def __unicode__(self):
         return u'%s %s %s' % (self.site,self.layer,self.industry)
