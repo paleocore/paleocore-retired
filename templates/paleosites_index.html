@@ -52,7 +52,7 @@
 <div id="column1">
 <p><a href="http://127.0.0.1:8000/admin/GIS/site/">{{ sites }} site records</a>.<br>
    <a href="http://127.0.0.1:8000/admin/GIS/date/"> {{ dates }} date records</a>.</p>
-    <p></p>Goto database <a href="http://127.0.0.1:8000/admin">Admin</a></p>
+    <p></p>Goto database <a href="{% url 'admin:app_list' 'paleosites' %}">Admin</a></p>
     <br><p>Download:</p>
     <ul><li>SQLite database</li>
     <li><a href="index.html?download=sites">Sites as CSV</a></li>
