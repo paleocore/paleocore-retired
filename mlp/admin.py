@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import mlp_occurrence, mlp_biology
+from models import Occurrence, Biology
 from django.forms import TextInput, Textarea  # import custom form widgets
 from django.contrib.gis.db import models
 from django.http import HttpResponse, HttpResponseRedirect
@@ -26,7 +26,7 @@ biology_fieldsets = (
 
 
 class BiologyInline(admin.TabularInline):
-    model = mlp_biology
+    model = Biology
     extra = 0
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
@@ -114,8 +114,8 @@ class OccurrenceAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
-        o = mlp_occurrence()  # create an empty instance of an occurrence object
-        b = mlp_biology()  # create an empty instance of a biology object
+        o = Occurrence()  # create an empty instance of an occurrence object
+        b = Biology()  # create an empty instance of a biology object
 
         occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
@@ -171,5 +171,5 @@ class OccurrenceAdmin(admin.ModelAdmin):
 ############################
 ## Register Admin Classes ##
 ############################
-admin.site.register(mlp_occurrence, OccurrenceAdmin)
-admin.site.register(mlp_biology, BiologyAdmin)
+admin.site.register(Occurrence, OccurrenceAdmin)
+admin.site.register(Biology, BiologyAdmin)

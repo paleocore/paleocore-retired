@@ -1,7 +1,7 @@
 from tastypie.test import ResourceTestCase
 from django.contrib.auth.models import User
 from turkana.models import Turkana
-from drp.models import drp_occurrence, drp_biology
+from drp.models import Occurrence, drp_biology
 from drp.tests import create_django_page_tree #should probably put this create page tree code in mysite.tests and import for all apps
 from tastypie.models import ApiKey
 from django.contrib.auth.models import Permission
@@ -21,9 +21,9 @@ class DRPResourceTest(ResourceTestCase):
         self.apikey = ApiKey.objects.get(user=self.user).key
 
 
-        self.assertEqual(drp_occurrence.objects.count(), 1)
+        self.assertEqual(Occurrence.objects.count(), 1)
         self.assertEqual(drp_biology.objects.count(), 1)
-        self.testObject = drp_occurrence.objects.get(catalognumber="DIK-12-1")
+        self.testObject = Occurrence.objects.get(catalognumber="DIK-12-1")
         create_django_page_tree()
 
 

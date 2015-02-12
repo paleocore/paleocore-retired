@@ -1,5 +1,5 @@
 from django.test import TestCase
-from drp.models import drp_occurrence, drp_biology
+from drp.models import Occurrence, drp_biology
 from fiber.models import Page
 from django.core.urlresolvers import reverse
 from datetime import datetime
@@ -40,13 +40,13 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test drp_occurrence instance save method with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence(geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
+        new_occurrence = Occurrence(geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         new_occurrence.save()
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
@@ -55,12 +55,12 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence.objects.create(geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
+        new_occurrence = Occurrence.objects.create(geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
@@ -69,11 +69,11 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence.objects.create(
+        new_occurrence = Occurrence.objects.create(
             barcode = 1111,
             basisofrecord="FossilSpecimen",
             institutionalcode = "INST",
@@ -82,7 +82,7 @@ class OccurrenceMethodsTests(TestCase):
             itemnumber="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
@@ -92,11 +92,11 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence.objects.create(
+        new_occurrence = Occurrence.objects.create(
             barcode = 1111,
             basisofrecord="HumanObservation",
             institutionalcode = "INST",
@@ -105,7 +105,7 @@ class OccurrenceMethodsTests(TestCase):
             itemnumber="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
@@ -139,11 +139,11 @@ class OccurrenceMethodsTests(TestCase):
         """
         Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_occurrence.objects.count()  # get current number of occurrence records
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_occurrence = drp_occurrence.objects.create(
+        new_occurrence = Occurrence.objects.create(
             barcode = 1111,
             basisofrecord="FossilSpecimen",
             itemtype = "Floral",
@@ -153,7 +153,7 @@ class OccurrenceMethodsTests(TestCase):
             itemnumber="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
@@ -202,7 +202,7 @@ class OccurrenceAdminTests(TestCase):
     """
 
     def setUp(self):
-        self.occurrence = drp_occurrence.objects.create(
+        self.occurrence = Occurrence.objects.create(
             barcode=1111,
             basisofrecord="FossilSpecimen",
             itemtype="Faunal",

@@ -8,7 +8,7 @@ itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","
 
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
-class drp_occurrence(models.Model):
+class Occurrence(models.Model):
     #id = models.AutoField("id",primary_key=True,db_column="id",null=False,blank=True)
     barcode = models.IntegerField("Barcode",null=True, blank=True)
     datelastmodified = models.DateTimeField("Date Last Modified",null=True, blank=True)
@@ -100,7 +100,7 @@ class drp_occurrence(models.Model):
         self.datelastmodified = datetime.now()  # TODO change datelastmodified autonow option to accomplish this
 
         #call the normal drp_occurrence save method using alternate database
-        super(drp_occurrence, self).save(*args, **kwargs)
+        super(Occurrence, self).save(*args, **kwargs)
 
         ## should be no longer necessary as biology is a subclass of occurrence
         # #if itemtype=="Faunal" and does there is no entry in in biology, then add entry to drp_biology.
@@ -118,28 +118,22 @@ class drp_occurrence(models.Model):
         # The DRP database is in the SDE standard in order to make it compatible with
         # ArcGIS 10.1. Django does not handle PostGIS DB schemas natively. This is a
         # work-around to point Django to the right location for the data tables.
-        db_table='drp_occurrence'
+        #db_table='drp_occurrence'
         ordering = ["collectioncode", "paleolocalitynumber", "itemnumber", "itempart"]
 
 
-class drp_images(models.Model):
-    occurrence = models.ForeignKey("drp_occurrence")
+class Image(models.Model):
+    occurrence = models.ForeignKey("Occurrence")
     image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
-    class Meta:
-        db_table = "drp_images"
 
-
-class drp_files(models.Model):
-    occurrence = models.ForeignKey("drp_occurrence")
+class File(models.Model):
+    occurrence = models.ForeignKey("Occurrence")
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
-    class Meta:
-        db_table = "drp_files"
-
-class drp_biology(drp_occurrence):
+class Biology(Occurrence):
     #biology_id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
     #occurrence = models.OneToOneField("drp_occurrence",db_column="occurrence_id")
     #taxon = models.ForeignKey("drp_taxonomy")
@@ -239,8 +233,8 @@ class drp_biology(drp_occurrence):
     lrm1 = models.IntegerField(null=True, blank=True)
     lrm2 = models.IntegerField(null=True, blank=True)
     lrm3 = models.IntegerField(null=True, blank=True)
-    taxon = models.ForeignKey(Taxon)
-    identification_qualifier = models.ForeignKey(IdentificationQualifier)
+    taxon = models.ForeignKey(Taxon, related_name='drp_biology_occurrences')
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='drp_biology_occurrences')
 
     # def lowest_level_identification(self):
     #     if(self.genus):
@@ -259,7 +253,7 @@ class drp_biology(drp_occurrence):
     class Meta:
         verbose_name = "DRP Biology"
         verbose_name_plural = "DRP Biology"
-        db_table='drp_biology'
+        #db_table='drp_biology'
 
     def __unicode__(self):
         return str(self.taxon.__unicode__())
@@ -386,7 +380,7 @@ class drp_biology(drp_occurrence):
         #     return
 
 
-class drp_hydrology(models.Model):
+class Hydrology(models.Model):
     length = models.FloatField(null=True,blank=True)
     name = models.CharField(null=True,blank=True,max_length=50)
     size = models.IntegerField(null=True,blank=True)
@@ -400,9 +394,9 @@ class drp_hydrology(models.Model):
     class Meta:
         verbose_name = "DRP Hydrology"
         verbose_name_plural = "DRP Hydrology"
-        db_table = 'drp_hydrology'
+        #db_table = 'drp_hydrology'
 
-class drp_locality(models.Model):
+class Locality(models.Model):
     paleolocalitynumber = models.IntegerField(null=True,blank=True)
     collectioncode = models.CharField(null=True,blank=True,choices = (("DIK","DIK"),("ASB","ASB")),max_length=10)
     paleosublocality = models.CharField(null=True,blank=True,max_length=50)
@@ -422,27 +416,27 @@ class drp_locality(models.Model):
     class Meta:
         verbose_name = "DRP Locality"
         verbose_name_plural = "DRP Localities"
-        db_table='drp_locality'
+        #db_table='drp_locality'
         ordering=("collectioncode","paleolocalitynumber","paleosublocality")
 
 
-class drp_taxonomy(models.Model):
-    taxon = models.CharField(max_length=255,unique=True)
-    rank = models.CharField(max_length=255)
-    kingdom = models.CharField(max_length=255,blank=True,null=True)
-    phylum = models.CharField(max_length=255,blank=True,null=True)
-    tax_class = models.CharField(max_length=255,blank=True,null=True,db_column="class")
-    tax_order = models.CharField(max_length=255,blank=True,null=True,db_column="order_")
-    family = models.CharField(max_length=255,blank=True,null=True)
-    subfamily = models.CharField(max_length=255,blank=True,null=True)
-    tribe = models.CharField(max_length=255,blank=True,null=True)
-    genus = models.CharField(max_length=255,blank=True,null=True)
-    hierarchysortorder = models.IntegerField("Sort Order",max_length=100)
-
-    def __unicode__(self):
-        return str(self.rank) + " : " + str(self.taxon)
-
-    class Meta:
-        verbose_name = "Taxonomy"
-        verbose_name_plural = "Taxonomy"
-        db_table='drp_taxonomy'
+# class drp_taxonomy(models.Model):
+#     taxon = models.CharField(max_length=255,unique=True)
+#     rank = models.CharField(max_length=255)
+#     kingdom = models.CharField(max_length=255,blank=True,null=True)
+#     phylum = models.CharField(max_length=255,blank=True,null=True)
+#     tax_class = models.CharField(max_length=255,blank=True,null=True,db_column="class")
+#     tax_order = models.CharField(max_length=255,blank=True,null=True,db_column="order_")
+#     family = models.CharField(max_length=255,blank=True,null=True)
+#     subfamily = models.CharField(max_length=255,blank=True,null=True)
+#     tribe = models.CharField(max_length=255,blank=True,null=True)
+#     genus = models.CharField(max_length=255,blank=True,null=True)
+#     hierarchysortorder = models.IntegerField("Sort Order",max_length=100)
+#
+#     def __unicode__(self):
+#         return str(self.rank) + " : " + str(self.taxon)
+#
+#     class Meta:
+#         verbose_name = "Taxonomy"
+#         verbose_name_plural = "Taxonomy"
+#         db_table='drp_taxonomy'

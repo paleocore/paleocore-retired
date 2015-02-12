@@ -12,13 +12,13 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 class imagesInline(admin.TabularInline):
-    model = drp_images
+    model = Image
     extra = 0
     readonly_fields = ("id",)
 
 
 class filesInline(admin.TabularInline):
-    model = drp_files
+    model = File
     extra = 0
     readonly_fields = ("id",)
 
@@ -62,7 +62,7 @@ biology_fieldsets = (
 
 
 class biologyInline(admin.TabularInline):
-    model = drp_biology
+    model = Biology
     extra = 0
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
@@ -185,8 +185,8 @@ class occurrenceAdmin(admin.ModelAdmin):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="DRP_data.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
-        o = drp_occurrence()  # create an empty instance of an occurrence object
-        b = drp_biology()  # create an empty instance of a biology object
+        o = Occurrence()  # create an empty instance of an occurrence object
+        b = Biology()  # create an empty instance of a biology object
 
         occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
@@ -247,7 +247,7 @@ class occurrenceAdmin(admin.ModelAdmin):
             return
         #check if point is within any localities
         matching_localities = []
-        for locality in drp_locality.objects.all():
+        for locality in Locality.objects.all():
             if locality.geom.contains(queryset[0].geom):
                 matching_localities.append(str(locality.collectioncode) + "-" + str(locality.paleolocalitynumber))
         if matching_localities:
@@ -260,7 +260,7 @@ class occurrenceAdmin(admin.ModelAdmin):
 
         #if the point is not within any locality, get the nearest locality
         distances={}#dictionary which will contain {<localityString>:key} entries
-        for locality in drp_locality.objects.all():
+        for locality in Locality.objects.all():
             locality_name=str(locality.collectioncode) + "-" + str(locality.paleolocalitynumber)
             #how are units being dealt with here?
             locality_distance_from_point = locality.geom.distance(queryset[0].geom)
@@ -272,7 +272,7 @@ class occurrenceAdmin(admin.ModelAdmin):
     #admin action to move points to specified x and y coordinates
     # TODO test and implement. Not currently active.
     def move_selected(self,request,queryset):
-        returnURL="/admin/drp/drp_occurrence/"
+        returnURL="/admin/drp/occurrence/"
         def render_move_form():
             t=loader.get_template("move_points.html")
             c = RequestContext(request, {'returnURL': returnURL, 'selectedPoints': queryset, 'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,})
@@ -309,9 +309,8 @@ class taxonomyAdmin(admin.ModelAdmin):
 ## Register Admin Classes ##
 ############################
 
-admin.site.register(drp_biology, biologyAdmin)
-admin.site.register(drp_hydrology, hydrologyAdmin)
-admin.site.register(drp_locality, localityAdmin)
-admin.site.register(drp_occurrence, occurrenceAdmin)
-admin.site.register(drp_taxonomy, taxonomyAdmin)
+admin.site.register(Biology, biologyAdmin)
+admin.site.register(Hydrology, hydrologyAdmin)
+admin.site.register(Locality, localityAdmin)
+admin.site.register(Occurrence, occurrenceAdmin)
 

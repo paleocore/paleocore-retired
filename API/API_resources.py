@@ -6,7 +6,7 @@ from tastypie import fields
 #from tastypie.contrib.gis.resources import ModelResource as geoModelResource
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from turkana.models import Turkana
-from drp.models import drp_taxonomy, drp_occurrence, drp_biology, drp_hydrology, drp_locality
+from drp.models import Occurrence, Biology, Hydrology, Locality
 
 
 
@@ -84,16 +84,16 @@ drp_authentication = ApiKeyAuthentication()#will require a username and api_key 
 drp_authorization = CustomDjangoAuthorization(appname="drp", modelname="drp_occurrence")#look to custom Django Authorization class to determine permissions
 drp_allowed_methods=['get','post']
 
-class drp_taxonomyResource(ModelResource):
-    class Meta:
-        max_limit=0
-        queryset = drp_taxonomy.objects.all()
-        allowed_methods= drp_allowed_methods
-        resource_name = 'drp_taxonomy'
-        authorization = drp_authorization
-        authentication = drp_authentication
+# class drp_taxonomyResource(ModelResource):
+#     class Meta:
+#         max_limit=0
+#         queryset = drp_taxonomy.objects.all()
+#         allowed_methods= drp_allowed_methods
+#         resource_name = 'drp_taxonomy'
+#         authorization = drp_authorization
+#         authentication = drp_authentication
 
-class drp_localityResource(ModelResource):
+class LocalityResource(ModelResource):
     class Meta:
         filtering = {
             "collectioncode": ALL,
@@ -101,16 +101,16 @@ class drp_localityResource(ModelResource):
             "paleosublocalitynumber": ALL,
         }
         max_limit=0
-        queryset = drp_locality.objects.all()
+        queryset = Locality.objects.all()
         allowed_methods= drp_allowed_methods
         resource_name = 'drp_locality'
         authorization = drp_authorization
         authentication = drp_authentication
 
-class drp_hydrologyResource(ModelResource):
+class HydrologyResource(ModelResource):
     class Meta:
         max_limit=0
-        queryset = drp_hydrology.objects.all()
+        queryset = Hydrology.objects.all()
         allowed_methods= drp_allowed_methods
         resource_name = 'drp_hydrology'
         authorization = drp_authorization
@@ -139,10 +139,10 @@ drp_biology_filtering = {
         }
 drp_biology_excludes = ["lrp3","lrp4","llc","lli1","lli2","lli3","lli4","lli5","llm1","llm2","llm3","llp1","llp2","llp3","llp4","lrc","lri1","lri2","lri3","lri4","lri5","lrm1","lrm2","lrm3","lrp1","lrp2","lrp","ulp1","ulp2","ulp3","ulp4","urc","uri1","uri2","uri3","uri4","uri5","urm1","urm2","urm3","urp1","urp2","urp3","urp4","ulc","uli1","uli2","uli3","uli4","uli5","ulm1","ulm2","ulm3"]
 
-class drp_biologyResource(ModelResource):
+class BiologyResource(ModelResource):
     #occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence") #foreign key to occurrence
     class Meta:
-        queryset = drp_biology.objects.all()
+        queryset = Biology.objects.all()
         max_limit=0
         allowed_methods=drp_allowed_methods
         resource_name = 'drp_biology'
@@ -151,10 +151,10 @@ class drp_biologyResource(ModelResource):
         authorization = drp_authorization
         authentication = drp_authentication
 
-class drp_biology_full_relatedResource(ModelResource):
+class BiologyFullRelatedResource(ModelResource):
     occurrence = fields.ToOneField("API.API_resources.drp_occurrenceResource", attribute="occurrence", full=True) #foreign key to occurrence
     class Meta:
-        queryset = drp_biology.objects.all()
+        queryset = Biology.objects.all()
         max_limit=0
         allowed_methods=drp_allowed_methods
         resource_name = 'drp_biology_full_related'
@@ -206,28 +206,24 @@ drp_occurrence_filtering = {
             "geom": ALL,
         }
 
-class drp_occurrenceResource(ModelResource):
+class OccurrenceResource(ModelResource):
     #biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", null=True, blank=True) #link for the reverse lookup of biology
     class Meta:
         max_limit=0
-        queryset = drp_occurrence.objects.all()
+        queryset = Occurrence.objects.all()
         allowed_methods=drp_allowed_methods
         resource_name = 'drp_occurrence'
         filtering = drp_occurrence_filtering
         authorization = drp_authorization
         authentication = drp_authentication
 
-class drp_occurrence_full_relatedResource(ModelResource):
-    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="drp_biology", full=True, null=True, blank=True) #link for the reverse lookup of biology
+class OccurrenceFullRelatedResource(ModelResource):
+    biology = fields.ToOneField("API.API_resources.drp_biologyResource", attribute="Biology", full=True, null=True, blank=True) #link for the reverse lookup of biology
     class Meta:
         max_limit=0
-        queryset = drp_occurrence.objects.all()
+        queryset = Occurrence.objects.all()
         allowed_methods=drp_allowed_methods
         resource_name = 'drp_occurrence_full_related'
         filtering = drp_occurrence_filtering
         authorization = drp_authorization
         authentication = drp_authentication
-
-
-
-

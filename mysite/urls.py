@@ -14,13 +14,12 @@ from tastypie.api import Api
 from API.API_resources import *
 v1_api = Api(api_name='v1')
 v1_api.register(turkanaResource())
-v1_api.register(drp_taxonomyResource())
-v1_api.register(drp_occurrenceResource())
-v1_api.register(drp_occurrence_full_relatedResource())
-v1_api.register(drp_biologyResource())
-v1_api.register(drp_biology_full_relatedResource())
-v1_api.register(drp_localityResource())
-v1_api.register(drp_hydrologyResource())
+v1_api.register(OccurrenceResource())
+v1_api.register(OccurrenceFullRelatedResource())
+v1_api.register(BiologyResource())
+v1_api.register(BiologyFullRelatedResource())
+v1_api.register(LocalityResource())
+v1_api.register(HydrologyResource())
 
 
 

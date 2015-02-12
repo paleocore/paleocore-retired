@@ -1,7 +1,6 @@
 from django.contrib.gis.db import models
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
     COLLECTOR_CHOICES, SIDE_VOCABULARY
-from drp.models import drp_taxonomy
 import utm
 
 
