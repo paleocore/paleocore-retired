@@ -93,7 +93,7 @@
             {{ search_result_n }} matches
             {% for a_site in map_points %}
                 {% if a_site.map_location %}
-                    <p><a href="/paleosites?sitename={{ a_site.site}}">{{ a_site.site }}</a></p>
+                    <p><a href="/paleosites/index?sitename={{ a_site.site}}">{{ a_site.site }}</a></p>
                 {%  endif %}
             {% endfor %}
         {% endif %}
