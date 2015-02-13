@@ -22,6 +22,16 @@ def home(request):
                                                              'map_points': points_to_map,
                                                              'form': form, 'search_result': search_result, 
                                                              'search_result_n': search_result_n, })
+        # if request.GET.get('id', ''):
+        #     points_to_map = Site.objects.filter(pk=request.GET.get('id', ''))
+        #     search_result = True
+        #     search_result_n = 1
+        #     form = SiteSearch
+        #     return render(request, 'paleosites_index.html', {'sites': sites,
+        #                                                      'dates': dates,
+        #                                                      'map_points': points_to_map,
+        #                                                      'form': form, 'search_result': search_result,
+        #                                                      'search_result_n': search_result_n, })
         if request.GET.get('download', '') == "sites":
             response = HttpResponse(content_type='text/csv;charset=utf-8')
             response['Content-Disposition'] = 'attachment; filename="Sites.csv"'
