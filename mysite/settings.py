@@ -79,7 +79,8 @@ INSTALLED_APPS = (
     'drp',   # Dikika Research Project geospatial app
     'turkana',  # Turkana Project Data
     'gdb',
-    'taxonomy'
+    'taxonomy',
+    'paleocore_projects',
     #'austin',
 
 )

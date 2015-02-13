@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+    {% if project_list %}
+        {% for project in project_list %}
+            <h3>{{ project.full_name }}</h3>
+
+            {% if project.graphic %}
+                <img src="{{ project.graphic }}"/>
+            {% endif %}
+
+            <p>{{ project.abstract }}</p>
+
+    {% endfor %}
+    {% else %}
+        <h3>There are no projects to display</h3>
+    {% endif %}
+
+
+
+
+{% endblock %}
