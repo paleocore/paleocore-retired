@@ -106,17 +106,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
         #'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'PORT': '5432',   # default Postgres port
+        'PORT': secrets.DATABASE_PORT,  # 5432 default Postgres port
         #'NAME': 'C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\paleocore.db',
-        'NAME': 'paleocore_dev',
+        'NAME': secrets.DATABASE_NAME,  # 'paleocore_dev',
         'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
-
-        # TACC SETTINGS
         'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
         'HOST': secrets.DEFAULT_HOST,   # for local development server
-
-        # LOCAL SETTINGS
-        #'HOST': 'localhost'
     },
 
     # 'drp_carmen': {
