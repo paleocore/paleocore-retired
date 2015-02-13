@@ -81,6 +81,8 @@ INSTALLED_APPS = (
     'gdb',
     'taxonomy',
     'paleocore_projects',
+    'leaflet',
+    'djgeojson',
     #'austin',
 
 )
