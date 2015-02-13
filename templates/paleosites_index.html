@@ -50,22 +50,25 @@
 </div>
 </div>
 <div id="column1">
-<p><a href="http://127.0.0.1:8000/admin/GIS/site/">{{ sites }} site records</a>.<br>
-   <a href="http://127.0.0.1:8000/admin/GIS/date/"> {{ dates }} date records</a>.</p>
-    <p></p>Goto database <a href="http://127.0.0.1:8000/admin">Admin</a></p>
+<p><a href="/admin/paleosites/site/">{{ sites }} site records</a>.<br>
+   <a href="/admin/paleosites/date"> {{ dates }} date records</a>.</p>
+    <p></p>Goto database <a href="{% url 'admin:app_list' 'paleosites' %}">Admin</a></p>
     <br><p>Download:</p>
     <ul><li>SQLite database</li>
     <li><a href="index.html?download=sites">Sites as CSV</a></li>
     <li><a href="index.html?download=dates">Dates as CSV</a></li></ul>
     <p>Data Sources:
     <ul><li><a href="http://www.oldstoneage.com/">OSA Research Group</a></li>
-    <li><a href="http://paleoanthro.org/journal/volumes/2011/">F. d'Errico, W. E. Banks, M. Vanhaeren, V. Laroulandie, and M. Langlais (2011) "PACEA Geo-Referenced Radiocarbon Database" PaleoAnthropology 2011:1-12</a></li>
-    <li><a href="http://www.esc.cam.ac.uk/research/research-groups/oistage3/stage-three-project-database-downloads">OIS 3 Research Project</a></li></ul></p>
-    <br><p>Become a contributor, questions or comments, contact <a href="mailto:mcpherron@eva.mpg.de">Shannon P. McPherron</a></p>
+    <li><a href="http://paleoanthro.org/journal/volumes/2011/">F. d'Errico, W. E. Banks, M. Vanhaeren, V. Laroulandie,
+        and M. Langlais (2011) "PACEA Geo-Referenced Radiocarbon Database" PaleoAnthropology 2011:1-12</a></li>
+    <li><a href="http://www.esc.cam.ac.uk/research/research-groups/oistage3/stage-three-project-database-downloads">
+        OIS 3 Research Project</a></li></ul></p>
+    <br><p>Become a contributor, questions or comments, contact
+    <a href="mailto:mcpherron@eva.mpg.de">Shannon P. McPherron</a></p>
 </div>
 {% if search_result %}
     <div id="column2narrow">
-    <form action="/index" method="post">
+    <form action="." method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Submit" />
@@ -84,20 +87,20 @@
                 Country :  {{  a_site.country.name }}<br>
                 Data Source :  {{  a_site.data_source }}<br>
                 <br>
-                <a href="/admin/GIS/site/{{ a_site.id }}/">Edit this record</a>
+                <a href="/admin/paleosites/site/{{ a_site.id }}/">Edit this record</a>
             {% endfor %}
         {% else %}
             {{ search_result_n }} matches
             {% for a_site in map_points %}
                 {% if a_site.map_location %}
-                    <p><a href="/index.html?sitename={{ a_site.site}}">{{ a_site.site }}</a></p>
+                    <p><a href="/paleosites/index?sitename={{ a_site.site}}">{{ a_site.site }}</a></p>
                 {%  endif %}
             {% endfor %}
         {% endif %}
     </div>
 {%   else %}
     <div id="column2">
-    <form action="/index" method="post">
+    <form action="." method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Submit" />
