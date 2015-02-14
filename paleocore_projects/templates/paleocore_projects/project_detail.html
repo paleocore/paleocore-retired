@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% load leaflet_tags %}
+
+{% block extra_js %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+
+{% block page_content %}
+
+<div id="main-wrapper" class="subpage">
+   <div class="container">
+       <div class="row">
+
+                    {% if project.graphic %}
+                        <div class="8u">
+                    {% else %}
+                        <div class="12u">
+                    {% endif %}
+
+
+                            {% leaflet_map "main" callback="main_map_init" %}
+
+            <script type="text/javascript">
+
+                function filterFeatures(feature,layer){
+                    var currentProjectID = {{ project.id }}
+                    if(feature.id === currentProjectID) return true
+                }
+
+                function onEachFeature(feature, layer) {
+                    layer.bindPopup(feature.properties.full_name);
+                    layer.on("dblclick", function(){
+                        var stringid = String(feature.id)
+                        window.open("detail/" + stringid);
+                    });
+                }
+
+                function main_map_init (map, options) {
+
+                var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                // Download GeoJSON via Ajax
+                $.getJSON(dataurl, function (data) {
+                    // Add GeoJSON layer
+                    L.geoJson(data, {
+                    onEachFeature: onEachFeature,
+                    filter: filterFeatures
+                    }).addTo(map);
+                });
+
+                map.setView([30, 31], 2);
+                map.scrollWheelZoom.disable();
+
+
+                }
+            </script>
+                            <p>{{ project.abstract }}</p>
+                            <p>{{ project.attribution }}</p>
+                        </div>
+
+                    {% if project.graphic %}
+
+                        <div class="4u">
+                            <h2>{{ project.full_name }}</h2>
+                            <img src="/media/{{ project.graphic }}" style="max-width: 100%;max-height: 100%;"/>
+                        </div>
+                    {% endif %}
+
+        </div>
+       <div class="row">
+            <div class="6u">
+                {% if project.isPublic %}<h2 class="button" onclick="window.location.href=''">View Public Database</h2>
+                {% else %} <h2 class="button" onclick="window.location.href='/admin/'">Admin Site for Project Members</h2>
+                {% endif %}
+            </div>
+
+       </div>
+   </div>
+</div>
+
+{% endblock %}

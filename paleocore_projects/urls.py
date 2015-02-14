@@ -7,6 +7,8 @@ from djgeojson.views import GeoJSONLayerView
 
 urlpatterns = patterns('paleocore_projects.views',
                        # ex. /data/
-                       url(r'^$', views.IndexView.as_view(), name='index'),
-                       url(r'^projects.geojson$', GeoJSONLayerView.as_view(model=Project), name='projects_data')
+                       url(r'^detail/(?P<pk>\d+)/$', views.DetailView.as_view(), name='detail'),
+                       url(r'^detail/$', views.redirectDetailViewMissingPK, name='redirect_projects_detail'),
+                       url(r'^projects.geojson$', GeoJSONLayerView.as_view(model=Project, properties=("full_name")), name='projects_geojson'),
+                       url(r'^$', views.IndexView.as_view(), name='index')
                        )
