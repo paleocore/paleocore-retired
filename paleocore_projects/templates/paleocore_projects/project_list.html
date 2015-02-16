@@ -53,10 +53,10 @@
                         <h3><a href={% url 'paleocore_projects:detail' pk %}>{{ project.full_name }}</a></h3>
                     </div>
                     <div class="3u">
-                        <h3>Record Count</h3>
+                        <h3>{{ counts.drp }}</h3>
                     </div>
                     <div class="3u">
-                        <h3>{% if project.isPublic %} Public Dataset{% else %} Private Dataset{% endif %}</h3>
+                        <h3>{% if project.is_public %} Public Dataset{% else %} Private Dataset{% endif %}</h3>
                     </div>
                     <div clas="3u"></div>
                     </div>

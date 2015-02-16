@@ -11,15 +11,33 @@
 
     <script>
        $(document).ready(function() {
-            $.getJSON( "/projects/data_json/drp/", function( data ) {
-                $.each( data, function( occurrenceid, occurrence ) {
-                    $.each(occurrence["fields"], function( key, val ) {
-                        $("#project-data").append("<tr><td>" + val + "</td></tr>")
-                    });
+           var rows = [];
 
+            $.getJSON( "/projects/data_json/drp/", function( data ) {
+
+                rows.push("<thead><tr>");
+
+                $.each(data[0]["fields"], function(key, val){
+                    rows.push("<td>" + String(key) + "</td>")
+                });
+
+                rows.push("</tr></thead>");
+
+
+                rows.push("<tbody>");
+
+                $.each( data, function( occurrenceid, occurrence ) {
+                    rows.push("<tr>");
+                    $.each(occurrence["fields"], function( key, val ) {
+                        rows.push("<td>" + val + "</td>")
+                    });
+                    rows.push("</tr>");
 
 
                 });
+                rows.push("</tbody>")
+                $("#project-data").html(rows.join("")).DataTable();
+
             });
 
             });
