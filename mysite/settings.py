@@ -34,11 +34,11 @@ MEDIA_URL = "/media/"
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['.paleocore.org']
+ALLOWED_HOSTS = [secrets.ALLOWED_HOSTS]
 
 POSTGIS_VERSION = (2, 0, 1)
 
@@ -109,9 +109,9 @@ DATABASES = {
         'PORT': secrets.DATABASE_PORT,  # 5432 default Postgres port
         #'NAME': 'C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\paleocore.db',
         'NAME': secrets.DATABASE_NAME,  # 'paleocore_dev',
-        'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
-        'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
-        'HOST': secrets.DEFAULT_HOST,   # for local development server
+        'USER': secrets.DATABASE_USER,   # 'webdev' is the user for the local development server
+        'PASSWORD': secrets.DATABASE_PASSWORD,   # password for local postgres server
+        'HOST': secrets.DATABASE_HOST,   # for local development server
     },
 
     # 'drp_carmen': {
