@@ -66,7 +66,15 @@ def ajaxProjectData(request, pcoreapp="drp"):
     model = get_model(pcoreapp, project.occurrence_table_name)
     permission_string = pcoreapp + ".change_" + project.occurrence_table_name
     if request.user.has_perm(permission_string):
-        serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
+        filterArgs = {}
+        for key,value in request.GET.iteritems():
+            if value:
+                if value <> "":
+                    filterArgs[key] = value
+        if filterArgs:
+            serializers.serialize("json", model.objects.filter(** filterArgs), fields=project.display_fields, stream=response)
+        else:
+            serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
     else:
         pass
     return response
