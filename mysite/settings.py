@@ -34,11 +34,11 @@ MEDIA_URL = "/media/"
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['.paleocore.org']
+ALLOWED_HOSTS = [secrets.ALLOWED_HOSTS]
 
 POSTGIS_VERSION = (2, 0, 1)
 
@@ -109,17 +109,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',   # Postgres PostGIS spatial database backend
         #'ENGINE': 'django.contrib.gis.db.backends.spatialite',
-        'PORT': '5432',   # default Postgres port
+        'PORT': secrets.DATABASE_PORT,  # 5432 default Postgres port
         #'NAME': 'C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\paleocore.db',
-        'NAME': 'paleocore_dev',
-        'USER': secrets.DEFAULT_USER,   # 'webdev' is the user for the local development server
-
-        # TACC SETTINGS
-        'PASSWORD': secrets.DEFAULT_PASSWORD,   # password for local postgres server
-        'HOST': secrets.DEFAULT_HOST,   # for local development server
-
-        # LOCAL SETTINGS
-        #'HOST': 'localhost'
+        'NAME': secrets.DATABASE_NAME,  # 'paleocore_dev',
+        'USER': secrets.DATABASE_USER,   # 'webdev' is the user for the local development server
+        'PASSWORD': secrets.DATABASE_PASSWORD,   # password for local postgres server
+        'HOST': secrets.DATABASE_HOST,   # for local development server
     },
 
     # 'drp_carmen': {
