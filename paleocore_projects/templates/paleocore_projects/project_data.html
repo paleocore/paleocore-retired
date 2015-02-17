@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block extra_js %}
     <!-- DataTables CSS -->
@@ -55,7 +56,9 @@
       <h2> {{ project }} Data</h2>
 
         <table id="project-data" class="display">
-            <tr><td><h3>Loading data.....Don't worry, the table is VERY fast once loaded. </h3></td></tr>
+            <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
+            <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
+
         </table>
       </div>
       <div class="2u">
