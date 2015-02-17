@@ -15,7 +15,8 @@ class Project(models.Model):
     occurrence_table_name = models.CharField(max_length=255, help_text="the name of the main occurrence table in the models.py file of the associated app")
     is_public = models.BooleanField(default=False, help_text="Is the raw data to be made publicly viewable?")
     display_summary_info = models.BooleanField(default=True, help_text="Should project summary data be published? Only uncheck this in extreme circumstances")
-    display_fields = models.TextField(max_length=2000, null=True, blank=True, help_text="a list of fields to display in the public view of the data, in the same format as the list_display fields in admin.py")
+    display_fields = models.TextField(max_length=2000, null=True, blank=True, help_text="a list of fields to display in the public view of the data, in the same format as the list_display setting in admin.py")
+    display_filter_fields = models.TextField(max_length=2000, null=True, blank=True, help_text="a list of fields to filter on in the public view of the data, in the same format as the list_filter setting in admin.py")
     geom = models.PointField(srid=4326,db_column="shape")
     objects = models.GeoManager()
 

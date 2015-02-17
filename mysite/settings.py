@@ -34,9 +34,9 @@ MEDIA_URL = "/media/"
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = secrets.DEBUG
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = secrets.TEMPLATE_DEBUG
 
 ALLOWED_HOSTS = [secrets.ALLOWED_HOSTS]
 

@@ -2,7 +2,7 @@ from django.views import generic
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 from paleocore_projects.models import Project
-from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response
+from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response, get_object_or_404
 from django.db.models.loading import get_model
 from django.core import serializers
 from django.template import RequestContext
@@ -63,7 +63,7 @@ def redirectDetailViewMissingPK(request):
 
 #view that returns ajax data for a given project
 #after testing that user has permission for the project
-def ajaxProjectData(request, pcoreapp="drp"):
+def ajaxProjectData(request, pcoreapp):
     response = HttpResponse(mimetype='application/json')
     project = Project.objects.get(paleocore_appname = pcoreapp)
 
@@ -93,12 +93,15 @@ def ajaxProjectData(request, pcoreapp="drp"):
 #but I couldn't figure out how to access the request.GET parameters using a generic view
 #so I opted for a simple functional view.
 def projectDataTable(request, pcoreapp="drp"):
+    project = get_object_or_404(Project, paleocore_appname = pcoreapp)
     filterArgs = {}
     for key,value in request.GET.iteritems():
         if value:
             if value <> "":
                 filterArgs[key] = value
+    #build list of unique values for fields to filter on
+
     return render_to_response('paleocore_projects/project_data.html',
-                             {"project": Project.objects.get(paleocore_appname = pcoreapp),
+                             {"project": project,
                               "filterArgs":filterArgs },
                           context_instance=RequestContext(request))
