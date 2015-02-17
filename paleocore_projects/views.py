@@ -2,9 +2,11 @@ from django.views import generic
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 from paleocore_projects.models import Project
-from django.shortcuts import HttpResponseRedirect, HttpResponse, Http404
+from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response
 from django.db.models.loading import get_model
 from django.core import serializers
+from django.template import RequestContext
+
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
     template_name = 'paleocore_projects/project_list.html'
@@ -79,11 +81,13 @@ def ajaxProjectData(request, pcoreapp="drp"):
         pass
     return response
 
-class ProjectDataTable(FiberPageMixin, generic.DetailView):
-    template_name = 'paleocore_projects/project_data.html'
-
-    def get_object(self):
-        return Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
-
-    def get_fiber_page_url(self):
-        return reverse('paleocore_projects:index')
+def projectDataTable(request, pcoreapp="drp"):
+    filterArgs = {}
+    for key,value in request.GET.iteritems():
+        if value:
+            if value <> "":
+                filterArgs[key] = value
+    return render_to_response('paleocore_projects/project_data.html',
+                             {"project": Project.objects.get(paleocore_appname = pcoreapp),
+                              "filterArgs":filterArgs },
+                          context_instance=RequestContext(request))

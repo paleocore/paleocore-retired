@@ -9,7 +9,7 @@ urlpatterns = patterns('paleocore_projects.views',
                        # ex. /data/
                        url(r'^data/(?P<pcoreapp>.+)/$', views.ProjectDataView.as_view(), name='data'),
                        url(r'^data_json/(?P<pcoreapp>.+)/$', views.ajaxProjectData, name='data_json'),
-                       url(r'^data_table/(?P<pcoreapp>.+)/$', views.ProjectDataTable.as_view(), name='data_table'),
+                       url(r'^data_table/(?P<pcoreapp>.+)/$', views.projectDataTable, name='data_table'),
                        url(r'^detail/(?P<pcoreapp>.+)/$', views.ProjectDetailView.as_view(), name='detail'),
                        url(r'^detail/$', views.redirectDetailViewMissingPK, name='redirect_projects_detail'),
                        url(r'^projects.geojson$', GeoJSONLayerView.as_view(model=Project, properties=("full_name","paleocore_appname")), name='projects_geojson'),

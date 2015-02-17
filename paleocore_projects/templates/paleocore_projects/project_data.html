@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block extra_js %}
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
@@ -13,7 +14,7 @@
        $(document).ready(function() {
            var rows = [];
 
-            $.getJSON( "/projects/data_json/{{ project.paleocore_appname }}/", function( data ) {
+            $.getJSON( "/projects/data_json/{{project.paleocore_appname}}/{% for key, value in filterArgs.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ key }}={{ value }}{% endfor %}", function( data ) {
 
                 rows.push("<thead><tr>");
 
@@ -51,7 +52,7 @@
    <div class="container">
       <div class="row">
       <div class="10u">
-       <h2> {{ project }} Data</h2>
+      <h2> {{ project }} Data</h2>
 
         <table id="project-data" class="display">
             <tr><td><h3>Loading data.....Don't worry, the table is VERY fast once loaded. </h3></td></tr>
@@ -59,6 +60,7 @@
       </div>
       <div class="2u">
           <h3>Filters</h3>
+          <h3 class="button" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
       </div>
           </div>
 
