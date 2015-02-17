@@ -36,11 +36,13 @@ class ProjectIndexView(FiberPageMixin, generic.ListView):
 class ProjectDetailView(FiberPageMixin, generic.DetailView):
     template_name = 'paleocore_projects/project_detail.html'
     context_object_name = 'project'
-    model = Project
+
+    def get_object(self):
+        return Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
 
     #I don't use fiber at all, so hard code a fiber page (pk=1)
     def get_fiber_page_url(self):
-        return reverse('paleocore_projects:detail', kwargs={'pk':1})
+        return reverse('paleocore_projects:detail', kwargs={'pcoreapp':"drp"})
 
 class ProjectDataView(FiberPageMixin, generic.ListView):
     template_name = 'paleocore_projects/project_data.html'
@@ -69,9 +71,11 @@ def ajaxProjectData(request, pcoreapp="drp"):
         pass
     return response
 
-class ProjectDataTable(FiberPageMixin, generic.ListView):
+class ProjectDataTable(FiberPageMixin, generic.DetailView):
     template_name = 'paleocore_projects/project_data.html'
-    model = Project
+
+    def get_object(self):
+        return Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
 
     def get_fiber_page_url(self):
         return reverse('paleocore_projects:index')

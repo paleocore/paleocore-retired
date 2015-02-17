@@ -13,7 +13,7 @@
        $(document).ready(function() {
            var rows = [];
 
-            $.getJSON( "/projects/data_json/drp/", function( data ) {
+            $.getJSON( "/projects/data_json/{{ project.paleocore_appname }}/", function( data ) {
 
                 rows.push("<thead><tr>");
 
@@ -49,11 +49,18 @@
 {% block page_content %}
 <div id="main-wrapper" class="subpage">
    <div class="container">
-
-       <h2>Data Table</h2>
+      <div class="row">
+      <div class="10u">
+       <h2> {{ project }} Data</h2>
 
         <table id="project-data" class="display">
+            <tr><td><h3>Loading data.....Don't worry, the table is VERY fast once loaded. </h3></td></tr>
         </table>
+      </div>
+      <div class="2u">
+          <h3>Filters</h3>
+      </div>
+          </div>
 
     </div>
 </div>

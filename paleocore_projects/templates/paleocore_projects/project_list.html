@@ -21,8 +21,8 @@
                 function onEachFeature(feature, layer) {
                     layer.bindPopup(feature.properties.full_name);
                     layer.on("dblclick", function(){
-                        var stringid = String(feature.id)
-                        window.open("detail/" + stringid);
+                        var stringappname = String(feature.properties.paleocore_appname)
+                        window.open("detail/" + stringappname);
                     });
                 }
 
@@ -50,7 +50,7 @@
             {% with project.id as pk %}
                 <div class="row">
                     <div class="3u">
-                        <h3><a href={% url 'paleocore_projects:detail' pk %}>{{ project.full_name }}</a></h3>
+                        <h3><a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a></h3>
                     </div>
                     <div class="3u">
                         <h3>{{ counts.drp }}</h3>
