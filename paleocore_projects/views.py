@@ -61,13 +61,19 @@ class ProjectDataView(FiberPageMixin, generic.ListView):
 def redirectDetailViewMissingPK(request):
     return HttpResponseRedirect(reverse('paleocore_projects:detail', kwargs={'pk':1}))
 
-
+#view that returns ajax data for a given project
+#after testing that user has permission for the project
 def ajaxProjectData(request, pcoreapp="drp"):
     response = HttpResponse(mimetype='application/json')
     project = Project.objects.get(paleocore_appname = pcoreapp)
+
+    #go fetch whatever model is the occurrence table equivalent for this app
     model = get_model(pcoreapp, project.occurrence_table_name)
+
+    #test for permissions
     permission_string = pcoreapp + ".change_" + project.occurrence_table_name
     if request.user.has_perm(permission_string):
+        #build up filter arguments from url string
         filterArgs = {}
         for key,value in request.GET.iteritems():
             if value:
@@ -78,9 +84,14 @@ def ajaxProjectData(request, pcoreapp="drp"):
         else:
             serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
     else:
+        #don't put any data in the response if the user doesn't have permissions
         pass
     return response
 
+#all this does is render a template with two context variables
+#it is kind of like a detail generic class based view with added context
+#but I couldn't figure out how to access the request.GET parameters using a generic view
+#so I opted for a simple functional view.
 def projectDataTable(request, pcoreapp="drp"):
     filterArgs = {}
     for key,value in request.GET.iteritems():
