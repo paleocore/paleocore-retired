@@ -1,3 +1,12 @@
 #project-data-table {
     width: 100% !Important;
 }
+
+.project-table-row {
+    font-size:150%;
+}
+
+.project-table-row:hover {
+    background-color: #ebebeb;
+
+}

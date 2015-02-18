@@ -52,24 +52,25 @@
             </script>
         <p>Click on a project on the map to see the name.  Double click for more details.</p>
         <div class="container" style="padding-top: 30px;">
+            <table>
+                {% for project in project_list %}
+                {% with project.id as pk %}
+                <tr class="project-table-row">
+                    <td>
+                        <a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a>
+                    </td>
 
-            {% for project in project_list %}
-            {% with project.id as pk %}
-                <div class="row">
-                    <div class="3u">
-                        <h3><a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a></h3>
-                    </div>
-                    <div class="4u">
-                        <h3>contains {{ project.record_count|intcomma }} specimen occurrences</h3>
-                    </div>
-                    <div class="4u">
-                        <h3>{% if project.is_public %} Public Dataset{% else %} Private Dataset{% endif %}</h3>
-                    </div>
-                    <div clas="2u"></div>
-                    </div>
-
+                    <td style="padding-left:15px;">
+                        contains {{ project.record_count|intcomma }} specimen occurrences
+                    </td>
+                    <td style="padding-left:15px;">
+                        {% if project.is_public %} Public Dataset{% else %} Private Dataset{% endif %}
+                    </td>
+                </tr>
             {% endwith %}
             {% endfor %}
+            </table>
+
         </div>
 
 
