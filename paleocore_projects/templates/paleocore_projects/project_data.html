@@ -59,15 +59,31 @@
 <div id="main-wrapper" class="subpage">
    <div class="container">
       <div class="row">
-          <div class="12u">
+          <div class="6u">
                 <h2> {{ project }} Data</h2>
+          </div>
+          <div class="6u">
+               {% if filterArgs %}
+                    <h3>Current Filters</h3>
+                    <ul>
+                        {% for key, value in filterArgs.items %}
+                        <li>{{ key }} = {{ value }}</li>
+                    {% endfor %}
+                    </ul>
 
-                <table id="project-data-table" class="display compact">
-                    <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
-                    <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
-                </table>
+                {% endif %}
           </div>
       </div>
+
+      <div class="row">
+          <div class="12u">
+              <table id="project-data-table" class="display compact">
+                <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
+                <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
+              </table>
+          </div>
+      </div>
+
       <div class="row">
           <div class="12u">
               <h2>Filter the Data</h2>
