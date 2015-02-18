@@ -64,7 +64,7 @@
                         contains {{ project.record_count|intcomma }} specimen occurrences
                     </td>
                     <td style="padding-left:15px;">
-                        {% if project.is_public %} Public Dataset{% else %} Private Dataset{% endif %}
+                        {% if project.is_public %} (Public){% else %} (Private){% endif %}
                     </td>
                 </tr>
             {% endwith %}

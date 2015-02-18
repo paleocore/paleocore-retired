@@ -6,6 +6,7 @@ from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_respo
 from django.db.models.loading import get_model
 from django.core import serializers
 from django.template import RequestContext
+import json
 
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
@@ -67,25 +68,27 @@ def ajaxProjectData(request, pcoreapp):
     response = HttpResponse(mimetype='application/json')
     project = Project.objects.get(paleocore_appname = pcoreapp)
 
+    #test for permissions if project is NOT public
+    if not project.is_public:
+        permission_string = pcoreapp + ".change_" + project.occurrence_table_name
+        if not request.user.has_perm(permission_string):
+            return HttpResponse(json.dumps([{"error":"unauthorized"}]))
+            #bail out if user doesn't have permission for non public project
+
     #go fetch whatever model is the occurrence table equivalent for this app
     model = get_model(pcoreapp, project.occurrence_table_name)
 
-    #test for permissions
-    permission_string = pcoreapp + ".change_" + project.occurrence_table_name
-    if request.user.has_perm(permission_string):
-        #build up filter arguments from url string
-        filterArgs = {}
-        for key,value in request.GET.iteritems():
-            if value:
-                if value <> "":
-                    filterArgs[key] = value
-        if filterArgs:
-            serializers.serialize("json", model.objects.filter(** filterArgs), fields=project.display_fields, stream=response)
-        else:
-            serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
+    #build up admin style filter arguments from url string
+    filterArgs = {}
+    for key,value in request.GET.iteritems():
+        if value:
+            if value <> "":
+                filterArgs[key] = value
+    if filterArgs:
+        serializers.serialize("json", model.objects.filter(** filterArgs), fields=project.display_fields, stream=response)
     else:
-        #don't put any data in the response if the user doesn't have permissions
-        pass
+        serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
+
     return response
 
 #all this does is render a template with two context variables
