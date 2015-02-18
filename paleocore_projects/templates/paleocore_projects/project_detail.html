@@ -13,6 +13,14 @@
 <div id="main-wrapper" class="subpage">
    <div class="container">
        <div class="row">
+               <h2>{{ project.full_name }}</h2>
+               <a href='{% url 'paleocore_projects:index' %}'>Return to list of projects</a>
+
+
+       </div>
+
+
+       <div class="row"">
 
        {% if project.graphic %}
             <div class="3u">
@@ -70,7 +78,6 @@
        <div class="row">
 
        <div class="12u">
-           <h2 style="padding-top:25px;">{{ project.full_name }}</h2>
            <p>{{ project.abstract|safe }}</p>
            <p>{{ project.attribution|safe }}</p>
            {% if project.is_public %}
