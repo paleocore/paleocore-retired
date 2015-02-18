@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+{% block extra_style %}
+   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+{% endblock %}
+
 {% block extra_js %}
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
@@ -14,7 +18,10 @@
     <script>
        $(document).ready(function() {
            var rows = [];
-
+           {% comment %}
+               Think about optimizing this: might be faster to have view return the exact format expected by the DataTables function, rather
+               than looping through the data and building the table.  Should also think about caching
+           {% endcomment %}
             $.getJSON( "/projects/data_json/{{project.paleocore_appname}}/{% for key, value in filterArgs.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ key }}={{ value }}{% endfor %}", function( data ) {
 
                 rows.push("<thead><tr>");
@@ -38,7 +45,7 @@
 
                 });
                 rows.push("</tbody>")
-                $("#project-data").html(rows.join("")).DataTable();
+                $("#project-data-table").html(rows.join("")).DataTable();
 
             });
 
@@ -52,21 +59,21 @@
 <div id="main-wrapper" class="subpage">
    <div class="container">
       <div class="row">
-      <div class="10u">
-      <h2> {{ project }} Data</h2>
+          <div class="12u">
+                <h2> {{ project }} Data</h2>
 
-        <table id="project-data" class="display compact">
-            <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
-            <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
-
-        </table>
-      </div>
-      <div class="2u">
-          <h3>Filters</h3>
-          <h3 class="button" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
-      </div>
+                <table id="project-data-table" class="display compact">
+                    <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
+                    <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
+                </table>
           </div>
-
+      </div>
+      <div class="row">
+          <div class="12u">
+              <h2>Filter the Data</h2>
+              <h3 class="button" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
+          </div>
+      </div>
     </div>
 </div>
 

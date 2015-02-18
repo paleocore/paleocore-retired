@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'paleocore_projects',
     'leaflet',
     'djgeojson',
+    'django.contrib.humanize',
     #'austin',
 
 )

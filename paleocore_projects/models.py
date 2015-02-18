@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 from mysite.settings import INSTALLED_APPS
+from django.db.models.loading import get_model
 
 #exclude any installed apps that have 'django' in the name
 app_CHOICES = [(name, name) for name in INSTALLED_APPS if name.find("django") == -1]
@@ -31,6 +32,10 @@ class Project(models.Model):
             return self.geom.coords[0]
         except:
             return 0
+
+    def record_count(self):
+        model = get_model(self.paleocore_appname, self.occurrence_table_name)
+        return(model.objects.all().count())
 
     def __unicode__(self):
         return self.full_name

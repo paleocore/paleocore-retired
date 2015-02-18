@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% load leaflet_tags %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block extra_style %}
+   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+{% endblock %}
+
 
 {% block extra_js %}
     {% leaflet_js %}
@@ -52,13 +59,13 @@
                     <div class="3u">
                         <h3><a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a></h3>
                     </div>
-                    <div class="3u">
-                        <h3>{{ counts.drp }}</h3>
+                    <div class="4u">
+                        <h3>contains {{ project.record_count|intcomma }} specimen occurrences</h3>
                     </div>
-                    <div class="3u">
+                    <div class="4u">
                         <h3>{% if project.is_public %} Public Dataset{% else %} Private Dataset{% endif %}</h3>
                     </div>
-                    <div clas="3u"></div>
+                    <div clas="2u"></div>
                     </div>
 
             {% endwith %}
