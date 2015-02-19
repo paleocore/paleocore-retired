@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block extra_style %}
+   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+
+    <!-- DataTables -->
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
+
+    <script>
+       $(document).ready(function() {
+           var rows = [];
+           {% comment %}
+               Think about optimizing this: might be faster to have view return the exact format expected by the DataTables function, rather
+               than looping through the data and building the table.  Should also think about caching
+           {% endcomment %}
+            $.getJSON( "/projects/data_json/{{project.paleocore_appname}}/{% for key, value in filterArgs.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ key }}={{ value }}{% endfor %}", function( data ) {
+
+                //check if json response is unauthorized, and alert user if so
+                if(data[0]["error"] === "unauthorized"){
+                    $("#filter-row").hide();
+                    $("#project-data-table").html("<tr><td><h2>Error: You are not authorized to view this data.</h2></td></tr>");
+                    return;
+                }
+
+                // create the header row for the table by iterating through the fields element of the first data element
+                rows.push("<thead><tr>");
+                $.each(data[0]["fields"], function(key, val){
+                    rows.push("<td>" + String(key) + "</td>")
+                });
+                rows.push("</tr></thead>");
+
+                // now create a table row for each element
+                rows.push("<tbody>");
+                $.each( data, function( occurrenceid, occurrence ) {
+                    rows.push("<tr>");
+                    $.each(occurrence["fields"], function( key, val ) {
+                        rows.push("<td>" + val + "</td>")
+                    });
+                    rows.push("</tr>");
+                });
+                rows.push("</tbody>")
+
+                //initiate the DataTable
+                $("#project-data-table").html(rows.join("")).DataTable();
+
+            });
+
+            });
+    </script>
+
+
+{% endblock %}
+
+{% block page_content %}
+<div id="main-wrapper" class="subpage">
+   <div class="container">
+      <div class="row">
+          <div class="6u">
+                <h2>{{ project }}</h2>
+          </div>
+          <div class="6u">
+               {% if filterArgs %}
+                    <h3>Current Filters</h3>
+                    <ul>
+                        {% for key, value in filterArgs.items %}
+                        <li>{{ key }} = {{ value }}</li>
+                    {% endfor %}
+                    </ul>
+
+                {% endif %}
+          </div>
+      </div>
+
+      <div class="row">
+          <div class="12u">
+              <table id="project-data-table" class="display compact">
+                <tr><td><img src="{% static "paleocore_projects/images/ajax_loader_blue.gif" %}" height="10%"/></td></tr>
+                <tr><td>Don't worry, the table is VERY fast once loaded</td></tr>
+              </table>
+          </div>
+      </div>
+
+      <div class="row" id="filter-row">
+          <div class="12u">
+              <h2>Filter the Data</h2>
+              <h3 class="button" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
+          </div>
+      </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

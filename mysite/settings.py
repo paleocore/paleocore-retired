@@ -34,8 +34,9 @@ MEDIA_URL = "/media/"
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = secrets.DEBUG_MODE
-TEMPLATE_DEBUG = secrets.TEMPLATE_DEBUG_MODE
+DEBUG = secrets.DEBUG
+
+TEMPLATE_DEBUG = secrets.TEMPLATE_DEBUG
 
 ALLOWED_HOSTS = [secrets.ALLOWED_HOSTS]
 
@@ -78,7 +79,11 @@ INSTALLED_APPS = (
     'drp',   # Dikika Research Project geospatial app
     'turkana',  # Turkana Project Data
     'gdb',
-    'taxonomy'
+    'taxonomy',
+    'paleocore_projects',
+    'leaflet',
+    'djgeojson',
+    'django.contrib.humanize',
     #'austin',
 
 )

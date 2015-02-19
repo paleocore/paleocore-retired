@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load leaflet_tags %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block extra_style %}
+   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+{% endblock %}
+
+
+{% block extra_js %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+
+{% block page_content %}
+<div id="main-wrapper" class="subpage">
+   <div class="container">
+
+       <h2>Paleocore Projects</h2>
+
+        {% leaflet_map "main" callback="main_map_init" %}
+
+            <script type="text/javascript">
+
+
+                function onEachFeature(feature, layer) {
+                    layer.bindPopup(feature.properties.full_name);
+                    layer.on("dblclick", function(){
+                        var stringappname = String(feature.properties.paleocore_appname)
+                        window.open("detail/" + stringappname);
+                    });
+                }
+
+                function main_map_init (map, options) {
+
+                var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                // Download GeoJSON via Ajax
+                $.getJSON(dataurl, function (data) {
+                    // Add GeoJSON layer
+                    L.geoJson(data, {
+                    onEachFeature: onEachFeature
+                    }).addTo(map);
+                });
+
+                map.setView([30, 31], 2);
+                map.scrollWheelZoom.disable();
+
+
+                }
+            </script>
+        <p>Click on a project on the map to see the name.  Double click for more details.</p>
+        <div class="container" style="padding-top: 30px;">
+            <table>
+                {% for project in project_list %}
+                {% with project.id as pk %}
+                <tr class="project-table-row">
+                    <td>
+                        <a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a>
+                    </td>
+
+                    <td style="padding-left:15px;">
+                        contains {{ project.record_count|intcomma }} specimen occurrences
+                    </td>
+                    <td style="padding-left:15px;">
+                        {% if project.is_public %} (Public){% else %} (Private){% endif %}
+                    </td>
+                </tr>
+            {% endwith %}
+            {% endfor %}
+            </table>
+
+        </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

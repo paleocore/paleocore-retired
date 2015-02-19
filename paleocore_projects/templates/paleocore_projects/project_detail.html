@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% load leaflet_tags %}
+
+{% block extra_js %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+
+{% block page_content %}
+
+<div id="main-wrapper" class="subpage">
+   <div class="container">
+       <div class="row">
+               <h2>{{ project.full_name }}</h2>
+               <a href='{% url 'paleocore_projects:index' %}'>All PaleoCore projects</a>
+
+
+       </div>
+
+
+       <div class="row"">
+
+       {% if project.graphic %}
+            <div class="3u">
+                <img src="/media/{{ project.graphic }}" style="height:300px;"/>
+            </div>
+       {% endif %}
+
+        {% if project.graphic %}
+            <div class="9u">
+        {% else %}
+            <div class="12u">
+        {% endif %}
+
+
+        {% leaflet_map "main" callback="main_map_init" %}
+
+            <script type="text/javascript">
+
+                function filterFeatures(feature,layer){
+                    var currentProjectID = {{ project.id }}
+                    if(feature.id === currentProjectID) return true
+                }
+
+                function onEachFeature(feature, layer) {
+                    layer.bindPopup(feature.properties.full_name);
+                }
+
+                function main_map_init (map, options) {
+
+                var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                // Download GeoJSON via Ajax
+                $.getJSON(dataurl, function (data) {
+                    // Add GeoJSON layer
+                    L.geoJson(data, {
+                    onEachFeature: onEachFeature,
+                    filter: filterFeatures
+                    }).addTo(map);
+                });
+
+                map.setView([{{ project.geom.coords.1 }}, {{ project.geom.coords.0 }}], 6);
+                map.scrollWheelZoom.disable();
+                map.eachLayer(function(marker) {
+                    marker.openPopup()
+                });
+
+                }
+            </script>
+
+
+        </div>
+
+
+
+        </div>
+       <div class="row">
+
+       <div class="12u">
+           <p>{{ project.abstract|safe }}</p>
+           <p>{{ project.attribution|safe }}</p>
+           {% if project.is_public %}
+               <p>The data in the {{ project.full_name }} are publicly available.</p>
+               {% with app=project.paleocore_appname %}
+               <h2 class="button" onclick="window.location.href='{% url 'paleocore_projects:data_table' app %}'">View Public Database</h2>
+               {% endwith %}
+           {% else %}
+               <p>The data in the {{ project.full_name }} are currently private, meaning that access is restricted to project members.</p>
+               <h2 class="button" onclick="window.location.href='/admin/'">Admin Site for Project Members</h2>
+           {% endif %}
+       </div>
+
+
+       </div>
+   </div>
+</div>
+
+{% endblock %}
