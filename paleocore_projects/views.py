@@ -7,6 +7,7 @@ from django.db.models.loading import get_model
 from django.core import serializers
 from django.template import RequestContext
 import json
+from ast import literal_eval
 
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
@@ -102,9 +103,19 @@ def projectDataTable(request, pcoreapp="drp"):
         if value:
             if value <> "":
                 filterArgs[key] = value
+
     #build list of unique values for fields to filter on
+    model = get_model(project.paleocore_appname, project.occurrence_table_name)
+    filterChoices = {}
+    for field in literal_eval(project.display_filter_fields):
+        filterChoices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
+
+    #dirty hack!  Hard code in a default filter for Turkana due to current performance issues with full data
+    if project.paleocore_appname=="turkana":
+        filterArgs["study_area"]="Lothagam"
 
     return render_to_response('paleocore_projects/project_data.html',
                              {"project": project,
+                              "filterChoices":filterChoices,
                               "filterArgs":filterArgs },
                           context_instance=RequestContext(request))

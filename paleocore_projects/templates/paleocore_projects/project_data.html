@@ -53,8 +53,8 @@
                 $("#project-data-table").html(rows.join("")).DataTable();
 
             });
+        });
 
-            });
     </script>
 
 
@@ -89,15 +89,42 @@
           </div>
       </div>
 
-      <div class="row" id="filter-row">
-          <div class="12u">
-              <h2>Filter the Data</h2>
-              <h3 class="button" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
+
+      <div class="row">
+        <div class="2u">
+              <h2>Filters</h2>
+              <h3 class="button" style="font-size:150%;" onclick="window.location.href = window.location.pathname">Clear Filters</h3>
           </div>
+              {% for fieldname, options in filterChoices.items %}
+                    <div class="2u">
+                        <strong>{{ fieldname }}</strong>
+                        <ul style="list-style-type: none;">
+                        {% for option in options %}
+                            <li><a onclick="goToURL('{{ fieldname }}={{ option }}')">{{ option }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+              {% endfor %}
+
       </div>
+
     </div>
 </div>
 
+    <script>
+    // script to create urls for filters, depending on whether there are existing filters
+        var goToURL = function(parameter){
+
+                // if there is a ? then add parameter with &
+                if(window.location.href.indexOf("?") > -1) {
+                    window.location.href=window.location.href + "&" + parameter;
+                }
+
+                else{
+                    window.location.href=window.location.href + "?" + parameter;
+                };
+            };
+    </script>
 
 
 {% endblock %}
