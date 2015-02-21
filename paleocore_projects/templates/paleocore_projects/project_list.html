@@ -29,7 +29,7 @@
                     layer.bindPopup(feature.properties.full_name);
                     layer.on("dblclick", function(){
                         var stringappname = String(feature.properties.paleocore_appname)
-                        window.open("detail/" + stringappname);
+                        window.open(stringappname);
                     });
                 }
 
