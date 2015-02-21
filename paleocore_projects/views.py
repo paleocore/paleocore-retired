@@ -4,7 +4,6 @@ from fiber.views import FiberPageMixin
 from paleocore_projects.models import Project
 from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response, get_object_or_404
 from django.db.models.loading import get_model
-from django.core import serializers
 from django.template import RequestContext
 import json
 from ast import literal_eval
@@ -83,10 +82,24 @@ def ajaxProjectData(request, pcoreapp):
         if value:
             if value <> "":
                 filterArgs[key] = value
+
+    try: #remove url GET parameter put in by DataTables
+        cleanedFilterArgs = filterArgs
+        cleanedFilterArgs.pop("_")
+    except:
+        cleanedFilterArgs = filterArgs
+
+    responsedict = {"data":[]}
     if filterArgs:
-        serializers.serialize("json", model.objects.filter(** filterArgs), fields=project.display_fields, stream=response)
+        objects = model.objects.filter(** cleanedFilterArgs).values_list(* literal_eval(project.display_fields))
+        for object in objects:
+            responsedict["data"].append(object)
+        response.write(json.dumps(responsedict))
     else:
-        serializers.serialize("json", model.objects.all(), fields=project.display_fields, stream=response)
+        objects = model.objects.all().values_list(* literal_eval(project.display_fields))
+        for object in objects:
+            responsedict["data"].append(object)
+        response.write(json.dumps(responsedict))
 
     return response
 
@@ -108,12 +121,9 @@ def projectDataTable(request, pcoreapp="drp"):
     for field in literal_eval(project.display_filter_fields):
         filterChoices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
 
-    #dirty hack!  Hard code in a default filter for Turkana due to current performance issues with full data
-    if project.paleocore_appname=="turkana":
-        filterArgs["study_area"]="Lothagam"
-
     return render_to_response('paleocore_projects/project_data.html',
                              {"project": project,
+                              "displayFields":literal_eval(project.display_fields),
                               "filterChoices":filterChoices,
                               "filterArgs":filterArgs },
                           context_instance=RequestContext(request))
