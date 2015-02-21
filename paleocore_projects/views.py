@@ -60,8 +60,6 @@ class ProjectDataView(FiberPageMixin, generic.ListView):
     def get_fiber_page_url(self):
         return reverse('paleocore_projects:index')
 
-def redirectDetailViewMissingPK(request):
-    return HttpResponseRedirect(reverse('paleocore_projects:detail', kwargs={'pk':1}))
 
 #view that returns ajax data for a given project
 #after testing that user has permission for the project
