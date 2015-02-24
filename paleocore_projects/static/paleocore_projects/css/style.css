@@ -10,3 +10,14 @@
     background-color: #ebebeb;
 
 }
+
+#search-table tbody tr {
+    cursor: pointer;
+}
+
+#clearFilterButton {
+    border: 2px solid #0090c5;
+    background:transparent;
+    border-radius:5px;
+    width:100%;
+}

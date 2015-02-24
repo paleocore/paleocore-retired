@@ -7,6 +7,7 @@ from django.db.models.loading import get_model
 from django.template import RequestContext
 import json
 from ast import literal_eval
+from django.forms.models import model_to_dict
 
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
@@ -35,6 +36,19 @@ class ProjectIndexView(FiberPageMixin, generic.ListView):
 
     def get_fiber_page_url(self):
         return reverse('paleocore_projects:index')
+
+class OccurrenceDetailView(FiberPageMixin, generic.DetailView):
+    template_name = 'paleocore_projects/occurrence_detail.html'
+    context_object_name = 'occurrence'
+
+    def get_object(self):
+        proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
+        model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
+        return model_to_dict(model.objects.get(pk = self.kwargs["occurrenceid"]))
+
+    #I don't use fiber at all, so hard code a fiber page (pk=1)
+    def get_fiber_page_url(self):
+        return reverse('paleocore_projects:detail', kwargs={'pcoreapp':"drp"})
 
 class ProjectDetailView(FiberPageMixin, generic.DetailView):
     template_name = 'paleocore_projects/project_detail.html'
