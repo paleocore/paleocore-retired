@@ -7,8 +7,8 @@ from djgeojson.views import GeoJSONLayerView
 
 urlpatterns = patterns('paleocore_projects.views',
                        # ex. /projects/
-                       url(r'^data/(?P<pcoreapp>.+)/$', views.ProjectDataView.as_view(), name='data'),
-                       url(r'^data/(?P<pcoreapp>.+)/(?P<occurrenceid>\d+)$', views.OccurrenceDetailView.as_view(), name='occurrence_detail'),
+                       #url(r'^data/(?P<pcoreapp>[^/]+)/$', views.ProjectDataView.as_view(), name='data'),
+                       url(r'^(?P<pcoreapp>[^/]+)/(?P<occurrenceid>\d+)$', views.OccurrenceDetailView.as_view(), name='occurrence_detail'),
                        url(r'^data_json/(?P<pcoreapp>.+)/$', views.ajaxProjectData, name='data_json'),
                        url(r'^data_table/(?P<pcoreapp>.+)/$', views.projectDataTable, name='data_table'),
                        url(r'^(?P<pcoreapp>.+)/$', views.ProjectDetailView.as_view(), name='detail'),

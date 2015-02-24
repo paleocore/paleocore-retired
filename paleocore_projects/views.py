@@ -37,13 +37,26 @@ class ProjectIndexView(FiberPageMixin, generic.ListView):
     def get_fiber_page_url(self):
         return reverse('paleocore_projects:index')
 
+
 class OccurrenceDetailView(FiberPageMixin, generic.DetailView):
     template_name = 'paleocore_projects/occurrence_detail.html'
     context_object_name = 'occurrence'
 
+    def get_context_data(self, **kwargs):
+        context = super(OccurrenceDetailView, self).get_context_data(**kwargs)
+        proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
+        context['project'] = proj.full_name
+        return context
+
     def get_object(self):
         proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
         model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
+        #test for permissions if project is NOT public
+        if not proj.is_public:
+            permission_string = self.kwargs["pcoreapp"] + ".change_" + proj.occurrence_table_name
+            if not self.request.user.has_perm(permission_string):
+                return {"unauthorized":"You are not authorized to view this data."}
+                #bail out if user doesn't have permission for non public project
         return model_to_dict(model.objects.get(pk = self.kwargs["occurrenceid"]))
 
     #I don't use fiber at all, so hard code a fiber page (pk=1)

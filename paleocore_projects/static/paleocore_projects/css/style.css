@@ -21,3 +21,7 @@
     border-radius:5px;
     width:100%;
 }
+
+#project-data-table tbody tr {
+    cursor: pointer;
+}

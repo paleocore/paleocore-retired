@@ -95,7 +95,7 @@
                 // Bind click event
                 $(nRow).click(function() {
                     //I don't know how to do the url with the django url template filter, because the occurrence id is a javascript variable (aData[0])
-                      window.location.href='/projects/data/{{ project.paleocore_appname }}/' + aData[0];
+                      window.location.href='/projects/{{ project.paleocore_appname }}/' + aData[0];
                 });
                 return nRow;
            }
