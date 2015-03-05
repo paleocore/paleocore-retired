@@ -54,7 +54,7 @@
                         {% endfor %}
                     </select>
                {% endfor %}
-               <button id="clearFilterButton" onclick="clearFilters()">Clear filters</button>
+               <button id="clearFilterButton" onclick="clearFilters()">Clear filters and searches</button>
           </div>
       </div>
 
@@ -114,10 +114,13 @@
         searchtable.ajax.url(ajaxurl + "?" + urlparams.join("&")).load();
     }
     function clearFilters() {
+        searchtable.search('');
         $(".filterselect").each(function(){
-           window.location.href="{% url  "paleocore_projects:data_table" project.paleocore_appname %}";
+            $(this).css("background-color","white")
+            $(this).prop('selectedIndex',0);
+            searchtable.ajax.url(ajaxurl).load();
         });
-    }
+    };
     </script>
 
 {% endblock %}
