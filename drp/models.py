@@ -6,6 +6,28 @@ from taxonomy.models import Taxon, IdentificationQualifier
 basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
 itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
 
+class Locality(models.Model):
+    paleolocalitynumber = models.IntegerField(null=True,blank=True)
+    collectioncode = models.CharField(null=True,blank=True,choices = (("DIK","DIK"),("ASB","ASB")),max_length=10)
+    paleosublocality = models.CharField(null=True,blank=True,max_length=50)
+    description1 = models.TextField(null=True,blank=True,max_length=255)
+    description2 = models.TextField(null=True,blank=True,max_length=255)
+    description3 = models.TextField(null=True,blank=True,max_length=255)
+    stratsection = models.CharField(null=True,blank=True,max_length=50)
+    upperlimitinsection = models.IntegerField(null=True,blank=True)
+    lowerlimitinsection = models.FloatField(null=True,blank=True)
+    errornotes = models.CharField(max_length=255,null=True,blank=True)
+    notes = models.CharField(max_length=254,null=True,blank=True)
+    geom = models.PolygonField(srid=32637)
+    objects = models.GeoManager()
+    def __unicode__(self):
+        return str(self.collectioncode) + " " + str(self.paleolocalitynumber)
+
+    class Meta:
+        verbose_name = "DRP Locality"
+        verbose_name_plural = "DRP Localities"
+        #db_table='drp_locality'
+        ordering=("collectioncode","paleolocalitynumber","paleosublocality")
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class Occurrence(models.Model):
@@ -27,7 +49,7 @@ class Occurrence(models.Model):
     continent = models.CharField(null=True, blank=True,max_length=50)
     country = models.CharField(null=True, blank=True,max_length=50)
     stateprovince = models.CharField(null=True, blank=True,max_length=50)
-    locality = models.CharField(null=True, blank=True,max_length=255)
+    locality_text = models.CharField(null=True, blank=True,max_length=255,db_column="locality")
     verbatimcoordinates = models.CharField(null=True, blank=True,max_length=50)
     verbatimcoordinatesystem = models.CharField(null=True, blank=True,max_length=50)
     georeferenceremarks = models.CharField(null=True, blank=True,max_length=50)
@@ -64,7 +86,7 @@ class Occurrence(models.Model):
     ranked = models.IntegerField("Ranked?",null=True,blank=True)
     imageurl = models.CharField(null=True, blank=True,max_length=255)
     relatedinformation = models.CharField(null=True, blank=True,max_length=50)
-    localityid = models.IntegerField(null=True, blank=True)
+    #localityid = models.IntegerField(null=True, blank=True)
     stratigraphicsection = models.CharField(null=True, blank=True,max_length=50)
     stratigraphicheightinmeters = models.FloatField(null=True, blank=True)
     weathering = models.IntegerField(null=True, blank=True)
@@ -78,6 +100,7 @@ class Occurrence(models.Model):
     dgupdatey = models.FloatField(null=True, blank=True)
     geom = models.PointField(srid=32637,db_column="shape")
     objects = models.GeoManager()
+    locality = models.ForeignKey(Locality, related_name='drp_locality', db_column='locality_id')
 
     @staticmethod
     def fields_to_display():
@@ -396,28 +419,7 @@ class Hydrology(models.Model):
         verbose_name_plural = "DRP Hydrology"
         #db_table = 'drp_hydrology'
 
-class Locality(models.Model):
-    paleolocalitynumber = models.IntegerField(null=True,blank=True)
-    collectioncode = models.CharField(null=True,blank=True,choices = (("DIK","DIK"),("ASB","ASB")),max_length=10)
-    paleosublocality = models.CharField(null=True,blank=True,max_length=50)
-    description1 = models.TextField(null=True,blank=True,max_length=255)
-    description2 = models.TextField(null=True,blank=True,max_length=255)
-    description3 = models.TextField(null=True,blank=True,max_length=255)
-    stratsection = models.CharField(null=True,blank=True,max_length=50)
-    upperlimitinsection = models.IntegerField(null=True,blank=True)
-    lowerlimitinsection = models.FloatField(null=True,blank=True)
-    errornotes = models.CharField(max_length=255,null=True,blank=True)
-    notes = models.CharField(max_length=254,null=True,blank=True)
-    geom = models.PolygonField(srid=32637)
-    objects = models.GeoManager()
-    def __unicode__(self):
-        return str(self.collectioncode) + " " + str(self.paleolocalitynumber)
 
-    class Meta:
-        verbose_name = "DRP Locality"
-        verbose_name_plural = "DRP Localities"
-        #db_table='drp_locality'
-        ordering=("collectioncode","paleolocalitynumber","paleosublocality")
 
 
 # class drp_taxonomy(models.Model):
