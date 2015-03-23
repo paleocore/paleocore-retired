@@ -111,16 +111,6 @@ class Occurrence(models.Model):
 
 
 class Biology(Occurrence):
-    #occurrence = models.OneToOneField("mlp_occurrence")
-    #kingdom = models.CharField(null=True, blank=True, max_length=50)
-    #phylum = models.CharField(null=True, blank=True, max_length=50)
-    #tax_class = models.CharField("Class",null=True, blank=True, max_length=50,db_column="class")
-    #tax_order = models.CharField("Order",null=True, blank=True, max_length=50,db_column="order_")
-    #family = models.CharField(null=True, blank=True, max_length=50)
-    #subfamily = models.CharField(null=True, blank=True, max_length=50)
-    #tribe = models.CharField(null=True, blank=True, max_length=50)
-    #genus = models.CharField(null=True, blank=True, max_length=50)
-    #specificepithet = models.CharField("Species Name",null=True, blank=True, max_length=50)
     infraspecificepithet = models.CharField(null=True, blank=True, max_length=50)
     infraspecificrank = models.CharField(null=True, blank=True, max_length=50)
     authoryearofscientificname = models.CharField(null=True, blank=True, max_length=50)
@@ -210,20 +200,6 @@ class Biology(Occurrence):
     taxon = models.ForeignKey(Taxon, related_name='mlp_biology_occurrences')
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='mlp_biology_occurrences')
 
-    # def lowest_level_identification(self):
-    #     if self.taxon.rank.name == "Genus":
-    #         return str(self.genus) + " " + str(self.specificepithet).replace("None", "")
-    #     elif self.tribe:
-    #         return str(self.tribe).replace("None", "")
-    #     elif self.subfamily:
-    #         return str(self.subfamily).replace("None", "")
-    #     elif self.family:
-    #         return str(self.family).replace("None", "")
-    #     elif self.tax_order:
-    #         return str(self.tax_order).replace("None", "")
-    #     else:
-    #         return str(self.tax_class).replace("None", "")
-
     class Meta:
         verbose_name = "MLP Biology"
         verbose_name_plural = "MLP Biology"
@@ -231,121 +207,3 @@ class Biology(Occurrence):
 
     def __unicode__(self):
         return str(self.taxon.__unicode__())
-        # if self.genus:
-        #     return str(self.genus) + " " + str(self.specificepithet).replace("None", "")
-        # elif self.tribe:
-        #     return str(self.tribe).replace("None", "")
-        # elif self.subfamily:
-        #     return str(self.subfamily).replace("None", "")
-        # elif self.family:
-        #     return str(self.family).replace("None", "")
-        # elif self.tax_order:
-        #     return str(self.tax_order).replace("None", "")
-        # else:
-        #     return str(self.tax_class).replace("None", "")
-
-    # def save(self):
-    #     # if not self.id:#if this is a fresh save with no id yet
-    #     #     last_bio_ID = mlp_biology.objects.order_by('id').reverse()[0].id
-    #     #     self.id = last_bio_ID + 1
-    #
-    #     #Autopopulate up the taxonomy hierarchy
-    #     #As written, this MASSIVELY violates the Don't Repeat Yourself Princible
-    #     #To fix this, would assign the fields ordinal ranks, then to write single
-    #     #update expression to update UP the hierarchy.
-    #     if self.genus:  # if there is a genus, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(genus__exact=self.genus).filter(rank__exact="Genus")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.tribe = queryset[0].tribe
-    #                 self.subfamily = queryset[0].subfamily
-    #                 self.family = queryset[0].family
-    #                 self.tax_order = queryset[0].tax_order
-    #                 self.tax_class = queryset[0].tax_class
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     if self.tribe:  # if there is a tribe, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(tribe__exact=self.tribe).filter(rank__exact="Tribe")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.subfamily = queryset[0].subfamily
-    #                 self.family = queryset[0].family
-    #                 self.tax_order = queryset[0].tax_order
-    #                 self.tax_class = queryset[0].tax_class
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     if self.subfamily:  # if there is a subfamily, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(subfamily__exact=self.subfamily).filter(rank__exact="Subfamily")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.family = queryset[0].family
-    #                 self.tax_order = queryset[0].tax_order
-    #                 self.tax_class = queryset[0].tax_class
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     if self.family:  # if there is a family, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(family__exact=self.family).filter(rank__exact="Family")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.tax_order = queryset[0].tax_order
-    #                 self.tax_class = queryset[0].tax_class
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     if self.tax_order:  # if there is a tax_order, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(tax_order__exact=self.tax_order).filter(rank__exact="Order")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.tax_class = queryset[0].tax_class
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     if self.tax_class:  # if there is a tax_class, then look to taxonomy and populate up if possible.
-    #         queryset = drp_taxonomy.objects.filter(tax_class__exact=self.tax_class).filter(rank__exact="Class")
-    #         if queryset.exists():
-    #             if queryset.count() == 1:
-    #                 #update higher level self fields
-    #                 self.phylum = queryset[0].phylum
-    #                 self.kingdom = queryset[0].phylum
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #             if queryset.count() > 1:
-    #                 #maybe send a warning?
-    #                 super(mlp_biology, self).save()
-    #                 return
-    #     else:
-    #         super(mlp_biology, self).save()
-    #          return

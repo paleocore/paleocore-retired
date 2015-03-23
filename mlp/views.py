@@ -255,28 +255,6 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                     mlp_occ.save()
                 feature_count += 1
 
-                # TODO If item type is Fauna or Flora add to Biology table
-
-                    # loop through each attachment
-                    # for attachment in image_tags:
-                    #     # find the relevant attachment
-                    #     for file_info in KMZ_file.filelist:
-                    #         if attachment == file_info.orig_filename:
-                    #             # extract file from kmz to the working directory
-                    #             attachment_file = KMZ_file.extract(file_info)  # get a file object
-                    #             # calculate new file name based on record id and original name
-                    #             new_file_name = str(mlp_occ.id) + "_" + file_info.orig_filename
-                    #             # calculate destination directory
-                    #             #complete_name = os.path.join(KML_file_path, "imports/" + new_file_name)
-                    #             # move file
-                    #             #shutil.move(attachment_file, complete_name)
-                    #             # save image name to DB
-                    #             mlp_occ.image = new_file_name
-                    #             mlp_occ.save()
-                    #             break
-                    #         break
-
-
         return super(UploadKMLView, self).form_valid(form)
 
     def get_fiber_page_url(self):

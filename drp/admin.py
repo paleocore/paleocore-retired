@@ -123,21 +123,6 @@ class occurrenceAdmin(admin.ModelAdmin):
     list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
                     "itemscientificname", "itemdescription", "yearcollected")
 
-    #get taxonomic fields from biology for display
-    # def get_genus(self, obj):
-    #     return obj.drp_biology.genus
-    # get_genus.short_description = "genus"
-    # get_genus.admin_order_field = "drp_biology__genus"
-    #
-    # def get_family(self, obj):
-    #     return obj.drp_biology.family
-    # get_family.short_description = "family"
-    # get_family.admin_order_field = "drp_biology__family"
-    #
-    # def get_tax_order(self, obj):
-    #     return obj.drp_biology.tax_order
-    # get_tax_order.short_description = "order"
-    # get_tax_order.admin_order_field = "drp_biology__tax_order"
 
     #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
@@ -155,31 +140,6 @@ class occurrenceAdmin(admin.ModelAdmin):
     #change_form_template = "occurrence_change_form.html"
     actions = ["move_selected", "get_nearest_locality"]  # TODO clarify actions
     actions = ["get_nearest_locality", "create_data_csv"]
-
-    #admin action to download data in csv format
-    # def create_data_csv(self, request, queryset):
-    #     response = HttpResponse(content_type='text/csv')
-    #     response['Content-Disposition'] = 'attachment; filename="DRP_data.csv"'
-    #     writer = unicodecsv.writer(response)
-    #     o = drp_occurrence()  # create an empty instance of an occurrence object
-    #     b = drp_biology()  # create an empty instance of a biology object
-    #
-    #     """
-    #     For now this method handles all occurrences and corresponding
-    #     data from the biology table for faunal occurrences.
-    #     """
-    #     writer.writerow(o.__dict__.keys()+b.__dict__.keys())  # fetch field names and write to the first row
-    #
-    #     for occurrence in queryset.all():  # iterate through the occurrence instances selected in the admin
-    #         try:  # try writing drp_occurrence values and associated drp_biology values
-    #             writer.writerow(occurrence.__dict__.values()+occurrence.drp_biology.__dict__.values())
-    #         except ObjectDoesNotExist:  # Django specific exception
-    #             writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values)
-    #         except:
-    #             writer.writerow(occurrence.__dict__.values())  # add only drp_occurrence values
-    #
-    #     return response
-    #
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -231,11 +191,6 @@ class occurrenceAdmin(admin.ModelAdmin):
                 writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list])
 
         return response
-
-
-
-
-
 
     create_data_csv.short_description = "Download Selected to .csv"
 
