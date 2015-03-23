@@ -9,7 +9,7 @@ from models import Occurrence
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
 import shapefile
-from mlp.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
+from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
 from fastkml import kml
 from fastkml import Placemark
 from lxml import etree
@@ -25,16 +25,16 @@ from django.contrib import messages
 
 
 class DownloadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/download_kml.html'
+    template_name = 'san_francisco/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
-    success_url = '/mlp/confirmation/'
+    success_url = '/san_francisco/confirmation/'
 
     def form_valid(self, form):
         k = kml.KML()
         ns = '{http://www.opengis.net/kml/2.2}'
-        d = kml.Document(ns, 'docid', 'MLP Observations', 'KML Document')
-        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains place marks for specimens and observations.')
+        d = kml.Document(ns, 'docid', 'San Francisco Observations', 'KML Document')
+        f = kml.Folder(ns, 'fid', 'San Francisco Observations Root Folder', 'Contains place marks for specimens and observations.')
         k.append(d)
         d.append(f)
         os = Occurrence.objects.all()
@@ -78,18 +78,18 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
                 f.append(p)
         r = k.to_string(prettyprint=True)
         response = HttpResponse(r, mimetype='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
+        response['Content-Disposition'] = 'attachment; filename="san_francisco.kml"'
         return response
 
     def get_fiber_page_url(self):
-        return reverse('mlp:mlp_download_kml')
+        return reverse('san_francisco:san_francisco_download_kml')
 
 
 class UploadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/upload_kml.html'
+    template_name = 'san_francisco/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
-    success_url = '/mlp/confirmation/'
+    success_url = '/san_francisco/confirmation/'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -133,7 +133,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                 # TODO test attributes is even length
                 attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-                mlp_occ = Occurrence()
+                san_francisco_occ = Occurrence()
 
                 ###################
                 # REQUIRED FIELDS #
@@ -141,83 +141,83 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
                 # Validate Basis of Record
                 if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
-                    mlp_occ.basis_of_record = "FossilSpecimen"
+                    san_francisco_occ.basis_of_record = "FossilSpecimen"
                 elif attributes_dict.get("Basis Of Record") in ("Observation", "HumanObservation"):
-                    mlp_occ.basis_of_record = "HumanObservation"
+                    san_francisco_occ.basis_of_record = "HumanObservation"
 
                 # Validate Item Type
                 item_type = attributes_dict.get("Item Type")
                 if item_type in ("Artifact", "Artifactual", "Archeology", "Archaeological"):
-                    mlp_occ.item_type = "Artifactual"
+                    san_francisco_occ.item_type = "Artifactual"
                 elif item_type in ("Faunal", "Fauna"):
-                    mlp_occ.item_type = "Faunal"
+                    san_francisco_occ.item_type = "Faunal"
                 elif item_type in ("Floral", "Flora"):
-                    mlp_occ.item_type = "Floral"
+                    san_francisco_occ.item_type = "Floral"
                 elif item_type in ("Geological", "Geology"):
-                    mlp_occ.item_type = "Geological"
+                    san_francisco_occ.item_type = "Geological"
 
                 # Field Number
                 try:
-                    mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
-                    mlp_occ.year_collected = mlp_occ.field_number.year  # set the year collected form field number
+                    san_francisco_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
+                    san_francisco_occ.year_collected = san_francisco_occ.field_number.year  # set the year collected form field number
                 except ValueError:
-                    mlp_occ.field_number = datetime.now()
-                    mlp_occ.problem = True
+                    san_francisco_occ.field_number = datetime.now()
+                    san_francisco_occ.problem = True
                     try:
                         error_string = "Upload error, missing field number, using current date and time instead."
-                        mlp_occ.problem_comment = mlp_occ.problem_comment + " " +error_string
+                        san_francisco_occ.problem_comment = san_francisco_occ.problem_comment + " " +error_string
                     except TypeError:
-                        mlp_occ.problem_comment = error_string
+                        san_francisco_occ.problem_comment = error_string
 
                 #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
 
                 # Process point, comes in as well known text string
                 # Assuming point is in GCS WGS84 datum = SRID 4326
                 pnt = GEOSGeometry("POINT (" + str(o.geometry.x) + " " + str(o.geometry.y) + ")", 4326)  # WKT
-                mlp_occ.geom = pnt
+                san_francisco_occ.geom = pnt
 
                 #######################
                 # NON-REQUIRED FIELDS #
                 #######################
-                mlp_occ.barcode = attributes_dict.get("Barcode")
-                mlp_occ.item_number = mlp_occ.barcode
-                mlp_occ.catalog_number = "MLP-" + str(mlp_occ.item_number)
-                mlp_occ.remarks = attributes_dict.get("Remarks")
-                mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-                mlp_occ.item_description = attributes_dict.get("Description")
+                san_francisco_occ.barcode = attributes_dict.get("Barcode")
+                san_francisco_occ.item_number = san_francisco_occ.barcode
+                san_francisco_occ.catalog_number = "San Francisco-" + str(san_francisco_occ.item_number)
+                san_francisco_occ.remarks = attributes_dict.get("Remarks")
+                san_francisco_occ.item_scientific_name = attributes_dict.get("Scientific Name")
+                san_francisco_occ.item_description = attributes_dict.get("Description")
 
 
                 # Validate Collecting Method
                 collection_method = attributes_dict.get("Collection Method")
                 if collection_method in ("Surface Standard", "Standard"):
-                    mlp_occ.collecting_method = "Surface Standard"
+                    san_francisco_occ.collecting_method = "Surface Standard"
                 elif collection_method in ("Surface Intensive", "Intensive"):
-                    mlp_occ.collecting_method = "Surface Intensive"
+                    san_francisco_occ.collecting_method = "Surface Intensive"
                 elif collection_method in ("Surface Complete", "Complete"):
-                    mlp_occ.collecting_method = "Surface Complete"
+                    san_francisco_occ.collecting_method = "Surface Complete"
                 elif collection_method in ("Exploratory Survey", "Exploratory"):
-                    mlp_occ.collecting_method = "Exploratory Survey"
+                    san_francisco_occ.collecting_method = "Exploratory Survey"
                 elif collection_method in ("Dry Screen 5mm", "Dry Screen 5 Mm", "Dry Screen 5 mm"):
-                    mlp_occ.collecting_method = "Dry Screen 5mm"
+                    san_francisco_occ.collecting_method = "Dry Screen 5mm"
                 elif collection_method in ("Dry Screen 2mm", "Dry Screen 2 Mm", "Dry Screen 2 mm"):
-                    mlp_occ.collecting_method = "Dry Screen 2mm"
+                    san_francisco_occ.collecting_method = "Dry Screen 2mm"
                 elif collection_method in ("Dry Screen 1mm", "Dry Screen 1 Mm", "Dry Screen 1 mm"):
-                    mlp_occ.collecting_method = "Dry Screen 1mm"
+                    san_francisco_occ.collecting_method = "Dry Screen 1mm"
                 # else:
                 #     mlp_occ.collecting_method = None
                 #     mlp_occ.problem = True
                 #     mlp_occ.problem_comment = mlp_occ.problem_comment + " problem importing collecting method"
 
-                mlp_occ.collecting_method = attributes_dict.get("Collection Method")
-                mlp_occ.collector = attributes_dict.get("Collector")
-                mlp_occ.individual_count = attributes_dict.get("Count")
+                san_francisco_occ.collecting_method = attributes_dict.get("Collection Method")
+                san_francisco_occ.collector = attributes_dict.get("Collector")
+                san_francisco_occ.individual_count = attributes_dict.get("Count")
                 #if mlp_occ:
                 #    mlp_occ.year_collected = mlp_occ.field_number.year
 
                 if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
-                    mlp_occ.in_situ = False
+                    san_francisco_occ.in_situ = False
                 elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
-                    mlp_occ.in_situ = True
+                    san_francisco_occ.in_situ = True
 
                 ##############
                 # Save Image #
@@ -241,58 +241,36 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                     except IndexError:
                         pass
 
-                mlp_occ.save()
+                san_francisco_occ.save()
                 # need to save record before adding image in order to obtain the DB ID
                 if image_added:
                     # strip off the file name from the path
                     image_path = image_file[:image_file.rfind(os.sep)]
                     # construct new file name
-                    new_file_name = image_path + os.sep + str(mlp_occ.id) + "_" + image_tag
+                    new_file_name = image_path + os.sep + str(san_francisco_occ.id) + "_" + image_tag
                     # rename extracted file with DB record ID
                     os.rename(image_file, new_file_name)
                     # need to strip off "media" folder from relative path saved to DB
-                    mlp_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
-                    mlp_occ.save()
+                    san_francisco_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
+                    san_francisco_occ.save()
                 feature_count += 1
-
-                # TODO If item type is Fauna or Flora add to Biology table
-
-                    # loop through each attachment
-                    # for attachment in image_tags:
-                    #     # find the relevant attachment
-                    #     for file_info in KMZ_file.filelist:
-                    #         if attachment == file_info.orig_filename:
-                    #             # extract file from kmz to the working directory
-                    #             attachment_file = KMZ_file.extract(file_info)  # get a file object
-                    #             # calculate new file name based on record id and original name
-                    #             new_file_name = str(mlp_occ.id) + "_" + file_info.orig_filename
-                    #             # calculate destination directory
-                    #             #complete_name = os.path.join(KML_file_path, "imports/" + new_file_name)
-                    #             # move file
-                    #             #shutil.move(attachment_file, complete_name)
-                    #             # save image name to DB
-                    #             mlp_occ.image = new_file_name
-                    #             mlp_occ.save()
-                    #             break
-                    #         break
-
 
         return super(UploadKMLView, self).form_valid(form)
 
     def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload_kml')
+        return reverse('san_francisco:san_francisco_upload_kml')
 
 
 class Confirmation(FiberPageMixin, generic.ListView):
-    template_name = 'mlp/confirmation.html'
+    template_name = 'san_francisco/confirmation.html'
     model = Occurrence
 
     def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload_confirmation')
+        return reverse('san_francisco:san_francisco_upload_confirmation')
 
 
 class UploadView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/upload.html'
+    template_name = 'san_francisco/upload.html'
     form_class = UploadForm
     context_object_name = 'upload'
     success_url = 'confirmation'
@@ -311,14 +289,14 @@ class UploadView(FiberPageMixin, generic.FormView):
         shapefileDataSaved = default_storage.save(shapefileDataName, ContentFile(shapefileData.read()))
         shapefilePath = os.path.join(settings.MEDIA_ROOT)
         shapefileName = shapefileProperName[:shapefileProperName.rfind('.')]
-        sf = shapefile.Reader(shapefilePath + "\\" + shapefileName)
-        # sf = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
+        san_francisco = shapefile.Reader(shapefilePath + "\\" + shapefileName)
+        # san_francisco = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
 
-        shapes = sf.shapes()
+        shapes = san_francisco.shapes()
         return super(UploadView, self).form_valid(form)
 
     def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload')
+        return reverse('san_francisco:san_francisco_upload')
 
 def ChangeXYView(request):
     if request.method == "POST":
@@ -330,12 +308,12 @@ def ChangeXYView(request):
             obs.geom = pnt
             obs.save()
             messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number )
-            return redirect("/admin/mlp/occurrence")
+            return redirect("/admin/san_francisco/occurrence")
     else:
         selected = list(request.GET.get("ids", "").split(","))
         if len(selected) > 1:
             messages.error(request,"You can't change the coordinates of multiple points at once.")
-            return redirect("/admin/mlp/occurrence")
+            return redirect("/admin/san_francisco/occurrence")
         selected_object = Occurrence.objects.get(pk=int(selected[0]))
         initialData = { "DB_id":selected_object.id,
                         "barcode":selected_object.barcode,
@@ -345,7 +323,7 @@ def ChangeXYView(request):
                         "item_description":selected_object.item_description
                     }
         theForm = ChangeXYForm(initial = initialData)
-        return render_to_response('mlp/changeXY.html',
+        return render_to_response('san_francisco/changeXY.html',
                                 {"theForm":theForm},
                               RequestContext(request))
 
