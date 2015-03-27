@@ -5,24 +5,29 @@ from mysite import ontologies
 class Occurrence(models.Model):
     global_id = models.IntegerField(blank=True, null=True)  # Global Unique Identifier
     reference = models.CharField("Reference", max_length=255, null=True, blank=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
-    basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
+    #date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    basis_of_record = models.CharField("Basis of Record", max_length=255, blank=True, null=False,
                                        choices=ontologies.BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
-    item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
-                                 choices=ontologies.ITEM_TYPE_VOCABULARY)  # NOT NULL
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='MLP')
+    item_type = models.CharField("Item Type", max_length=255, blank=True, null=True,
+                                 choices=ontologies.ITEM_TYPE_VOCABULARY)
+    collection_code = models.CharField("Collection Code", max_length=255, blank=True, null=True, default='MLP')
     institution_code = models.CharField("Institution Code", max_length=255, blank=True, null=True)
     item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
-    item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
+    item_part = models.CharField("Item Part", max_length=255, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     paleo_locality = models.CharField("Paleo Locality", max_length=255, blank=True, null=True)
     paleo_locality_number = models.IntegerField("Paleo Locality Number", null=True, blank=True)
+    sampling_protocol = models.CharField("Sampling Protocol", max_length=255, blank=True, null=True)
     # TODO add rich text field for remarks
     occurrence_remarks = models.TextField("Occurrence Remarks", max_length=255, null=True, blank=True)
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Item Description", max_length=255, blank=True, null=True)
+    continent = models.CharField("Continent", max_length=255, blank=True, null=True)
+    country = models.CharField("Country", max_length=255, blank=True, null=True)
+    state_province = models.CharField("State or Province", max_length=255, blank=True, null=True)
     locality = models.CharField("Locality", max_length=255, null=True, blank=True)
     verbatim_locality = models.CharField("Verbatim Locality", max_length=255, null=True, blank=True)
+    location_remarks = models.CharField("Location Remarks", max_length=255, blank=True, null=True)
     verbatim_coordinates = models.CharField("Verbatim Coordinates", null=True, blank=True, max_length=255)
     verbatim_coordinate_system = models.CharField("Verbatim Coordinate System", null=True, blank=True, max_length=255)
     decimal_longitude = models.DecimalField("Longitude", max_digits=38, decimal_places=8, blank=True,
@@ -31,14 +36,17 @@ class Occurrence(models.Model):
                                               null=True)
     geodetic_datum = models.CharField("Geodetic Datum", null=True, blank=True, max_length=255)
     coordinate_uncertainty_in_meters = models.IntegerField("Coordinate Uncertainty", null=True, blank=True)
-    georeference_remarks = models.CharField("Georeferencing Remarks", max_length=50, null=True, blank=True)
-    collecting_method = models.CharField("Collecting Method", max_length=50, blank=True,
-                                         choices=ontologies.COLLECTING_METHOD_VOCABULARY, null=False)  # NOT NULL
-    related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
-    collector = models.CharField(max_length=50, blank=True, null=True, choices=ontologies.COLLECTOR_CHOICES)
-    found_by = models.CharField("Found By",max_length=50, blank=True, null=True)
+    georeference_remarks = models.CharField("Georeferencing Remarks", max_length=255, null=True, blank=True)
+    collecting_method = models.CharField("Collecting Method", max_length=255, blank=True,
+                                         choices=ontologies.COLLECTING_METHOD_VOCABULARY, null=True)
+    related_catalog_items = models.CharField("Related Catalog Items", max_length=255, null=True, blank=True)
+    collector = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.COLLECTOR_CHOICES)
+    found_by = models.CharField("Found By",max_length=255, blank=True, null=True)
+    event_date = models.DateField("Date", null=True, blank=True)
     event_year = models.IntegerField("Year", blank=True, null=True)
     event_month = models.CharField("Month", max_length=255, blank=True, null=True)
+    event_day = models.CharField("Day", max_length=255, blank=True, null=True)
+    event_remarks = models.CharField("Event Remarks", max_length=255, blank=True, null=True)
     stratigraphic_marker_upper = models.CharField("Stratigraphic Marker Upper", max_length=255, blank=True, null=True)
     distance_from_upper = models.DecimalField("Distance From Upper", max_digits=38, decimal_places=8, blank=True,
                                               null=True)
@@ -50,7 +58,7 @@ class Occurrence(models.Model):
     stratigraphic_bed = models.CharField("Stratigraphic Bed", max_length=255, blank=True, null=True)
     geochronological_age = models.IntegerField("Geochronological Age", blank=True, null=True)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/san_francisco", null=True)
-    geom = models.GeometryField(srid=4326, blank=True, null=True)  # NOT NULL
+    geom = models.GeometryField(srid=4326, blank=True, null=True)
     objects = models.GeoManager()
 
 
