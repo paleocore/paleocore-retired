@@ -4,23 +4,24 @@ from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 
 basisCHOICES = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
-itemtypeCHOICES = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"),("Floral", "Floral"), ("Geological", "Geological"))
+itemtypeCHOICES = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"), ("Floral", "Floral"), ("Geological", "Geological"))
 
 
 class Locality(models.Model):
     paleolocalitynumber = models.IntegerField(null=True,blank=True)
-    collectioncode = models.CharField(null=True,blank=True,choices = (("DIK","DIK"),("ASB","ASB")),max_length=10)
-    paleosublocality = models.CharField(null=True,blank=True,max_length=50)
-    description1 = models.TextField(null=True,blank=True,max_length=255)
-    description2 = models.TextField(null=True,blank=True,max_length=255)
-    description3 = models.TextField(null=True,blank=True,max_length=255)
-    stratsection = models.CharField(null=True,blank=True,max_length=50)
-    upperlimitinsection = models.IntegerField(null=True,blank=True)
-    lowerlimitinsection = models.FloatField(null=True,blank=True)
-    errornotes = models.CharField(max_length=255,null=True,blank=True)
-    notes = models.CharField(max_length=254,null=True,blank=True)
+    collectioncode = models.CharField(null=True, blank=True, choices = (("DIK", "DIK"), ("ASB", "ASB")), max_length=10)
+    paleosublocality = models.CharField(null=True, blank=True, max_length=50)
+    description1 = models.TextField(null=True, blank=True, max_length=255)
+    description2 = models.TextField(null=True, blank=True, max_length=255)
+    description3 = models.TextField(null=True, blank=True, max_length=255)
+    stratsection = models.CharField(null=True, blank=True, max_length=50)
+    upperlimitinsection = models.IntegerField(null=True, blank=True)
+    lowerlimitinsection = models.FloatField(null=True, blank=True)
+    errornotes = models.CharField(max_length=255, null=True, blank=True)
+    notes = models.CharField(max_length=254, null=True, blank=True)
     geom = models.PolygonField(srid=32637)
     objects = models.GeoManager()
+
     def __unicode__(self):
         return str(self.collectioncode) + " " + str(self.paleolocalitynumber)
 
@@ -28,7 +29,7 @@ class Locality(models.Model):
         verbose_name = "DRP Locality"
         verbose_name_plural = "DRP Localities"
         #db_table='drp_locality'
-        ordering=("collectioncode","paleolocalitynumber","paleosublocality")
+        ordering = ("collectioncode", "paleolocalitynumber", "paleosublocality")
 
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
@@ -103,7 +104,6 @@ class Occurrence(models.Model):
     geom = models.PointField(srid=32637, db_column="shape")
     objects = models.GeoManager()
     locality = models.ForeignKey(Locality)
-    #locality = models.ForeignKey(Locality, related_name='drp_locality', db_column='locality_id')
 
     @staticmethod
     def fields_to_display():
@@ -148,6 +148,7 @@ class File(models.Model):
     occurrence = models.ForeignKey("Occurrence")
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+
 
 class Biology(Occurrence):
     infraspecificepithet = models.CharField(null=True,blank=True,max_length=50)
@@ -248,11 +249,12 @@ class Biology(Occurrence):
     def __unicode__(self):
         return str(self.taxon.__unicode__())
 
+
 class Hydrology(models.Model):
-    length = models.FloatField(null=True,blank=True)
-    name = models.CharField(null=True,blank=True,max_length=50)
-    size = models.IntegerField(null=True,blank=True)
-    mapsheet = models.CharField(null=True,blank=True,max_length=50)
+    length = models.FloatField(null=True, blank=True)
+    name = models.CharField(null=True, blank=True, max_length=50)
+    size = models.IntegerField(null=True, blank=True)
+    mapsheet = models.CharField(null=True, blank=True, max_length=50)
     geom = models.LineStringField(srid=32637)
     objects = models.GeoManager()
 
