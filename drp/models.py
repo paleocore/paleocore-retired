@@ -3,8 +3,9 @@ from django.contrib.gis.db import models
 from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 
-basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
-itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
+basisCHOICES = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
+itemtypeCHOICES = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"),("Floral", "Floral"), ("Geological", "Geological"))
+
 
 class Locality(models.Model):
     paleolocalitynumber = models.IntegerField(null=True,blank=True)
@@ -28,6 +29,7 @@ class Locality(models.Model):
         verbose_name_plural = "DRP Localities"
         #db_table='drp_locality'
         ordering=("collectioncode","paleolocalitynumber","paleosublocality")
+
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class Occurrence(models.Model):
@@ -98,7 +100,7 @@ class Occurrence(models.Model):
     dgupdate2013 = models.IntegerField(null=True, blank=True)
     dgupdatex = models.FloatField(null=True, blank=True)
     dgupdatey = models.FloatField(null=True, blank=True)
-    geom = models.PointField(srid=32637,db_column="shape")
+    geom = models.PointField(srid=32637, db_column="shape")
     objects = models.GeoManager()
     locality = models.ForeignKey(Locality, related_name='drp_locality', db_column='locality_id')
 

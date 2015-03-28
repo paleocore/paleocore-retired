@@ -1,5 +1,5 @@
 from django.test import TestCase
-from drp.models import Occurrence, drp_biology
+from drp.models import Occurrence, Biology
 from fiber.models import Page
 from django.core.urlresolvers import reverse
 from datetime import datetime
@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login
 from django.contrib.admin.sites import AdminSite
 
-# def create_drp_occurrence():
-#     new_occurrence = drp_occurrence(id=29, barcode=9999, basisofrecord="FossilSpecimen", itemtype="Floral",
+# def create_Occurrence():
+#     new_occurrence = Occurrence(id=29, barcode=9999, basisofrecord="FossilSpecimen", itemtype="Floral",
 #                                     catalognumber="DIK-9999-9", itemdescription="test", itemscientificname="test",
 #                                     geom="POINT (658198.7081000003963709 1222366.8992999996989965)")
 #     return(new_occurrence)
@@ -34,11 +34,11 @@ def create_django_page_tree():
 
 class OccurrenceMethodsTests(TestCase):
     """
-    Test drp_occurrence instance creation and methods
+    Test Occurrence instance creation and methods
     """
-    def test_drp_occurrence_save_simple(self):
+    def test_Occurrence_save_simple(self):
         """
-        Test drp_occurrence instance save method with the simplest possible attributes, coordinates only
+        Test Occurrence instance save method with the simplest possible attributes, coordinates only
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs only a location.
@@ -51,9 +51,9 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
 
-    def test_drp_occurrence_create_simple(self):
+    def test_Occurrence_create_simple(self):
         """
-        Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
+        Test Occurrence instance creation with the simplest possible attributes, coordinates only
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs only a location.
@@ -65,12 +65,12 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
 
-    def test_drp_occurrence_create_fossil_specimen(self):
+    def test_Occurrence_create_fossil_specimen(self):
         """
-        Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
+        Test Occurrence instance creation with the simplest possible attributes, coordinates only
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
-        starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
+        starting_record_count_biology = Biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
         new_occurrence = Occurrence.objects.create(
@@ -86,14 +86,14 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
-        self.assertEqual(drp_biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
+        self.assertEqual(Biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
 
-    def test_drp_occurrence_create_observation(self):
+    def test_Occurrence_create_observation(self):
         """
-        Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
+        Test Occurrence instance creation with the simplest possible attributes, coordinates only
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
-        starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
+        starting_record_count_biology = Biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
         new_occurrence = Occurrence.objects.create(
@@ -109,16 +109,16 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
-        self.assertEqual(drp_biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
+        self.assertEqual(Biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
 
-    def test_drp_biology_create(self):
+    def test_Biology_create(self):
         """
-        Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
+        Test Occurrence instance creation with the simplest possible attributes, coordinates only
         """
-        starting_record_count = drp_biology.objects.count()  # get the current number of biology records
+        starting_record_count = Biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
-        new_biology = drp_biology.objects.create(
+        new_biology = Biology.objects.create(
             barcode = 1111,
             basisofrecord="FossilSpecimen",
             itemtype = "Faunal",
@@ -129,18 +129,18 @@ class OccurrenceMethodsTests(TestCase):
             family="Bovidae",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)")
         now = datetime.now()
-        self.assertEqual(drp_biology.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Biology.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_biology.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_biology.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_biology.point_X(), 658198.7081000003963709)
 
 
-    def test_drp_occurrence_create_floral(self):
+    def test_Occurrence_create_floral(self):
         """
-        Test drp_occurrence instance creation with the simplest possible attributes, coordinates only
+        Test Occurrence instance creation with the simplest possible attributes, coordinates only
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
-        starting_record_count_biology = drp_biology.objects.count()  # get the current number of biology records
+        starting_record_count_biology = Biology.objects.count()  # get the current number of biology records
         # The simplest occurrence instance we can create needs only a location.
         # Using the instance creation and then save methods
         new_occurrence = Occurrence.objects.create(
@@ -157,15 +157,14 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
-        self.assertEqual(drp_biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
-
+        self.assertEqual(Biology.objects.count(), starting_record_count_biology)  # test that no biology record was added
 
 
 class BiologySearchTest(TestCase):
 
     def test_biology_searchbox(self):
         """
-        Test drp_occurrence admin search box
+        Test Occurrence admin search box
         :return:
         """
         user = User.objects.create_user('john', 'lennon@thebeatles.com', 'thewalruswaspaul')
@@ -174,10 +173,10 @@ class BiologySearchTest(TestCase):
         user.save()
 
         self.client.login(username="john", password="thewalruswaspaul")
-        self.assertEqual(user.has_perm("drp.delete_drp_biology"), True)
+        self.assertEqual(user.has_perm("drp.delete_Biology"), True)
 
         create_django_page_tree()
-        response = self.client.get("/admin/drp/drp_biology/", {"q": "asdfe"})
+        response = self.client.get("/admin/drp/Biology/", {"q": "asdfe"})
         self.assertNotContains(response, "<h1>FieldError at /admin/")
         self.assertEqual(response.status_code, 200)
 
@@ -197,7 +196,7 @@ request.user = MockSuperUser()
 
 class OccurrenceAdminTests(TestCase):
     """
-    Tests for the drp_occurrence admin pages. These tests based on django admin tests on github
+    Tests for the Occurrence admin pages. These tests based on django admin tests on github
     https://github.com/django/django/blob/master/tests/modeladmin/tests.py
     """
 
@@ -221,10 +220,10 @@ class OccurrenceAdminTests(TestCase):
         user.save()
 
         self.client.login(username="john", password="thewalruswaspaul")
-        self.assertEqual(user.has_perm("drp.delete_drp_biology"), True)
+        self.assertEqual(user.has_perm("drp.delete_Biology"), True)
 
         create_django_page_tree()
-        response = self.client.get("/admin/drp/drp_occurrence/")
+        response = self.client.get("/admin/drp/Occurrence/")
         self.assertEqual(response.status_code, 200)
 
 

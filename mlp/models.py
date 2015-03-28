@@ -81,13 +81,13 @@ class Occurrence(models.Model):
 
     def point_x(self):
         try:
-            return self.geom.coords[1]
+            return self.geom.x
         except:
             return 0
 
     def point_y(self):
         try:
-            return self.geom.coords[0]
+            return self.geom.y
         except:
             return 0
 

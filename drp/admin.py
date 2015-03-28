@@ -29,7 +29,7 @@ class filesInline(admin.TabularInline):
 occurrence_fieldsets =(
 ('Curatorial', {
 'fields': (('barcode','catalognumber'),
-           ("id",'fieldnumber','yearcollected',"datelastmodified"),
+           ("id", 'fieldnumber', 'yearcollected', 'datelastmodified'),
            ("collectioncode", "paleolocalitynumber", "itemnumber", "itempart"))
 }),
 
