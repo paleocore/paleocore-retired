@@ -102,7 +102,8 @@ class Occurrence(models.Model):
     dgupdatey = models.FloatField(null=True, blank=True)
     geom = models.PointField(srid=32637, db_column="shape")
     objects = models.GeoManager()
-    locality = models.ForeignKey(Locality, related_name='drp_locality', db_column='locality_id')
+    locality = models.ForeignKey(Locality)
+    #locality = models.ForeignKey(Locality, related_name='drp_locality', db_column='locality_id')
 
     @staticmethod
     def fields_to_display():
