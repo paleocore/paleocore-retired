@@ -30,10 +30,8 @@ class Occurrence(models.Model):
     location_remarks = models.CharField("Location Remarks", max_length=255, blank=True, null=True)
     verbatim_coordinates = models.CharField("Verbatim Coordinates", null=True, blank=True, max_length=255)
     verbatim_coordinate_system = models.CharField("Verbatim Coordinate System", null=True, blank=True, max_length=255)
-    decimal_longitude = models.DecimalField("Longitude", max_digits=38, decimal_places=8, blank=True,
-                                              null=True)
-    decimal_latitude = models.DecimalField("Latitude", max_digits=38, decimal_places=8, blank=True,
-                                              null=True)
+    decimal_longitude = models.DecimalField("Longitude", max_digits=38, decimal_places=8, blank=True, null=True)
+    decimal_latitude = models.DecimalField("Latitude", max_digits=38, decimal_places=8, blank=True, null=True)
     geodetic_datum = models.CharField("Geodetic Datum", null=True, blank=True, max_length=255)
     coordinate_uncertainty_in_meters = models.IntegerField("Coordinate Uncertainty", null=True, blank=True)
     georeference_remarks = models.CharField("Georeferencing Remarks", max_length=255, null=True, blank=True)
@@ -41,7 +39,7 @@ class Occurrence(models.Model):
                                          choices=ontologies.COLLECTING_METHOD_VOCABULARY, null=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=255, null=True, blank=True)
     collector = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.COLLECTOR_CHOICES)
-    found_by = models.CharField("Found By",max_length=255, blank=True, null=True)
+    found_by = models.CharField("Found By", max_length=255, blank=True, null=True)
     event_date = models.DateField("Date", null=True, blank=True)
     event_year = models.IntegerField("Year", blank=True, null=True)
     event_month = models.CharField("Month", max_length=255, blank=True, null=True)
@@ -71,21 +69,24 @@ class PaleoSite(models.Model):
     """
     name = models.CharField(max_length=255, blank=False, null=False)  # REQUIRED
     setting = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.SETTING_CHOICES)
-    continent = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.CONTINENT_CHOICES)  # dwc:continent
+    continent = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.CONTINENT_CHOICES)
     country = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.COUNTRY_CHOICES)  # dwc:country
     region = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.REGION_CHOICES)  # dwc:locality
     research_project = models.CharField(max_length=255, blank=True, null=True)  # e.g.
-    collection_code = models.CharField(null=True, blank=True,max_length=20)  # dwc:collection_code
+    collection_code = models.CharField(null=True, blank=True, max_length=20)  # dwc:collection_code
     geological_member = models.CharField(max_length=255, blank=True, null=True)  # dwd:member
     cultural_term = models.CharField(max_length=255, blank=True, null=True)  # tdr:cultural_term, Stillbay
     technology_period = models.CharField(max_length=255, blank=True, null=True)  # e.g. MSA, ESA, UP, MP
     start_date = models.CharField(max_length=255, blank=True, null=True)  # tdr: start_date
     end_date = models.CharField(max_length=255, blank=True, null=True)  # tdr:end_date
-    geological_epoch = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.EPOCH_CHOICES)  # dwc:epoch
+    geological_epoch = models.CharField(max_length=255, blank=True, null=True,
+                                        choices=ontologies.EPOCH_CHOICES)  # dwc:epoch
     date_description = models.CharField(max_length=255, blank=True, null=True)  # tdr:date_description, e.g. ESR, OSL
-    material = geom = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.MATERIAL_CHOICES)  # tdr:material_types
-    references = models.TextField(null=True, blank=True,max_length=2500)  # dwc:references
+    material = geom = models.CharField(max_length=255, blank=True, null=True,
+                                       choices=ontologies.MATERIAL_CHOICES)  # tdr:material_types
+    references = models.TextField(null=True, blank=True, max_length=2500)  # dwc:references
     remarks = models.TextField(null=True, blank=True, max_length=2500)
     geom = models.PointField(srid=4326)
+    objects = models.GeoManager()
 
 
