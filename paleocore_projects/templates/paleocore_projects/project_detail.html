@@ -61,7 +61,7 @@
                 });
 
                 map.setView([{{ project.geom.coords.1 }}, {{ project.geom.coords.0 }}], 6);
-                map.scrollWheelZoom.disable();
+                // map.scrollWheelZoom.disable();
                 map.eachLayer(function(marker) {
                     marker.openPopup()
                 });
