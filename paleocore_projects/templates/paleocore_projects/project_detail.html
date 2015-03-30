@@ -83,11 +83,11 @@
            {% if project.is_public %}
                <p>The data in the {{ project.full_name }} are publicly available.</p>
                {% with app=project.paleocore_appname %}
-               <h2 class="button" onclick="window.location.href='{% url 'paleocore_projects:data_table' app %}'">View Public Database</h2>
+               <b class="button" onclick="window.location.href='{% url 'paleocore_projects:data_table' app %}'">View Public Database</b>
                {% endwith %}
            {% else %}
                <p>The data in the {{ project.full_name }} are currently private, meaning that access is restricted to project members.</p>
-               <h2 class="button" onclick="window.location.href='/admin/'">Admin Site for Project Members</h2>
+               <b class="button" onclick="window.location.href='/admin/'">Admin Site for Project Members</b>
            {% endif %}
        </div>
 
