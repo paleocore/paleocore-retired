@@ -42,8 +42,8 @@ class ProjectIndexViewTests(TestCase):
 
         response = self.client.get(reverse('data:terms_index', kwargs={"project_name": "drp"}))
         self.assertEqual(response.status_code, 200)  # status code should be 200
-        self.assertContains(response, "<h3>barcode</h3>")
-        self.assertContains(response, "<h3>catalogNumber</h3>")
+        self.assertContains(response, "barcode")
+        self.assertContains(response, "catalogNumber")
 
     def test_mlp_term_view(self):
         """

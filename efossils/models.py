@@ -1,253 +1,63 @@
 from django.contrib.gis.db import models
+from mysite import ontologies
 
-settingCHOICES = (("open-air", "open-air"), ("cave", "cave"), ("rockshelter", "rockshelter"))
-countryCHOICES = (
-    ('United States of America', ('United States of America')),
-    ('Afghanistan', ('Afghanistan')),
-    ('Aland Islands', ('Aland Islands')),
-    ('Albania', ('Albania')),
-    ('Algeria', ('Algeria')),
-    ('American Samoa', ('American Samoa')),
-    ('Andorra', ('Andorra')),
-    ('Angola', ('Angola')),
-    ('Anguilla', ('Anguilla')),
-    ('Antigua and Barbuda', ('Antigua and Barbuda')),
-    ('Argentina', ('Argentina')),
-    ('Armenia', ('Armenia')),
-    ('Aruba', ('Aruba')),
-    ('Australia', ('Australia')),
-    ('Austria', ('Austria')),
-    ('Azerbaijan', ('Azerbaijan')),
-    ('Bahamas', ('Bahamas')),
-    ('Bahrain', ('Bahrain')),
-    ('Bangladesh', ('Bangladesh')),
-    ('Barbados', ('Barbados')),
-    ('Belarus', ('Belarus')),
-    ('Belgium', ('Belgium')),
-    ('Belize', ('Belize')),
-    ('Benin', ('Benin')),
-    ('Bermuda', ('Bermuda')),
-    ('Bhutan', ('Bhutan')),
-    ('Bolivia', ('Bolivia')),
-    ('Bosnia and Herzegovina', ('Bosnia and Herzegovina')),
-    ('Botswana', ('Botswana')),
-    ('Brazil', ('Brazil')),
-    ('British Virgin Islands', ('British Virgin Islands')),
-    ('Brunei Darussalam', ('Brunei Darussalam')),
-    ('Bulgaria', ('Bulgaria')),
-    ('Burkina Faso', ('Burkina Faso')),
-    ('Burundi', ('Burundi')),
-    ('Cambodia', ('Cambodia')),
-    ('Cameroon', ('Cameroon')),
-    ('Canada', ('Canada')),
-    ('Cape Verde', ('Cape Verde')),
-    ('Cayman Islands', ('Cayman Islands')),
-    ('Central African Republic', ('Central African Republic')),
-    ('Chad', ('Chad')),
-    ('Channel Islands', ('Channel Islands')),
-    ('Chile', ('Chile')),
-    ('China', ('China')),
-    ('China - Hong Kong', ('China - Hong Kong')),
-    ('China - Macao', ('China - Macao')),
-    ('Colombia', ('Colombia')),
-    ('Comoros', ('Comoros')),
-    ('Congo', ('Congo')),
-    ('Cook Islands', ('Cook Islands')),
-    ('Costa Rica', ('Costa Rica')),
-    ('Cote d\'Ivoire', ('Cote d\'Ivoire')),
-    ('Croatia', ('Croatia')),
-    ('Cuba', ('Cuba')),
-    ('Cyprus', ('Cyprus')),
-    ('Czech Republic', ('Czech Republic')),
-    ('Democratic People\'s Republic of Korea', ('Democratic People\'s Republic of Korea')),
-    ('Democratic Republic of the Congo', ('Democratic Republic of the Congo')),
-    ('Denmark', ('Denmark')),
-    ('Djibouti', ('Djibouti')),
-    ('Dominica', ('Dominica')),
-    ('Dominican Republic', ('Dominican Republic')),
-    ('Ecuador', ('Ecuador')),
-    ('Egypt', ('Egypt')),
-    ('El Salvador', ('El Salvador')),
-    ('Equatorial Guinea', ('Equatorial Guinea')),
-    ('Eritrea', ('Eritrea')),
-    ('Estonia', ('Estonia')),
-    ('Ethiopia', ('Ethiopia')),
-    ('Faeroe Islands', ('Faeroe Islands')),
-    ('Falkland Islands (Malvinas)', ('Falkland Islands (Malvinas)')),
-    ('Fiji', ('Fiji')),
-    ('Finland', ('Finland')),
-    ('France', ('France')),
-    ('French Guiana', ('French Guiana')),
-    ('French Polynesia', ('French Polynesia')),
-    ('Gabon', ('Gabon')),
-    ('Gambia', ('Gambia')),
-    ('Georgia', ('Georgia')),
-    ('Germany', ('Germany')),
-    ('Ghana', ('Ghana')),
-    ('Gibraltar', ('Gibraltar')),
-    ('Greece', ('Greece')),
-    ('Greenland', ('Greenland')),
-    ('Grenada', ('Grenada')),
-    ('Guadeloupe', ('Guadeloupe')),
-    ('Guam', ('Guam')),
-    ('Guatemala', ('Guatemala')),
-    ('Guernsey', ('Guernsey')),
-    ('Guinea', ('Guinea')),
-    ('Guinea-Bissau', ('Guinea-Bissau')),
-    ('Guyana', ('Guyana')),
-    ('Haiti', ('Haiti')),
-    ('Holy See (Vatican City)', ('Holy See (Vatican City)')),
-    ('Honduras', ('Honduras')),
-    ('Hungary', ('Hungary')),
-    ('Iceland', ('Iceland')),
-    ('India', ('India')),
-    ('Indonesia', ('Indonesia')),
-    ('Iran', ('Iran')),
-    ('Iraq', ('Iraq')),
-    ('Ireland', ('Ireland')),
-    ('Isle of Man', ('Isle of Man')),
-    ('Israel', ('Israel')),
-    ('Italy', ('Italy')),
-    ('Jamaica', ('Jamaica')),
-    ('Japan', ('Japan')),
-    ('Jersey', ('Jersey')),
-    ('Jordan', ('Jordan')),
-    ('Kazakhstan', ('Kazakhstan')),
-    ('Kenya', ('Kenya')),
-    ('Kiribati', ('Kiribati')),
-    ('Kuwait', ('Kuwait')),
-    ('Kyrgyzstan', ('Kyrgyzstan')),
-    ('Lao People\'s Democratic Republic', ('Lao People\'s Democratic Republic')),
-    ('Latvia', ('Latvia')),
-    ('Lebanon', ('Lebanon')),
-    ('Lesotho', ('Lesotho')),
-    ('Liberia', ('Liberia')),
-    ('Libyan Arab Jamahiriya', ('Libyan Arab Jamahiriya')),
-    ('Liechtenstein', ('Liechtenstein')),
-    ('Lithuania', ('Lithuania')),
-    ('Luxembourg', ('Luxembourg')),
-    ('Macedonia', ('Macedonia')),
-    ('Madagascar', ('Madagascar')),
-    ('Malawi', ('Malawi')),
-    ('Malaysia', ('Malaysia')),
-    ('Maldives', ('Maldives')),
-    ('Mali', ('Mali')),
-    ('Malta', ('Malta')),
-    ('Marshall Islands', ('Marshall Islands')),
-    ('Martinique', ('Martinique')),
-    ('Mauritania', ('Mauritania')),
-    ('Mauritius', ('Mauritius')),
-    ('Mayotte', ('Mayotte')),
-    ('Mexico', ('Mayotte')),
-    ('Micronesia, Federated States of', ('Micronesia, Federated States of')),
-    ('Monaco', ('Monaco')),
-    ('Mongolia', ('Mongolia')),
-    ('Montenegro', ('Montenegro')),
-    ('Montserrat', ('Montserrat')),
-    ('Morocco', ('Morocco')),
-    ('Mozambique', ('Mozambique')),
-    ('Myanmar', ('Myanmar')),
-    ('Namibia', ('Namibia')),
-    ('Nauru', ('Nauru')),
-    ('Nepal', ('Nepal')),
-    ('Netherlands', ('Netherlands')),
-    ('Netherlands Antilles', ('Netherlands Antilles')),
-    ('New Caledonia', ('New Caledonia')),
-    ('New Zealand', ('New Zealand')),
-    ('Nicaragua', ('Nicaragua')),
-    ('Niger', ('Niger')),
-    ('Nigeria', ('Nigeria')),
-    ('Niue', ('Niue')),
-    ('Norfolk Island', ('Norfolk Island')),
-    ('Northern Mariana Islands', ('Northern Mariana Islands')),
-    ('Norway', ('Norway')),
-    ('Occupied Palestinian Territory', ('Occupied Palestinian Territory')),
-    ('Oman', ('Oman')),
-    ('Pakistan', ('Pakistan')),
-    ('Palau', ('Palau')),
-    ('Panama', ('Panama')),
-    ('Papua New Guinea', ('Papua New Guinea')),
-    ('Paraguay', ('Paraguay')),
-    ('Peru', ('Peru')),
-    ('Philippines', ('Philippines')),
-    ('Pitcairn', ('Pitcairn')),
-    ('Poland', ('Poland')),
-    ('Portugal', ('Portugal')),
-    ('Puerto Rico', ('Puerto Rico')),
-    ('Qatar', ('Qatar')),
-    ('Republic of Korea', ('Republic of Korea')),
-    ('Republic of Moldova', ('Republic of Moldova')),
-    ('Reunion', ('Reunion')),
-    ('Romania', ('Romania')),
-    ('Russian Federation', ('Russian Federation')),
-    ('Rwanda', ('Rwanda')),
-    ('Saint-Barthelemy', ('Saint-Barthelemy')),
-    ('Saint Helena', ('Saint Helena')),
-    ('Saint Kitts and Nevis', ('Saint Kitts and Nevis')),
-    ('Saint Lucia', ('Saint Lucia')),
-    ('Saint-Martin (French part)', ('Saint-Martin (French part)')),
-    ('Saint Pierre and Miquelon', ('Saint Pierre and Miquelon')),
-    ('Saint Vincent and the Grenadines', ('Saint Vincent and the Grenadines')),
-    ('Samoa', ('Samoa')),
-    ('San Marino', ('San Marino')),
-    ('Sao Tome and Principe', ('Sao Tome and Principe')),
-    ('Saudi Arabia', ('Saudi Arabia')),
-    ('Senegal', ('Senegal')),
-    ('Serbia', ('Serbia')),
-    ('Seychelles', ('Seychelles')),
-    ('Sierra Leone', ('Sierra Leone')),
-    ('Singapore', ('Singapore')),
-    ('Slovakia', ('Slovakia')),
-    ('Slovenia', ('Slovenia')),
-    ('Solomon Islands', ('Solomon Islands')),
-    ('Somalia', ('Somalia')),
-    ('South Africa', ('South Africa')),
-    ('Spain', ('Spain')),
-    ('Sri Lanka', ('Sri Lanka')),
-    ('Sudan', ('Sudan')),
-    ('Suriname', ('Suriname')),
-    ('Svalbard and Jan Mayen Islands', ('Svalbard and Jan Mayen Islands')),
-    ('Swaziland', ('Swaziland')),
-    ('Sweden', ('Sweden')),
-    ('Switzerland', ('Switzerland')),
-    ('Syrian Arab Republic', ('Syrian Arab Republic')),
-    ('Tajikistan', ('Tajikistan')),
-    ('Thailand', ('Thailand')),
-    ('Timor-Leste', ('Timor-Leste')),
-    ('Togo', ('Togo')),
-    ('Tokelau', ('Tokelau')),
-    ('Tonga', ('Tonga')),
-    ('Trinidad and Tobago', ('Trinidad and Tobago')),
-    ('Tunisia', ('Tunisia')),
-    ('Turkey', ('Turkey')),
-    ('Turkmenistan', ('Turkmenistan')),
-    ('Turks and Caicos Islands', ('Turks and Caicos Islands')),
-    ('Tuvalu', ('Tuvalu')),
-    ('Uganda', ('Uganda')),
-    ('Ukraine', ('Ukraine')),
-    ('United Arab Emirates', ('United Arab Emirates')),
-    ('United Kingdom', ('United Kingdom')),
-    ('United Republic of Tanzania', ('United Republic of Tanzania')),
-    ('United States of America', ('United States of America')),
-    ('United States Virgin Islands', ('United States Virgin Islands')),
-    ('Uruguay', ('Uruguay')),
-    ('Uzbekistan', ('Uzbekistan')),
-    ('Vanuatu', ('Vanuatu')),
-    ('Venezuela (Bolivarian Republic of)', ('Venezuela (Bolivarian Republic of)')),
-    ('Viet Nam', ('Viet Nam')),
-    ('Wallis and Futuna Islands', ('Wallis and Futuna Islands')),
-    ('Western Sahara', ('Western Sahara')),
-    ('Yemen', ('Yemen')),
-    ('Zambia', ('Zambia')),
-    ('Zimbabwe', ('Zimbabwe')),
-)
 
-regionCHOICES = (("southern_africa", "southern Africa"), ("eastern_africa", "eastern Africa"), ("northern_africa", "northern Africa"), ("", ""), ("", ""))
-continentCHOICES = (("Africa", "Africa"), ("Europe", "Europe"), ("Asia", "Asia"), ("North America", "North America"), ("South America", "South America"), ("Australia", "Australia"), ("Antarctica", "Antarctica"))
-materialCHOICES = (("basketry", "basketry"), ("building material", "building material"), ("ceramic", "ceramic"), ("chipped stone", "chipped stone"), ("dating sample", "dating sample"),
-                   ("fauna", "fauna"), ("fire-cracked rock", "fire-cracked rock"), ("glass", "glass"), ("ground stone", "ground stone"), ("hide", "hide"), ("human remains", "human remains"),
-                   ("macrobotanical", "macrobotanical"), ("metal", "metal"), ("mineral", "mineral"), ("pollen", "pollen"), ("shell", "shell"), ("textile", "textile"), ("wood", "wood")) #Choice list comes from tDAR"
-epochCHOICES = (("Pliocene", "Pliocene"), ("Pleistocene", "Pleistocene"), ("Holocene", "Holocene"))
+class Occurrence(models.Model):
+    global_id = models.IntegerField(blank=True, null=True)  # Global Unique Identifier
+    reference = models.CharField("Reference", max_length=255, null=True, blank=True)
+    #date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    basis_of_record = models.CharField("Basis of Record", max_length=255, blank=True, null=False,
+                                       choices=ontologies.BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
+    item_type = models.CharField("Item Type", max_length=255, blank=True, null=True,
+                                 choices=ontologies.ITEM_TYPE_VOCABULARY)
+    collection_code = models.CharField("Collection Code", max_length=255, blank=True, null=True, default='MLP')
+    institution_code = models.CharField("Institution Code", max_length=255, blank=True, null=True)
+    item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
+    item_part = models.CharField("Item Part", max_length=255, null=True, blank=True)
+    catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
+    paleo_locality = models.CharField("Paleo Locality", max_length=255, blank=True, null=True)
+    paleo_locality_number = models.IntegerField("Paleo Locality Number", null=True, blank=True)
+    sampling_protocol = models.CharField("Sampling Protocol", max_length=255, blank=True, null=True)
+    # TODO add rich text field for remarks
+    occurrence_remarks = models.TextField("Occurrence Remarks", max_length=255, null=True, blank=True)
+    item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
+    item_description = models.CharField("Item Description", max_length=255, blank=True, null=True)
+    continent = models.CharField("Continent", max_length=255, blank=True, null=True)
+    country = models.CharField("Country", max_length=255, blank=True, null=True)
+    state_province = models.CharField("State or Province", max_length=255, blank=True, null=True)
+    locality = models.CharField("Locality", max_length=255, null=True, blank=True)
+    verbatim_locality = models.CharField("Verbatim Locality", max_length=255, null=True, blank=True)
+    location_remarks = models.CharField("Location Remarks", max_length=255, blank=True, null=True)
+    verbatim_coordinates = models.CharField("Verbatim Coordinates", null=True, blank=True, max_length=255)
+    verbatim_coordinate_system = models.CharField("Verbatim Coordinate System", null=True, blank=True, max_length=255)
+    decimal_longitude = models.DecimalField("Longitude", max_digits=38, decimal_places=8, blank=True, null=True)
+    decimal_latitude = models.DecimalField("Latitude", max_digits=38, decimal_places=8, blank=True, null=True)
+    geodetic_datum = models.CharField("Geodetic Datum", null=True, blank=True, max_length=255)
+    coordinate_uncertainty_in_meters = models.IntegerField("Coordinate Uncertainty", null=True, blank=True)
+    georeference_remarks = models.CharField("Georeferencing Remarks", max_length=255, null=True, blank=True)
+    collecting_method = models.CharField("Collecting Method", max_length=255, blank=True,
+                                         choices=ontologies.COLLECTING_METHOD_VOCABULARY, null=True)
+    related_catalog_items = models.CharField("Related Catalog Items", max_length=255, null=True, blank=True)
+    collector = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.COLLECTOR_CHOICES)
+    found_by = models.CharField("Found By", max_length=255, blank=True, null=True)
+    event_date = models.DateField("Date", null=True, blank=True)
+    event_year = models.IntegerField("Year", blank=True, null=True)
+    event_month = models.CharField("Month", max_length=255, blank=True, null=True)
+    event_day = models.CharField("Day", max_length=255, blank=True, null=True)
+    event_remarks = models.CharField("Event Remarks", max_length=255, blank=True, null=True)
+    stratigraphic_marker_upper = models.CharField("Stratigraphic Marker Upper", max_length=255, blank=True, null=True)
+    distance_from_upper = models.DecimalField("Distance From Upper", max_digits=38, decimal_places=8, blank=True,
+                                              null=True)
+    stratigraphic_marker_lower = models.CharField("Stratigraphic Marker Lower", max_length=255, blank=True, null=True)
+    distance_from_lower = models.DecimalField("Distance From Lower", max_digits=38, decimal_places=8, blank=True, null=True)
+    stratigraphic_group = models.CharField("Stratigraphic Group", max_length=255, blank=True, null=True)
+    stratigraphic_formation = models.CharField("Stratigraphic Formation", max_length=255, blank=True, null=True)
+    stratigraphic_member = models.CharField("Stratigraphic Member", max_length=255, blank=True, null=True)
+    stratigraphic_bed = models.CharField("Stratigraphic Bed", max_length=255, blank=True, null=True)
+    geochronological_age = models.IntegerField("Geochronological Age", blank=True, null=True)
+    image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/san_francisco", null=True)
+    geom = models.GeometryField(srid=4326, blank=True, null=True)
+    objects = models.GeoManager()
 
 
 class PaleoSite(models.Model):
@@ -258,22 +68,25 @@ class PaleoSite(models.Model):
     tdr: the Digital Archaeological Record tDAR
     """
     name = models.CharField(max_length=255, blank=False, null=False)  # REQUIRED
-    setting = models.CharField(max_length=255, blank=True, null=True, choices=settingCHOICES)
-    continent = models.CharField(max_length=255, blank=True, null=True, choices=continentCHOICES)  # dwc:continent
-    country = models.CharField(max_length=255, blank=True, null=True, choices=countryCHOICES)  # dwc:country
-    region = models.CharField(max_length=255, blank=True, null=True, choices=regionCHOICES)  # dwc:locality
+    setting = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.SETTING_CHOICES)
+    continent = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.CONTINENT_CHOICES)
+    country = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.COUNTRY_CHOICES)  # dwc:country
+    region = models.CharField(max_length=255, blank=True, null=True, choices=ontologies.REGION_CHOICES)  # dwc:locality
     research_project = models.CharField(max_length=255, blank=True, null=True)  # e.g.
-    collection_code = models.CharField(null=True, blank=True,max_length=20)  # dwc:collection_code
+    collection_code = models.CharField(null=True, blank=True, max_length=20)  # dwc:collection_code
     geological_member = models.CharField(max_length=255, blank=True, null=True)  # dwd:member
     cultural_term = models.CharField(max_length=255, blank=True, null=True)  # tdr:cultural_term, Stillbay
     technology_period = models.CharField(max_length=255, blank=True, null=True)  # e.g. MSA, ESA, UP, MP
     start_date = models.CharField(max_length=255, blank=True, null=True)  # tdr: start_date
     end_date = models.CharField(max_length=255, blank=True, null=True)  # tdr:end_date
-    geological_epoch = models.CharField(max_length=255, blank=True, null=True, choices=epochCHOICES)  # dwc:epoch
+    geological_epoch = models.CharField(max_length=255, blank=True, null=True,
+                                        choices=ontologies.EPOCH_CHOICES)  # dwc:epoch
     date_description = models.CharField(max_length=255, blank=True, null=True)  # tdr:date_description, e.g. ESR, OSL
-    material = geom = models.CharField(max_length=255, blank=True, null=True, choices=materialCHOICES)  # tdr:material_types
-    references = models.TextField(null=True, blank=True,max_length=2500)  # dwc:references
+    material = geom = models.CharField(max_length=255, blank=True, null=True,
+                                       choices=ontologies.MATERIAL_CHOICES)  # tdr:material_types
+    references = models.TextField(null=True, blank=True, max_length=2500)  # dwc:references
     remarks = models.TextField(null=True, blank=True, max_length=2500)
     geom = models.PointField(srid=4326)
+    objects = models.GeoManager()
 
 

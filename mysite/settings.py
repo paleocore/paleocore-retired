@@ -35,7 +35,6 @@ SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = secrets.DEBUG_MODE
-
 TEMPLATE_DEBUG = secrets.TEMPLATE_DEBUG_MODE
 
 ALLOWED_HOSTS = [secrets.ALLOWED_HOSTS]
@@ -85,6 +84,7 @@ INSTALLED_APPS = (
     'djgeojson',
     'django.contrib.humanize',
     #'austin',
+    'san_francisco',
 
 )
 

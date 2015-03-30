@@ -3,8 +3,33 @@ from django.contrib.gis.db import models
 from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 
-basisCHOICES = (("FossilSpecimen","Fossil"),("HumanObservation","Observation"))
-itemtypeCHOICES = (("Artifactual","Artifactual"),("Faunal","Faunal"),("Floral","Floral"),("Geological","Geological"))
+basisCHOICES = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
+itemtypeCHOICES = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"), ("Floral", "Floral"), ("Geological", "Geological"))
+
+
+class Locality(models.Model):
+    paleolocalitynumber = models.IntegerField(null=True,blank=True)
+    collectioncode = models.CharField(null=True, blank=True, choices = (("DIK", "DIK"), ("ASB", "ASB")), max_length=10)
+    paleosublocality = models.CharField(null=True, blank=True, max_length=50)
+    description1 = models.TextField(null=True, blank=True, max_length=255)
+    description2 = models.TextField(null=True, blank=True, max_length=255)
+    description3 = models.TextField(null=True, blank=True, max_length=255)
+    stratsection = models.CharField(null=True, blank=True, max_length=50)
+    upperlimitinsection = models.IntegerField(null=True, blank=True)
+    lowerlimitinsection = models.FloatField(null=True, blank=True)
+    errornotes = models.CharField(max_length=255, null=True, blank=True)
+    notes = models.CharField(max_length=254, null=True, blank=True)
+    geom = models.PolygonField(srid=32637)
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return str(self.collectioncode) + " " + str(self.paleolocalitynumber)
+
+    class Meta:
+        verbose_name = "DRP Locality"
+        verbose_name_plural = "DRP Localities"
+        #db_table='drp_locality'
+        ordering = ("collectioncode", "paleolocalitynumber", "paleosublocality")
 
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
@@ -27,7 +52,7 @@ class Occurrence(models.Model):
     continent = models.CharField(null=True, blank=True,max_length=50)
     country = models.CharField(null=True, blank=True,max_length=50)
     stateprovince = models.CharField(null=True, blank=True,max_length=50)
-    locality = models.CharField(null=True, blank=True,max_length=255)
+    locality_text = models.CharField(null=True, blank=True,max_length=255,db_column="locality")
     verbatimcoordinates = models.CharField(null=True, blank=True,max_length=50)
     verbatimcoordinatesystem = models.CharField(null=True, blank=True,max_length=50)
     georeferenceremarks = models.CharField(null=True, blank=True,max_length=50)
@@ -64,7 +89,7 @@ class Occurrence(models.Model):
     ranked = models.IntegerField("Ranked?",null=True,blank=True)
     imageurl = models.CharField(null=True, blank=True,max_length=255)
     relatedinformation = models.CharField(null=True, blank=True,max_length=50)
-    localityid = models.IntegerField(null=True, blank=True)
+    #localityid = models.IntegerField(null=True, blank=True)
     stratigraphicsection = models.CharField(null=True, blank=True,max_length=50)
     stratigraphicheightinmeters = models.FloatField(null=True, blank=True)
     weathering = models.IntegerField(null=True, blank=True)
@@ -76,8 +101,9 @@ class Occurrence(models.Model):
     dgupdate2013 = models.IntegerField(null=True, blank=True)
     dgupdatex = models.FloatField(null=True, blank=True)
     dgupdatey = models.FloatField(null=True, blank=True)
-    geom = models.PointField(srid=32637,db_column="shape")
+    geom = models.PointField(srid=32637, db_column="shape")
     objects = models.GeoManager()
+    locality = models.ForeignKey(Locality)
 
     @staticmethod
     def fields_to_display():
@@ -102,16 +128,6 @@ class Occurrence(models.Model):
         #call the normal drp_occurrence save method using alternate database
         super(Occurrence, self).save(*args, **kwargs)
 
-        ## should be no longer necessary as biology is a subclass of occurrence
-        # #if itemtype=="Faunal" and does there is no entry in in biology, then add entry to drp_biology.
-        # if self.itemtype == "Faunal":
-        #        try:
-        #            drp_biology.objects.get(occurrence=self.id)
-        #        except drp_biology.DoesNotExist:
-        #            #last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
-        #            newBiology = drp_biology(occurrence=drp_occurrence.objects.using("drp_carmen").get(pk=self.id))
-        #            newBiology.save()
-
     class Meta:
         verbose_name = "DRP Occurrence"
         verbose_name_plural = "DRP Occurrences"
@@ -133,19 +149,8 @@ class File(models.Model):
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
+
 class Biology(Occurrence):
-    #biology_id = models.AutoField("Biology ID",primary_key=True,null=False, blank=False,db_column="biology_id")
-    #occurrence = models.OneToOneField("drp_occurrence",db_column="occurrence_id")
-    #taxon = models.ForeignKey("drp_taxonomy")
-    #kingdom = models.CharField(null=True,blank=True,max_length=50)
-    #phylum = models.CharField(null=True,blank=True,max_length=50)
-    #tax_class = models.CharField("Class",null=True,blank=True,max_length=50,db_column="class")
-    #tax_order = models.CharField("Order",null=True,blank=True,max_length=50,db_column="order_")
-    #family = models.CharField(null=True,blank=True,max_length=50)
-    #subfamily = models.CharField(null=True,blank=True,max_length=50)
-    #tribe = models.CharField(null=True,blank=True,max_length=50)
-    #genus = models.CharField(null=True,blank=True,max_length=50)
-    #specificepithet = models.CharField("Species Name",null=True,blank=True,max_length=50)
     infraspecificepithet = models.CharField(null=True,blank=True,max_length=50)
     infraspecificrank = models.CharField(null=True,blank=True,max_length=50)
     authoryearofscientificname = models.CharField(null=True,blank=True,max_length=50)
@@ -236,20 +241,6 @@ class Biology(Occurrence):
     taxon = models.ForeignKey(Taxon, related_name='drp_biology_occurrences')
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='drp_biology_occurrences')
 
-    # def lowest_level_identification(self):
-    #     if(self.genus):
-    #         return str(self.genus) + " " + str(self.specificepithet).replace("None","")
-    #     elif self.tribe:
-    #         return str(self.tribe).replace("None","")
-    #     elif self.subfamily:
-    #         return str(self.subfamily).replace("None","")
-    #     elif self.family:
-    #         return str(self.family).replace("None","")
-    #     elif self.tax_order:
-    #         return str(self.tax_order).replace("None","")
-    #     else:
-    #         return str(self.tax_class).replace("None","")
-
     class Meta:
         verbose_name = "DRP Biology"
         verbose_name_plural = "DRP Biology"
@@ -257,134 +248,13 @@ class Biology(Occurrence):
 
     def __unicode__(self):
         return str(self.taxon.__unicode__())
-        # if(self.genus):
-        #     return str(self.genus) + " " + str(self.specificepithet).replace("None","")
-        # elif self.tribe:
-        #     return str(self.tribe).replace("None","")
-        # elif self.subfamily:
-        #     return str(self.subfamily).replace("None","")
-        # elif self.family:
-        #     return str(self.family).replace("None","")
-        # elif self.tax_order:
-        #     return str(self.tax_order).replace("None","")
-        # else:
-        #     return str(self.tax_class).replace("None","")
-
-    # def save(self, *args, **kwargs):
-    #     if not self.id: #if this is a fresh save with no id yet
-    #         try: # if biology table is empty this will raise and index error
-    #             last_bio_ID = drp_biology.objects.order_by('id').reverse()[0].id
-    #             self.id = last_bio_ID + 1
-    #         except IndexError:
-    #             self.id = 1
-
-        #Autopopulate up the taxonomy hierarchy
-        #As written, this MASSIVELY violates the Don't Repeat Yourself Princible
-        #To fix this, would assign the fields ordinal ranks, then to write single
-        #update expression to update UP the hierarchy.
-        # if self.genus:#if there is a genus, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(genus__exact=self.genus).filter(rank__exact="Genus")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.tribe = QS[0].tribe
-        #             self.subfamily = QS[0].subfamily
-        #             self.family = QS[0].family
-        #             self.tax_order = QS[0].tax_order
-        #             self.tax_class = QS[0].tax_class
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # if self.tribe :#if there is a tribe, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(tribe__exact=self.tribe).filter(rank__exact="Tribe")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.subfamily = QS[0].subfamily
-        #             self.family = QS[0].family
-        #             self.tax_order = QS[0].tax_order
-        #             self.tax_class = QS[0].tax_class
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # if self.subfamily:#if there is a subfamily, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(subfamily__exact=self.subfamily).filter(rank__exact="Subfamily")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.family = QS[0].family
-        #             self.tax_order = QS[0].tax_order
-        #             self.tax_class = QS[0].tax_class
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # if self.family:#if there is a family, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(family__exact=self.family).filter(rank__exact="Family")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.tax_order = QS[0].tax_order
-        #             self.tax_class = QS[0].tax_class
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # if self.tax_order:#if there is a tax_order, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(tax_order__exact=self.tax_order).filter(rank__exact="Order")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.tax_class = QS[0].tax_class
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # if self.tax_class:#if there is a tax_class, then look to taxonomy and populate up if possible.
-        #     QS = drp_taxonomy.objects.filter(tax_class__exact=self.tax_class).filter(rank__exact="Class")
-        #     if QS.exists():
-        #         if QS.count()==1:
-        #             #update higher level self fields
-        #             self.phylum = QS[0].phylum
-        #             self.kingdom = QS[0].phylum
-        #             super(drp_biology, self).save()
-        #             return
-        #         if QS.count() > 1:
-        #             #maybe send a warning?
-        #             super(drp_biology, self).save()
-        #             return
-        # else:
-        #     super(drp_biology, self).save()
-        #     return
 
 
 class Hydrology(models.Model):
-    length = models.FloatField(null=True,blank=True)
-    name = models.CharField(null=True,blank=True,max_length=50)
-    size = models.IntegerField(null=True,blank=True)
-    mapsheet = models.CharField(null=True,blank=True,max_length=50)
+    length = models.FloatField(null=True, blank=True)
+    name = models.CharField(null=True, blank=True, max_length=50)
+    size = models.IntegerField(null=True, blank=True)
+    mapsheet = models.CharField(null=True, blank=True, max_length=50)
     geom = models.LineStringField(srid=32637)
     objects = models.GeoManager()
 
@@ -395,48 +265,3 @@ class Hydrology(models.Model):
         verbose_name = "DRP Hydrology"
         verbose_name_plural = "DRP Hydrology"
         #db_table = 'drp_hydrology'
-
-class Locality(models.Model):
-    paleolocalitynumber = models.IntegerField(null=True,blank=True)
-    collectioncode = models.CharField(null=True,blank=True,choices = (("DIK","DIK"),("ASB","ASB")),max_length=10)
-    paleosublocality = models.CharField(null=True,blank=True,max_length=50)
-    description1 = models.TextField(null=True,blank=True,max_length=255)
-    description2 = models.TextField(null=True,blank=True,max_length=255)
-    description3 = models.TextField(null=True,blank=True,max_length=255)
-    stratsection = models.CharField(null=True,blank=True,max_length=50)
-    upperlimitinsection = models.IntegerField(null=True,blank=True)
-    lowerlimitinsection = models.FloatField(null=True,blank=True)
-    errornotes = models.CharField(max_length=255,null=True,blank=True)
-    notes = models.CharField(max_length=254,null=True,blank=True)
-    geom = models.PolygonField(srid=32637)
-    objects = models.GeoManager()
-    def __unicode__(self):
-        return str(self.collectioncode) + " " + str(self.paleolocalitynumber)
-
-    class Meta:
-        verbose_name = "DRP Locality"
-        verbose_name_plural = "DRP Localities"
-        #db_table='drp_locality'
-        ordering=("collectioncode","paleolocalitynumber","paleosublocality")
-
-
-# class drp_taxonomy(models.Model):
-#     taxon = models.CharField(max_length=255,unique=True)
-#     rank = models.CharField(max_length=255)
-#     kingdom = models.CharField(max_length=255,blank=True,null=True)
-#     phylum = models.CharField(max_length=255,blank=True,null=True)
-#     tax_class = models.CharField(max_length=255,blank=True,null=True,db_column="class")
-#     tax_order = models.CharField(max_length=255,blank=True,null=True,db_column="order_")
-#     family = models.CharField(max_length=255,blank=True,null=True)
-#     subfamily = models.CharField(max_length=255,blank=True,null=True)
-#     tribe = models.CharField(max_length=255,blank=True,null=True)
-#     genus = models.CharField(max_length=255,blank=True,null=True)
-#     hierarchysortorder = models.IntegerField("Sort Order",max_length=100)
-#
-#     def __unicode__(self):
-#         return str(self.rank) + " : " + str(self.taxon)
-#
-#     class Meta:
-#         verbose_name = "Taxonomy"
-#         verbose_name_plural = "Taxonomy"
-#         db_table='drp_taxonomy'

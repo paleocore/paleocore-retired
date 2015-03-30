@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 
+
 class TaxonRank(models.Model):
     name = models.CharField(null=False, blank=False, max_length=50, unique=True)
     plural = models.CharField(null=False, blank=False, max_length=50, unique=True)
@@ -11,9 +12,11 @@ class TaxonRank(models.Model):
     class Meta:
         verbose_name = "Taxon Rank"
 
+
 class IdentificationQualifier(models.Model):
     name = models.CharField(null=False, blank=True, max_length=15, unique=True)
     qualified = models.BooleanField()
+
 
 class Taxon(models.Model):
     name = models.CharField(null=False, blank=False, max_length=255, unique=False)

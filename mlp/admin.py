@@ -35,7 +35,7 @@ class BiologyInline(admin.TabularInline):
 class BiologyAdmin(admin.ModelAdmin):
     list_display = ("id", "side", "taxon")
     #list_filter = ("family", "side")
-    search_fields = ("lowest_level_identification",)
+    search_fields = ("taxon__name",)
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
 
