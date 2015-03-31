@@ -24,7 +24,6 @@
 
             <script type="text/javascript">
 
-
                 function onEachFeature(feature, layer) {
                     layer.bindPopup(feature.properties.full_name);
                     layer.on("dblclick", function(){
@@ -35,17 +34,17 @@
 
                 function main_map_init (map, options) {
 
-                var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
-                // Download GeoJSON via Ajax
-                $.getJSON(dataurl, function (data) {
-                    // Add GeoJSON layer
-                    L.geoJson(data, {
-                    onEachFeature: onEachFeature
-                    }).addTo(map);
-                });
+                    var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                    // Download GeoJSON via Ajax
+                    $.getJSON(dataurl, function (data) {
+                        // Add GeoJSON layer
+                        L.geoJson(data, {
+                        onEachFeature: onEachFeature
+                        }).addTo(map);
+                    });
 
-                map.setView([30, 31], 2);
-                // map.scrollWheelZoom.disable();
+                    map.setView([30, 31], 2);
+                    // map.scrollWheelZoom.disable();
 
 
                 }

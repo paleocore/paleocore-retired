@@ -4,14 +4,14 @@ import django.contrib.gis.geos
 import csv
 from django_countries import countries
 from django.contrib.gis.db import models
-
+from olwidget.admin import GeoModelAdmin
 
 class DateInLine(admin.StackedInline):
     model = Date
     extra = 1
     fieldsets = [('Sample Information', {
                  'fields': [('layer', 'industry', 'industry_2', 'industry_3'),
-                            ('cat_no', 'sample', 'technique', 'date', 'sd_plus', 'sd_minus', 'corrected_date_BP', 
+                            ('cat_no', 'sample', 'technique', 'date', 'sd_plus', 'sd_minus', 'corrected_date_BP',
                              'plus', 'minus', 'intcal09_max', 'intcal09_min'),
                             ('hominid_remains', 'bibliography', 'notes', 'period')],
                  'classes': [('collapse')]})]
@@ -30,7 +30,7 @@ class Site_plus_dates_admin(admin.ModelAdmin):
     search_fields = ['site', 'country']
 
 
-class Site_admin(admin.OSMGeoAdmin):
+class Site_admin(GeoModelAdmin):
     fieldsets = [(None, {
                  'fields': [('site', 'site_type', 'data_source', 'display'), ('latitude', 'longitude', 'altitude', 
                                                                               'country'), ('map_location', 'notes')]})]
@@ -39,7 +39,11 @@ class Site_admin(admin.OSMGeoAdmin):
     list_filter = ['data_source', 'display', 'country']
     ordering = ['site',]
     search_fields = ['site', 'country']
-    
+
+    options = {
+        'layers': ['google.terrain']
+    }
+
     def update_map_location(modeladmin, request, queryset):
         for a_site in Site.objects.all():
             if a_site.latitude and a_site.longitude:

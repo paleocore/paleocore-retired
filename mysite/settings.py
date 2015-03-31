@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'polls',  # django tutorial app
     'efossils',
     'paleosites',
+    'olwidget',
 
     # Data Apps
     'mlp',

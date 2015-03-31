@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
+from olwidget.admin import GeoModelAdmin
 import utm
 
 # Register your models here.
@@ -73,11 +74,15 @@ occurrence_fieldsets = (
 )
 
 
-class OccurrenceAdmin(admin.ModelAdmin):
+class OccurrenceAdmin(GeoModelAdmin):
     list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
                     'collecting_method', 'collector', 'item_scientific_name',
                     'item_description', 'year_collected', 'in_situ', 'problem', 'disposition', 'point_x', 'point_y')
     list_display_links = ['barcode', 'field_number']
+
+    options = {
+        'layers': ['google.terrain']
+    }
 
     """
     Auto-number fields like id are not editable, and can't be added to fieldsets unless specified as read only.

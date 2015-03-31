@@ -9,7 +9,6 @@ import json
 from ast import literal_eval
 from django.forms.models import model_to_dict
 
-
 class ProjectIndexView(FiberPageMixin, generic.ListView):
     template_name = 'paleocore_projects/project_list.html'
     context_object_name = 'project_list'

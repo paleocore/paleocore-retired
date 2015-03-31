@@ -4,6 +4,7 @@ from django.forms import TextInput, Textarea  # import custom form widgets
 from django.http import HttpResponse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
+from olwidget.admin import GeoModelAdmin
 
 
 #################
@@ -97,21 +98,28 @@ class biologyAdmin(admin.ModelAdmin):
 ## Hydrology Admin ##
 #####################
 
-class hydrologyAdmin(admin.ModelAdmin):
+class hydrologyAdmin(GeoModelAdmin):
     list_display = ("id", "size")
     search_fields = ("id",)
     list_filter = ("size",)
+
+    options = {
+        'layers': ['google.terrain']
+    }
 
 
 #####################
 ## Locality Admin ##
 #####################
 
-class localityAdmin(admin.ModelAdmin):
+class localityAdmin(GeoModelAdmin):
     list_display = ("collectioncode", "paleolocalitynumber", "paleosublocality")
     list_filter = ("collectioncode",)
     search_fields = ("paleolocalitynumber",)
 
+    options = {
+        'layers': ['google.terrain']
+    }
 
 ######################
 ## Occurrence Admin ##
@@ -119,7 +127,7 @@ class localityAdmin(admin.ModelAdmin):
 
 
 
-class occurrenceAdmin(admin.ModelAdmin):
+class occurrenceAdmin(GeoModelAdmin):
     list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
                     "itemscientificname", "itemdescription", "yearcollected")
 
@@ -140,6 +148,10 @@ class occurrenceAdmin(admin.ModelAdmin):
     #change_form_template = "occurrence_change_form.html"
     actions = ["move_selected", "get_nearest_locality"]  # TODO clarify actions
     actions = ["get_nearest_locality", "create_data_csv"]
+
+    options = {
+        'layers': ['google.terrain']
+    }
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type

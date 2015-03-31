@@ -19,7 +19,7 @@ class Locality(models.Model):
     lowerlimitinsection = models.FloatField(null=True, blank=True)
     errornotes = models.CharField(max_length=255, null=True, blank=True)
     notes = models.CharField(max_length=254, null=True, blank=True)
-    geom = models.PolygonField(srid=32637)
+    geom = models.PolygonField(srid=4326)
     objects = models.GeoManager()
 
     def __unicode__(self):
@@ -101,7 +101,7 @@ class Occurrence(models.Model):
     dgupdate2013 = models.IntegerField(null=True, blank=True)
     dgupdatex = models.FloatField(null=True, blank=True)
     dgupdatey = models.FloatField(null=True, blank=True)
-    geom = models.PointField(srid=32637, db_column="shape")
+    geom = models.PointField(srid=4326)
     objects = models.GeoManager()
     locality = models.ForeignKey(Locality)
 
@@ -255,7 +255,7 @@ class Hydrology(models.Model):
     name = models.CharField(null=True, blank=True, max_length=50)
     size = models.IntegerField(null=True, blank=True)
     mapsheet = models.CharField(null=True, blank=True, max_length=50)
-    geom = models.LineStringField(srid=32637)
+    geom = models.LineStringField(srid=4326)
     objects = models.GeoManager()
 
     def __unicode__(self):

@@ -1,15 +1,18 @@
 from django.contrib import admin
 from models import Occurrence, Biology, Locality
+from olwidget.admin import GeoModelAdmin
 
 
 # Register your models here.
-class LocalityAdmin(admin.ModelAdmin):
+class LocalityAdmin(GeoModelAdmin):
     list_display = ('locality_number', 'locality_field_number', 'name', 'date_discovered',
                     'point_x', 'point_y')
     readonly_fields = ('locality_number', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
     list_filter = ['date_discovered', 'formation', 'NALMA', 'region', 'county']
     search_fields = ('locality_number', 'locality_field_number', 'name')
-
+    options = {
+        'layers': ['google.terrain']
+    }
 
 class BiologyAdmin(admin.ModelAdmin):
     list_display = ('specimen_number', 'item_scientific_name', 'item_description', 'locality',
