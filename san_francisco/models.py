@@ -93,15 +93,13 @@ class Occurrence(models.Model):
 
     def easting(self):
         try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[0]
+            return utm.from_latlon(self.geom.x, self.geom.y)[0]
         except:
             return 0
 
     def northing(self):
         try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[1]
+            return utm.from_latlon(self.geom.x, self.geom.y)[1]
         except:
             return 0
 

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from san_francisco.models import Occurrence
+from san_francisco.models import Occurrence, Biology
 from fiber.models import Page
 # from django.core.urlresolvers import reverse
 from datetime import datetime
@@ -7,6 +7,8 @@ from datetime import datetime
 # from django.contrib.auth.models import User
 # from django.contrib.auth import authenticate,login
 # from django.contrib.admin.sites import AdminSite
+from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
+from django.contrib.gis.geos import GEOSGeometry, Point, Polygon
 
 
 ###################
@@ -114,3 +116,97 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
         self.assertEqual(new_occurrence.item_type, "Fake")
+
+    def test_occurrence_coordinate_methods(self):
+        """
+        Test the point_x, point_y, easting and northing methods
+        """
+        new_occurrence = Occurrence.objects.create(id=1, item_type="Fake", basis_of_record="HumanObservation",
+                                                   collecting_method="Surface Standard", field_number=datetime.now(),
+                                                   geom="POINT (37.7577 -122.4376)")
+        self.assertEqual(new_occurrence.point_x(), 37.7577)
+        self.assertEqual(new_occurrence.point_y(), -122.4376)
+        self.assertEqual(new_occurrence.easting(), 549539.4374838244)
+        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
+
+
+class BiologyMethodsTests(TestCase):
+    """
+    Test san_francisco Biology instance creation and methods
+    """
+
+    def biology_setup(self):
+
+        taxonomic_order = TaxonRank.objects.create(
+            name="Order",
+            plural="Orders",
+            ordinal=40
+        )
+        Taxon.objects.create(
+            name="Primates",
+            rank=taxonomic_order
+        )
+
+        IdentificationQualifier.objects.create(
+            name="None",
+            qualified=False
+        )
+        IdentificationQualifier.objects.create(
+            name="cf.",
+            qualified=True
+        )
+        IdentificationQualifier.objects.create(
+            name="aff.",
+            qualified=True
+        )
+
+    def test_san_francisco_biology_save_simple(self):
+        """
+        Test san_francisco_biology instance save method with the simplest possible attributes.
+        """
+        starting_record_count = Biology.objects.count()  # get current number of occurrence records
+        self.biology_setup()  # populate taxonomic table and identification qualifiers
+        new_taxon = Taxon.objects.get(name__exact="Primates")
+        id_qualifier = IdentificationQualifier.objects.get(name__exact="None")
+        new_occurrence = Biology(barcode=1111, item_type="Faunal", basis_of_record="HumanObservation",
+                                 collecting_method="Surface Standard", field_number=datetime.now(),
+                                 taxon=new_taxon,
+                                 identification_qualifier=id_qualifier,
+                                 geom="POINT (37.7577 -122.4376)")
+        new_occurrence.save()
+        now = datetime.now()
+        self.assertEqual(Biology.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.point_x(), 37.7577)
+        self.assertEqual(new_occurrence.point_y(), -122.4376)
+
+    def test_biology_create_observation(self):
+        """
+        Test Biology instance creation for observations
+        """
+
+        self.biology_setup()
+        new_taxon = Taxon.objects.get(name__exact="Primates")
+        id_qualifier = IdentificationQualifier.objects.get(name__exact="None")
+
+        occurrence_starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
+        biology_starting_record_count = Biology.objects.count()  # get the current number of biology records
+        # The simplest occurrence instance we can create needs only a location.
+        # Using the instance creation and then save methods
+        new_occurrence = Biology.objects.create(
+            barcode=1111,
+            basis_of_record="HumanObservation",
+            collection_code="COL",
+            item_number="1",
+            geom="POINT (37.7577 -122.4376)",
+            taxon=new_taxon,
+            identification_qualifier=id_qualifier,
+            field_number=datetime.now()
+        )
+        now = datetime.now()
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that one record has been added
+        self.assertEqual(new_occurrence.catalog_number, None)  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.point_x(), 37.7577)
+        self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test that no biology record was added
+        self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
