@@ -9,6 +9,7 @@ from datetime import datetime
 # from django.contrib.admin.sites import AdminSite
 from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
 from django.contrib.gis.geos import GEOSGeometry, Point, Polygon
+from django.core.urlresolvers import reverse
 
 
 ###################
@@ -210,3 +211,24 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(new_occurrence.point_x(), 37.7577)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test that no biology record was added
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
+
+
+class San_FranciscoViews(TestCase):
+    fixtures = ['base/fixtures/fiber_test_data_150403.json']
+
+    def test_upload_view(self):
+        response = self.client.get(reverse('san_francisco:san_francisco_upload_kml'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_confirmation_view(self):
+        response = self.client.get(reverse('san_francisco:san_francisco_upload_confirmation'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_download_view(self):
+        response = self.client.get(reverse('san_francisco:san_francisco_download_kml'))
+        self.assertEqual(response.status_code, 200)
+
+    # Why does this produce a keyError!  See issue #78
+    # def test_changexy_view(self):
+    #     response = self.client.get(reverse('san_francisco:change_xy'))
+    #     self.assertEqual(response.status_code, 200)

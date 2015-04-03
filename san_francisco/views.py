@@ -235,7 +235,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                         for file_info in KMZ_file.filelist:
                             if image_tag == file_info.orig_filename:
                                 # grab the image file itself
-                                image_file = KMZ_file.extract(file_info, "media/uploads/images/mlp")
+                                image_file = KMZ_file.extract(file_info, "media/uploads/images/san_francisco")
                                 image_added = True
                                 break
                     except IndexError:
