@@ -50,31 +50,24 @@
                 }
             </script>
         <p>Click on a project on the map to see the name.  Double click for more details.</p>
-        <div class="container" style="padding-top: 30px;">
-            <table>
+                <div class="row">
+                <div class="12u">
+                <div class="row">
                 {% for project in project_list %}
                 {% with project.id as pk %}
-                <tr class="project-table-row">
-                    <td>
-                        <a href={% url 'paleocore_projects:detail' project.paleocore_appname%}>{{ project.full_name }}</a>
-                    </td>
 
-                    <td style="padding-left:15px;">
-                        contains {{ project.record_count|intcomma }} specimen occurrences
-                    </td>
-                    <td style="padding-left:15px;">
-                        {% if project.is_public %} (Public){% else %} (Private){% endif %}
-                    </td>
-                </tr>
-            {% endwith %}
-            {% endfor %}
-            </table>
-
-        </div>
-
-
-
-        </div>
+                        <div class="4u" style="text-align: center;">
+                            <h2><a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
+                            <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.  These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
+                            {% if project.graphic %}
+                            <a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
+                            {% endif %}
+                        </div>
+                    {% if forloop.counter|divisibleby:3 %}</div>{% endif %}
+                {% endwith %}
+                {% endfor %}
+                </div>
+                </div>
     </div>
 </div>
 
