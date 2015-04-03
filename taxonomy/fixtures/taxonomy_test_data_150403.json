@@ -1,0 +1,1205 @@
+[
+{
+    "pk": 1, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 5, 
+        "plural": "Domains", 
+        "name": "Domain"
+    }
+},
+{
+    "pk": 2, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 10, 
+        "plural": "Kingdoms", 
+        "name": "Kingdom"
+    }
+},
+{
+    "pk": 3, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 20, 
+        "plural": "Phyla", 
+        "name": "Phylum"
+    }
+},
+{
+    "pk": 4, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 30, 
+        "plural": "Classes", 
+        "name": "Class"
+    }
+},
+{
+    "pk": 5, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 40, 
+        "plural": "Orders", 
+        "name": "Order"
+    }
+},
+{
+    "pk": 6, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 50, 
+        "plural": "Families", 
+        "name": "Family"
+    }
+},
+{
+    "pk": 7, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 60, 
+        "plural": "Genera", 
+        "name": "Genus"
+    }
+},
+{
+    "pk": 8, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 70, 
+        "plural": "Species", 
+        "name": "Species"
+    }
+},
+{
+    "pk": 9, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 55, 
+        "plural": "Tribes", 
+        "name": "Tribe"
+    }
+},
+{
+    "pk": 10, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 52, 
+        "plural": "Subfamilies", 
+        "name": "Subfamily"
+    }
+},
+{
+    "pk": 11, 
+    "model": "taxonomy.taxonrank", 
+    "fields": {
+        "ordinal": 0, 
+        "plural": "Roots", 
+        "name": "Root"
+    }
+},
+{
+    "pk": 1, 
+    "model": "taxonomy.identificationqualifier", 
+    "fields": {
+        "qualified": false, 
+        "name": "None"
+    }
+},
+{
+    "pk": 2, 
+    "model": "taxonomy.identificationqualifier", 
+    "fields": {
+        "qualified": true, 
+        "name": "cf."
+    }
+},
+{
+    "pk": 3, 
+    "model": "taxonomy.identificationqualifier", 
+    "fields": {
+        "qualified": true, 
+        "name": "aff."
+    }
+},
+{
+    "pk": 0, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 11, 
+        "name": "Life", 
+        "parent": null
+    }
+},
+{
+    "pk": 1, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 1, 
+        "name": "Eukaryota", 
+        "parent": 0
+    }
+},
+{
+    "pk": 2, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 2, 
+        "name": "Animalia", 
+        "parent": 1
+    }
+},
+{
+    "pk": 3, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 3, 
+        "name": "Chordata", 
+        "parent": 2
+    }
+},
+{
+    "pk": 4, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 4, 
+        "name": "Reptilia", 
+        "parent": 3
+    }
+},
+{
+    "pk": 5, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 4, 
+        "name": "Pices", 
+        "parent": 3
+    }
+},
+{
+    "pk": 6, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 4, 
+        "name": "Mammalia", 
+        "parent": 3
+    }
+},
+{
+    "pk": 7, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 4, 
+        "name": "Aves", 
+        "parent": 3
+    }
+},
+{
+    "pk": 8, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Chelonia", 
+        "parent": 4
+    }
+},
+{
+    "pk": 9, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Primates", 
+        "parent": 6
+    }
+},
+{
+    "pk": 10, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Rodentia", 
+        "parent": 6
+    }
+},
+{
+    "pk": 11, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Perissodactyla", 
+        "parent": 6
+    }
+},
+{
+    "pk": 12, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Artiodactyla", 
+        "parent": 6
+    }
+},
+{
+    "pk": 13, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Proboscidea", 
+        "parent": 6
+    }
+},
+{
+    "pk": 14, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Carnivora", 
+        "parent": 6
+    }
+},
+{
+    "pk": 15, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Crocodilia", 
+        "parent": 4
+    }
+},
+{
+    "pk": 16, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Lagomorpha", 
+        "parent": 6
+    }
+},
+{
+    "pk": 17, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 5, 
+        "name": "Camelidae", 
+        "parent": 6
+    }
+},
+{
+    "pk": 18, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Canidae", 
+        "parent": 14
+    }
+},
+{
+    "pk": 19, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Hippopotamidae", 
+        "parent": 12
+    }
+},
+{
+    "pk": 20, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Rhinocerotidae", 
+        "parent": 11
+    }
+},
+{
+    "pk": 21, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Thryonomyidae", 
+        "parent": 10
+    }
+},
+{
+    "pk": 22, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Equidae", 
+        "parent": 11
+    }
+},
+{
+    "pk": 23, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Herpestidae", 
+        "parent": 14
+    }
+},
+{
+    "pk": 24, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Hyaenidae", 
+        "parent": 14
+    }
+},
+{
+    "pk": 25, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Giraffidae", 
+        "parent": 12
+    }
+},
+{
+    "pk": 26, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Felidae", 
+        "parent": 14
+    }
+},
+{
+    "pk": 27, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Spalacidae", 
+        "parent": 10
+    }
+},
+{
+    "pk": 28, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Elephantidae", 
+        "parent": 13
+    }
+},
+{
+    "pk": 29, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Hominidae", 
+        "parent": 9
+    }
+},
+{
+    "pk": 30, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Suidae", 
+        "parent": 12
+    }
+},
+{
+    "pk": 31, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Muridae", 
+        "parent": 10
+    }
+},
+{
+    "pk": 32, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Bovidae", 
+        "parent": 12
+    }
+},
+{
+    "pk": 33, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Cercopithecidae", 
+        "parent": 9
+    }
+},
+{
+    "pk": 34, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Nesomyidae", 
+        "parent": 10
+    }
+},
+{
+    "pk": 35, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Hystricidae", 
+        "parent": 10
+    }
+},
+{
+    "pk": 36, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Mustelidae", 
+        "parent": 14
+    }
+},
+{
+    "pk": 37, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 6, 
+        "name": "Deinotheriidae", 
+        "parent": 13
+    }
+},
+{
+    "pk": 38, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Suinae", 
+        "parent": 30
+    }
+},
+{
+    "pk": 39, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Sivatheriinae", 
+        "parent": 25
+    }
+},
+{
+    "pk": 40, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Crocodylinae", 
+        "parent": 15
+    }
+},
+{
+    "pk": 41, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Tachyoryctinae", 
+        "parent": 27
+    }
+},
+{
+    "pk": 42, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Murinae", 
+        "parent": 31
+    }
+},
+{
+    "pk": 43, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Dendromurinae", 
+        "parent": 34
+    }
+},
+{
+    "pk": 44, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Alcelaphinae", 
+        "parent": 32
+    }
+},
+{
+    "pk": 45, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Homininae", 
+        "parent": 29
+    }
+},
+{
+    "pk": 46, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Antilopinae", 
+        "parent": 32
+    }
+},
+{
+    "pk": 47, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Tetraconodontinae", 
+        "parent": 30
+    }
+},
+{
+    "pk": 48, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 10, 
+        "name": "Bovinae", 
+        "parent": 32
+    }
+},
+{
+    "pk": 49, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Reduncini", 
+        "parent": 32
+    }
+},
+{
+    "pk": 50, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Bovini", 
+        "parent": 48
+    }
+},
+{
+    "pk": 51, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Antilopini", 
+        "parent": 46
+    }
+},
+{
+    "pk": 52, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Tragelaphini", 
+        "parent": 32
+    }
+},
+{
+    "pk": 53, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Aepycerotini", 
+        "parent": 32
+    }
+},
+{
+    "pk": 54, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Hippotragini", 
+        "parent": 32
+    }
+},
+{
+    "pk": 55, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Hominini", 
+        "parent": 45
+    }
+},
+{
+    "pk": 56, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 9, 
+        "name": "Alcelaphini", 
+        "parent": 32
+    }
+},
+{
+    "pk": 57, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Chlorocebus", 
+        "parent": 33
+    }
+},
+{
+    "pk": 58, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Arvicanthis", 
+        "parent": 42
+    }
+},
+{
+    "pk": 59, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Pelorovis", 
+        "parent": 50
+    }
+},
+{
+    "pk": 60, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Papio", 
+        "parent": 33
+    }
+},
+{
+    "pk": 61, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Acomys", 
+        "parent": 42
+    }
+},
+{
+    "pk": 62, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Gazella", 
+        "parent": 51
+    }
+},
+{
+    "pk": 63, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Elephas", 
+        "parent": 28
+    }
+},
+{
+    "pk": 64, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Connochaetes", 
+        "parent": 56
+    }
+},
+{
+    "pk": 65, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Phacochoerus", 
+        "parent": 38
+    }
+},
+{
+    "pk": 66, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Oryx", 
+        "parent": 54
+    }
+},
+{
+    "pk": 67, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Redunca", 
+        "parent": 49
+    }
+},
+{
+    "pk": 68, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Ceratotherium", 
+        "parent": 20
+    }
+},
+{
+    "pk": 69, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Hyaena", 
+        "parent": 24
+    }
+},
+{
+    "pk": 70, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Theropithecus", 
+        "parent": 33
+    }
+},
+{
+    "pk": 71, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Kobus", 
+        "parent": 49
+    }
+},
+{
+    "pk": 72, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Thryonomys", 
+        "parent": 21
+    }
+},
+{
+    "pk": 73, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Tachyoryctes", 
+        "parent": 41
+    }
+},
+{
+    "pk": 74, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Aepyceros", 
+        "parent": 53
+    }
+},
+{
+    "pk": 75, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Euthecodon", 
+        "parent": 40
+    }
+},
+{
+    "pk": 76, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Equus", 
+        "parent": 22
+    }
+},
+{
+    "pk": 77, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Enhydriodon", 
+        "parent": 36
+    }
+},
+{
+    "pk": 78, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Crocuta", 
+        "parent": 24
+    }
+},
+{
+    "pk": 79, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Mellivora", 
+        "parent": 36
+    }
+},
+{
+    "pk": 80, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Metridiochoerus", 
+        "parent": 38
+    }
+},
+{
+    "pk": 81, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Golunda", 
+        "parent": 42
+    }
+},
+{
+    "pk": 82, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Homo", 
+        "parent": 55
+    }
+},
+{
+    "pk": 83, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Taurotragus", 
+        "parent": 52
+    }
+},
+{
+    "pk": 84, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Millardia", 
+        "parent": 42
+    }
+},
+{
+    "pk": 85, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Australopithecus", 
+        "parent": 55
+    }
+},
+{
+    "pk": 86, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Giraffa", 
+        "parent": 25
+    }
+},
+{
+    "pk": 87, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Hipparion", 
+        "parent": 22
+    }
+},
+{
+    "pk": 88, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Praomys", 
+        "parent": 42
+    }
+},
+{
+    "pk": 89, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Deinotherium", 
+        "parent": 37
+    }
+},
+{
+    "pk": 90, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Hystrix", 
+        "parent": 35
+    }
+},
+{
+    "pk": 91, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Saidomys", 
+        "parent": 42
+    }
+},
+{
+    "pk": 92, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Ugandax", 
+        "parent": 50
+    }
+},
+{
+    "pk": 93, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Panthera", 
+        "parent": 26
+    }
+},
+{
+    "pk": 94, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Steatomys", 
+        "parent": 43
+    }
+},
+{
+    "pk": 95, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Nyanzachoerus", 
+        "parent": 47
+    }
+},
+{
+    "pk": 96, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Damaliscus", 
+        "parent": 56
+    }
+},
+{
+    "pk": 97, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Antidorcas", 
+        "parent": 51
+    }
+},
+{
+    "pk": 98, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Sivatherium", 
+        "parent": 39
+    }
+},
+{
+    "pk": 99, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Notochoerus", 
+        "parent": 47
+    }
+},
+{
+    "pk": 100, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Kolpochoerus", 
+        "parent": 38
+    }
+},
+{
+    "pk": 101, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Colobus", 
+        "parent": 33
+    }
+},
+{
+    "pk": 102, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Tragelaphus", 
+        "parent": 52
+    }
+},
+{
+    "pk": 103, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Diceros", 
+        "parent": 20
+    }
+},
+{
+    "pk": 104, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 7, 
+        "name": "Felis", 
+        "parent": 26
+    }
+},
+{
+    "pk": 105, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "jumae", 
+        "parent": 86
+    }
+},
+{
+    "pk": 106, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "aethiops", 
+        "parent": 57
+    }
+},
+{
+    "pk": 107, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "afarensis", 
+        "parent": 85
+    }
+},
+{
+    "pk": 108, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "coppensi", 
+        "parent": 61
+    }
+},
+{
+    "pk": 109, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "gurai", 
+        "parent": 81
+    }
+},
+{
+    "pk": 110, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "leo", 
+        "parent": 93
+    }
+},
+{
+    "pk": 111, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "stillei", 
+        "parent": 86
+    }
+},
+{
+    "pk": 112, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "majus", 
+        "parent": 100
+    }
+},
+{
+    "pk": 113, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "patas", 
+        "parent": 57
+    }
+},
+{
+    "pk": 114, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "afarensis", 
+        "parent": 91
+    }
+},
+{
+    "pk": 115, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 8, 
+        "name": "taiebi", 
+        "parent": 84
+    }
+},
+{
+    "pk": 116, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 11, 
+        "name": "No taxon", 
+        "parent": null
+    }
+},
+{
+    "pk": 117, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 3, 
+        "name": "Mollusca", 
+        "parent": 2
+    }
+},
+{
+    "pk": 118, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 4, 
+        "name": "Gastropoda", 
+        "parent": 117
+    }
+},
+{
+    "pk": 119, 
+    "model": "taxonomy.taxon", 
+    "fields": {
+        "rank": 2, 
+        "name": "Plantae", 
+        "parent": 1
+    }
+}
+]

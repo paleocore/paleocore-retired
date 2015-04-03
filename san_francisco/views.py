@@ -102,7 +102,6 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
         KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]  # get the file name no extension
         KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]  # get the file extension
 
-        #default_storage.save(KML_file_upload_name, ContentFile(KML_file_upload.read()))  # save a temp copy of the file to the default location, /media/
         KML_file_path = os.path.join(settings.MEDIA_ROOT)
 
         # TODO: Check for file extension other than kml or kmz
@@ -116,14 +115,13 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         KML_file.from_string(KML_document)
         # get the top level features object (this is essentially the layers list)
-        layers = KML_file._features
-        # We expect only a single layer (i.e. occurrences)
-        # get the first element and then get the features associated with that layer.
-        occurrences = list(layers[0].features())
+        document_list = list(KML_file.features())
+        folder_list = list(document_list[0].features())
+        placemark_list = list(folder_list[0].features())
 
         feature_count = 0
 
-        for o in occurrences:
+        for o in placemark_list:
 
             # Check to make sure that the object is a Placemark, filter out folder objects
             if type(o) is Placemark:

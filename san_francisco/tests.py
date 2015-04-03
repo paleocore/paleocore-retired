@@ -10,7 +10,9 @@ from datetime import datetime
 from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
 from django.contrib.gis.geos import GEOSGeometry, Point, Polygon
 from django.core.urlresolvers import reverse
-
+from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
+from views import UploadKMLView
+from django.test.client import RequestFactory
 
 ###################
 # Factory Methods #
@@ -213,8 +215,12 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
 
 
-class San_FranciscoViews(TestCase):
-    fixtures = ['base/fixtures/fiber_test_data_150403.json']
+class SanFranciscoViews(TestCase):
+    fixtures = [
+        'base/fixtures/fiber_test_data_150403.json',
+        'taxonomy/fixtures/taxonomy_test_data_150403.json',
+        'san_francisco/fixtures/san_francisco_test_data_150403.json'
+    ]
 
     def test_upload_view(self):
         response = self.client.get(reverse('san_francisco:san_francisco_upload_kml'))
@@ -232,3 +238,22 @@ class San_FranciscoViews(TestCase):
     # def test_changexy_view(self):
     #     response = self.client.get(reverse('san_francisco:change_xy'))
     #     self.assertEqual(response.status_code, 200)
+
+    def test_upload_kml_method(self):
+        occurrence_starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
+        self.assertEqual(Occurrence.objects.count(), 20)  # verify fixture data loaded
+        self.factory = RequestFactory()
+        #fp = open('/Users/reedd/Pycharm/paleocore/san_francisco/fixtures/San_Francisco.kmz')
+        #self.request = self.factory.post('/san_francisco/upload/', {'kmlfileUpload': fp})
+        #fp.close()
+        #self.client.request
+
+        #form = UploadKMLForm()
+        #form.kmlfileUpload = 'san_francisco/fixtures/San_Francisco.kmz'
+        #self.client.request()
+        #upload_kml_view = UploadKMLView()
+        #files_dictionary = {'kmlfileUpload': 'san_francisco/fixtures/San_Francisco.kmz'}
+        #upload_kml_view.request={'FILES': files_dictionary}
+        #upload_kml_view.form_valid(form)
+
+        #self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
