@@ -1,18 +1,10 @@
 from django.test import TestCase
 from san_francisco.models import Occurrence, Biology
 from fiber.models import Page
-# from django.core.urlresolvers import reverse
 from datetime import datetime
-# from django.utils import timezone
-# from django.contrib.auth.models import User
-# from django.contrib.auth import authenticate,login
-# from django.contrib.admin.sites import AdminSite
 from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
-from django.contrib.gis.geos import GEOSGeometry, Point, Polygon
 from django.core.urlresolvers import reverse
-from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
-from views import UploadKMLView
-from django.test.client import RequestFactory
+from san_francisco.forms import UploadKMLForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
