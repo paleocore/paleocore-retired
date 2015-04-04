@@ -13,6 +13,8 @@ from django.core.urlresolvers import reverse
 from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
 from views import UploadKMLView
 from django.test.client import RequestFactory
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 
 ###################
 # Factory Methods #
@@ -207,11 +209,11 @@ class BiologyMethodsTests(TestCase):
             field_number=datetime.now()
         )
         now = datetime.now()
-        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that one record has been added
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that a record was added
         self.assertEqual(new_occurrence.catalog_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 37.7577)
-        self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test that no biology record was added
+        self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test no biology record was added
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
 
 
@@ -234,26 +236,24 @@ class SanFranciscoViews(TestCase):
         response = self.client.get(reverse('san_francisco:san_francisco_download_kml'))
         self.assertEqual(response.status_code, 200)
 
-    # Why does this produce a keyError!  See issue #78
-    # def test_changexy_view(self):
-    #     response = self.client.get(reverse('san_francisco:change_xy'))
-    #     self.assertEqual(response.status_code, 200)
+    def test_form_with_no_data(self):
+        form = UploadKMLForm({
+        })
+        self.assertFalse(form.is_valid())
 
-    def test_upload_kml_method(self):
+    def test_form_with_with_valid_data(self):
+        """
+        Test the import kml form. This test uses a sample kmz file with one placemark.
+        This code based on stack overflow question at
+        http://stackoverflow.com/questions/7304248/writing-tests-for-forms-in-django
+        :return:
+        """
+        upload_file = open('san_francisco/fixtures/San_Francisco.kmz', 'rb')
+        post_dict = {}
+        file_dict = {'kmlfileUpload': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        form = UploadKMLForm(post_dict, file_dict)
+        self.assertTrue(form.is_valid())
         occurrence_starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
-        self.assertEqual(Occurrence.objects.count(), 20)  # verify fixture data loaded
-        self.factory = RequestFactory()
-        #fp = open('/Users/reedd/Pycharm/paleocore/san_francisco/fixtures/San_Francisco.kmz')
-        #self.request = self.factory.post('/san_francisco/upload/', {'kmlfileUpload': fp})
-        #fp.close()
-        #self.client.request
-
-        #form = UploadKMLForm()
-        #form.kmlfileUpload = 'san_francisco/fixtures/San_Francisco.kmz'
-        #self.client.request()
-        #upload_kml_view = UploadKMLView()
-        #files_dictionary = {'kmlfileUpload': 'san_francisco/fixtures/San_Francisco.kmz'}
-        #upload_kml_view.request={'FILES': files_dictionary}
-        #upload_kml_view.form_valid(form)
-
-        #self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
+        self.assertEqual(occurrence_starting_record_count, 20)  # verify fixture data loaded
+        response = self.client.post('/san_francisco/upload/', file_dict)
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)

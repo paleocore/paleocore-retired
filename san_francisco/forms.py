@@ -30,6 +30,7 @@ class UploadForm(forms.Form):
         label='Upload shape file data, *.dbf',
     )
 
+
 class ChangeXYForm(forms.ModelForm):
     class Meta:
         model = Occurrence

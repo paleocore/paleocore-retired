@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from polls.models import Poll
 from fiber.models import Page
 
+
 class PollMethodTests(TestCase):
 
     def test_was_published_recently_with_future_poll(self):
