@@ -251,7 +251,7 @@ class SanFranciscoViews(TestCase):
         # test nothing is saved to DB
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count)
 
-    def test_kml_upload_form_with_with_valid_data(self):
+    def test_kml_upload_form_with_with_valid_multiple_layers_data(self):
         """
         Test the import kml form. This test uses a sample kmz file with one placemark.
         This code based on stack overflow question at
@@ -277,5 +277,34 @@ class SanFranciscoViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'upload was successful!')  # test message in conf page
 
-        # test that new occurence was added to DB
-        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
+        # test that three new occurrences were added to DB
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+3)
+
+    def test_kml_upload_form_with_with_valid_single_layer_data(self):
+        """
+        Test the import kml form. This test uses a sample kmz file with one placemark.
+        This code based on stack overflow question at
+        http://stackoverflow.com/questions/7304248/writing-tests-for-forms-in-django
+        :return:
+        """
+        upload_file = open('san_francisco/fixtures/Occurrence.kmz', 'rb')
+        post_dict = {}
+        file_dict = {'kmlfileUpload': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        upload_file.close()
+        form = UploadKMLForm(post_dict, file_dict)
+        self.assertTrue(form.is_valid())
+
+        # get current number of occurrence records in DB and verify count
+        occurrence_starting_record_count = Occurrence.objects.count()
+        self.assertEqual(occurrence_starting_record_count, 20)
+
+        # follow redirect to confirmation page
+        response = self.client.post('/san_francisco/upload/', file_dict, follow=True)
+
+        # test redirect to confirmation page
+        self.assertRedirects(response, '/san_francisco/confirmation/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'upload was successful!')  # test message in conf page
+
+        # test that new occurrence was added to DB
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+3)
