@@ -219,6 +219,7 @@ class SanFranciscoViews(TestCase):
     def test_upload_view(self):
         response = self.client.get(reverse('san_francisco:san_francisco_upload_kml'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Upload a kml")
 
     def test_confirmation_view(self):
         response = self.client.get(reverse('san_francisco:san_francisco_upload_confirmation'))
@@ -228,12 +229,29 @@ class SanFranciscoViews(TestCase):
         response = self.client.get(reverse('san_francisco:san_francisco_download_kml'))
         self.assertEqual(response.status_code, 200)
 
-    def test_form_with_no_data(self):
-        form = UploadKMLForm({
-        })
+    def test_kml_upload_form_with_no_data(self):
+        # get starting count of records in DB
+        occurrence_starting_record_count = Occurrence.objects.count()
+        self.assertEqual(occurrence_starting_record_count, 20)
+
+        # create an empty form
+        post_dict = {}
+        file_dict = {}
+        form = UploadKMLForm(post_dict, file_dict)
+
+        # test that form is not valid with empty data
         self.assertFalse(form.is_valid())
 
-    def test_form_with_with_valid_data(self):
+        # get the post response and test page reload and error message
+        response = self.client.post(reverse('mlp:mlp_upload_kml'), file_dict, follow=True)
+        self.assertEqual(response.status_code, 200)  # test reload
+        self.assertContains(response, 'Upload a')
+        self.assertContains(response, 'This field is required')
+
+        # test nothing is saved to DB
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count)
+
+    def test_kml_upload_form_with_with_valid_data(self):
         """
         Test the import kml form. This test uses a sample kmz file with one placemark.
         This code based on stack overflow question at
@@ -243,9 +261,21 @@ class SanFranciscoViews(TestCase):
         upload_file = open('san_francisco/fixtures/San_Francisco.kmz', 'rb')
         post_dict = {}
         file_dict = {'kmlfileUpload': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        upload_file.close()
         form = UploadKMLForm(post_dict, file_dict)
         self.assertTrue(form.is_valid())
-        occurrence_starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
-        self.assertEqual(occurrence_starting_record_count, 20)  # verify fixture data loaded
-        response = self.client.post('/san_francisco/upload/', file_dict)
+
+        # get current number of occurrence records in DB and verify count
+        occurrence_starting_record_count = Occurrence.objects.count()
+        self.assertEqual(occurrence_starting_record_count, 20)
+
+        # follow redirect to confirmation page
+        response = self.client.post('/san_francisco/upload/', file_dict, follow=True)
+
+        # test redirect to confirmation page
+        self.assertRedirects(response, '/san_francisco/confirmation/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'upload was successful!')  # test message in conf page
+
+        # test that new occurence was added to DB
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
