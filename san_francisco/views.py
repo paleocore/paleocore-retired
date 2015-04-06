@@ -4,7 +4,6 @@ from django.conf import settings
 from django.views import generic
 import os
 import shutil
-from models import *
 from models import Occurrence
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
@@ -239,7 +238,7 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
                     feature_count += 1
 
                 elif type(o) is not Placemark:
-                    raise NameError
+                    raise IOError("KML File is badly formatted")
 
         KML_file = kml.KML()  # create an instance of a kml document class parser
         if KML_file_extension == "kmz":
