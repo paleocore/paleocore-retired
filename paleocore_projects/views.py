@@ -13,22 +13,6 @@ class ProjectIndexView(FiberPageMixin, generic.ListView):
     template_name = 'paleocore_projects/project_list.html'
     context_object_name = 'project_list'
 
-    # This doesn't quite work yet.  I get a list of counts returned to the template
-    # But it doesn't necessarily match up with the projects in the project_list
-    # returned by default in the context object
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(ProjectIndexView, self).get_context_data(**kwargs)
-        counts={}
-        for proj in Project.objects.all():
-            model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
-            try:
-                counts[proj.paleocore_appname] = model.objects.all().count()
-            except:
-                counts[proj.paleocore_appname] = "Unknown occurrence count"
-        context["counts"] = counts
-        return context
-
     def get_queryset(self):
         # build a query set of projects.
         return Project.objects.filter(display_summary_info=True)
