@@ -88,7 +88,7 @@
                {% endwith %}
            {% else %}
                <p>The data in the {{ project.full_name }} are currently private, meaning that access is restricted to project members.</p>
-               <b class="button" onclick="window.location.href='/admin/'">Admin Site for Project Members</b>
+               <b class="button" onclick="window.location.href='/admin/{{ project.paleocore_appname }}'">Admin Site for Project Members</b>
            {% endif %}
        </div>
 
