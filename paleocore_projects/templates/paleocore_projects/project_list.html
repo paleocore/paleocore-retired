@@ -44,7 +44,7 @@
                     });
 
                     map.setView([30, 31], 2);
-                    // map.scrollWheelZoom.disable();
+                    map.scrollWheelZoom.disable();
 
 
                 }
@@ -58,7 +58,8 @@
 
                         <div class="4u" style="text-align: center;">
                             <h2><a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
-                            <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.  These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
+                            <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.<br/>
+                                These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
                             {% if project.graphic %}
                             <a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
                             {% endif %}

@@ -7,8 +7,8 @@ from ast import literal_eval
 #exclude any installed apps that have 'django' in the name
 app_CHOICES = [(name, name) for name in INSTALLED_APPS if name.find("django") == -1]
 
-#This model is only for projects that are currently hosted on PaleoCore
 
+#This model is only for projects that are currently hosted on PaleoCore
 class Project(models.Model):
     full_name = models.CharField(max_length=300)
     abstract = models.TextField(max_length=2000, null=True, blank=True, help_text="A  description of the project, its importance, etc.")

@@ -42,9 +42,9 @@
 <div id="main-wrapper" class="subpage">
    <div class="container">
       <div class="row">
-          <div class="6u">
-                <h2>{{ project }}</h2>
-          </div>
+
+                <h2>{{ project }}</h2><a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"> Return to {{ project.paleocore_appname }} description.</a>
+
           <div class="6u" id="filter-container">
                {% for fieldname, options in filterChoices.items %}
                     <select id="{{ fieldname }}" class="filterselect">
