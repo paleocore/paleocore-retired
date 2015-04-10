@@ -50,6 +50,8 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
         self.assertEqual(new_occurrence.point_y(), 11.5303732536)
+        self.assertEqual(new_occurrence.easting(), 700158.9412020452)
+        self.assertEqual(new_occurrence.northing(), 1275265.0366469107)
 
     def test_san_francisco_create_method(self):
         """
@@ -120,9 +122,9 @@ class OccurrenceMethodsTests(TestCase):
         """
         new_occurrence = Occurrence.objects.create(id=1, item_type="Fake", basis_of_record="HumanObservation",
                                                    collecting_method="Surface Standard", field_number=datetime.now(),
-                                                   geom="POINT (37.7577 -122.4376)")
-        self.assertEqual(new_occurrence.point_x(), 37.7577)
-        self.assertEqual(new_occurrence.point_y(), -122.4376)
+                                                   geom="POINT (-122.4376 37.7577 )")
+        self.assertEqual(new_occurrence.point_y(), 37.7577)
+        self.assertEqual(new_occurrence.point_x(), -122.4376)
         self.assertEqual(new_occurrence.easting(), 549539.4374838244)
         self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
 
@@ -169,13 +171,16 @@ class BiologyMethodsTests(TestCase):
                                  collecting_method="Surface Standard", field_number=datetime.now(),
                                  taxon=new_taxon,
                                  identification_qualifier=id_qualifier,
-                                 geom="POINT (37.7577 -122.4376)")
+                                 geom="POINT (-122.4376 37.7577)")
         new_occurrence.save()
         now = datetime.now()
         self.assertEqual(Biology.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_x(), 37.7577)
-        self.assertEqual(new_occurrence.point_y(), -122.4376)
+        self.assertEqual(new_occurrence.point_y(), 37.7577)
+        self.assertEqual(new_occurrence.point_x(), -122.4376)
+        self.assertEqual(new_occurrence.easting(), 549539.4374838244)
+        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
+
 
     def test_biology_create_observation(self):
         """
@@ -195,7 +200,7 @@ class BiologyMethodsTests(TestCase):
             basis_of_record="HumanObservation",
             collection_code="COL",
             item_number="1",
-            geom="POINT (37.7577 -122.4376)",
+            geom="POINT (-122.4376 37.7577)",
             taxon=new_taxon,
             identification_qualifier=id_qualifier,
             field_number=datetime.now()
@@ -204,7 +209,8 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that a record was added
         self.assertEqual(new_occurrence.catalog_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_x(), 37.7577)
+        self.assertEqual(new_occurrence.point_y(), 37.7577)
+        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test no biology record was added
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
 
