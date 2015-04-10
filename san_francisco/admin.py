@@ -9,7 +9,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from olwidget.admin import GeoModelAdmin
 import utm
 
-# Register your models here.
+#################
+# Default Admin #
+#################
+default_list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
+                    'collecting_method', 'collector', 'item_scientific_name',
+                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition')
+
 ###################
 ## Biology Admin ##
 ###################
@@ -25,6 +31,30 @@ biology_fieldsets = (
     }),
 )
 
+biology_admin_fieldsets = (
+    ('Curatorial', {
+        'fields': (('barcode', 'catalog_number'),
+                   ('id', 'field_number', 'year_collected',),
+                   ("collection_code", "item_number", "item_part"))
+    }),
+
+    ('Element', {
+        'fields': (('side',), )
+    }),
+
+    ('Taxonomy', {
+        'fields': (('taxon', 'identification_qualifier'),)
+    }),
+    ('Provenience', {
+        'fields': (('analytical_unit',),
+                   ('in_situ', 'ranked'),
+                   # These following fields are based on methods and must be listed as read only fields below
+                   #('point_x', 'point_y'),
+                   #('easting', 'northing'),
+                   ('geom', ))
+    })
+)
+
 
 class BiologyInline(admin.TabularInline):
     model = Biology
@@ -33,12 +63,21 @@ class BiologyInline(admin.TabularInline):
     fieldsets = biology_fieldsets
 
 
-class BiologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "side", "taxon")
+class BiologyAdmin(GeoModelAdmin):
+    list_display = default_list_display
+    options = {
+        'default_lat': -122.00,
+        'default_lon': 38.00,
+    }
+    maps = (
+        (('geom',), {'layers': ['google.streets'], 'geometry': 'point', 'isCollection': False,
+                     'default_lon': -122.0, 'default_lat': 38.0, 'default_zoom': 5}),
+    )
+    #readonly_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
     #list_filter = ("family", "side")
-    search_fields = ("taxon__name",)
-    readonly_fields = ("id",)
-    fieldsets = biology_fieldsets
+    search_fields = ('taxon__name',)
+    readonly_fields = ('id',)
+    fieldsets = biology_admin_fieldsets
 
 ######################
 ## Occurrence Admin ##
@@ -48,7 +87,7 @@ occurrence_fieldsets = (
     ('Curatorial', {
         'fields': (('barcode', 'catalog_number'),
                    ('id', 'field_number', 'year_collected', 'date_last_modified'),
-                   ("collection_code", "item_number", "item_part"))
+                   ('collection_code', 'item_number', 'item_part'))
     }),
 
     ('Occurrence Details', {
@@ -75,9 +114,7 @@ occurrence_fieldsets = (
 
 
 class OccurrenceAdmin(GeoModelAdmin):
-    list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
-                    'collecting_method', 'collector', 'item_scientific_name',
-                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition', 'point_x', 'point_y')
+    list_display = default_list_display+('point_x', 'point_y')
     list_display_links = ['barcode', 'field_number']
 
     options = {

@@ -1,26 +1,32 @@
+from django.conf import settings
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.gis.geos import GEOSGeometry
+
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from django.conf import settings
-from django.views import generic
-import os
-import shutil
-from models import Occurrence
 from django.core.urlresolvers import reverse
-from fiber.views import FiberPageMixin
-import shapefile
-from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
-from fastkml import kml
-from fastkml import Placemark, Folder, Document
-from lxml import etree
-from datetime import datetime
-from django.contrib.gis.geos import GEOSGeometry
-import utm
-from zipfile import ZipFile
-from shapely.geometry import Point, LineString, Polygon
+
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.views import generic
+
+from san_francisco.models import Occurrence
+from san_francisco.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
+
+from fiber.views import FiberPageMixin
+
+from datetime import datetime
+from fastkml import kml, Placemark, Folder, Document
+from lxml import etree
+import os
+from shapely.geometry import Point
+import shapefile
+import utm
+from zipfile import ZipFile
 
 
 class DownloadKMLView(FiberPageMixin, generic.FormView):
@@ -89,6 +95,10 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
     form_class = UploadKMLForm
     context_object_name = 'upload'
     success_url = '/san_francisco/confirmation/'
+
+    # @method_decorator(permission_required)
+    # def dispatch(self, *args, **kwargs):
+    #     return super(UploadKMLView, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
