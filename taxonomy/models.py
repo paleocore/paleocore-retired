@@ -17,6 +17,9 @@ class IdentificationQualifier(models.Model):
     name = models.CharField(null=False, blank=True, max_length=15, unique=True)
     qualified = models.BooleanField()
 
+    def __unicode__(self):
+        return self.name
+
 
 class Taxon(models.Model):
     name = models.CharField(null=False, blank=False, max_length=255, unique=False)
