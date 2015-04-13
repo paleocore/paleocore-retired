@@ -126,7 +126,6 @@ class localityAdmin(GeoModelAdmin):
 ######################
 
 
-
 class occurrenceAdmin(GeoModelAdmin):
     list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
                     "itemscientificname", "itemdescription", "yearcollected")

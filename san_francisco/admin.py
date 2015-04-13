@@ -6,142 +6,21 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
-from olwidget.admin import GeoModelAdmin
-import utm
-
-#################
-# Default Admin #
-#################
-default_list_display = ('barcode', 'field_number', 'basis_of_record', 'item_number', 'item_type',
-                    'collecting_method', 'collector', 'item_scientific_name',
-                    'item_description', 'year_collected', 'in_situ', 'problem', 'disposition')
-
-###################
-## Biology Admin ##
-###################
-
-biology_fieldsets = (
-
-    ('Element', {
-        'fields': (('side',), )
-    }),
-
-    ('Taxonomy', {
-        'fields': (('taxon',), ("id",))
-    }),
-)
-
-biology_admin_fieldsets = (
-    ('Curatorial', {
-        'fields': (('barcode', 'catalog_number'),
-                   ('id', 'field_number', 'year_collected',),
-                   ("collection_code", "item_number", "item_part"))
-    }),
-
-    ('Element', {
-        'fields': (('side',), )
-    }),
-
-    ('Taxonomy', {
-        'fields': (('taxon', 'identification_qualifier'),)
-    }),
-    ('Provenience', {
-        'fields': (('analytical_unit',),
-                   ('in_situ', 'ranked'),
-                   # These following fields are based on methods and must be listed as read only fields below
-                   #('point_x', 'point_y'),
-                   #('easting', 'northing'),
-                   ('geom', ))
-    })
-)
+import base.admin
 
 
 class BiologyInline(admin.TabularInline):
     model = Biology
     extra = 0
-    readonly_fields = ("id",)
-    fieldsets = biology_fieldsets
+    readonly_fields = base.admin.default_read_only_fields
+    fieldsets = base.admin.default_biology_inline_fieldsets
 
 
-class BiologyAdmin(GeoModelAdmin):
-    list_display = default_list_display
-    options = {
-        'default_lat': -122.00,
-        'default_lon': 38.00,
-    }
-    maps = (
-        (('geom',), {'layers': ['google.streets'], 'geometry': 'point', 'isCollection': False,
-                     'default_lon': -122.0, 'default_lat': 38.0, 'default_zoom': 5}),
-    )
-    #readonly_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
-    #list_filter = ("family", "side")
-    search_fields = ('taxon__name',)
-    readonly_fields = ('id',)
-    fieldsets = biology_admin_fieldsets
-
-######################
-## Occurrence Admin ##
-######################
-
-occurrence_fieldsets = (
-    ('Curatorial', {
-        'fields': (('barcode', 'catalog_number'),
-                   ('id', 'field_number', 'year_collected', 'date_last_modified'),
-                   ('collection_code', 'item_number', 'item_part'))
-    }),
-
-    ('Occurrence Details', {
-        'fields': (('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                   ('collecting_method', 'finder', 'collector', 'individual_count'),
-                   ('item_description', 'item_scientific_name', 'image'),
-                   ('problem', 'problem_comment'),
-                   ('remarks', ))
-    }),
-    ('Taphonomic Details', {
-        'fields': (
-            ('weathering', 'surface_modification')
-        )
-    }),
-    ('Provenience', {
-        'fields': (('analytical_unit',),
-                   ('in_situ', 'ranked'),
-                   # These following fields are based on methods and must be listed as read only fields below
-                   ('point_x', 'point_y'),
-                   ('easting', 'northing'),
-                   ('geom', ))
-    })
-)
+class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
+    models = Biology
 
 
-class OccurrenceAdmin(GeoModelAdmin):
-    list_display = default_list_display+('point_x', 'point_y')
-    list_display_links = ['barcode', 'field_number']
-
-    options = {
-        'layers': ['google.terrain']
-    }
-
-    """
-    Auto-number fields like id are not editable, and can't be added to fieldsets unless specified as read only.
-    also, any dynamically created fields (e.g. point_x) in models.py must be declared as read only to be included in
-    fieldset or fields
-    """
-    readonly_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
-    list_editable = ['problem', 'disposition']
-
-    list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number',
-                   'disposition']
-    search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
-    inlines = [BiologyInline, ]
-    fieldsets = occurrence_fieldsets
-    formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size': '25'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
-    }
-
-    # Set pagination to show more entries per page
-    list_per_page = 1000
-
+class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     actions = ["create_data_csv", "change_xy"]
 
     #admin action to manually enter coordinates
@@ -210,8 +89,6 @@ class OccurrenceAdmin(GeoModelAdmin):
 
     create_data_csv.short_description = "Download Selected to .csv"
 
-############################
-## Register Admin Classes ##
-############################
+
 admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Biology, BiologyAdmin)
