@@ -101,7 +101,7 @@ class Occurrence(models.Model):
     dgupdate2013 = models.IntegerField(null=True, blank=True)
     dgupdatex = models.FloatField(null=True, blank=True)
     dgupdatey = models.FloatField(null=True, blank=True)
-    geom = models.PointField(srid=4326)
+    geom = models.PointField(srid=4326, db_column='shape')
     objects = models.GeoManager()
     locality = models.ForeignKey(Locality)
 
