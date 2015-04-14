@@ -152,6 +152,29 @@ class OccurrenceMethodTests(TestCase):
         self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
 
+    def test_occurrence_admin_view(self):
+        starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
+        # The simplest occurrence instance we can create needs only a location.
+        # Using the instance creation and then save methods
+        poly = Polygon(
+            ((677158.6189000001, 1227037.2491999995), (677158.4829000002, 1228987.2874999996),
+             (677218.1513999999, 1226987.2874999996), (677218.1513999999, 1226920.9891999997),
+             (677158.6189000001, 1227037.2491999995))
+        )
+        locality_3 = Locality.objects.create(paleolocalitynumber=3, geom=poly)
+        new_occurrence = Occurrence.objects.create(geom=Point(658198.7081000003963709, 1221366.8992999996989965),
+                                                   locality=locality_3)
+        now = datetime.now()
+        self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
+        self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
+        response = self.client.get('/admin/drp/')  # note: trailing slash matters
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/admin/drp/occurrence/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PaleoCore administration')
+
 
 class BiologyMethodTests(TestCase):
     """
@@ -258,6 +281,10 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test that no biology record was added
         self.assertEqual(Biology.objects.filter(basisofrecord__exact="HumanObservation").count(), 1)
+        response = self.client.get('/admin/drp/biology/')
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get('/admin/drp/biology/'+str(new_occurrence.pk)+'/')
+        self.assertEqual(response.status_code, 200)
 
 
 # class BiologySearchTest(TestCase):
@@ -335,7 +362,7 @@ class OccurrenceAdminTests(TestCase):
         self.assertEqual(user.has_perm("drp.delete_Biology"), True)
 
         create_django_page_tree()
-        #response = self.client.get("/admin/drp/occurrence/")
+        #response = self.client.get('/admin/drp/occurrence/')
         #self.assertEqual(response.status_code, 200)
 
 
