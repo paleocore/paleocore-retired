@@ -84,7 +84,8 @@
                <p>The data in the {{ project.full_name }} are publicly available.</p>
                {% with app=project.paleocore_appname %}
                <b class="button" onclick="window.location.href='{% url 'paleocore_projects:data_table' app %}'">View Public Database</b> &nbsp;&nbsp;
-               <b class="button" onclick="window.location.href='/admin/{{ project.paleocore_appname }}/'">Admin Site for Project Members</b>
+               <b class="button" onclick="window.location.href='/admin/{{ project.paleocore_appname }}/'">Admin Site for Project Members</b> &nbsp;&nbsp;
+               <b class="button" onclick="window.location.href='/{{ project.paleocore_appname }}/upload/'">Upload Data</b> &nbsp;&nbsp;
                {% endwith %}
            {% else %}
                <p>The data in the {{ project.full_name }} are currently private, meaning that access is restricted to project members.</p>

@@ -1,0 +1,70 @@
+[
+{
+    "pk": 1, 
+    "model": "paleocore_projects.project", 
+    "fields": {
+        "graphic": "uploads/images/paleocore_projects/selam.jpg", 
+        "attribution": "The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences. Core DRP team members include: Zeresenay Alemseged, Ren\u00e9 Bobe, Denis Geraads, Shannon McPherron, Denn\u00e9 Reed, and  Jonathan Wynn. Andrew Barr and Zelalem Bedaso participated in fieldwork as graduate students.", 
+        "display_summary_info": true, 
+        "paleocore_appname": "drp", 
+        "abstract": "The Dikika Research Project (DRP) studies Pliocene hominins and paleoenvironments in the Afar Region of northeastern Ethiopia. \r\n\r\nDikika is best known for the 3.3Ma juvenile Australopithecus afarensis fossil known as \"Selam\". Selam is the most complete fossil skeleton of this species and one of just a handful of juvenile hominin fossil skeletons known.", 
+        "display_fields": "[\"id\", \"collectioncode\",\"paleolocalitynumber\",\"itemnumber\",\"itempart\",'stratigraphicmember',\"barcode\", 'basisofrecord',\r\n                    \"itemscientificname\", \"itemdescription\",\"yearcollected\"]", 
+        "occurrence_table_name": "Occurrence", 
+        "geom": "POINT (40.6192016601562500 11.0330200195312997)", 
+        "full_name": "Dikika Research Project", 
+        "display_filter_fields": "[\"basisofrecord\", \"yearcollected\", \"stratigraphicmember\", \"collectioncode\", \"itemtype\"]", 
+        "is_public": false
+    }
+},
+{
+    "pk": 2, 
+    "model": "paleocore_projects.project", 
+    "fields": {
+        "graphic": "uploads/images/paleocore_projects/koobi-fora-land.jpg", 
+        "attribution": "These data have <a href='http://www.mnh.si.edu/ete/ETE_Datasets_Turkana.html'>previously been made available</a> by the ETE program at the Smithsonian Institute. ", 
+        "display_summary_info": true, 
+        "paleocore_appname": "turkana", 
+        "abstract": "The Turkana Database contains information on fossil collections from the Turkana Basin in northern Kenya.  ", 
+        "display_fields": "('year_found', 'study_area', 'formation', 'member', 'genus', 'species', 'body_element')", 
+        "occurrence_table_name": "Turkana", 
+        "geom": "POINT (36.3372802734375000 4.2407226562502505)", 
+        "full_name": "Turkana Database", 
+        "display_filter_fields": "[\"study_area\", \"formation\", \"body_element\", \"genus\"]", 
+        "is_public": true
+    }
+},
+{
+    "pk": 3, 
+    "model": "paleocore_projects.project", 
+    "fields": {
+        "graphic": "uploads/images/paleocore_projects/DSCN1680.JPG", 
+        "attribution": "The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences.", 
+        "display_summary_info": true, 
+        "paleocore_appname": "mlp", 
+        "abstract": "The Mille-Logya Research Project (MLP) is a paleoanthropological research effort located in northeastern Ethiopia, just a few kilometers north of Hadar and Dikika. The project was initiated in 2014.", 
+        "display_fields": "[\"barcode\"]", 
+        "occurrence_table_name": "Occurrence", 
+        "geom": "POINT (40.8389282226560013 11.5631103515629992)", 
+        "full_name": "Mille-Logya Project", 
+        "display_filter_fields": "[]", 
+        "is_public": false
+    }
+},
+{
+    "pk": 4, 
+    "model": "paleocore_projects.project", 
+    "fields": {
+        "graphic": "uploads/images/paleocore_projects/SanFrancisco.jpg", 
+        "attribution": "This project was created by the PaleoCore development team: Denn\u00e9 Reed, Tomislav Urban, Andrew Barr, Shannon McPherron, Andrew Cook, Nick Pereira, Jeannette Tang.", 
+        "display_summary_info": true, 
+        "paleocore_appname": "san_francisco", 
+        "abstract": "The San Francisco project is a public demonstration database introduced for the 2015 meeting of the Paleoanthropology Society in San Francisco. The data set uses the same structure as the Mille-Logya project but with example data records.", 
+        "display_fields": "[\"id\", \"barcode\", \"catalog_number\", \"item_scientific_name\", \"item_description\", \"item_type\"]", 
+        "occurrence_table_name": "Occurrence", 
+        "geom": "POINT (-122.4104028940499944 37.7856564043029977)", 
+        "full_name": "San Francisco (Demo)", 
+        "display_filter_fields": "[\"item_type\"]", 
+        "is_public": true
+    }
+}
+]
