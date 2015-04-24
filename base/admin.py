@@ -153,7 +153,7 @@ class PaleoCoreOccurrenceAdmin(GeoModelAdmin):
     list_display = default_list_display
     list_display_links = default_list_display_links
     list_filter = default_list_filter
-    search_fields = default_search_fields+('taxon__name',)
+    search_fields = default_search_fields
     readonly_fields = default_read_only_fields
     fieldsets = default_admin_fieldsets
     options = default_map_options
