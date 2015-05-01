@@ -29,25 +29,24 @@ class filesInline(admin.TabularInline):
 
 occurrence_fieldsets =(
 ('Curatorial', {
-'fields': (('barcode','catalognumber'),
-           ("id", 'fieldnumber', 'yearcollected', 'datelastmodified'),
-           ("collectioncode", "paleolocalitynumber", "itemnumber", "itempart"))
+'fields': (('barcode','catalog_number'),
+           ("id", 'field_number', 'year_collected', 'date_last_modified'),
+           ("collection_code", "paleolocality_number", "item_number", "item_part"))
 }),
 
 ('Occurrence Details', {
-'fields': (('basisofrecord','itemtype','disposition','preparationstatus'),
-           ('itemdescription','itemscientificname'),
+'fields': (('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
+           ('item_description', 'item_scientific_name'),
            ('remarks'))
 }),
 ('Provenience', {
-'fields': (("strat_upper", "distancefromupper"),
-           ("strat_lower", "distancefromlower"),
-           ("strat_found", "distancefromfound"),
-           ("strat_likely", "distancefromlikely"),
-           ("analyticalunit", "analyticalunit2", "analyticalunit3"),
-           ("insitu", "ranked"),
-           ("stratigraphicmember",),
-           ("point_X", "point_Y"),
+'fields': (("stratigraphic_marker_upper", "distance_from_upper"),
+           ("stratigraphic_marker_lower", "distance_from_lower"),
+           ("stratigraphic_marker_found", "distance_from_found"),
+           ("stratigraphic_marker_likely", "distance_from_likely"),
+           ("analytical_unit", "analytical_unit_2", "analytical_unit_3"),
+           ("in_situ", "ranked"),
+           ("stratigraphic_member",),
            ('geom'))
 }),
 )
@@ -70,18 +69,18 @@ class biologyInline(admin.TabularInline):
 
 
 class biologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",
-                    'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype', 'taxon', )
+    list_display = ("id", "collection_code", "paleolocality_number", "item_number", "item_part",
+                    'stratigraphic_member', "barcode", 'basis_of_record', 'item_type', 'taxon', )
     list_filter = ("family",)
     readonly_fields = ("id",)
     fieldsets = biology_fieldsets
 
     #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
-    readonly_fields = ("id","fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
+    readonly_fields = ("id", "field_number", "catalog_number", "date_last_modified")
 
-    list_filter = ["basisofrecord", "yearcollected", "stratigraphicmember", "collectioncode", "itemtype"]
-    search_fields = ("id", "itemscientificname", "barcode", "catalognumber")
+    list_filter = ["basis_of_record", "year_collected", "stratigraphic_member", "collection_code", "item_type"]
+    search_fields = ("id", "item_scientific_name", "barcode", "catalog_number")
     inlines = (biologyInline, imagesInline, filesInline)
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
@@ -113,9 +112,9 @@ class hydrologyAdmin(GeoModelAdmin):
 #####################
 
 class localityAdmin(GeoModelAdmin):
-    list_display = ("collectioncode", "paleolocalitynumber", "paleosublocality")
-    list_filter = ("collectioncode",)
-    search_fields = ("paleolocalitynumber",)
+    list_display = ("collection_code", "paleolocality_number", "paleo_sublocality")
+    list_filter = ("collection_code",)
+    search_fields = ("paleolocality_number",)
 
     options = {
         'layers': ['google.terrain']
@@ -127,16 +126,16 @@ class localityAdmin(GeoModelAdmin):
 
 
 class occurrenceAdmin(GeoModelAdmin):
-    list_display = ("id", "collectioncode","paleolocalitynumber","itemnumber","itempart",'stratigraphicmember',"barcode", 'basisofrecord', 'itemtype',
-                    "itemscientificname", "itemdescription", "yearcollected")
+    list_display = ("id", "collection_code", "paleolocality_number", "item_number", "item_part",'stratigraphic_member', "barcode", 'basis_of_record', 'item_type',
+                    "item_scientific_name", "item_description", "year_collected")
 
 
     #note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     #also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included in fieldset or fields
-    readonly_fields = ("id","fieldnumber", "point_X", "point_Y", "catalognumber", "datelastmodified")
+    readonly_fields = ("id","field_number", "catalog_number", "date_last_modified")
 
-    list_filter = ["basisofrecord", "yearcollected", "stratigraphicmember", "collectioncode", "itemtype"]
-    search_fields = ("id", "itemscientificname", "barcode", "catalognumber")
+    list_filter = ["basis_of_record", "year_collected", "stratigraphic_member", "collection_code", "item_type"]
+    search_fields = ("id", "item_scientific_name", "barcode", "catalog_number")
     inlines = (biologyInline, imagesInline, filesInline)
     fieldsets = occurrence_fieldsets
     formfield_overrides = {
@@ -215,7 +214,7 @@ class occurrenceAdmin(GeoModelAdmin):
         matching_localities = []
         for locality in Locality.objects.all():
             if locality.geom.contains(queryset[0].geom):
-                matching_localities.append(str(locality.collectioncode) + "-" + str(locality.paleolocalitynumber))
+                matching_localities.append(str(locality.collection_code) + "-" + str(locality.paleolocality_number))
         if matching_localities:
             #warning to user if the point is within multiple localities
             if len(matching_localities)>1:
@@ -227,7 +226,7 @@ class occurrenceAdmin(GeoModelAdmin):
         #if the point is not within any locality, get the nearest locality
         distances={}#dictionary which will contain {<localityString>:key} entries
         for locality in Locality.objects.all():
-            locality_name=str(locality.collectioncode) + "-" + str(locality.paleolocalitynumber)
+            locality_name=str(locality.collection_code) + "-" + str(locality.paleolocality_number)
             #how are units being dealt with here?
             locality_distance_from_point = locality.geom.distance(queryset[0].geom)
             distances.update({locality_name:locality_distance_from_point})
