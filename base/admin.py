@@ -79,7 +79,7 @@ default_list_display = ('barcode', 'field_number', 'catalog_number', 'basis_of_r
                         'collecting_method', 'collector', 'item_scientific_name',
                         'item_description', 'year_collected', 'in_situ', 'problem', 'disposition', 'point_x', 'point_y')
 default_list_per_page = 1000
-default_read_only_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
+default_read_only_fields = ('id', 'point_x', 'point_y', 'field_number', 'easting', 'northing', 'date_last_modified')
 default_admin_fieldsets = (
     ('Curatorial', {
         'fields': [('barcode', 'catalog_number', 'id'),

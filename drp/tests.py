@@ -39,7 +39,7 @@ class LocalityMethodsTests(TestCase):
              (675218.1513999999, 1226987.2874999996), (675218.1513999999, 1226920.9891999997),
              (675158.6189000001, 1227037.2491999995))
         )
-        new_locality = Locality(paleolocalitynumber=1, geom=poly)
+        new_locality = Locality(paleolocality_number=1, geom=poly)
         new_locality.save()
         self.assertEqual(Locality.objects.count(), starting_record_count+1)
 
@@ -50,7 +50,7 @@ class LocalityMethodsTests(TestCase):
              (675218.1513999999, 1226987.2874999996), (675218.1513999999, 1226920.9891999997),
              (675158.6189000001, 1227037.2491999995))
         )
-        Locality.objects.create(paleolocalitynumber=1, geom=poly)
+        Locality.objects.create(paleolocality_number=1, geom=poly)
         self.assertEqual(Locality.objects.count(), starting_record_count+1)
 
 
@@ -106,7 +106,7 @@ class OccurrenceMethodTests(TestCase):
              (675218.1513999999, 1226987.2874999996), (675218.1513999999, 1226920.9891999997),
              (675158.6189000001, 1227037.2491999995))
         )
-        Locality.objects.create(paleolocalitynumber=1, geom=poly)
+        Locality.objects.create(paleolocality_number=1, geom=poly)
 
     def test_occurrence_save_simple(self):
         """
@@ -120,16 +120,16 @@ class OccurrenceMethodTests(TestCase):
              (675218.1513999999, 1226987.2874999996), (675218.1513999999, 1226920.9891999997),
              (675158.6189000001, 1227037.2491999995))
         )
-        locality_2 = Locality.objects.create(paleolocalitynumber=2, geom=poly)
+        locality_2 = Locality.objects.create(paleolocality_number=2, geom=poly)
         new_occurrence = Occurrence(geom="POINT (658198.7081000003963709 1221366.8992999996989965)",
                                     locality=locality_2)
         new_occurrence.save()
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
-        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
-        self.assertEqual(new_occurrence.locality.paleolocalitynumber, 2)
+        self.assertEqual(new_occurrence.locality.paleolocality_number, 2)
 
     def test_occurrence_create_simple(self):
         """
@@ -143,13 +143,13 @@ class OccurrenceMethodTests(TestCase):
              (677218.1513999999, 1226987.2874999996), (677218.1513999999, 1226920.9891999997),
              (677158.6189000001, 1227037.2491999995))
         )
-        locality_3 = Locality.objects.create(paleolocalitynumber=3, geom=poly)
+        locality_3 = Locality.objects.create(paleolocality_number=3, geom=poly)
         new_occurrence = Occurrence.objects.create(geom=Point(658198.7081000003963709, 1221366.8992999996989965),
                                                    locality=locality_3)
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
-        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
 
     def test_occurrence_admin_view(self):
@@ -161,13 +161,13 @@ class OccurrenceMethodTests(TestCase):
              (677218.1513999999, 1226987.2874999996), (677218.1513999999, 1226920.9891999997),
              (677158.6189000001, 1227037.2491999995))
         )
-        locality_3 = Locality.objects.create(paleolocalitynumber=3, geom=poly)
+        locality_3 = Locality.objects.create(paleolocality_number=3, geom=poly)
         new_occurrence = Occurrence.objects.create(geom=Point(658198.7081000003963709, 1221366.8992999996989965),
                                                    locality=locality_3)
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalognumber, "--")  # test catalog number generation in save method
-        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
         response = self.client.get('/admin/drp/')  # note: trailing slash matters
         self.assertEqual(response.status_code, 200)
@@ -187,7 +187,7 @@ class BiologyMethodTests(TestCase):
              (677218.1513999999, 1226987.2874999996), (677218.1513999999, 1226920.9891999997),
              (677158.6189000001, 1227037.2491999995))
         )
-        Locality.objects.create(paleolocalitynumber=4, geom=poly)
+        Locality.objects.create(paleolocality_number=4, geom=poly)
 
         taxonomic_order = TaxonRank.objects.create(
             name="Order",
@@ -218,7 +218,7 @@ class BiologyMethodTests(TestCase):
         """
 
         self.biology_setup()
-        locality = Locality.objects.get(paleolocalitynumber__exact=4)
+        locality = Locality.objects.get(paleolocality_number__exact=4)
         new_taxon = Taxon.objects.get(name__exact="Primates")
         id_qual = IdentificationQualifier.objects.get(name__exact="None")
 
@@ -229,11 +229,11 @@ class BiologyMethodTests(TestCase):
 
         new_bio = Biology(
             barcode=1111,
-            basisofrecord="FossilSpecimen",
+            basis_of_record="FossilSpecimen",
             institutionalcode="INST",
-            collectioncode="COL",
-            paleolocalitynumber="1",
-            itemnumber="1",
+            collection_code="COL",
+            paleolocality_number="1",
+            item_number="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)",
             locality=locality,
             taxon=new_taxon,
@@ -244,8 +244,8 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_occurrence_record_count+1)
         self.assertEqual(Biology.objects.count(), starting_biology_record_count+1)
 
-        self.assertEqual(new_bio.catalognumber, "COL-1-1")  # test catalog number generation in save method
-        self.assertEqual(new_bio.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_bio.catalog_number, "COL-1-1")  # test catalog number generation in save method
+        self.assertEqual(new_bio.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_bio.point_X(), 658198.7081000003963709)
 
     def test_biology_create_observation(self):
@@ -254,7 +254,7 @@ class BiologyMethodTests(TestCase):
         """
 
         self.biology_setup()
-        locality = Locality.objects.get(paleolocalitynumber__exact=4)
+        locality = Locality.objects.get(paleolocality_number__exact=4)
         new_taxon = Taxon.objects.get(name__exact="Primates")
         id_qual = IdentificationQualifier.objects.get(name__exact="None")
 
@@ -264,11 +264,11 @@ class BiologyMethodTests(TestCase):
         # Using the instance creation and then save methods
         new_occurrence = Biology.objects.create(
             barcode=1111,
-            basisofrecord="HumanObservation",
+            basis_of_record="HumanObservation",
             institutionalcode="INST",
-            collectioncode="COL",
-            paleolocalitynumber="1",
-            itemnumber="1",
+            collection_code="COL",
+            paleolocality_number="1",
+            item_number="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)",
             locality=locality,
             taxon=new_taxon,
@@ -276,11 +276,11 @@ class BiologyMethodTests(TestCase):
         )
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalognumber, "COL-1-1")  # test catalog number generation in save method
-        self.assertEqual(new_occurrence.datelastmodified.day, now.day)  # test date last modified is correct
+        self.assertEqual(new_occurrence.catalog_number, "COL-1-1")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 658198.7081000003963709)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test that no biology record was added
-        self.assertEqual(Biology.objects.filter(basisofrecord__exact="HumanObservation").count(), 1)
+        self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
         response = self.client.get('/admin/drp/biology/')
         self.assertEqual(response.status_code, 200)
         response = self.client.get('/admin/drp/biology/'+str(new_occurrence.pk)+'/')
@@ -334,19 +334,19 @@ class OccurrenceAdminTests(TestCase):
              (675158.6189000001, 1227037.2491999995))
         )
         self.locality = Locality.objects.create(
-            paleolocalitynumber=1,
-            collectioncode="DIK",
+            paleolocality_number=1,
+            collection_code="DIK",
             description1="This is a nice locality",
             geom=poly
         )
         self.occurrence = Occurrence.objects.create(
             barcode=1111,
-            basisofrecord="FossilSpecimen",
-            itemtype="Faunal",
+            basis_of_record="FossilSpecimen",
+            item_type="Faunal",
             institutionalcode="INST",
-            collectioncode="COL",
-            paleolocalitynumber="1",
-            itemnumber="1",
+            collection_code="COL",
+            paleolocality_number="1",
+            item_number="1",
             geom="POINT (658198.7081000003963709 1221366.8992999996989965)",
             locality=self.locality
         )
