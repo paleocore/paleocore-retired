@@ -24,7 +24,7 @@ class TermCategory(models.Model):
         ordering = ["name"]
         verbose_name = "Term Category"
         verbose_name_plural = "Term Categories"
-        db_table = "term_category" 
+        db_table = "standard_term_category"
 
 ############################################
 # TermStatus
@@ -40,7 +40,7 @@ class TermStatus(models.Model):
         ordering = ["name"]
         verbose_name = "Term Status"
         verbose_name_plural = "Term Statuses"
-        db_table = "term_status" 
+        db_table = "standard_term_status"
       
 ############################################
 # TermDataType
@@ -56,7 +56,7 @@ class TermDataType(models.Model):
         ordering = ["name"]
         verbose_name_plural = "Term Types"
         verbose_name = "Term Type"
-        db_table = "term_data_type" 
+        db_table = "standard_term_data_type"
 
 ############################################
 # TermRelationshipType
@@ -73,7 +73,7 @@ class TermRelationshipType(models.Model):
         ordering = ["name"]
         verbose_name_plural = "Term Relationship Types"
         verbose_name = "Term Relationship Type"
-        db_table = "term_relationship_type" 
+        db_table = "standard_term_relationship_type"
 
 ############################################
 # Project
@@ -86,6 +86,7 @@ class Project(models.Model):
     geographic = models.CharField(max_length=255, null=True, blank=True)
     temporal = models.CharField(max_length=255, null=True, blank=True)
     users = models.ManyToManyField(PaleocoreUser, blank=True, null=True)
+    reused_terms = models.ManyToManyField('Term', blank=True, null=True, related_name='reused_by_projects')
 
     def terms(self):
         return sorted(self.term_set.all(), key=lambda term: term.relatedTermCount(), reverse=True)
@@ -111,7 +112,6 @@ class Project(models.Model):
         ordering = ["name"]
         verbose_name_plural = "Projects"
         verbose_name = "Project"
-        db_table = "project" 
 
 ############################################
 # Term
@@ -150,7 +150,6 @@ class Term(models.Model):
         verbose_name_plural = "Terms"
         verbose_name = "Term"    
         unique_together = ("name", "project")
-        db_table = "term" 
 
 ############################################
 # Comment
@@ -169,7 +168,6 @@ class Comment(models.Model):
         ordering = ["-timestamp"]
         verbose_name_plural = "Comments"
         verbose_name = "Comment"
-        db_table = "comment"
 
 ############################################
 # TermRelationship
@@ -189,7 +187,7 @@ class TermRelationship(models.Model):
         verbose_name = "Term Relationship"
         verbose_name_plural = "Term Relationships"
         unique_together = ("term", "related_term", "relationship_type")
-        db_table = "term_relationship"
+        db_table = "standard_term_relationship"
 
 ## ModelForms
 class CompareView():

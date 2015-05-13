@@ -4,7 +4,7 @@ from standard.models import Project, Term, TermCategory, TermStatus, TermDataTyp
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user_names', 'geographic', 'temporal')
+    list_display = ('name', 'is_standard', 'user_names', 'geographic', 'temporal')
     filter_horizontal = ('users',)
     ordering = ("name",)
 

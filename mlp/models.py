@@ -52,9 +52,6 @@ class Occurrence(models.Model):
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/mlp", null=True)
     weathering = models.SmallIntegerField(blank=True, null=True)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
-    #TODO Change presentation to show only 2 decimal places
-    #point_x = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)  # now taken from geom
-    #point_y = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)  # now taken from geom
     problem = models.BooleanField(default=False)
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
     geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL

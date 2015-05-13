@@ -8,7 +8,7 @@
     {% for category in terms_list %}
         <tr>
             <td class="content" id="content">{{ category.grouper }}</td>
-            <td>{% for term in category.list %}<a href="{{ term.uri }}">{{ term.name }}</a>,{% endfor %}</td>
+            <td>{% for term in category.list %}<a href="term/{{ term.id }}">{{ term.name }}</a>,{% endfor %}</td>
         </tr>
 
 
