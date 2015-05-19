@@ -14,7 +14,7 @@
    <div class="container">
        <div class="row">
                <h2>{{ project.full_name }}</h2>
-               <a href='{% url 'paleocore_projects:index' %}'>All PaleoCore projects</a>
+               <a href='{% url 'projects:index' %}'>All PaleoCore projects</a>
 
 
        </div>
@@ -50,7 +50,7 @@
 
                 function main_map_init (map, options) {
 
-                var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                var dataurl = '{% url "projects:projects_geojson" %}';
                 // Download GeoJSON via Ajax
                 $.getJSON(dataurl, function (data) {
                     // Add GeoJSON layer
@@ -83,7 +83,7 @@
            {% if project.is_public %}
                <p>The data in the {{ project.full_name }} are publicly available.</p>
                {% with app=project.paleocore_appname %}
-               <b class="button" onclick="window.location.href='{% url 'paleocore_projects:data_table' app %}'">View Public Database</b> &nbsp;&nbsp;
+               <b class="button" onclick="window.location.href='{% url 'projects:data_table' app %}'">View Public Database</b> &nbsp;&nbsp;
                <b class="button" onclick="window.location.href='/admin/{{ project.paleocore_appname }}/'">Admin Site for Project Members</b> &nbsp;&nbsp;
                <b class="button" onclick="window.location.href='/{{ project.paleocore_appname }}/upload/'">Upload Data</b> &nbsp;&nbsp;
                {% endwith %}

@@ -66,7 +66,7 @@ INSTALLED_APPS = (
     'tastypie',  # to create database tables for API keys when syncdb is run
     'login',  # simple app for validating users in views
     'base',  # main site app
-    'data',  # manage projects and project data
+    #'data',  # manage projects and project data
     'standard',  # paleocore standard
     'meetings',  # manage meetings, abstracts and authors
     'polls',  # django tutorial app
@@ -82,7 +82,7 @@ INSTALLED_APPS = (
     'fc',
     'gdb',
     'taxonomy',
-    'paleocore_projects',
+    'projects',
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',

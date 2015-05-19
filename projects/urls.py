@@ -1,11 +1,11 @@
 from django.conf.urls import patterns, url
-from paleocore_projects import views
-from paleocore_projects.models import Project
+from projects import views
+from projects.models import Project
 from djgeojson.views import GeoJSONLayerView
 
 
 
-urlpatterns = patterns('paleocore_projects.views',
+urlpatterns = patterns('projects.views',
                        # ex. /projects/
                        #url(r'^data/(?P<pcoreapp>[^/]+)/$', views.ProjectDataView.as_view(), name='data'),
                        url(r'^(?P<pcoreapp>[^/]+)/(?P<occurrenceid>\d+)$', views.OccurrenceDetailView.as_view(), name='occurrence_detail'),

@@ -1,7 +1,7 @@
 from django.views import generic
 from django.core.urlresolvers import reverse
 from fiber.views import FiberPageMixin
-from paleocore_projects.models import Project
+from projects.models import Project
 from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response, get_object_or_404
 from django.db.models.loading import get_model
 from django.template import RequestContext
@@ -10,19 +10,19 @@ from ast import literal_eval
 from django.forms.models import model_to_dict
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
-    template_name = 'paleocore_projects/project_list.html'
+    template_name = 'projects/project_list.html'
     context_object_name = 'project_list'
 
     def get_queryset(self):
         # build a query set of projects.
-        return Project.objects.filter(display_summary_info=True)
+        return Project.objects.filter(display_summary_info=True, is_standard=False)
 
     def get_fiber_page_url(self):
-        return reverse('paleocore_projects:index')
+        return reverse('projects:index')
 
 
 class OccurrenceDetailView(FiberPageMixin, generic.DetailView):
-    template_name = 'paleocore_projects/occurrence_detail.html'
+    template_name = 'projects/occurrence_detail.html'
     context_object_name = 'occurrence'
 
     def get_context_data(self, **kwargs):
@@ -44,10 +44,10 @@ class OccurrenceDetailView(FiberPageMixin, generic.DetailView):
 
     #I don't use fiber at all, so hard code a fiber page (pk=1)
     def get_fiber_page_url(self):
-        return reverse('paleocore_projects:detail', kwargs={'pcoreapp':"drp"})
+        return reverse('projects:detail', kwargs={'pcoreapp':"drp"})
 
 class ProjectDetailView(FiberPageMixin, generic.DetailView):
-    template_name = 'paleocore_projects/project_detail.html'
+    template_name = 'projects/project_detail.html'
     context_object_name = 'project'
 
     def get_object(self):
@@ -55,10 +55,10 @@ class ProjectDetailView(FiberPageMixin, generic.DetailView):
 
     #I don't use fiber at all, so hard code a fiber page (pk=1)
     def get_fiber_page_url(self):
-        return reverse('paleocore_projects:detail', kwargs={'pcoreapp':"drp"})
+        return reverse('projects:detail', kwargs={'pcoreapp':"drp"})
 
 class ProjectDataView(FiberPageMixin, generic.ListView):
-    template_name = 'paleocore_projects/project_data.html'
+    template_name = 'projects/project_data.html'
     context_object_name = 'occurrences'
 
     def get_queryset(self):
@@ -67,7 +67,7 @@ class ProjectDataView(FiberPageMixin, generic.ListView):
         return model.objects.all()
 
     def get_fiber_page_url(self):
-        return reverse('paleocore_projects:index')
+        return reverse('projects:index')
 
 
 #view that returns ajax data for a given project
@@ -131,7 +131,7 @@ def projectDataTable(request, pcoreapp="drp"):
     for field in literal_eval(project.display_filter_fields):
         filterChoices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
 
-    return render_to_response('paleocore_projects/project_data.html',
+    return render_to_response('projects/project_data.html',
                              {"project": project,
                               "displayFields":literal_eval(project.display_fields),
                               "filterChoices":filterChoices,

@@ -1,8 +1,8 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from standard.models import Term, Project, CompareView, TermView, ProjectView, RelateProjectTerms, RelatedTermView, TermCategory#, TermRelationshipView
+from standard.models import Term, Project, CompareView, TermView, ProjectView
 from django.db.models import Q
-from standard.forms import TermViewForm, RelateProjectsForm, RelateTermsForm
+from standard.forms import TermViewForm #, RelateProjectsForm, RelateTermsForm
 from django.forms.models import modelform_factory
 from django.db import connection
 import json
@@ -187,20 +187,20 @@ def terms(request):
             form = TermViewForm()
     return render_to_response('standard/terms.html', {'m': m, 'form': form}, RequestContext(request))
 
-def termRelationsList(request):
-    r = []
-    cursor = connection.cursor()
-    cursor.execute("SELECT term, term_id, term_project, related_projects FROM term_project_relationship_count_including_unrelated ORDER BY related_projects DESC")
-    termDict = fetchAll(cursor)
-    for t in termDict:
-        rtv = RelatedTermView()
-        rtv.term_id = t['term_id']
-        rtv.name = t['term']
-        rtv.project_name = t['term_project']
-        rtv.related_projects = t['related_projects']
-        r.append(rtv)
-
-    return render_to_response('term_relationship_list.html', {'r': r}, RequestContext(request))
+# def termRelationsList(request):
+#     r = []
+#     cursor = connection.cursor()
+#     cursor.execute("SELECT term, term_id, term_project, related_projects FROM term_project_relationship_count_including_unrelated ORDER BY related_projects DESC")
+#     termDict = fetchAll(cursor)
+#     for t in termDict:
+#         rtv = RelatedTermView()
+#         rtv.term_id = t['term_id']
+#         rtv.name = t['term']
+#         rtv.project_name = t['term_project']
+#         rtv.related_projects = t['related_projects']
+#         r.append(rtv)
+#
+#     return render_to_response('term_relationship_list.html', {'r': r}, RequestContext(request))
 
 
 def fetchAll(cursor):
