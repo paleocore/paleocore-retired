@@ -8,6 +8,7 @@ from django.template import RequestContext
 import json
 from ast import literal_eval
 from django.forms.models import model_to_dict
+from django.shortcuts import  get_object_or_404
 
 class ProjectIndexView(FiberPageMixin, generic.ListView):
     template_name = 'paleocore_projects/project_list.html'
@@ -32,7 +33,7 @@ class OccurrenceDetailView(FiberPageMixin, generic.DetailView):
         return context
 
     def get_object(self):
-        proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
+        proj = get_object_or_404(Project, paleocore_appname=self.kwargs["pcoreapp"])
         model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
         #test for permissions if project is NOT public
         if not proj.is_public:
