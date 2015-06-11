@@ -1,7 +1,7 @@
-{% extends "arcana_2col_left_nav.html" %}
+{% extends "base_nofiber.html" %}
 {% block main_content %}
-    <h3>Upload Form</h3>
-    <form action="/mlp/upload/" method="post" enctype="multipart/form-data">
+    <h3>KML/KMZ Upload Form</h3>
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table>
             {{ form.as_table }}

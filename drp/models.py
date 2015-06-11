@@ -108,7 +108,7 @@ class Occurrence(models.Model):
         return niceName.replace("None","").replace("--","")
 
     def save(self, *args, **kwargs):#custom save method for occurrence
-        thecatalog_number = str(self.collection_code) + "-" + str(self.paleolocality_number) + str(self.paleosublocality) + "-" + str(self.item_number) + str(self.item_part)
+        thecatalog_number = str(self.collection_code) + "-" + str(self.paleolocality_number) + str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
         self.catalog_number = thecatalog_number.replace("None","")
         self.date_last_modified = datetime.now()  # TODO change date_last_modified autonow option to accomplish this
 

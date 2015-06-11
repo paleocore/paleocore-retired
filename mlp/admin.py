@@ -24,7 +24,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     #admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        redirectURL = reverse("mlp:change_xy")
+        redirectURL = reverse("paleocore_projects:mlp:mlp_change_xy")
         return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
     change_xy.short_description = "Manually change coordinates for a point"
 

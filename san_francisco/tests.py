@@ -6,30 +6,17 @@ from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
 from django.core.urlresolvers import reverse
 from san_francisco.forms import UploadKMLForm
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.gis.geos import Point
 
-
-###################
-# Factory Methods #
-###################
-def create_django_page_tree():
-    mainmenu = Page(title='mainmenu')
-    mainmenu.save()
-    home = Page(title='home', parent=mainmenu, url='home', template_name='arcana_home.html')
-    home.save()
-    data = Page(title='Data', parent=home, url='data', template_name='')
-    data.save()
-    san_francisco = Page(title='san_francisco', parent=home, url='san_francisco', template_name='')
-    data.save()
-    upload = Page(title='upload', parent=san_francisco, url='upload', template_name='')
-    data.save()
-    kml = Page(title='Data', parent=upload, url='kml', template_name='')
-    kml.save()
-    data.save()
-
+from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \
+    COLLECTING_METHOD_VOCABULARY, COLLECTOR_CHOICES, ITEM_TYPE_VOCABULARY
+from random import random
 
 ######################################
 # Tests for models and their methods #
 ######################################
+
+
 class OccurrenceMethodsTests(TestCase):
     """
     Test san_francisco Occurrence instance creation and methods
@@ -181,7 +168,6 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(new_occurrence.easting(), 549539.4374838244)
         self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
 
-
     def test_biology_create_observation(self):
         """
         Test Biology instance creation for observations
@@ -219,26 +205,87 @@ class SanFranciscoViews(TestCase):
     fixtures = [
         'base/fixtures/fiber_test_data_150403.json',
         'taxonomy/fixtures/taxonomy_test_data_150403.json',
-        'san_francisco/fixtures/san_francisco_test_data_150403.json'
     ]
 
+    def setUp(self):
+        """
+        The setup function populates the test database with records for various permutations
+        of basis of record, collecting method, collectors and taxonomic orders. The method creates
+        Occurrence and Biology instances and some of the Occurrence instances will be of type "Faunal". We can
+        use these for testing the function to convert instances of an Occurrence class to instances of a
+        Biology class.
+        :return:
+        """
+        id_qualifier = IdentificationQualifier.objects.get(name__exact="None")
+        barcode_index = 1
+        mammal_orders = (("Primates", "Primates"),
+                         ("Perissodactyla", "Perissodactyla"),
+                         ("Artiodactyla", "Artiodactyla"),
+                         ("Rodentia", "Rodentia"),
+                         ("Carnivora", "Carnivora"),)
+
+        for basis_tuple_element in BASIS_OF_RECORD_VOCABULARY:
+            for method_tuple_element in COLLECTING_METHOD_VOCABULARY:
+                for collector_tuple_element in COLLECTOR_CHOICES:
+                    for order_tuple_element in mammal_orders:
+                        Biology.objects.create(
+                            barcode=barcode_index,
+                            basis_of_record=basis_tuple_element[0],
+                            collection_code="MLP",
+                            item_number=barcode_index,
+                            geom=Point(-122+random(), 37+random()),
+                            taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
+                            identification_qualifier=id_qualifier,
+                            field_number=datetime.now(),
+                            collecting_method=method_tuple_element[0],
+                            collector=collector_tuple_element[0],
+                            item_type="Faunal"
+                        )
+                        barcode_index += 1
+
+        for basis_tuple_element in BASIS_OF_RECORD_VOCABULARY:
+            for method_tuple_element in COLLECTING_METHOD_VOCABULARY:
+                for item_type_element in ITEM_TYPE_VOCABULARY:
+                    Occurrence.objects.create(
+                        barcode=barcode_index,
+                        basis_of_record=basis_tuple_element[0],
+                        collection_code="MLP",
+                        item_number=barcode_index,
+                        geom=Point(-122+random(), 37+random()),
+                        field_number=datetime.now(),
+                        collecting_method=method_tuple_element[0],
+                        collector="Denne Reed",
+                        item_type=item_type_element[0]
+                    )
+                    barcode_index += 1
+
+        total_permutations = len(BASIS_OF_RECORD_VOCABULARY) * \
+                             len(COLLECTING_METHOD_VOCABULARY)*len(COLLECTOR_CHOICES*len(mammal_orders))
+        self.assertEqual(Biology.objects.all().count(), total_permutations)
+        self.assertEqual(Biology.objects.filter(basis_of_record__exact="FossilSpecimen").count(),
+                         total_permutations/len(BASIS_OF_RECORD_VOCABULARY))
+        object1 = Biology.objects.get(barcode=1)
+        object2 = Biology.objects.get(barcode=2)
+        self.assertNotEqual(object1.geom.x, object2.geom.x)
+        self.assertNotEqual(object1.geom.y, object2.geom.y)
+        self.assertEqual(object1.collecting_method, "Surface Standard")
+
     def test_upload_view(self):
-        response = self.client.get(reverse('san_francisco:san_francisco_upload_kml'))
+        response = self.client.get(reverse('paleocore_projects:san_francisco:san_francisco_upload_kml'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Upload a kml")
 
     def test_confirmation_view(self):
-        response = self.client.get(reverse('san_francisco:san_francisco_upload_confirmation'))
+        response = self.client.get(reverse('paleocore_projects:san_francisco:san_francisco_upload_confirmation'))
         self.assertEqual(response.status_code, 200)
 
     def test_download_view(self):
-        response = self.client.get(reverse('san_francisco:san_francisco_download_kml'))
+        response = self.client.get(reverse('paleocore_projects:san_francisco:san_francisco_download_kml'))
         self.assertEqual(response.status_code, 200)
 
     def test_kml_upload_form_with_no_data(self):
         # get starting count of records in DB
         occurrence_starting_record_count = Occurrence.objects.count()
-        self.assertEqual(occurrence_starting_record_count, 20)
 
         # create an empty form
         post_dict = {}
@@ -249,7 +296,8 @@ class SanFranciscoViews(TestCase):
         self.assertFalse(form.is_valid())
 
         # get the post response and test page reload and error message
-        response = self.client.post(reverse('mlp:mlp_upload_kml'), file_dict, follow=True)
+        response = self.client.post(reverse('paleocore_projects:san_francisco:san_francisco_upload_kml'),
+                                    file_dict, follow=True)
         self.assertEqual(response.status_code, 200)  # test reload
         self.assertContains(response, 'Upload a')
         self.assertContains(response, 'This field is required')
@@ -273,13 +321,12 @@ class SanFranciscoViews(TestCase):
 
         # get current number of occurrence records in DB and verify count
         occurrence_starting_record_count = Occurrence.objects.count()
-        self.assertEqual(occurrence_starting_record_count, 20)
 
         # follow redirect to confirmation page
-        response = self.client.post('/san_francisco/upload/', file_dict, follow=True)
+        response = self.client.post('/projects/san_francisco/upload/', file_dict, follow=True)
 
         # test redirect to confirmation page
-        self.assertRedirects(response, '/san_francisco/confirmation/')
+        self.assertRedirects(response, '/projects/san_francisco/confirmation/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'upload was successful!')  # test message in conf page
 
@@ -302,13 +349,12 @@ class SanFranciscoViews(TestCase):
 
         # get current number of occurrence records in DB and verify count
         occurrence_starting_record_count = Occurrence.objects.count()
-        self.assertEqual(occurrence_starting_record_count, 20)
 
         # follow redirect to confirmation page
-        response = self.client.post('/san_francisco/upload/', file_dict, follow=True)
+        response = self.client.post('/projects/san_francisco/upload/', file_dict, follow=True)
 
         # test redirect to confirmation page
-        self.assertRedirects(response, '/san_francisco/confirmation/')
+        self.assertRedirects(response, '/projects/san_francisco/confirmation/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'upload was successful!')  # test message in conf page
 

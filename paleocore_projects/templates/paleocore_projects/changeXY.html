@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_nofiber.html" %}
 {% block main_content %}
     <h2>You are about to permanently change the coordinates below.</h2>
     <form action="." method="post" onsubmit="return userDoubleCheck()"> {% csrf_token %}

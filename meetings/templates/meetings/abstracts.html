@@ -1,9 +1,0 @@
-{% extends "arcana_2col_left_nav.html" %}
-{% block main_content %}
-    {% for abstract in abstracts %}
-        <h3>{{ abstract.title }}</h3>
-        <p>{{ abstract.abstract_text }}</p>
-
-    {% endfor %}
-
-{% endblock %}

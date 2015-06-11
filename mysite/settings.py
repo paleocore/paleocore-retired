@@ -68,8 +68,6 @@ INSTALLED_APPS = (
     'base',  # main site app
     'data',  # manage projects and project data
     'standard',  # paleocore standard
-    'meetings',  # manage meetings, abstracts and authors
-    'polls',  # django tutorial app
     'efossils',
     'paleosites',
     'olwidget',

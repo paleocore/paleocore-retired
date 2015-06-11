@@ -23,11 +23,11 @@ from django.template import RequestContext
 from django.contrib import messages
 
 
-class DownloadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/download_kml.html'
+class DownloadKMLView(generic.FormView):
+    template_name = 'paleocore_projects/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
-    success_url = '/mlp/confirmation/'
+    success_url = '/projects/mlp/confirmation/'
 
     def form_valid(self, form):
         k = kml.KML()
@@ -80,15 +80,14 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
         response['Content-Disposition'] = 'attachment; filename="mlp.kml"'
         return response
 
-    def get_fiber_page_url(self):
-        return reverse('mlp:mlp_download_kml')
 
-
-class UploadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/upload_kml.html'
+class UploadKMLView(generic.FormView):
+    template_name = 'paleocore_projects/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
-    success_url = '/mlp/confirmation/'
+    # For some reason reverse cannot be used to define the success_url. For example the following line raises an error.
+    # e.g. success_url = reverse("paleocore_projects:mlp:mlp_upload_confirmation")
+    success_url = '/projects/mlp/confirmation/'  # but this does work.
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -96,7 +95,8 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         # TODO parse the kml file more smartly to locate the first placemark and work from there.
         # TODO ingest kmz and kml. See the zipfile python library
-        KML_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on the file
+        KML_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on
+        # he file
         KML_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
         KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]  # get the file name no extension
         KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]  # get the file extension
@@ -277,20 +277,14 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         return super(UploadKMLView, self).form_valid(form)
 
-    def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload_kml')
 
-
-class Confirmation(FiberPageMixin, generic.ListView):
-    template_name = 'mlp/confirmation.html'
+class Confirmation(generic.ListView):
+    template_name = 'paleocore_projects/confirmation.html'
     model = Occurrence
 
-    def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload_confirmation')
 
-
-class UploadView(FiberPageMixin, generic.FormView):
-    template_name = 'mlp/upload.html'
+class UploadShapefileView(generic.FormView):
+    template_name = 'paleocore_projects/upload_shapefile.html'
     form_class = UploadForm
     context_object_name = 'upload'
     success_url = 'confirmation'
@@ -313,10 +307,7 @@ class UploadView(FiberPageMixin, generic.FormView):
         # sf = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
 
         shapes = sf.shapes()
-        return super(UploadView, self).form_valid(form)
-
-    def get_fiber_page_url(self):
-        return reverse('mlp:mlp_upload')
+        return super(UploadShapefileView, self).form_valid(form)
 
 
 def ChangeXYView(request):
@@ -324,25 +315,25 @@ def ChangeXYView(request):
         form = ChangeXYForm(request.POST)
         if form.is_valid():
             obs = Occurrence.objects.get(pk=request.POST["DB_id"])
-            latlong = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]),37,"N")
-            pnt = GEOSGeometry("POINT (" + str(latlong[1]) + " " + str(latlong[0]) + ")", 4326)  # WKT
+            coordinates = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]), 37, "N")
+            pnt = GEOSGeometry("POINT (" + str(coordinates[1]) + " " + str(coordinates[0]) + ")", 4326)  # WKT
             obs.geom = pnt
             obs.save()
-            messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number )
+            messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
             return redirect("/admin/mlp/occurrence")
     else:
         selected = list(request.GET.get("ids", "").split(","))
         if len(selected) > 1:
-            messages.error(request,"You can't change the coordinates of multiple points at once.")
+            messages.error(request, "You can't change the coordinates of multiple points at once.")
             return redirect("/admin/mlp/occurrence")
         selected_object = Occurrence.objects.get(pk=int(selected[0]))
-        initialData = {"DB_id": selected_object.id,
-                       "barcode": selected_object.barcode,
-                       "old_easting": selected_object.easting,
-                       "old_northing": selected_object.northing,
-                       "item_scientific_name": selected_object.item_scientific_name,
-                       "item_description": selected_object.item_description
-        }
-        theForm = ChangeXYForm(initial=initialData)
-        return render_to_response('mlp/changeXY.html', {"theForm": theForm}, RequestContext(request))
+        initial_data = {"DB_id": selected_object.id,
+                        "barcode": selected_object.barcode,
+                        "old_easting": selected_object.easting,
+                        "old_northing": selected_object.northing,
+                        "item_scientific_name": selected_object.item_scientific_name,
+                        "item_description": selected_object.item_description
+                        }
+        the_form = ChangeXYForm(initial=initial_data)
+        return render_to_response('paleocore_projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
 

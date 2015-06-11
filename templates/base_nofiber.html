@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<!--
+This is the default PaleoCore page template without fiber content.
+Fiber pages that do not have a template declared will use this template by default.
+-->
+
+{% extends "arcana_base.html" %}
+
+{% block extra_style %}{% endblock %}
+{% block extra_js %}{% endblock %}
+
+{% block page_content %}
+<div id="main-wrapper" class="subpage">
+    <div class="container">
+        <div class="row">
+            <div class="12u skel-cell-important">
+
+                <!-- Content -->
+
+                    <article class="first">
+
+                        {% block main_content %}{% endblock %}
+                    </article>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

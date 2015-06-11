@@ -29,11 +29,11 @@ import utm
 from zipfile import ZipFile
 
 
-class DownloadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'san_francisco/download_kml.html'
+class DownloadKMLView(generic.FormView):
+    template_name = 'paleocore_projects/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
-    success_url = '/san_francisco/confirmation/'
+    success_url = '/projects/san_francisco/confirmation/'
 
     def form_valid(self, form):
         k = kml.KML()
@@ -86,15 +86,12 @@ class DownloadKMLView(FiberPageMixin, generic.FormView):
         response['Content-Disposition'] = 'attachment; filename="san_francisco.kml"'
         return response
 
-    def get_fiber_page_url(self):
-        return reverse('san_francisco:san_francisco_download_kml')
 
-
-class UploadKMLView(FiberPageMixin, generic.FormView):
-    template_name = 'san_francisco/upload_kml.html'
+class UploadKMLView(generic.FormView):
+    template_name = 'paleocore_projects/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
-    success_url = '/san_francisco/confirmation/'
+    success_url = '/projects/san_francisco/confirmation/'
 
     # @method_decorator(permission_required)
     # def dispatch(self, *args, **kwargs):
@@ -285,23 +282,17 @@ class UploadKMLView(FiberPageMixin, generic.FormView):
 
         return super(UploadKMLView, self).form_valid(form)
 
-    def get_fiber_page_url(self):
-        return reverse('san_francisco:san_francisco_upload_kml')
 
-
-class Confirmation(FiberPageMixin, generic.ListView):
-    template_name = 'san_francisco/confirmation.html'
+class Confirmation(generic.ListView):
+    template_name = 'paleocore_projects/confirmation.html'
     model = Occurrence
 
-    def get_fiber_page_url(self):
-        return reverse('san_francisco:san_francisco_upload_confirmation')
 
-
-class UploadView(FiberPageMixin, generic.FormView):
-    template_name = 'san_francisco/upload.html'
+class UploadShapefileView(generic.FormView):
+    template_name = 'paleocore_projects/upload_shapefile.html'
     form_class = UploadForm
     context_object_name = 'upload'
-    success_url = 'confirmation'
+    success_url = '/paleocore_projects/confirmation'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -321,10 +312,7 @@ class UploadView(FiberPageMixin, generic.FormView):
         # san_francisco = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
 
         shapes = san_francisco.shapes()
-        return super(UploadView, self).form_valid(form)
-
-    def get_fiber_page_url(self):
-        return reverse('san_francisco:san_francisco_upload')
+        return super(UploadShapefileView, self).form_valid(form)
 
 def ChangeXYView(request):
     if request.method == "POST":
@@ -351,7 +339,7 @@ def ChangeXYView(request):
                         "item_description":selected_object.item_description
                     }
         theForm = ChangeXYForm(initial = initialData)
-        return render_to_response('san_francisco/changeXY.html',
+        return render_to_response('paleocore_projects/changeXY.html',
                                 {"theForm":theForm},
                               RequestContext(request))
 
