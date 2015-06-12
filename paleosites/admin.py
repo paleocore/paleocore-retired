@@ -4,7 +4,7 @@ import django.contrib.gis.geos
 import csv
 from django_countries import countries
 from django.contrib.gis.db import models
-from olwidget.admin import GeoModelAdmin
+
 
 class DateInLine(admin.StackedInline):
     model = Date
@@ -17,12 +17,12 @@ class DateInLine(admin.StackedInline):
                  'classes': [('collapse')]})]
 
 
-class Site_plus_dates_admin(admin.ModelAdmin):
+class SiteDateAdmin(admin.ModelAdmin):
     inlines = [
         DateInLine,
     ]
     fieldsets = [(None, {
-                 'fields': [('site', 'site_type'), ('latitude', 'longitude', 'altitude', 'country'), 
+                 'fields': [('site', 'site_type'), ('latitude', 'longitude', 'altitude', 'country'),
                             ('data_source')]})]
     readonly_fields = ('latitude', 'longitude',)
     list_display = ('site', 'site_type', 'latitude', 'longitude', 'altitude', 'country', 'data_source')
@@ -30,19 +30,15 @@ class Site_plus_dates_admin(admin.ModelAdmin):
     search_fields = ['site', 'country']
 
 
-class Site_admin(GeoModelAdmin):
+class SiteAdmin(admin.OSMGeoAdmin):
     fieldsets = [(None, {
-                 'fields': [('site', 'site_type', 'data_source', 'display'), ('latitude', 'longitude', 'altitude', 
+                 'fields': [('site', 'site_type', 'data_source', 'display'), ('latitude', 'longitude', 'altitude',
                                                                               'country'), ('map_location', 'notes')]})]
     readonly_fields = ('latitude', 'longitude',)
     list_display = ('site', 'site_type', 'latitude', 'longitude', 'altitude', 'country', 'data_source')
     list_filter = ['data_source', 'display', 'country']
     ordering = ['site',]
     search_fields = ['site', 'country']
-
-    options = {
-        'layers': ['google.terrain']
-    }
 
     def update_map_location(modeladmin, request, queryset):
         for a_site in Site.objects.all():
@@ -52,7 +48,7 @@ class Site_admin(GeoModelAdmin):
                 a_site.save()
         return None         # Return None to display the change list page again.
     update_map_location.short_description = "Update map location from Lat/Long"
-    
+
     def do_stuff(modeladmin, request, queryset):
         for a_site in Site.objects.all():
             if a_site.site_type=="Abri":
@@ -63,7 +59,7 @@ class Site_admin(GeoModelAdmin):
                 a_site.save()
         return None
     do_stuff.short_description = "Do Stuff"
-    
+
     def clear_flagged(modeladmin, request, queryset):
         for a_site in Site.objects.all():
             if a_site.display:
@@ -71,7 +67,7 @@ class Site_admin(GeoModelAdmin):
                 a_site.save()
         return None         # Return None to display the change list page again.
     clear_flagged.short_description = "Clear flag on all records"
-    
+
     # TODO generalize this function
     def import_sites(modeladmin, request, queryset):
         with open('D:/Users/mcpherro/PycharmProjects/Sites/sites.csv', 'rb') as f:
@@ -81,7 +77,7 @@ class Site_admin(GeoModelAdmin):
                 for c in countries:
                     if row[2]==c[1]:
                         country_name = c[0]
-                s = Site(id=row[0], site=row[1], country=country_name, data_source=row[3], site_type=row[7], 
+                s = Site(id=row[0], site=row[1], country=country_name, data_source=row[3], site_type=row[7],
                          display=row[8])
                 if row[4] != 'NA':
                     s.latitude = row[4]
@@ -98,10 +94,10 @@ class Site_admin(GeoModelAdmin):
     actions = [import_sites, update_map_location, clear_flagged, do_stuff]
 
 
-class Date_admin(admin.ModelAdmin):
+class DateAdmin(admin.ModelAdmin):
     fieldsets = [('Sample Information', {
                  'fields': [('site'), ('layer', 'industry', 'industry_2', 'industry_3'),
-                            ('cat_no', 'sample', 'technique', 'date', 'sd_plus', 'sd_minus', 'corrected_date_BP', 
+                            ('cat_no', 'sample', 'technique', 'date', 'sd_plus', 'sd_minus', 'corrected_date_BP',
                              'plus', 'minus', 'intcal09_max', 'intcal09_min'),
                             ('hominid_remains', 'bibliography', 'notes', 'period')]})]
     list_display = ('site', 'cat_no', 'layer', 'industry')
@@ -112,8 +108,8 @@ class Date_admin(admin.ModelAdmin):
         with open('D:/Users/mcpherro/PycharmProjects/Sites/dates.csv', 'rb') as f:
             reader = csv.reader(f)
             for row in reader:
-                d = Date(id=row[0], site_id=row[1], layer=row[2], industry=row[3], industry_2=row[4], 
-                         industry_3=row[5], cat_no=row[6], sample=row[10], technique=row[11], hominid_remains=row[15], 
+                d = Date(id=row[0], site_id=row[1], layer=row[2], industry=row[3], industry_2=row[4],
+                         industry_3=row[5], cat_no=row[6], sample=row[10], technique=row[11], hominid_remains=row[15],
                          bibliography=row[16], period=row[17], notes=row[18])
                 if row[7] != 'NA':
                     d.date = row[7]
@@ -136,8 +132,8 @@ class Date_admin(admin.ModelAdmin):
     import_dates.short_description = "Import dates.csv"
     actions = [import_dates]
 
-admin.site.register(Site, Site_admin)
-admin.site.register(Site_plus_dates, Site_plus_dates_admin)
-admin.site.register(Date, Date_admin)
+admin.site.register(Site, SiteAdmin)
+admin.site.register(Site_plus_dates, SiteDateAdmin)
+admin.site.register(Date, DateAdmin)
 #admin.site.register(Place, admin.OSMGeoAdmin)
 
