@@ -72,20 +72,21 @@ INSTALLED_APPS = (
     'paleosites',
     'olwidget',
 
-    # Data Apps
-    'mlp',
-    'drp',   # Dikika Research Project geospatial app
+    # Project Apps
+    'mlp',  # Mille-Logya Project
+    'drp',   # Dikika Research Project
     'turkana',  # Turkana Project Data
-    'cc',
-    'fc',
-    'gdb',
-    'taxonomy',
+    'cc',  # Combe Capelle project
+    'fc',  # Fontechevade project
+    'gdb',  # Great Divide Basin project
+    'west_turkana',  # West Turkana research project
+    'san_francisco',  # San Francisco demo project
     'paleocore_projects',
+    'taxonomy',
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',
-    #'austin',
-    'san_francisco',
+
 
 )
 
