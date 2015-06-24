@@ -1,10 +1,7 @@
 from django.db import models
-from django.template.defaultfilters import default
-from django.forms import ModelForm
 from base.models import PaleocoreUser
 from projects.models import Project
-from django.db import connection, transaction
-from django.db.models import Q
+from django.db import connection
 
 # Create your models here.
 
@@ -131,21 +128,19 @@ class Term(models.Model):
     uri = models.CharField(null=True, blank=True, max_length=255)
     projects = models.ManyToManyField('projects.Project', through='projects.ProjectTerm', blank=True, null=True)
 
-    # def relatedTermCount(self):
-    #     return self.term_relationships.all().count()
-    #
-    # def relatedProjectCount(self):
-    #     cursor = connection.cursor()
-    #
-    #     # Data retrieval operation - no commit required
-    #     cursor.execute("SELECT related_projects FROM term_project_relationship_count WHERE term_id = %s", [self.id])
-    #     row = cursor.fetchone()
-    #
-    #     return row[0]
+    def get_projects(self):
+        return ', '.join(['project.short_name' for projects in self.projects.all()])
+
+    def native_project(self):
+        try:
+            native_project_term = self.projectterm_set.get(native=True)
+            return native_project_term.project.full_name
+        except:
+            return None
 
     def __unicode__(self):
-        return self.name    
-    
+        return self.name
+
     class Meta:
         ordering = ["name"]
         verbose_name_plural = "Terms"

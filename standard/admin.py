@@ -8,7 +8,7 @@ from standard.models import Project, Term, TermCategory, TermStatus, TermDataTyp
 #     ordering = ("name",)
 
 class TermAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'data_type', 'status', 'category')
+    list_display = ('id', 'name', 'native_project', 'get_projects', 'data_type', 'status', 'category')
     list_filter = ['data_type', 'status', 'category']
     ordering = ('name',)
     filter_horizontal = ('projects',)
