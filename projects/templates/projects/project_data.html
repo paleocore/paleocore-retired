@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block extra_style %}
-   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+   <link rel="stylesheet" type="text/css" href="{% static 'projects/css/style.css' %}">
 {% endblock %}
 
 {% block extra_js %}
@@ -18,7 +18,7 @@
 
     <script>
     var searchtable
-    var ajaxurl = "{% url  "paleocore_projects:data_json" project.paleocore_appname %}"
+    var ajaxurl = "{% url  "projects:data_json" project.paleocore_appname %}"
     $(document).ready(function() {
         //initiate the DataTable
         makeDataTable(ajaxurl);
@@ -43,7 +43,7 @@
    <div class="container">
       <div class="row">
 
-                <h2>{{ project }}</h2><a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"> Return to {{ project.paleocore_appname }} description.</a>
+                <h2>{{ project }}</h2><a href="{% url 'projects:detail' project.paleocore_appname%}"> Return to {{ project.paleocore_appname }} description.</a>
 
           <div class="6u" id="filter-container">
                {% for fieldname, options in filterChoices.items %}

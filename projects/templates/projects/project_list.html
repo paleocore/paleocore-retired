@@ -4,7 +4,7 @@
 {% load humanize %}
 
 {% block extra_style %}
-   <link rel="stylesheet" type="text/css" href="{% static 'paleocore_projects/css/style.css' %}">
+   <link rel="stylesheet" type="text/css" href="{% static 'projects/css/style.css' %}">
 {% endblock %}
 
 
@@ -34,7 +34,7 @@
 
                 function main_map_init (map, options) {
 
-                    var dataurl = '{% url "paleocore_projects:projects_geojson" %}';
+                    var dataurl = '{% url "projects:projects_geojson" %}';
                     // Download GeoJSON via Ajax
                     $.getJSON(dataurl, function (data) {
                         // Add GeoJSON layer
@@ -57,11 +57,11 @@
                 {% with project.id as pk %}
 
                         <div class="4u" style="text-align: center;">
-                            <h2><a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
+                            <h2><a href="{% url 'projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
                             <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.<br/>
                                 These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
                             {% if project.graphic %}
-                            <a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
+                            <a href="{% url 'projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
                             {% endif %}
                         </div>
                     {% if forloop.counter|divisibleby:3 %}{% endif %}

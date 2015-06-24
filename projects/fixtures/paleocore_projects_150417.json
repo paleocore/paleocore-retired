@@ -1,9 +1,9 @@
 [
 {
     "pk": 1, 
-    "model": "paleocore_projects.project", 
+    "model": "projects.project", 
     "fields": {
-        "graphic": "uploads/images/paleocore_projects/selam.jpg", 
+        "graphic": "uploads/images/projects/selam.jpg", 
         "attribution": "The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences. Core DRP team members include: Zeresenay Alemseged, Ren\u00e9 Bobe, Denis Geraads, Shannon McPherron, Denn\u00e9 Reed, and  Jonathan Wynn. Andrew Barr and Zelalem Bedaso participated in fieldwork as graduate students.", 
         "display_summary_info": true, 
         "paleocore_appname": "drp", 
@@ -18,9 +18,9 @@
 },
 {
     "pk": 2, 
-    "model": "paleocore_projects.project", 
+    "model": "projects.project", 
     "fields": {
-        "graphic": "uploads/images/paleocore_projects/koobi-fora-land.jpg", 
+        "graphic": "uploads/images/projects/koobi-fora-land.jpg", 
         "attribution": "These data have <a href='http://www.mnh.si.edu/ete/ETE_Datasets_Turkana.html'>previously been made available</a> by the ETE program at the Smithsonian Institute. ", 
         "display_summary_info": true, 
         "paleocore_appname": "turkana", 
@@ -35,9 +35,9 @@
 },
 {
     "pk": 3, 
-    "model": "paleocore_projects.project", 
+    "model": "projects.project", 
     "fields": {
-        "graphic": "uploads/images/paleocore_projects/DSCN1680.JPG", 
+        "graphic": "uploads/images/projects/DSCN1680.JPG", 
         "attribution": "The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences.", 
         "display_summary_info": true, 
         "paleocore_appname": "mlp", 
@@ -52,9 +52,9 @@
 },
 {
     "pk": 4, 
-    "model": "paleocore_projects.project", 
+    "model": "projects.project", 
     "fields": {
-        "graphic": "uploads/images/paleocore_projects/SanFrancisco.jpg", 
+        "graphic": "uploads/images/projects/SanFrancisco.jpg", 
         "attribution": "This project was created by the PaleoCore development team: Denn\u00e9 Reed, Tomislav Urban, Andrew Barr, Shannon McPherron, Andrew Cook, Nick Pereira, Jeannette Tang.", 
         "display_summary_info": true, 
         "paleocore_appname": "san_francisco", 
