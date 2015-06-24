@@ -1,6 +1,6 @@
 from django.contrib.gis.db import models
-from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
-    COLLECTOR_CHOICES, SIDE_VOCABULARY
+from ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
+    COLLECTOR_CHOICES, SIDE_VOCABULARY, COLLECTION_CODES
 from taxonomy.models import Taxon, IdentificationQualifier
 from uuid import uuid4
 import os
@@ -15,8 +15,7 @@ class Occurrence(models.Model):
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='MLP')
-    # Note we're not using localities!
+    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='WT')
     item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
@@ -48,7 +47,6 @@ class Occurrence(models.Model):
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
     in_situ = models.BooleanField(default=False)
-    ranked = models.BooleanField(default=False)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/west_turkana", null=True)
     weathering = models.SmallIntegerField(blank=True, null=True)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)

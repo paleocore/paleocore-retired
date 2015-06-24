@@ -165,7 +165,7 @@ class UploadKMLView(generic.FormView):
                     #######################
                     west_turkana_occ.barcode = attributes_dict.get("Barcode")
                     west_turkana_occ.item_number = west_turkana_occ.barcode
-                    west_turkana_occ.catalog_number = "MLP-" + str(west_turkana_occ.item_number)
+                    west_turkana_occ.catalog_number = "WT-" + str(west_turkana_occ.item_number)
                     west_turkana_occ.remarks = attributes_dict.get("Remarks")
                     west_turkana_occ.item_scientific_name = attributes_dict.get("Scientific Name")
                     west_turkana_occ.item_description = attributes_dict.get("Description")

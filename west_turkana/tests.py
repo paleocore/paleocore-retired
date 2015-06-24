@@ -197,7 +197,7 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="FossilSpecimen").count(), 1)
 
 
-class MilleLogyaViews(TestCase):
+class TestViews(TestCase):
     """
     The TestCase depends on two fixtures, which contain public data and are included on the GitHub repository.
     """
