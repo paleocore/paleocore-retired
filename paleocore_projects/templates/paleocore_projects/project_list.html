@@ -64,9 +64,10 @@
                             <a href="{% url 'paleocore_projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
                             {% endif %}
                         </div>
-                    {% if forloop.counter|divisibleby:3 %}</div>{% endif %}
+                    {% if forloop.counter|divisibleby:3 %}{% endif %}
                 {% endwith %}
                 {% endfor %}
+                </div>
                 </div>
                 </div>
     </div>

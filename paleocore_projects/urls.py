@@ -40,4 +40,8 @@ urlpatterns = patterns('paleocore_projects.views',
                        # san_francisco url includes
                        # ex. /projects/san_francisco/upload
                        url(r'^san_francisco/', include('san_francisco.urls', namespace='san_francisco')),
+
+                       # west_turkana url includes
+                       # ex. /projects/west_turkana/upload
+                       url(r'^west_turkana/', include('west_turkana.urls', namespace='west_turkana')),
                        )
