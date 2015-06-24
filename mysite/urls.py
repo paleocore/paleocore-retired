@@ -32,8 +32,13 @@ urlpatterns = patterns('',
     url(r'^apikey/', include('API.urls')),
     url(r'^API/', include(v1_api.urls)),
     url(r'^standard/', include('standard.urls', namespace="standard")),
+    url(r'^mlp/', include('mlp.urls', namespace="mlp")),
+    url(r'^san_francisco/', include('san_francisco.urls', namespace="san_francisco")),
     url(r'^login/', include('login.urls', namespace="user_login")),
-    url(r'^projects/', include('paleocore_projects.urls', namespace="paleocore_projects")),  # note the lack of a terminal dollar sign in the re
+    url(r'^polls/', include('polls.urls', namespace="polls")),  # note the lack of a terminal dollar sign in the re
+    url(r'^workshops/', include('meetings.urls', namespace="meetings")),
+    #url(r'^data/', include('data.urls', namespace="data")),  # note the lack of a terminal dollar sign in the re
+    url(r'^projects/', include('projects.urls', namespace="projects")),  # note the lack of a terminal dollar sign in the re
     url(r'^paleosites/', include('paleosites.urls', namespace="paleosites")),
 
     # Admin URLS

@@ -10,5 +10,4 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ['location', 'abstract']
     search_fields = ['title', 'short_title', 'abstract', 'description', 'principle_investigator', 'location']
 
-
 admin.site.register(Project, ProjectAdmin)

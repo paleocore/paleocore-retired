@@ -66,7 +66,7 @@ INSTALLED_APPS = (
     'tastypie',  # to create database tables for API keys when syncdb is run
     'login',  # simple app for validating users in views
     'base',  # main site app
-    'data',  # manage projects and project data
+    #'data',  # manage projects and project data
     'standard',  # paleocore standard
     'efossils',
     'paleosites',
@@ -80,7 +80,7 @@ INSTALLED_APPS = (
     'fc',
     'gdb',
     'taxonomy',
-    'paleocore_projects',
+    'projects',
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',
@@ -99,10 +99,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
