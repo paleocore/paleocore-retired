@@ -5,7 +5,7 @@ from django.contrib.gis.db import models
 class Site(models.Model):
     id = models.AutoField(primary_key=True)
     site = models.CharField('Site name', max_length=255, blank=False, null=True)
-    country = CountryField('Country', null=True, max_length=255)
+    country = CountryField('Country', blank=True, null=True)
     data_source = models.CharField('Data Source', max_length=50, blank=True, null=True)
     #latitude = models.FloatField('Latitude', blank=True, null=True)
     #longitude = models.FloatField('Longitude', blank=True, null=True)
