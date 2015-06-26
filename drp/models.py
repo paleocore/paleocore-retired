@@ -54,7 +54,7 @@ class Occurrence(models.Model):
     collector = models.CharField(max_length=50, blank=True, null=True, choices=COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True,max_length=50)
     disposition = models.CharField(max_length=255, blank=True, null=True)
-    field_number = models.DateTimeField(blank=False, null=False, editable=False)  # NOT NULL
+    field_number = models.DateTimeField(blank=True, null=True, editable=False)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
     individual_count = models.IntegerField(blank=True, null=True, default=1)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
@@ -90,7 +90,7 @@ class Occurrence(models.Model):
     collection_remarks = models.CharField("Remarks",null=True, blank=True,max_length=255)
     stratigraphic_section = models.CharField(null=True, blank=True,max_length=50)
     stratigraphic_height_in_meters = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    locality = models.ForeignKey(Locality)
+    locality = models.ForeignKey(Locality, null=True, blank=True)
 
     @staticmethod
     def fields_to_display():
