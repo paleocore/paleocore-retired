@@ -30,7 +30,7 @@ from zipfile import ZipFile
 
 
 class DownloadKMLView(generic.FormView):
-    template_name = 'paleocore_projects/download_kml.html'
+    template_name = 'projects/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
     success_url = '/projects/san_francisco/confirmation/'
@@ -88,7 +88,7 @@ class DownloadKMLView(generic.FormView):
 
 
 class UploadKMLView(generic.FormView):
-    template_name = 'paleocore_projects/upload_kml.html'
+    template_name = 'projects/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
     success_url = '/projects/san_francisco/confirmation/'
@@ -284,15 +284,15 @@ class UploadKMLView(generic.FormView):
 
 
 class Confirmation(generic.ListView):
-    template_name = 'paleocore_projects/confirmation.html'
+    template_name = 'projects/confirmation.html'
     model = Occurrence
 
 
 class UploadShapefileView(generic.FormView):
-    template_name = 'paleocore_projects/upload_shapefile.html'
+    template_name = 'projects/upload_shapefile.html'
     form_class = UploadForm
     context_object_name = 'upload'
-    success_url = '/paleocore_projects/confirmation'
+    success_url = '/projects/confirmation'
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -339,7 +339,7 @@ def ChangeXYView(request):
                         "item_description":selected_object.item_description
                     }
         theForm = ChangeXYForm(initial = initialData)
-        return render_to_response('paleocore_projects/changeXY.html',
+        return render_to_response('projects/changeXY.html',
                                 {"theForm":theForm},
                               RequestContext(request))
 

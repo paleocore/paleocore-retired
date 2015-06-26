@@ -24,7 +24,7 @@ from django.contrib import messages
 
 
 class DownloadKMLView(generic.FormView):
-    template_name = 'paleocore_projects/download_kml.html'
+    template_name = 'projects/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
     success_url = '/projects/mlp/confirmation/'
@@ -82,11 +82,11 @@ class DownloadKMLView(generic.FormView):
 
 
 class UploadKMLView(generic.FormView):
-    template_name = 'paleocore_projects/upload_kml.html'
+    template_name = 'projects/upload_kml.html'
     form_class = UploadKMLForm
     context_object_name = 'upload'
     # For some reason reverse cannot be used to define the success_url. For example the following line raises an error.
-    # e.g. success_url = reverse("paleocore_projects:mlp:mlp_upload_confirmation")
+    # e.g. success_url = reverse("projects:mlp:mlp_upload_confirmation")
     success_url = '/projects/mlp/confirmation/'  # but this does work.
 
     def form_valid(self, form):
@@ -279,12 +279,12 @@ class UploadKMLView(generic.FormView):
 
 
 class Confirmation(generic.ListView):
-    template_name = 'paleocore_projects/confirmation.html'
+    template_name = 'projects/confirmation.html'
     model = Occurrence
 
 
 class UploadShapefileView(generic.FormView):
-    template_name = 'paleocore_projects/upload_shapefile.html'
+    template_name = 'projects/upload_shapefile.html'
     form_class = UploadForm
     context_object_name = 'upload'
     success_url = 'confirmation'
@@ -335,5 +335,5 @@ def ChangeXYView(request):
                         "item_description": selected_object.item_description
                         }
         the_form = ChangeXYForm(initial=initial_data)
-        return render_to_response('paleocore_projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
+        return render_to_response('projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
 

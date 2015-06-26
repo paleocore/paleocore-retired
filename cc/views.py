@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import os
 import csv
-from CC_DB.models import *
+from cc.models import Excavation_unit, Context, Lithic, Small_Find, Photo, Lithics_with_Photos
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.geos import Polygon
@@ -32,7 +32,7 @@ def fill_units():
                         g = Polygon(p)
                     else:
                         g = LineString(p)
-                s, created  = Excavation_unit.objects.get_or_create(unit=row[0],defaults={'extent': g})
+                s, created = Excavation_unit.objects.get_or_create(unit=row[0],defaults={'extent': g})
                 s.save()
 
 

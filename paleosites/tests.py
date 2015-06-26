@@ -49,7 +49,7 @@ class SiteModelTests(TestCase):
             site_type="Shelter",
             display=True,
             map_location=Point(48.9, 2.45),
-            notes="""This is anoter test site"""
+            notes="""This is another test site"""
         )
 
         # test that a new site was added to the DB

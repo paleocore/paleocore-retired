@@ -270,16 +270,16 @@ class TestViews(TestCase):
         self.assertEqual(object1.collecting_method, "Surface Standard")
 
     def test_upload_view(self):
-        response = self.client.get(reverse('paleocore_projects:west_turkana:west_turkana_upload_kml'))
+        response = self.client.get(reverse('projects:west_turkana:west_turkana_upload_kml'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Upload a kml")
 
     def test_confirmation_view(self):
-        response = self.client.get(reverse('paleocore_projects:west_turkana:west_turkana_upload_confirmation'))
+        response = self.client.get(reverse('projects:west_turkana:west_turkana_upload_confirmation'))
         self.assertEqual(response.status_code, 200)
 
     def test_download_view(self):
-        response = self.client.get(reverse('paleocore_projects:west_turkana:west_turkana_download_kml'))
+        response = self.client.get(reverse('projects:west_turkana:west_turkana_download_kml'))
         self.assertEqual(response.status_code, 200)
 
     def test_kml_form_with_no_data(self):
@@ -295,7 +295,7 @@ class TestViews(TestCase):
         self.assertFalse(form.is_valid())
 
         # get the post response and test page reload and error message
-        response = self.client.post(reverse('paleocore_projects:west_turkana:west_turkana_upload_kml'), file_dict, follow=True)
+        response = self.client.post(reverse('projects:west_turkana:west_turkana_upload_kml'), file_dict, follow=True)
         self.assertEqual(response.status_code, 200)  # test reload
         self.assertContains(response, 'Upload a')
         self.assertContains(response, 'This field is required')

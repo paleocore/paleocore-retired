@@ -59,14 +59,12 @@ INSTALLED_APPS = (
     'compressor',
     'easy_thumbnails',
     'fiber',
-    #'pages',
 
     # PaleoCore Apps
     'API',  # so that testing works
     'tastypie',  # to create database tables for API keys when syncdb is run
     'login',  # simple app for validating users in views
     'base',  # main site app
-    #'data',  # manage projects and project data
     'standard',  # paleocore standard
     'efossils',
     'paleosites',
@@ -81,7 +79,7 @@ INSTALLED_APPS = (
     'gdb',  # Great Divide Basin project
     'west_turkana',  # West Turkana research project
     'san_francisco',  # San Francisco demo project
-    'paleocore_projects',
+    'projects',
     'taxonomy',
     'leaflet',
     'djgeojson',
@@ -103,6 +101,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'mysite.urls'
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

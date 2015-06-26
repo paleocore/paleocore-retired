@@ -58,8 +58,8 @@ class Occurrence(models.Model):
     class Meta:
         managed = True
         #db_table = 'west_turkana_occurrence'
-        verbose_name = 'MLP Occurrence'
-        verbose_name_plural = 'MLP Occurrences'
+        verbose_name = 'West Turkana Occurrence'
+        verbose_name_plural = 'West Turkana Occurrences'
 
     def __unicode__(self):
         """
@@ -196,8 +196,8 @@ class Biology(Occurrence):
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='west_turkana_biology_occurrences')
 
     class Meta:
-        verbose_name = "MLP Biology"
-        verbose_name_plural = "MLP Biology"
+        verbose_name = "West Turkana Biology"
+        verbose_name_plural = "West Turkana Biology"
         #db_table='west_turkana_biology'
 
     def __unicode__(self):

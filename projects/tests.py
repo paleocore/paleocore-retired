@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from paleocore_projects.models import Project
+from models import Project
 from mlp.models import Occurrence, Biology
 from django.contrib.gis.geos import Point
 from taxonomy.models import Taxon, IdentificationQualifier
@@ -28,6 +28,7 @@ class ProjectMethodsTests(TestCase):
 
         Project.objects.create(
             full_name="Dikika Research Project",
+            short_name="drp",
             abstract="The San Francisco project is a public demonstration database.",
             attribution="This project was created by the PaleoCore development team.",
             paleocore_appname="san_francisco",
@@ -39,6 +40,7 @@ class ProjectMethodsTests(TestCase):
 
         Project.objects.create(
             full_name="San Francisco (Demo)",
+            short_name="san_francisco",
             abstract="The Dikika Research Project (DRP) studies Pliocene hominins and paleoenvironments. ",
             attribution="The project is lead by Dr. Zeray Alemseged of the California Academy of Sciences.",
             paleocore_appname="drp",
@@ -52,6 +54,7 @@ class ProjectMethodsTests(TestCase):
 
         Project.objects.create(
             full_name="Turkana Database",
+            short_name="turkana",
             abstract="The Turkana Database contains information on fossil collections from the Turkana Basin.",
             attribution="These data have previously been made available",
             paleocore_appname="turkana",
@@ -120,7 +123,7 @@ class ProjectMethodsTests(TestCase):
     def test_project_index_view(self):
         response = self.client.get('/projects/')  # expected url
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('paleocore_projects:index'))  # reverse lookup
+        response = self.client.get(reverse('projects:index'))  # reverse lookup
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, "Dikika")  # Dikika project title
@@ -130,21 +133,21 @@ class ProjectMethodsTests(TestCase):
         self.assertContains(response, "leaflet-container")  # leaflet map
 
     def test_drp_project_detail_view(self):
-        response = self.client.get(reverse('paleocore_projects:detail', kwargs={"pcoreapp": "drp"}))
+        response = self.client.get(reverse('projects:detail', kwargs={"pcoreapp": "drp"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The project is lead")
         self.assertContains(response, "leaflet-container")  # leaflet map
         self.assertContains(response, "Admin Site for Project Members")  # button
 
     def test_san_francisco_detail_view(self):
-        response = self.client.get(reverse('paleocore_projects:detail', kwargs={"pcoreapp": "san_francisco"}))
+        response = self.client.get(reverse('projects:detail', kwargs={"pcoreapp": "san_francisco"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "This project was created")
         self.assertContains(response, "leaflet-container")  # leaflet map
         self.assertContains(response, "Admin Site for Project Members")  # button
 
     def test_turkana_detail_view(self):
-        response = self.client.get(reverse('paleocore_projects:detail', kwargs={"pcoreapp": "turkana"}))
+        response = self.client.get(reverse('projects:detail', kwargs={"pcoreapp": "turkana"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The Turkana Database contains information on fossil")
         self.assertContains(response, "leaflet-container")  # leaflet map
@@ -152,20 +155,20 @@ class ProjectMethodsTests(TestCase):
         self.assertContains(response, "View Public Data")  # button
 
     def test_turkana_public_data_table_view(self):
-        response = self.client.get(reverse('paleocore_projects:data_table', kwargs={"pcoreapp": "turkana"}))
+        response = self.client.get(reverse('projects:data_table', kwargs={"pcoreapp": "turkana"}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'dataTable')
 
     def test_projects_geojson(self):
-        response = self.client.get(reverse('paleocore_projects:projects_geojson'))
+        response = self.client.get(reverse('projects:projects_geojson'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "FeatureCollection")  # geojson in response
 
     def test_turkana_project_data_json(self):
-        response = self.client.get(reverse('paleocore_projects:data_json',  kwargs={"pcoreapp": "turkana"}))
+        response = self.client.get(reverse('projects:data_json',  kwargs={"pcoreapp": "turkana"}))
         self.assertEqual(response.status_code, 200)
 
     # This test needs some additional setup. Not sure exactly what is missing.
     # def test_mlp_project_data_json(self):
-    #     response = self.client.get(reverse('paleocore_projects:data_json',  kwargs={"pcoreapp": "mlp"}))
+    #     response = self.client.get(reverse('projects:data_json',  kwargs={"pcoreapp": "mlp"}))
     #     self.assertEqual(response.status_code, 200)

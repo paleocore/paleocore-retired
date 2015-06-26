@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from base.models import PaleocoreUser
 from ast import literal_eval
 
-#exclude any installed apps that have 'django' in the name
+# exclude any installed apps that have 'django' in the name
 app_CHOICES = [(name, name) for name in INSTALLED_APPS if name.find("django") == -1]
 
 class Project(models.Model):
