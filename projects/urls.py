@@ -41,6 +41,10 @@ urlpatterns = patterns('projects.views',
                        # ex. /projects/san_francisco/upload
                        url(r'^san_francisco/', include('san_francisco.urls', namespace='san_francisco')),
 
+                       # san_francisco url includes
+                       # ex. /projects/san_francisco/upload
+                       url(r'^omo_mursi/', include('omo_mursi.urls', namespace='omo_mursi')),
+
                        # west_turkana url includes
                        # ex. /projects/west_turkana/upload
                        url(r'^west_turkana/', include('west_turkana.urls', namespace='west_turkana')),

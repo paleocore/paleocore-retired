@@ -28,8 +28,8 @@ class Context(models.Model):
     objects = models.GeoManager()
     class Meta:
         managed = True
-        verbose_name_plural = "Context (Catalog)"
-        verbose_name = "Context"
+        verbose_name_plural = "CC Context (Catalog)"
+        verbose_name = "CC Context"
     def __unicode__(self):
         return u'%s' % (self.cat_no)
 
@@ -74,6 +74,8 @@ class Lithic(Context):
     scar_width = models.DecimalField(decimal_places=2,max_digits=10,blank=True,null=True)
     class Meta:
         managed = True
+        verbose_name = "CC Lithic"
+        verbose_name_plural = "CC Lithics"
 
 
 class Small_Find(Context):
@@ -83,8 +85,8 @@ class Small_Find(Context):
     fine_fauna_weight = models.IntegerField(blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Small finds (buckets)"
-        verbose_name = "Small find (bucket)"
+        verbose_name_plural = "CC Small finds (buckets)"
+        verbose_name = "CC Small find (bucket)"
 
 
 class Photo(Context):
@@ -96,11 +98,13 @@ class Photo(Context):
     thumb01.mark_safe = True
     class Meta:
         managed = True
+        verbose_name = "CC Image"
+        verbose_name_plural = "CC Images"
 
 
 class Lithics_with_Photos(Context):
     class Meta:
         proxy = True
         managed = True
-        verbose_name_plural = "Lithics (only with photos)"
-        verbose_name = "Lithic (only with photo)"
+        verbose_name_plural = "CC Lithics (only with photos)"
+        verbose_name = "CC Lithic (only with photo)"
