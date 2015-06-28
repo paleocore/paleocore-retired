@@ -14,7 +14,7 @@ COLLECTOR_CHOICES = (("Michelle Drapeau", "Michelle Drapeau"),
                      ("Al Deino", "Al Deino"))
 
 
-COLLECTION_CODES = (("OMM", "OMM"),)
+COLLECTION_CODES = (("MUR", "MUR"),)
 
 SIDE_VOCABULARY = (("Left", "Left"),
                    ("Right", "Right"),

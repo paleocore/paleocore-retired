@@ -230,7 +230,7 @@ class TestViews(TestCase):
                         Biology.objects.create(
                             barcode=barcode_index,
                             basis_of_record=basis_tuple_element[0],
-                            collection_code="OMM",
+                            collection_code="TEST",
                             item_number=barcode_index,
                             geom=Point(-122+random(), 37+random()),
                             taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
@@ -248,7 +248,7 @@ class TestViews(TestCase):
                     Occurrence.objects.create(
                         barcode=barcode_index,
                         basis_of_record=basis_tuple_element[0],
-                        collection_code="OMM",
+                        collection_code="TEST",
                         item_number=barcode_index,
                         geom=Point(-122+random(), 37+random()),
                         field_number=datetime.now(),
