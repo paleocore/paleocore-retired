@@ -17,15 +17,15 @@ from random import random
 
 class OccurrenceMethodsTests(TestCase):
     """
-    Test west_turkana Occurrence instance creation and methods
+    Test omo_mursi Occurrence instance creation and methods
     """
     fixtures = [
         'fixtures/fiber_data_150611.json',
     ]
 
-    def test_west_turkana_occurrence_save_simple(self):
+    def test_omo_mursi_occurrence_save_simple(self):
         """
-        Test west_turkana_occurrence instance save method with the simplest possible attributes.
+        Test omo_mursi_occurrence instance save method with the simplest possible attributes.
         """
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
         # The simplest occurrence instance we can create needs six bits of data.
@@ -40,7 +40,7 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
         self.assertEqual(new_occurrence.point_y(), 11.5303732536)
 
-    def test_west_turkana_create_method(self):
+    def test_omo_mursi_create_method(self):
         """
         Test Occurrence instance create method with simple set of attributes.
         :return:
@@ -54,7 +54,7 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
 
-    def test_west_turkana_create_method_invalid_item_type(self):
+    def test_omo_mursi_create_method_invalid_item_type(self):
         """
         """
         starting_record_count = Occurrence.objects.count()
@@ -67,7 +67,7 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
         self.assertEqual(new_occurrence.item_type, "Fake")
 
-    def test_west_turkana_save_method_valid_item_type(self):
+    def test_omo_mursi_save_method_valid_item_type(self):
         """
         """
         starting_record_count = Occurrence.objects.count()
@@ -85,7 +85,7 @@ class OccurrenceMethodsTests(TestCase):
         self.assertEqual(new_occurrence.point_x(), 40.8352906016)
         self.assertEqual(new_occurrence.item_type, "Faunal")
 
-    def test_west_turkana_save_method_invalid_item_type(self):
+    def test_omo_mursi_save_method_invalid_item_type(self):
         """
         """
         starting_record_count = Occurrence.objects.count()
@@ -106,14 +106,14 @@ class OccurrenceMethodsTests(TestCase):
 
 class BiologyMethodsTests(TestCase):
     """
-    Test west_turkana Biology instance creation and methods
+    Test omo_mursi Biology instance creation and methods
     """
     fixtures = [
         'fixtures/fiber_data_150611.json',
         'taxonomy/fixtures/taxonomy_data_150611.json'
     ]
 
-    def test_west_turkana_biology_save_simple(self):
+    def test_omo_mursi_biology_save_simple(self):
         """
         Test Biology instance save method with the simplest possible attributes.
         """
@@ -230,7 +230,7 @@ class TestViews(TestCase):
                         Biology.objects.create(
                             barcode=barcode_index,
                             basis_of_record=basis_tuple_element[0],
-                            collection_code="MLP",
+                            collection_code="TEST",
                             item_number=barcode_index,
                             geom=Point(-122+random(), 37+random()),
                             taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
@@ -248,12 +248,12 @@ class TestViews(TestCase):
                     Occurrence.objects.create(
                         barcode=barcode_index,
                         basis_of_record=basis_tuple_element[0],
-                        collection_code="MLP",
+                        collection_code="TEST",
                         item_number=barcode_index,
                         geom=Point(-122+random(), 37+random()),
                         field_number=datetime.now(),
                         collecting_method=method_tuple_element[0],
-                        collector="Denne Reed",
+                        collector="Michelle Drapeau",
                         item_type=item_type_element[0]
                     )
                     barcode_index += 1
@@ -270,16 +270,16 @@ class TestViews(TestCase):
         self.assertEqual(object1.collecting_method, "Surface Standard")
 
     def test_upload_view(self):
-        response = self.client.get(reverse('projects:west_turkana:west_turkana_upload_kml'))
+        response = self.client.get(reverse('projects:omo_mursi:omo_mursi_upload_kml'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Upload a kml")
 
     def test_confirmation_view(self):
-        response = self.client.get(reverse('projects:west_turkana:west_turkana_upload_confirmation'))
+        response = self.client.get(reverse('projects:omo_mursi:omo_mursi_upload_confirmation'))
         self.assertEqual(response.status_code, 200)
 
     def test_download_view(self):
-        response = self.client.get(reverse('projects:west_turkana:west_turkana_download_kml'))
+        response = self.client.get(reverse('projects:omo_mursi:omo_mursi_download_kml'))
         self.assertEqual(response.status_code, 200)
 
     def test_kml_form_with_no_data(self):
@@ -295,7 +295,7 @@ class TestViews(TestCase):
         self.assertFalse(form.is_valid())
 
         # get the post response and test page reload and error message
-        response = self.client.post(reverse('projects:west_turkana:west_turkana_upload_kml'), file_dict, follow=True)
+        response = self.client.post(reverse('projects:omo_mursi:omo_mursi_upload_kml'), file_dict, follow=True)
         self.assertEqual(response.status_code, 200)  # test reload
         self.assertContains(response, 'Upload a')
         self.assertContains(response, 'This field is required')
@@ -310,7 +310,7 @@ class TestViews(TestCase):
         http://stackoverflow.com/questions/7304248/writing-tests-for-forms-in-django
         :return:
         """
-        upload_file = open('west_turkana/fixtures/MLP_test.kmz', 'rb')
+        upload_file = open('omo_mursi/fixtures/OMM_test.kmz', 'rb')
         post_dict = {}
         file_dict = {'kmlfileUpload': SimpleUploadedFile(upload_file.name, upload_file.read())}
         upload_file.close()
@@ -321,10 +321,10 @@ class TestViews(TestCase):
         occurrence_starting_record_count = Occurrence.objects.count()
 
         # follow redirect to confirmation page
-        response = self.client.post('/projects/west_turkana/upload/', file_dict, follow=True)
+        response = self.client.post('/projects/omo_mursi/upload/', file_dict, follow=True)
 
         # test redirect to confirmation page
-        self.assertRedirects(response, '/projects/west_turkana/confirmation/')
+        self.assertRedirects(response, '/projects/omo_mursi/confirmation/')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'upload was successful!')  # test message in conf page
 

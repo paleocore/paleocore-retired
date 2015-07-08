@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'gdb',  # Great Divide Basin project
     'west_turkana',  # West Turkana research project
     'san_francisco',  # San Francisco demo project
+    'omo_mursi',
     'projects',
     'taxonomy',
     'leaflet',

@@ -24,7 +24,7 @@ class DownloadKMLView(generic.FormView):
     template_name = 'projects/download_kml.html'
     form_class = DownloadKMLForm
     context_object_name = 'download'
-    success_url = '/projects/west_turkana/confirmation/'
+    success_url = '/projects/omo_mursi/confirmation/'
 
     def form_valid(self, form):
         k = kml.KML()
@@ -74,7 +74,7 @@ class DownloadKMLView(generic.FormView):
                 f.append(p)
         r = k.to_string(prettyprint=True)
         response = HttpResponse(r, mimetype='text/plain')
-        response['Content-Disposition'] = 'attachment; filename="west_turkana.kml"'
+        response['Content-Disposition'] = 'attachment; filename="omo_mursi.kml"'
         return response
 
 
@@ -83,8 +83,8 @@ class UploadKMLView(generic.FormView):
     form_class = UploadKMLForm
     context_object_name = 'upload'
     # For some reason reverse cannot be used to define the success_url. For example the following line raises an error.
-    # e.g. success_url = reverse("projects:west_turkana:west_turkana_upload_confirmation")
-    success_url = '/projects/west_turkana/confirmation/'  # but this does work.
+    # e.g. success_url = reverse("projects:omo_mursi:omo_mursi_upload_confirmation")
+    success_url = '/projects/omo_mursi/confirmation/'  # but this does work.
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -114,7 +114,7 @@ class UploadKMLView(generic.FormView):
                     # TODO test attributes is even length
                     attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-                    west_turkana_occ = Occurrence()
+                    omo_mursi_occ = Occurrence()
 
                     ###################
                     # REQUIRED FIELDS #
@@ -122,83 +122,83 @@ class UploadKMLView(generic.FormView):
 
                     # Validate Basis of Record
                     if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
-                        west_turkana_occ.basis_of_record = "FossilSpecimen"
+                        omo_mursi_occ.basis_of_record = "FossilSpecimen"
                     elif attributes_dict.get("Basis Of Record") in ("Observation", "HumanObservation"):
-                        west_turkana_occ.basis_of_record = "HumanObservation"
+                        omo_mursi_occ.basis_of_record = "HumanObservation"
 
                     # Validate Item Type
                     item_type = attributes_dict.get("Item Type")
                     if item_type in ("Artifact", "Artifactual", "Archeology", "Archaeological"):
-                        west_turkana_occ.item_type = "Artifactual"
+                        omo_mursi_occ.item_type = "Artifactual"
                     elif item_type in ("Faunal", "Fauna"):
-                        west_turkana_occ.item_type = "Faunal"
+                        omo_mursi_occ.item_type = "Faunal"
                     elif item_type in ("Floral", "Flora"):
-                        west_turkana_occ.item_type = "Floral"
+                        omo_mursi_occ.item_type = "Floral"
                     elif item_type in ("Geological", "Geology"):
-                        west_turkana_occ.item_type = "Geological"
+                        omo_mursi_occ.item_type = "Geological"
 
                     # Field Number
                     try:
-                        west_turkana_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
-                        west_turkana_occ.year_collected = west_turkana_occ.field_number.year  # set the year collected form field number
+                        omo_mursi_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
+                        omo_mursi_occ.year_collected = omo_mursi_occ.field_number.year  # set the year collected form field number
                     except ValueError:
-                        west_turkana_occ.field_number = datetime.now()
-                        west_turkana_occ.problem = True
+                        omo_mursi_occ.field_number = datetime.now()
+                        omo_mursi_occ.problem = True
                         try:
                             error_string = "Upload error, missing field number, using current date and time instead."
-                            west_turkana_occ.problem_comment = west_turkana_occ.problem_comment + " " +error_string
+                            omo_mursi_occ.problem_comment = omo_mursi_occ.problem_comment + " " +error_string
                         except TypeError:
-                            west_turkana_occ.problem_comment = error_string
+                            omo_mursi_occ.problem_comment = error_string
 
                     #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
 
                     # Process point, comes in as well known text string
                     # Assuming point is in GCS WGS84 datum = SRID 4326
                     pnt = GEOSGeometry("POINT (" + str(o.geometry.x) + " " + str(o.geometry.y) + ")", 4326)  # WKT
-                    west_turkana_occ.geom = pnt
+                    omo_mursi_occ.geom = pnt
 
                     #######################
                     # NON-REQUIRED FIELDS #
                     #######################
-                    west_turkana_occ.barcode = attributes_dict.get("Barcode")
-                    west_turkana_occ.item_number = west_turkana_occ.barcode
-                    west_turkana_occ.catalog_number = "WT-" + str(west_turkana_occ.item_number)
-                    west_turkana_occ.remarks = attributes_dict.get("Remarks")
-                    west_turkana_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-                    west_turkana_occ.item_description = attributes_dict.get("Description")
+                    omo_mursi_occ.barcode = attributes_dict.get("Barcode")
+                    omo_mursi_occ.item_number = omo_mursi_occ.barcode
+                    omo_mursi_occ.catalog_number = "WT-" + str(omo_mursi_occ.item_number)
+                    omo_mursi_occ.remarks = attributes_dict.get("Remarks")
+                    omo_mursi_occ.item_scientific_name = attributes_dict.get("Scientific Name")
+                    omo_mursi_occ.item_description = attributes_dict.get("Description")
 
 
                     # Validate Collecting Method
                     collection_method = attributes_dict.get("Collection Method")
                     if collection_method in ("Surface Standard", "Standard"):
-                        west_turkana_occ.collecting_method = "Surface Standard"
+                        omo_mursi_occ.collecting_method = "Surface Standard"
                     elif collection_method in ("Surface Intensive", "Intensive"):
-                        west_turkana_occ.collecting_method = "Surface Intensive"
+                        omo_mursi_occ.collecting_method = "Surface Intensive"
                     elif collection_method in ("Surface Complete", "Complete"):
-                        west_turkana_occ.collecting_method = "Surface Complete"
+                        omo_mursi_occ.collecting_method = "Surface Complete"
                     elif collection_method in ("Exploratory Survey", "Exploratory"):
-                        west_turkana_occ.collecting_method = "Exploratory Survey"
+                        omo_mursi_occ.collecting_method = "Exploratory Survey"
                     elif collection_method in ("Dry Screen 5mm", "Dry Screen 5 Mm", "Dry Screen 5 mm"):
-                        west_turkana_occ.collecting_method = "Dry Screen 5mm"
+                        omo_mursi_occ.collecting_method = "Dry Screen 5mm"
                     elif collection_method in ("Dry Screen 2mm", "Dry Screen 2 Mm", "Dry Screen 2 mm"):
-                        west_turkana_occ.collecting_method = "Dry Screen 2mm"
+                        omo_mursi_occ.collecting_method = "Dry Screen 2mm"
                     elif collection_method in ("Dry Screen 1mm", "Dry Screen 1 Mm", "Dry Screen 1 mm"):
-                        west_turkana_occ.collecting_method = "Dry Screen 1mm"
+                        omo_mursi_occ.collecting_method = "Dry Screen 1mm"
                     # else:
-                    #     west_turkana_occ.collecting_method = None
-                    #     west_turkana_occ.problem = True
-                    #     west_turkana_occ.problem_comment = west_turkana_occ.problem_comment + " problem importing collecting method"
+                    #     omo_mursi_occ.collecting_method = None
+                    #     omo_mursi_occ.problem = True
+                    #     omo_mursi_occ.problem_comment = omo_mursi_occ.problem_comment + " problem importing collecting method"
 
-                    west_turkana_occ.collecting_method = attributes_dict.get("Collection Method")
-                    west_turkana_occ.collector = attributes_dict.get("Collector")
-                    west_turkana_occ.individual_count = attributes_dict.get("Count")
-                    #if west_turkana_occ:
-                    #    west_turkana_occ.year_collected = west_turkana_occ.field_number.year
+                    omo_mursi_occ.collecting_method = attributes_dict.get("Collection Method")
+                    omo_mursi_occ.collector = attributes_dict.get("Collector")
+                    omo_mursi_occ.individual_count = attributes_dict.get("Count")
+                    #if omo_mursi_occ:
+                    #    omo_mursi_occ.year_collected = omo_mursi_occ.field_number.year
 
                     if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
-                        west_turkana_occ.in_situ = False
+                        omo_mursi_occ.in_situ = False
                     elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
-                        west_turkana_occ.in_situ = True
+                        omo_mursi_occ.in_situ = True
 
                     ##############
                     # Save Image #
@@ -216,24 +216,24 @@ class UploadKMLView(generic.FormView):
                             for file_info in KMZ_file.filelist:
                                 if image_tag == file_info.orig_filename:
                                     # grab the image file itself
-                                    image_file = KMZ_file.extract(file_info, "media/uploads/images/west_turkana")
+                                    image_file = KMZ_file.extract(file_info, "media/uploads/images/omo_mursi")
                                     image_added = True
                                     break
                         except IndexError:
                             pass
 
-                    west_turkana_occ.save()
+                    omo_mursi_occ.save()
                     # need to save record before adding image in order to obtain the DB ID
                     if image_added:
                         # strip off the file name from the path
                         image_path = image_file[:image_file.rfind(os.sep)]
                         # construct new file name
-                        new_file_name = image_path + os.sep + str(west_turkana_occ.id) + "_" + image_tag
+                        new_file_name = image_path + os.sep + str(omo_mursi_occ.id) + "_" + image_tag
                         # rename extracted file with DB record ID
                         os.rename(image_file, new_file_name)
                         # need to strip off "media" folder from relative path saved to DB
-                        west_turkana_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
-                        west_turkana_occ.save()
+                        omo_mursi_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
+                        omo_mursi_occ.save()
                     feature_count += 1
 
                 elif type(o) is not Placemark:
@@ -317,12 +317,12 @@ def ChangeXYView(request):
             obs.geom = pnt
             obs.save()
             messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
-            return redirect("/admin/west_turkana/occurrence")
+            return redirect("/admin/omo_mursi/occurrence")
     else:
         selected = list(request.GET.get("ids", "").split(","))
         if len(selected) > 1:
             messages.error(request, "You can't change the coordinates of multiple points at once.")
-            return redirect("/admin/west_turkana/occurrence")
+            return redirect("/admin/omo_mursi/occurrence")
         selected_object = Occurrence.objects.get(pk=int(selected[0]))
         initial_data = {"DB_id": selected_object.id,
                         "barcode": selected_object.barcode,

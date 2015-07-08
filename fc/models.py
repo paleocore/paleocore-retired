@@ -9,8 +9,8 @@ class Excavation_unit(models.Model):
     objects = models.GeoManager()
     class Meta:
         managed = True
-        verbose_name_plural = "Excavation units"
-        verbose_name = "Excavation Unit"
+        verbose_name_plural = "FC Excavation units"
+        verbose_name = "FC Excavation Unit"
     def __unicode__(self):
         return u'%s' % (self.unit)
 
@@ -30,8 +30,8 @@ class Context(models.Model):
     objects = models.GeoManager()
     class Meta:
         managed = True
-        verbose_name_plural = "Context (Catalog)"
-        verbose_name = "Context"
+        verbose_name_plural = "FC Context (Catalog)"
+        verbose_name = "FC Context"
     def __unicode__(self):
         return u'%s' % (self.cat_no)
 
@@ -42,8 +42,8 @@ class Refits(models.Model):
     counter = models.IntegerField(blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Refits"
-        verbose_name = "Refit"
+        verbose_name_plural = "FC Refits"
+        verbose_name = "FC Refit"
 
 
 class Lithic(Context):
@@ -85,6 +85,8 @@ class Lithic(Context):
     weight = models.DecimalField(decimal_places=2,max_digits=10,blank=True,null=True)
     class Meta:
         managed = True
+        verbose_name = "FC Lithic"
+        verbose_name_plural = "FC Lithics"
 
 
 class Fauna(Context):
@@ -97,8 +99,8 @@ class Fauna(Context):
     bone_type = models.CharField(max_length=30,blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Fauna"
-        verbose_name = "Fauna"
+        verbose_name_plural = "FC Fauna"
+        verbose_name = "FC Fauna"
 
 
 class Small_Find(Context):
@@ -107,8 +109,8 @@ class Small_Find(Context):
     platform_weight = models.IntegerField(blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Small Finds (Summary Counts by bucket)"
-        verbose_name = "Small find (bucket)"
+        verbose_name_plural = "FC Small Finds (Summary Counts by bucket)"
+        verbose_name = "FC Small find (bucket)"
 
 
 class Small_Find_Weights(models.Model):
@@ -117,8 +119,8 @@ class Small_Find_Weights(models.Model):
     weight = models.DecimalField(decimal_places=2,max_digits=10,blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Small Finds (Weights by piece)"
-        verbose_name = "an artifact in a bucket"
+        verbose_name_plural = "FC Small Finds (Weights by piece)"
+        verbose_name = "FC artifact in a bucket"
 
 
 class Granulometry(models.Model):
@@ -127,16 +129,16 @@ class Granulometry(models.Model):
     weight = models.DecimalField(decimal_places=2,max_digits=10,blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Granulometry"
-        verbose_name = "a stone in a granulometry bucket"
+        verbose_name_plural = "FC Granulometry"
+        verbose_name = "FC stone in a granulometry bucket"
 
 
 class Galet_Weights(Context):
     weight = models.DecimalField(decimal_places=2,max_digits=10,blank=True,null=True)
     class Meta:
         managed = True
-        verbose_name_plural = "Galet Weights"
-        verbose_name = "Galet Weight"
+        verbose_name_plural = "FC Galet Weights"
+        verbose_name = "FC Galet Weight"
 
 
 class Photo(Context):
@@ -153,27 +155,29 @@ class Photo(Context):
     thumb02.mark_safe = True
     class Meta:
         managed = True
+        verbose_name = "FC Image"
+        verbose_name_plural = "FC Images"
 
 
 class Lithics_with_Photos(Context):
     class Meta:
         proxy = True
         managed = True
-        verbose_name_plural = "Lithics (only with photos)"
-        verbose_name = "Lithic (only with photo)"
+        verbose_name_plural = "FC Lithics (only with photos)"
+        verbose_name = "FC Lithic (only with photo)"
 
 
 class Buckets_with_Grains(Context):
     class Meta:
         proxy = True
         managed = True
-        verbose_name_plural = "Buckets with Granulometry"
-        verbose_name = "Bucket with Granulometry"
+        verbose_name_plural = "FC Buckets with Granulometry"
+        verbose_name = "FC Bucket with Granulometry"
 
 
 class Small_find_weights_summary(Context):
     class Meta:
         proxy = True
         managed = True
-        verbose_name_plural = "Small Finds (Weights by bucket)"
-        verbose_name = "Weights of small finds in a bucket"
+        verbose_name_plural = "FC Small Finds (Weights by bucket)"
+        verbose_name = "FC Weights of small finds in a bucket"
