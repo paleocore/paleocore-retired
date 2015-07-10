@@ -92,7 +92,7 @@ class Small_Find(Context):
 class Photo(Context):
     image01 = models.ImageField('Image',upload_to='/media/',null=True,blank=True)
     def thumb01(self):
-        return u'<a href="%s"><img src="%s" style="width:300px" /></a>' % (os.path.join('/static/' + self.image01.url),os.path.join('/static/' + self.image01.url))
+        return u'<a href="%s"><img src="%s" style="width:300px" /></a>' % (os.path.join(self.image01.url),os.path.join(self.image01.url))
     thumb01.short_description = 'Image'
     thumb01.allow_tags = True
     thumb01.mark_safe = True
