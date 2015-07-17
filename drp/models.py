@@ -4,12 +4,15 @@ from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 from mysite.ontologies import *
 
-item_typeCHOICES = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"), ("Floral", "Floral"), ("Geological", "Geological"))
+item_typeCHOICES = (("Artifactual", "Artifactual"),
+                    ("Faunal", "Faunal"),
+                    ("Floral", "Floral"),
+                    ("Geological", "Geological"))
 
 
 class Locality(models.Model):
-    paleolocality_number = models.IntegerField(null=True,blank=True)
-    collection_code = models.CharField(null=True, blank=True, choices = (("DIK", "DIK"), ("ASB", "ASB")), max_length=10)
+    paleolocality_number = models.IntegerField(null=True, blank=True)
+    collection_code = models.CharField(null=True, blank=True, choices=(("DIK", "DIK"), ("ASB", "ASB")), max_length=10)
     paleo_sublocality = models.CharField(null=True, blank=True, max_length=50)
     description_1 = models.TextField(null=True, blank=True, max_length=255)
     description_2 = models.TextField(null=True, blank=True, max_length=255)
@@ -28,23 +31,23 @@ class Locality(models.Model):
     class Meta:
         verbose_name = "DRP Locality"
         verbose_name_plural = "DRP Localities"
-        #db_table='drp_locality'
         ordering = ("collection_code", "paleolocality_number", "paleo_sublocality")
 
 
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class Occurrence(models.Model):
-    barcode = models.IntegerField("Barcode",null=True, blank=True)
+    barcode = models.IntegerField("Barcode", null=True, blank=True)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, choices=(("DIK","DIK"),("ASB","ASB")))
+    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True,
+                                       choices=(('DIK', 'DIK'), ('ASB', 'ASB')))
     item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
-    remarks = models.TextField("Remarks", null=True, blank=True,max_length=2500)
+    remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     georeference_remarks = models.CharField(max_length=50, null=True, blank=True)
@@ -52,7 +55,7 @@ class Occurrence(models.Model):
                                          choices=COLLECTING_METHOD_VOCABULARY, null=False)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=COLLECTOR_CHOICES)
-    finder = models.CharField(null=True, blank=True,max_length=50)
+    finder = models.CharField(null=True, blank=True, max_length=50)
     disposition = models.CharField(max_length=255, blank=True, null=True)
     field_number = models.DateTimeField(blank=True, null=True, editable=False)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
@@ -80,15 +83,15 @@ class Occurrence(models.Model):
     geom = models.GeometryField(srid=4326, blank=True, null=True)  # NOT NULL
     objects = models.GeoManager()
 
-    #DRP Specific Fields
-    paleolocality_number = models.IntegerField("Locality #",null=True, blank=True)
-    paleo_sublocality = models.CharField("Sublocality",null=True, blank=True,max_length=50)
-    locality_text = models.CharField(null=True, blank=True,max_length=255,db_column="locality")
-    verbatim_coordinates = models.CharField(null=True, blank=True,max_length=50)
-    verbatim_coordinate_system = models.CharField(null=True, blank=True,max_length=50)
-    geodetic_datum = models.CharField(null=True, blank=True,max_length=20)
-    collection_remarks = models.CharField("Remarks",null=True, blank=True,max_length=255)
-    stratigraphic_section = models.CharField(null=True, blank=True,max_length=50)
+    # DRP Specific Fields
+    paleolocality_number = models.IntegerField("Locality #", null=True, blank=True)
+    paleo_sublocality = models.CharField("Sublocality", null=True, blank=True, max_length=50)
+    locality_text = models.CharField(null=True, blank=True, max_length=255, db_column="locality")
+    verbatim_coordinates = models.CharField(null=True, blank=True, max_length=50)
+    verbatim_coordinate_system = models.CharField(null=True, blank=True, max_length=50)
+    geodetic_datum = models.CharField(null=True, blank=True, max_length=20)
+    collection_remarks = models.CharField("Remarks", null=True, blank=True, max_length=255)
+    stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
     stratigraphic_height_in_meters = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     locality = models.ForeignKey(Locality, null=True, blank=True)
 
@@ -104,24 +107,22 @@ class Occurrence(models.Model):
         return self.geom.y
 
     def __unicode__(self):
-        niceName = str(self.collection_code) + "-" + str(self.paleolocality_number) + "-" + str(self.item_number) + str(self.item_part) + " [" + str(self.item_scientific_name) + " " + str(self.item_description) + "]"
-        return niceName.replace("None","").replace("--","")
+        nice_name = str(self.collection_code) + "-" + str(self.paleolocality_number) + "-" + str(self.item_number) + \
+                    str(self.item_part) + " [" + str(self.item_scientific_name) + " " + str(self.item_description) + "]"
+        return nice_name.replace("None", "").replace("--", "")
 
-    def save(self, *args, **kwargs):#custom save method for occurrence
-        thecatalog_number = str(self.collection_code) + "-" + str(self.paleolocality_number) + str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
-        self.catalog_number = thecatalog_number.replace("None","")
+    def save(self, *args, **kwargs):  # custom save method for occurrence
+        the_catalog_number = str(self.collection_code) + "-" + str(self.paleolocality_number) + \
+                             str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
+        self.catalog_number = the_catalog_number.replace("None","")
         self.date_last_modified = datetime.now()  # TODO change date_last_modified autonow option to accomplish this
 
-        #call the normal drp_occurrence save method using alternate database
+        # call the normal drp_occurrence save method using alternate database
         super(Occurrence, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "DRP Occurrence"
         verbose_name_plural = "DRP Occurrences"
-        # The DRP database is in the SDE standard in order to make it compatible with
-        # ArcGIS 10.1. Django does not handle PostGIS DB schemas natively. This is a
-        # work-around to point Django to the right location for the data tables.
-        #db_table='drp_occurrence'
         ordering = ["collection_code", "paleolocality_number", "item_number", "item_part"]
 
 
@@ -142,7 +143,7 @@ class Biology(Occurrence):
     infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
     author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
     nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
-    identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
+    # identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
     identified_by = models.CharField(null=True, blank=True, max_length=100)
     date_identified = models.DateTimeField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
@@ -159,10 +160,10 @@ class Biology(Occurrence):
     um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     um_1_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     um_1_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True,blank=True)
-    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True,blank=True)
-    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True,blank=True)
-    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True,blank=True)
+    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_1_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_1_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
@@ -230,7 +231,6 @@ class Biology(Occurrence):
     class Meta:
         verbose_name = "DRP Biology"
         verbose_name_plural = "DRP Biology"
-        #db_table='drp_biology'
 
     def __unicode__(self):
         return str(self.taxon.__unicode__())
@@ -250,4 +250,3 @@ class Hydrology(models.Model):
     class Meta:
         verbose_name = "DRP Hydrology"
         verbose_name_plural = "DRP Hydrology"
-        #db_table = 'drp_hydrology'

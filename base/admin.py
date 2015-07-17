@@ -29,8 +29,8 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
         A function that defines a custom admin action to send bulk emails to selected users. The function calls a
         custom template called email.html
         """
-        returnURL="/admin/paleoschema/paleocoreuser/"
-        if 'apply' in request.POST: # check if the email form has been completed
+        returnURL = "/admin/paleoschema/paleocoreuser/"
+        if 'apply' in request.POST:  # check if the email form has been completed
             # code to send emails. We use send_mass_email, which requires a four-part tuple
             # containing the subject, message, from_address and a list of to addresses.
             if 'subject' in request.POST:
@@ -58,7 +58,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
                     to_address = [i.user.email]
                     message_tuple = (subject, message, from_address, to_address)
                     messages_list.append(message_tuple)
-            #slice off the first element of tuple which is empty
+            # slice off the first element of tuple which is empty
             messages_tuple = tuple(messages_list)
             send_mass_mail(messages_tuple, fail_silently=False)
 
@@ -106,7 +106,7 @@ default_admin_fieldsets = (
                    ('point_x', 'point_y'),
                    ('easting', 'northing'),
                    ('geom', )],
-        #'classes': ['collapse'],
+        # 'classes': ['collapse'],
     })
 )
 default_list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number',

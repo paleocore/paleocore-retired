@@ -129,7 +129,9 @@ class Term(models.Model):
     projects = models.ManyToManyField('projects.Project', through='projects.ProjectTerm', blank=True, null=True)
 
     def get_projects(self):
-        return ', '.join(['project.short_name' for projects in self.projects.all()])
+        return ', '.join([projects.short_name for projects in self.projects.all()])  # get all projects using a term
+    get_projects.short_description = "Projects"  # nicer label for admin
+    get_projects.admin_order_field = 'projects__full_name'
 
     def native_project(self):
         try:
@@ -137,6 +139,7 @@ class Term(models.Model):
             return native_project_term.project.full_name
         except:
             return None
+    native_project.admin_order_field = 'projects__full_name'
 
     def __unicode__(self):
         return self.name

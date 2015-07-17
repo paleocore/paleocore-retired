@@ -9,22 +9,35 @@ from ast import literal_eval
 # exclude any installed apps that have 'django' in the name
 app_CHOICES = [(name, name) for name in INSTALLED_APPS if name.find("django") == -1]
 
+abstract_help_text = "A  description of the project, its importance, etc."
+attribution_help_text = "A description of the people / institutions responsible for collecting the data."
+occurrence_table_name_help_text = "The name of the main occurrence table in the models.py file of the associated app"
+display_summary_info_help_text = "Should project summary data be published? Only uncheck this in extreme circumstances"
+display_fields_help_text = "A list of fields to display in the public view of the data, first entry should be 'id'"
+display_filter_fields_help_text = "A list of fields to filter on in the public view of the data, can be empty list []"
+
 class Project(models.Model):
     short_name = models.CharField(max_length=50, unique=True)
     full_name = models.CharField(max_length=300, unique=True, db_index=True)
     paleocore_appname = models.CharField(max_length=200, choices=app_CHOICES, null=True)
-    abstract = models.TextField(max_length=4000, null=True, blank=True, help_text="A  description of the project, its importance, etc.")
+    abstract = models.TextField(max_length=4000, null=True, blank=True,
+                                help_text=abstract_help_text)
     is_standard = models.BooleanField(default=False)
-    attribution = models.TextField(max_length = 1000, null=True, blank=True, help_text="A description of the people / institutions responsible for collecting the data.")
+    attribution = models.TextField(max_length=1000, null=True, blank=True,
+                                   help_text=attribution_help_text)
     website = models.URLField(null=True, blank=True)
     geographic = models.CharField(max_length=255, null=True, blank=True)
     temporal = models.CharField(max_length=255, null=True, blank=True)
     graphic = models.FileField(max_length=255, null=True, blank=True, upload_to="uploads/images/projects")
-    occurrence_table_name = models.CharField(max_length=255, null=True, blank=True, help_text="the name of the main occurrence table in the models.py file of the associated app")
+    occurrence_table_name = models.CharField(max_length=255, null=True, blank=True,
+                                             help_text=occurrence_table_name_help_text)
     is_public = models.BooleanField(default=False, help_text="Is the raw data to be made publicly viewable?")
-    display_summary_info = models.BooleanField(default=True, help_text="Should project summary data be published? Only uncheck this in extreme circumstances")
-    display_fields = models.TextField(max_length=2000, default="['id',]",null=True, blank=True, help_text="a list of fields to display in the public view of the data, first entry should be 'id'")
-    display_filter_fields = models.TextField(max_length=2000, default="[]", null=True, blank=True, help_text="a list of fields to filter on in the public view of the data, can be empty list []")
+    display_summary_info = models.BooleanField(default=True,
+                                               help_text=display_summary_info_help_text)
+    display_fields = models.TextField(max_length=2000, default="['id',]",null=True, blank=True,
+                                      help_text=display_fields_help_text)
+    display_filter_fields = models.TextField(max_length=2000, default="[]", null=True, blank=True,
+                                             help_text=display_filter_fields_help_text)
     users = models.ManyToManyField(PaleocoreUser, blank=True, null=True)
     terms = models.ManyToManyField('standard.Term', through='ProjectTerm', blank=True, null=True)
     default_app_model = models.ForeignKey(ContentType, blank=True, null=True)
@@ -48,12 +61,12 @@ class Project(models.Model):
         except:
             return 0
 
-    def record_count(self):
-        if self.is_standard:
-            return 0
-        else:
-            model = get_model(self.paleocore_appname, self.occurrence_table_name)
-            return(model.objects.all().count())
+    # def record_count(self):
+    #     if self.is_standard:
+    #         return 0
+    #     else:
+    #         model = get_model(self.paleocore_appname, self.occurrence_table_name)
+    #         return model.objects.count()
 
     def __unicode__(self):
         return self.full_name

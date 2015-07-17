@@ -1,17 +1,21 @@
 from django.contrib import admin
-from standard.models import Project, Term, TermCategory, TermStatus, TermDataType, Comment
+from standard.models import Term, TermCategory, TermStatus, TermDataType, Comment
+from projects.models import ProjectTerm
 
-
-# class ProjectAdmin(admin.ModelAdmin):
-#     list_display = ('name', 'is_standard', 'user_names', 'geographic', 'temporal')
-#     filter_horizontal = ('users', 'reused_terms')
-#     ordering = ("name",)
+class ProjectTermInline(admin.TabularInline):
+    model = ProjectTerm
+    extra = 1
+    ordering = 'project',
+    readonly_fields = 'native_project',
+    fields = 'project', 'native', 'mapping',
 
 class TermAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'native_project', 'get_projects', 'data_type', 'status', 'category')
-    list_filter = ['data_type', 'status', 'category']
+    list_display = ('id', 'name', 'native_project', 'get_projects', 'data_type', 'status', 'category', 'uri')
+    list_filter = ['data_type', 'status', 'category', 'projects']
+    read_only_fields = ['get_projects', ]
     ordering = ('name',)
-    filter_horizontal = ('projects',)
+    search_fields = ['name', ]
+    inlines = (ProjectTermInline, )
 
 class TermCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_occurrence', 'description', 'parent', 'tree_visibility')
@@ -19,9 +23,9 @@ class TermCategoryAdmin(admin.ModelAdmin):
     ordering = ('name',)
 
 
-#custom admin list filter. this comes straight from the django admin site docs
-#I could add related_term__project to list filters, but this would result in two filters called "project"
-#I get around this by creating a custom SimpleListFilter so I can specify the name
+# custom admin list filter. this comes straight from the django admin site docs
+# I could add related_term__project to list filters, but this would result in two filters called "project"
+# I get around this by creating a custom SimpleListFilter so I can specify the name
 # class RelatedProjectsListFilter(admin.SimpleListFilter):
 #     # Human-readable title which will be displayed in the
 #     # right admin sidebar just above the filter options.
@@ -66,7 +70,6 @@ class TermCategoryAdmin(admin.ModelAdmin):
 #     search_fields = ["related_term__name", "term__name"]
 #     ordering = ('term',)
 
-#admin.site.register(Project, ProjectAdmin)
 admin.site.register(Comment)
 admin.site.register(Term, TermAdmin)
 admin.site.register(TermCategory, TermCategoryAdmin)

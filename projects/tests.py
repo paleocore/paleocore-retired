@@ -67,6 +67,21 @@ class ProjectMethodsTests(TestCase):
         )
         self.assertEqual(Project.objects.count(), starting_record_count+3)
 
+        Project.objects.create(
+            full_name="Dublin Core",
+            short_name="Dublin Core",
+            abstract="The Dublin Core Metadata Initiative",
+
+            paleocore_appname="projects",
+            display_fields="""['id',]""",
+            display_filter_fields="""[]""",
+            is_public=False,
+            display_summary_info=False,
+            website="http://dublincore.org",
+            geographic="Global"
+        )
+        self.assertEqual(Project.objects.count(), starting_record_count+4)
+
         # Populate mlp occurrence table
         id_qualifier = IdentificationQualifier.objects.get(name__exact="None")
         barcode_index = 1
