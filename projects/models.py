@@ -38,8 +38,8 @@ class Project(models.Model):
                                       help_text=display_fields_help_text)
     display_filter_fields = models.TextField(max_length=2000, default="[]", null=True, blank=True,
                                              help_text=display_filter_fields_help_text)
-    users = models.ManyToManyField(PaleocoreUser, blank=True, null=True)
-    terms = models.ManyToManyField('standard.Term', through='ProjectTerm', blank=True, null=True)
+    users = models.ManyToManyField(PaleocoreUser, blank=True)
+    terms = models.ManyToManyField('standard.Term', through='ProjectTerm', blank=True)
     default_app_model = models.ForeignKey(ContentType, blank=True, null=True)
     geom = models.PointField(srid=4326, blank=True, null=True)
     objects = models.GeoManager()

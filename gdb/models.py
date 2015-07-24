@@ -10,7 +10,7 @@ class Occurrence(models.Model):
     locality = models.ForeignKey("Locality", to_field="locality_number")
     date_collected = models.DateField(blank=True, null=True, editable=True)
     time_collected = models.CharField(null=True, blank=True, max_length=50)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=True,
@@ -110,7 +110,7 @@ class Locality(models.Model):
     county = models.CharField(null=True, blank=True, max_length=50)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/gdb", null=True)
     geom = models.GeometryField(srid=4326, blank=True, null=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
 
     def __unicode__(self):
         """

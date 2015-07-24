@@ -11,14 +11,14 @@ import utm
 class Occurrence(models.Model):
     #id = models.IntegerField(primary_key=True)  # NOT NULL
     barcode = models.IntegerField(blank=True, null=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True, default='SF')
     # Note we're not using localities!
-    item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
+    item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     # TODO add rich text field for remarks
