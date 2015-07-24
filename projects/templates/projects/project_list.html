@@ -53,20 +53,24 @@
                 <div class="row">
                 <div class="12u">
                 <div class="row">
-                {% for project in project_list %}
-                {% with project.id as pk %}
+                {% if project_list %}
+                    {% for project in project_list %}
+                    {% with project.id as pk %}
 
-                        <div class="4u" style="text-align: center;">
-                            <h2><a href="{% url 'projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
-                            <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.<br/>
-                                These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
-                            {% if project.graphic %}
-                            <a href="{% url 'projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
-                            {% endif %}
-                        </div>
-                    {% if forloop.counter|divisibleby:3 %}{% endif %}
-                {% endwith %}
-                {% endfor %}
+                            <div class="4u" style="text-align: center;">
+                                <h2><a href="{% url 'projects:detail' project.paleocore_appname%}">{{ project.full_name }}</a></h2>
+                                <p>This database contains {{ project.record_count|intcomma }} specimen occurrences.<br/>
+                                    These data are {% if project.is_public %} public.{% else %} private.{% endif %}</p>
+                                {% if project.graphic %}
+                                <a href="{% url 'projects:detail' project.paleocore_appname%}"><img src="/media/{{ project.graphic }}" style="height:300px; margin-bottom:50px;"/></a>
+                                {% endif %}
+                            </div>
+                        {% if forloop.counter|divisibleby:3 %}{% endif %}
+                    {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    <p>There are no projects to display</p>
+                {% endif %}
                 </div>
                 </div>
                 </div>
