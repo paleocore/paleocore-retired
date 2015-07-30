@@ -92,4 +92,4 @@ class ProjectTerm(models.Model):
         verbose_name = "Project Term"
         verbose_name_plural = "Project Terms"
         db_table = 'projects_project_term'
-        unique_together = ('native', 'term',)
+        unique_together = ('project', 'term',)
