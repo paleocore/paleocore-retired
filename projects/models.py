@@ -71,6 +71,7 @@ class Project(models.Model):
     def __unicode__(self):
         return self.full_name
 
+
 # FYI: this is a case of this: https://docs.djangoproject.com/en/dev/topics/db/models/#extra-fields-on-many-to-many-relationships
 class ProjectTerm(models.Model):
     term = models.ForeignKey('standard.Term')
