@@ -87,7 +87,7 @@ INSTALLED_APPS = (
 
 )
 
-# These entries extended by entries below in Django Fiber section
+# These entries extended by entries BELOW in Django Fiber section
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

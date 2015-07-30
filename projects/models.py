@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from mysite.settings import INSTALLED_APPS
-from django.db.models.loading import get_model
 from django.contrib.contenttypes.models import ContentType
+from django.apps import apps
 from django.core.exceptions import ValidationError
 from base.models import PaleocoreUser
 from ast import literal_eval
@@ -61,12 +61,12 @@ class Project(models.Model):
         except:
             return 0
 
-    # def record_count(self):
-    #     if self.is_standard:
-    #         return 0
-    #     else:
-    #         model = get_model(self.paleocore_appname, self.occurrence_table_name)
-    #         return model.objects.count()
+    def record_count(self):
+        if self.is_standard:
+            return 0
+        else:
+            model = apps.get_model(self.paleocore_appname, self.occurrence_table_name)
+            return model.objects.count()
 
     def __unicode__(self):
         return self.full_name
