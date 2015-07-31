@@ -1,29 +1,99 @@
 {% extends "base.html" %}
 {% block main_content %}
-    <div class="content" id="content">
-    {%  regroup terms by category as terms_list %}
 
-    <table>
-    <th>Group</th><th>Attributes</th>
+    <h3>Class Index </h3>
+    <p>
+    {% for class in classes %}
+        <a href="#{{ class.name }}">{{ class.name }}</a> |
+    {% endfor %}
+    </p>
+
+    <hr>
+
+    <h3>Terms Index</h3>
+    {% regroup terms by category as terms_list %}
     {% for category in terms_list %}
-        <tr>
-            <td class="content" id="content">{{ category.grouper }}</td>
-            <td>{% for term in category.list %}<a href="term/{{ term.id }}">{{ term.name }}</a>,{% endfor %}</td>
-        </tr>
-
-
-
-        {% comment %}
-        {% if term.project.name == "ABCDEFG" %}abc:
-        {% elif term.project.name == "Dublin Core" %}dc:
-        {% elif term.project.name == "Darwin Core" %}dwc:
+        {% if category.grouper.name == 'Occurrence' %} <p><strong><a href="#{{ category.grouper }}">{{ category.grouper }}</a> | <a href="#MaterialSample">Material Sample</a> | <a href="#FossilSpecimen">Fossil Specimen</a></strong><br/>
+            {% elif category.grouper.name == 'Event' %} <p><strong><a href="#{{ category.grouper }}">{{ category.grouper }}</a> | <a href="#HumanObservation">Human Observation</a></strong><br/>
+            {% elif category.grouper.name == 'Record' %} <p><strong>{{ category.grouper }} | <a href="#Dataset">Dataset</a></strong><br/>
+            {% else %} <p><strong><a href="#{{ category.grouper }}">{{ category.grouper }}</a></strong><br/>
         {% endif %}
-        {% endcomment %}
 
 
+            {% for term in category.list %}
+                <a href='#{{ term.name }}'>{{ term.name }}</a> {% if not forloop.last %} | {% endif %}
+            {% endfor %}
+        </p>
 
     {% endfor %}
-    </table>
+
+    <hr>
+
+    <h3>Class Descriptions</h3>
+
+        <table class="term">
+            <thead>
+                <tr>
+                    <th class="label"></th>
+                    <th class="data"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for class in classes %}
+
+                <tr><td colspan="2" class="term-label" id="{{ class.name }}"><strong>Term Name: {{ class.name }}</strong></td></tr>
+
+                    <tr>
+                        <td class="term-body">Source</td>
+                        <td class="term-body">{{ class.native_project }}</td>
+                    </tr>
+                    <tr>
+                        <td>URI</td><td> <a href="{{ class.uri }}">{{ class.uri }}</a></td>
+                    </tr>
+                    <tr>
+                        <td>Definition</td><td>{{ class.definition }}</td>
+                    </tr>
+                    <tr>
+                        <td>Comment</td><td>{{ class.example }}</td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+    <hr>
+
+    <h3>Term Descriptions</h3>
+
+        <table class="term">
+            <thead>
+                <tr>
+                    <th class="label"></th>
+                    <th class="data"></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for term in terms %}
+                <tr><td colspan="2" class="term-label" id="{{ term.name }}"><strong>Term Name: {{ term.name }}</strong></td></tr>
+                <tr>
+                    <td>Source</td>
+                    <td>{{ term.native_project }}</td>
+                </tr>
+                <tr>
+                    <td>URI</td><td> <a href="{{ term.uri }}">{{ term.uri }}</a></td>
+                </tr>
+            <tr>
+                <td>Definition</td><td>{{ term.definition }}</td>
+            </tr>
+            <tr>
+                <td>Comment</td><td>{{ term.example }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+
+
     </div>
     {% comment %}
     {% for term in terms %}

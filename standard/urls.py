@@ -11,15 +11,17 @@ urlpatterns = patterns('',
     url(r'^term/(?P<id>\d+)', 'standard.views.term', name="term"),
 
     # e.g. /addTerm/PaleoCore/
-    url(r'^addTerm/(?P<referringCategory>\d+)', 'standard.views.addTerm', name="addTerm"),
-    url(r'^addClass/', 'standard.views.addClass', name="addClass"),
-    url(r'^addTerm/', 'standard.views.addTerm', name="addTermNoParameter"),
-    url(r'^ontology/$', 'standard.views.ontology', name="ontology"),
-    url(r'^ontology/(?P<category>\d+)', 'standard.views.classes', name="ontologyClass"),
-    url(r'^ontologyTree/$', 'standard.views.ontologyTree', name="ontologyTreeNoParameter"),
-    url(r'^ontologyTree/(?P<categoryID>\d+)', 'standard.views.ontologyTree', name="ontologyTree"),
-    url(r'^ontologyJSONtree/$', 'standard.views.ontologyJSONtree', name="ontologyJSONtree"),
-    url(r'^(?P<project_name>\w+)/terms/$', views.TermsIndexView.as_view(), name='index'),
+    #url(r'^addTerm/(?P<referringCategory>\d+)', 'standard.views.addTerm', name="addTerm"),
+    #url(r'^addClass/', 'standard.views.addClass', name="addClass"),
+    #url(r'^addTerm/', 'standard.views.addTerm', name="addTermNoParameter"),
+
+    # e.g. /standard/ontology/
+    # url(r'^ontology/$', 'standard.views.ontology', name="ontology"),
+    # url(r'^ontology/(?P<category>\d+)', 'standard.views.classes', name="ontologyClass"),
+    # url(r'^ontologyTree/$', 'standard.views.ontologyTree', name="ontologyTreeNoParameter"),
+    # url(r'^ontologyTree/(?P<categoryID>\d+)', 'standard.views.ontologyTree', name="ontologyTree"),
+    # url(r'^ontologyJSONtree/$', 'standard.views.ontologyJSONtree', name="ontologyJSONtree"),
+    # url(r'^(?P<project_name>\w+)/terms/$', views.TermsIndexView.as_view(), name='index'),
 )
 
 # From IndexView of meetings app

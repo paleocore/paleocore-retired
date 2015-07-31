@@ -1,10 +1,9 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from standard.models import Term, Project, CompareView, TermView, ProjectView
+from standard.models import Term, Project, CompareView, TermView, ProjectView, TermCategory
 from django.db.models import Q
-from standard.forms import TermViewForm #, RelateProjectsForm, RelateTermsForm
+from standard.forms import TermViewForm  # RelateProjectsForm, RelateTermsForm
 from django.forms.models import modelform_factory
-from django.db import connection
 import json
 from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib import messages
@@ -13,11 +12,10 @@ from fiber.models import ContentItem
 from django.contrib.auth import authenticate,login
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from models import *
-from standard.models import Term
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import permission_required
 from fiber.views import FiberPageMixin
+
 
 class PaleocoreTermsIndexView(FiberPageMixin, generic.ListView):
     template_name = 'standard/terms.html'
@@ -25,7 +23,24 @@ class PaleocoreTermsIndexView(FiberPageMixin, generic.ListView):
 
     def get_queryset(self):
         """Return a list of terms for Paleocore"""
-        return Term.objects.filter(status=2)  # Get all terms that have status = "Standard"
+        # get just the non-class paleocore terms, which get added to the context as terms
+        paleocore_terms = Term.objects.filter(projects__short_name__exact="PaleoCore").order_by('category', 'name')
+        paleocore_terms = paleocore_terms.exclude(category__name__exact='Class')
+        return paleocore_terms
+
+    def get_context_data(self, **kwargs):
+        # supplement the context by adding a list of class terms
+
+        # get the original context
+        context = super(PaleocoreTermsIndexView, self).get_context_data(**kwargs)
+
+        # get a queryset of just paleocore classes
+        paleocore_classes = Term.objects.filter(projects__short_name__exact="PaleoCore").order_by('category', 'name')
+        paleocore_classes = paleocore_classes.filter(category__name__exact='Class')
+
+        # add them to the context, which now contains elements for terms and classes
+        context['classes'] = paleocore_classes
+        return context
 
     def get_fiber_page_url(self):
         return reverse('standard:paleocore_terms_index')
@@ -50,11 +65,10 @@ def standard(request):
     categories = TermCategory.objects.all()
     nCategories = categories.count()
     indices = range(1,nCategories)
-    #zip the iterables into one so they can be iterated in tandem in the template
+    # zip the iterables into one so they can be iterated in tandem in the template
     categories_indices = zip(categories,indices)
-    return render_to_response('standard.html',
-                                {"categories_indices":categories_indices},
-                                RequestContext(request))
+    return render_to_response('standard.html', {"categories_indices": categories_indices}, RequestContext(request))
+
 
 def classes(request,category):
     matching_terms = None
@@ -66,15 +80,16 @@ def classes(request,category):
     except:
         pass
 
-    return render_to_response("classes.html",
-                                {"matching_terms":matching_terms,"matching_class":matching_class},
-                                RequestContext(request))
+    return render_to_response("classes.html", {"matching_terms":matching_terms,"matching_class": matching_class},
+                              RequestContext(request))
+
 
 def ontologyTree(request,categoryID=0):
 
-    return render_to_response("ontologyTree.html",
-                            {"categoryID":categoryID},
+    return render_to_response("ontologyTree.html", {"categoryID":categoryID},
                               RequestContext(request))
+
+
 def ontology(request):
     return render_to_response("ontology.html",
                             {},
@@ -93,6 +108,8 @@ def ontology(request):
 #                             {},
 #                               RequestContext(request))
 #
+
+
 def ontologyJSONtree(request):
 
     response = HttpResponse(mimetype='application/json')
@@ -107,7 +124,7 @@ def ontologyJSONtree(request):
         else:
             theParents.append("NONE")
             theChildren.append(category.id)
-    links=zip(theParents,theChildren)
+    links=zip(theParents, theChildren)
     parents, children = zip(*links)
 
     def get_nodes(node):
@@ -116,17 +133,16 @@ def ontologyJSONtree(request):
         if get_parent(node) != "NONE":
             d["name"] = TermCategory.objects.get(pk=node).name
             d["URL"] = "/standard/ontology/" + str(node)
-            d["categoryID"] =  node
+            d["categoryID"] = node
         else:
             try:
                 d["name"] = TermCategory.objects.get(pk=node).name
                 d["URL"] = "/standard/ontology/" + str(node)
-                d["categoryID"] =  node
+                d["categoryID"] = node
             except:
                 d["name"] = ""
                 d["URL"] = "/standard/ontology/"
-                d["categoryID"] =  ""
-
+                d["categoryID"] = ""
 
         if get_children(node):
             d['children'] = [get_nodes(child) for child in get_children(node)]
@@ -141,8 +157,6 @@ def ontologyJSONtree(request):
         except:
             return "NONE"
 
-
-
     tree = get_nodes("NONE")
 
     response.write(json.dumps(tree, indent=4))
@@ -151,8 +165,7 @@ def ontologyJSONtree(request):
 
 
 def terms(request):
-
-    #cms_terms_intro = ContentItem.objects.get(name='terms_intro')
+    # cms_terms_intro = ContentItem.objects.get(name='terms_intro')
 
     m = CompareView()
     if request.method == 'POST':
