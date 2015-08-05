@@ -16,6 +16,7 @@ display_summary_info_help_text = "Should project summary data be published? Only
 display_fields_help_text = "A list of fields to display in the public view of the data, first entry should be 'id'"
 display_filter_fields_help_text = "A list of fields to filter on in the public view of the data, can be empty list []"
 
+
 class Project(models.Model):
     short_name = models.CharField(max_length=50, unique=True)
     full_name = models.CharField(max_length=300, unique=True, db_index=True)
@@ -34,7 +35,7 @@ class Project(models.Model):
     is_public = models.BooleanField(default=False, help_text="Is the raw data to be made publicly viewable?")
     display_summary_info = models.BooleanField(default=True,
                                                help_text=display_summary_info_help_text)
-    display_fields = models.TextField(max_length=2000, default="['id',]",null=True, blank=True,
+    display_fields = models.TextField(max_length=2000, default="['id',]", null=True, blank=True,
                                       help_text=display_fields_help_text)
     display_filter_fields = models.TextField(max_length=2000, default="[]", null=True, blank=True,
                                              help_text=display_filter_fields_help_text)
@@ -71,12 +72,20 @@ class Project(models.Model):
     def __unicode__(self):
         return self.full_name
 
-# FYI: this is a case of this: https://docs.djangoproject.com/en/dev/topics/db/models/#extra-fields-on-many-to-many-relationships
+
+# FYI: this is a case of this:
+# https://docs.djangoproject.com/en/dev/topics/db/models/#extra-fields-on-many-to-many-relationships
 class ProjectTerm(models.Model):
     term = models.ForeignKey('standard.Term')
     project = models.ForeignKey('projects.Project')
-    native = models.BooleanField(default=False, help_text="If true, this term is native to the project or standard, otherwise the term is being reused by the project or standard.")
-    mapping = models.CharField(max_length=255, null=True, blank=True, help_text="If this term is being reused from another standard or project, the mapping field is used to provide the name of the field in this project or standard as opposed to the name in the project or standard from which it is being reused.")
+    native = models.BooleanField(default=False,
+                                 help_text="If true, this term is native to the project or standard, otherwise the "
+                                           "term is being reused by the project or standard.")
+    mapping = models.CharField(max_length=255, null=True, blank=True,
+                               help_text="If this term is being reused from another standard or project, "
+                                         "the mapping field is used to provide the name of the field in this project "
+                                         "or standard as opposed to the name in the project or standard "
+                                         "from which it is being reused.")
 
     def native_project(self):
         return str(self.term.native_project())
@@ -85,7 +94,7 @@ class ProjectTerm(models.Model):
         return self.project.full_name
 
     def __unicode__(self):
-        #return "[" + str(self.term.native_project()) + "] " + self.term.name
+        # return "[" + str(self.term.native_project()) + "] " + self.term.name
         return self.term.name
 
     class Meta:

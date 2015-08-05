@@ -3,7 +3,6 @@ from base.models import PaleocoreUser
 from projects.models import Project
 from django.db import connection
 
-# Create your models here.
 
 ############################################
 # TermCategory
@@ -24,6 +23,7 @@ class TermCategory(models.Model):
         verbose_name_plural = "Term Categories"
         db_table = "standard_term_category"
 
+
 ############################################
 # TermStatus
 ############################################
@@ -39,7 +39,8 @@ class TermStatus(models.Model):
         verbose_name = "Term Status"
         verbose_name_plural = "Term Statuses"
         db_table = "standard_term_status"
-      
+
+
 ############################################
 # TermDataType
 ############################################  
@@ -110,6 +111,7 @@ class TermDataType(models.Model):
 #         ordering = ["name"]
 #         verbose_name_plural = "Projects"
 #         verbose_name = "Project"
+
 
 ############################################
 # Term
