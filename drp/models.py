@@ -37,14 +37,14 @@ class Locality(models.Model):
 # This is the DRP data model. It is only partly PaleoCore compliant.
 class Occurrence(models.Model):
     barcode = models.IntegerField("Barcode", null=True, blank=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True,
                                        choices=(('DIK', 'DIK'), ('ASB', 'ASB')))
-    item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
+    item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)

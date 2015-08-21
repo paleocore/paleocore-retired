@@ -128,7 +128,7 @@ class Term(models.Model):
     controlled_vocabulary = models.CharField(null=True, blank=True, max_length=75)
     controlled_vocabulary_url = models.CharField(null=True, blank=True, max_length=155)
     uri = models.CharField(null=True, blank=True, max_length=255)
-    projects = models.ManyToManyField('projects.Project', through='projects.ProjectTerm', blank=True, null=True)
+    projects = models.ManyToManyField('projects.Project', through='projects.ProjectTerm', blank=True)
 
     def get_projects(self):
         return ', '.join([projects.short_name for projects in self.projects.all()])  # get all projects using a term

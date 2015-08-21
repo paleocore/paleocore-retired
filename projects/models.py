@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from mysite.settings import INSTALLED_APPS
-from django.db.models.loading import get_model
 from django.contrib.contenttypes.models import ContentType
+from django.apps import apps
 from django.core.exceptions import ValidationError
 from base.models import PaleocoreUser
 from ast import literal_eval
@@ -39,8 +39,8 @@ class Project(models.Model):
                                       help_text=display_fields_help_text)
     display_filter_fields = models.TextField(max_length=2000, default="[]", null=True, blank=True,
                                              help_text=display_filter_fields_help_text)
-    users = models.ManyToManyField(PaleocoreUser, blank=True, null=True)
-    terms = models.ManyToManyField('standard.Term', through='ProjectTerm', blank=True, null=True)
+    users = models.ManyToManyField(PaleocoreUser, blank=True)
+    terms = models.ManyToManyField('standard.Term', through='ProjectTerm', blank=True)
     default_app_model = models.ForeignKey(ContentType, blank=True, null=True)
     geom = models.PointField(srid=4326, blank=True, null=True)
     objects = models.GeoManager()
@@ -62,12 +62,12 @@ class Project(models.Model):
         except:
             return 0
 
-    # def record_count(self):
-    #     if self.is_standard:
-    #         return 0
-    #     else:
-    #         model = get_model(self.paleocore_appname, self.occurrence_table_name)
-    #         return model.objects.count()
+    def record_count(self):
+        if self.is_standard:
+            return 0
+        else:
+            model = apps.get_model(self.paleocore_appname, self.occurrence_table_name)
+            return model.objects.count()
 
     def __unicode__(self):
         return self.full_name

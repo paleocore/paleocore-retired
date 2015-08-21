@@ -5,14 +5,14 @@ from mysite import ontologies
 class Occurrence(models.Model):
     global_id = models.IntegerField(blank=True, null=True)  # Global Unique Identifier
     reference = models.CharField("Reference", max_length=255, null=True, blank=True)
-    #date_last_modified = models.DateTimeField("Date Last Modified", auto_now_add=True, auto_now=True)
+    #date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=255, blank=True, null=False,
                                        choices=ontologies.BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=True,
                                  choices=ontologies.ITEM_TYPE_VOCABULARY)
     collection_code = models.CharField("Collection Code", max_length=255, blank=True, null=True, default='MLP')
     institution_code = models.CharField("Institution Code", max_length=255, blank=True, null=True)
-    item_number = models.IntegerField("Item #", max_length=50, null=True, blank=True)
+    item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=255, null=True, blank=True)
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     paleo_locality = models.CharField("Paleo Locality", max_length=255, blank=True, null=True)
