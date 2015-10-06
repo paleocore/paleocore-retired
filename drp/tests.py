@@ -1,12 +1,9 @@
 from django.test import TestCase
-from django.core.urlresolvers import reverse
 from drp.models import Occurrence, Biology, Locality
 from taxonomy.models import Taxon, IdentificationQualifier
 from datetime import datetime
+from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point, Polygon
-from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \
-    COLLECTING_METHOD_VOCABULARY, COLLECTOR_CHOICES, ITEM_TYPE_VOCABULARY
-from random import random
 
 
 class LocalityMethodsTests(TestCase):
@@ -99,11 +96,10 @@ class OccurrenceMethodTests(TestCase):
         self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_X(), 41.3)
-        response = self.client.get('/admin/drp/')  # note: trailing slash matters
+
+        response = self.client.get('/admin/drp/', follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get('/admin/drp/occurrence/')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'PaleoCore administration')
+        self.assertContains(response, 'Username')  # redirects to login form
 
 
 class BiologyMethodTests(TestCase):
@@ -195,10 +191,14 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(new_occurrence.point_X(), 41.21)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # no biology record was added?
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
-        response = self.client.get('/admin/drp/biology/')
+        response = self.client.get('/admin/drp/', follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get('/admin/drp/biology/'+str(new_occurrence.pk)+'/')
-        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Username')  # redirects to login form
+
+#        response = self.client.get('/admin/drp/biology/')
+#        self.assertEqual(response.status_code, 200)
+#        response = self.client.get('/admin/drp/biology/'+str(new_occurrence.pk)+'/')
+#        self.assertEqual(response.status_code, 200)
 
 
 class DRPViewsTests(TestCase):
@@ -260,3 +260,76 @@ class DRPViewsTests(TestCase):
         response = self.client.get('/admin/drp/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Username')  # redirects to login form
+
+
+class DRPAdminViewTests(TestCase):
+    """
+    The DRP Views Test Case depends on two fixtures.
+    """
+    fixtures = [
+        'fixtures/fiber_data_150611.json',
+        'taxonomy/fixtures/taxonomy_data_150611.json',
+    ]
+
+    def setUp(self):
+
+        # Populate Localities
+        def create_square_locality(x, y):
+            return Polygon(
+                (
+                    (x-0.01, y+0.01),
+                    (x+0.01, y+0.01),
+                    (x+0.01, y-0.01),
+                    (x-0.01, y-0.01),
+                    (x-0.01, y+0.01)
+                )
+            )
+
+        Locality.objects.create(paleolocality_number=1, geom=create_square_locality(41.1, 11.1))
+        Locality.objects.create(paleolocality_number=2, geom=create_square_locality(41.2, 11.2))
+        Locality.objects.create(paleolocality_number=3, geom=create_square_locality(41.3, 11.3))
+        Locality.objects.create(paleolocality_number=4, geom=create_square_locality(41.4, 11.4))
+
+        # Populate Biology instances
+        id_qualifier = IdentificationQualifier.objects.get(name__exact="None")
+        barcode_index = 1
+        mammal_orders = (("Primates", "Primates"),
+                         ("Perissodactyla", "Perissodactyla"),
+                         ("Artiodactyla", "Artiodactyla"),
+                         ("Rodentia", "Rodentia"),
+                         ("Carnivora", "Carnivora"),)
+
+        for order_tuple_element in mammal_orders:
+            Biology.objects.create(
+                barcode=barcode_index,
+                basis_of_record="HumanObservation",
+                collection_code="DRP",
+                paleolocality_number="1",
+                item_number=barcode_index,
+                geom=Point(41.11, 11.11),
+                locality=Locality.objects.get(paleolocality_number__exact=1),
+                taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
+                identification_qualifier=id_qualifier,
+                field_number=datetime.now()
+            )
+            barcode_index += 1
+
+        self.assertEqual(Locality.objects.count(), 4)
+        self.assertEqual(Occurrence.objects.count(), len(mammal_orders))
+
+        test_user = User.objects.create_user(username='test_user', password='password')
+        test_user.is_staff = True
+        test_user.save()
+
+    def test_admin_list_view(self):
+        response = self.client.get('/admin/drp/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Username')  # redirects to login form
+
+    def test_admin_list_view_with_login(self):
+        test_user = User.objects.get(username='test_user')
+        self.assertEqual(test_user.is_staff, True)  # Test user is staff
+        self.client.login(username='test_user', password='password')
+        response = self.client.get('/admin/drp/', follow=True)
+        self.assertEqual(response.status_code, 403)
+        #self.assertContains(response, 'Username')  # redirects to login form
