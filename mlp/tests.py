@@ -6,6 +6,7 @@ from datetime import datetime
 from mlp.forms import UploadKMLForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \
     COLLECTING_METHOD_VOCABULARY, COLLECTOR_CHOICES, ITEM_TYPE_VOCABULARY
 from random import random
@@ -269,8 +270,16 @@ class MilleLogyaViews(TestCase):
         self.assertNotEqual(object1.geom.y, object2.geom.y)
         self.assertEqual(object1.collecting_method, "Surface Standard")
 
-    def test_upload_view(self):
-        response = self.client.get(reverse('projects:mlp:mlp_upload_kml'))
+        User.objects.create_user(username='test_user', password='password')
+
+    def test_upload_view_no_login(self):
+        response = self.client.get(reverse('projects:mlp:mlp_upload_kml'), follow=True)
+        self.assertContains(response, "login")
+        self.assertEqual(response.status_code, 200)
+
+    def test_upload_view_with_login(self):
+        self.client.login(username='test_user', password='password')  # login
+        response = self.client.get(reverse('projects:mlp:mlp_upload_kml'), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Upload a kml")
 
@@ -297,13 +306,17 @@ class MilleLogyaViews(TestCase):
         # get the post response and test page reload and error message
         response = self.client.post(reverse('projects:mlp:mlp_upload_kml'), file_dict, follow=True)
         self.assertEqual(response.status_code, 200)  # test reload
-        self.assertContains(response, 'Upload a')
+        self.assertContains(response, 'login')
+        self.client.login(username='test_user', password='password')
+        response = self.client.post(reverse('projects:mlp:mlp_upload_kml'), file_dict, follow=True)
+        self.assertEqual(response.status_code, 200)  # test reload
+        self.assertContains(response, 'Upload')
         self.assertContains(response, 'This field is required')
 
         # test nothing is saved to DB
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count)
 
-    def test_kml_upload_form_with_with_valid_data(self):
+    def test_kml_upload_form_with_with_valid_data_no_login(self):
         """
         Test the import kml form. This test uses a sample kmz file with one placemark.
         This code based on stack overflow question at
@@ -320,13 +333,38 @@ class MilleLogyaViews(TestCase):
         # get current number of occurrence records in DB and verify count
         occurrence_starting_record_count = Occurrence.objects.count()
 
-        # follow redirect to confirmation page
+        # follow redirect to login page
         response = self.client.post('/projects/mlp/upload/', file_dict, follow=True)
-
-        # test redirect to confirmation page
-        self.assertRedirects(response, '/projects/mlp/confirmation/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'upload was successful!')  # test message in conf page
+        self.assertRedirects(response, 'login/?next=/projects/mlp/upload/')  # test we hit the login page
+        self.assertContains(response, 'login')  # test we hit the login page
 
         # test that new occurrence was added to DB
-        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count)  # test nothing added to DB
+
+    def test_kml_upload_form_with_with_valid_data_and_login(self):
+        """
+        Test the import kml form. This test uses a sample kmz file with one placemark.
+        This code based on stack overflow question at
+        http://stackoverflow.com/questions/7304248/writing-tests-for-forms-in-django
+        :return:
+        """
+        upload_file = open('mlp/fixtures/MLP_test.kmz', 'rb')
+        post_dict = {}
+        file_dict = {'kmlfileUpload': SimpleUploadedFile(upload_file.name, upload_file.read())}
+        upload_file.close()
+        form = UploadKMLForm(post_dict, file_dict)
+        self.assertTrue(form.is_valid())
+
+        # get current number of occurrence records in DB and verify count
+        occurrence_starting_record_count = Occurrence.objects.count()
+
+        # login and test redirect to confirmation page
+        self.client.login(username='test_user', password='password')  # login
+        response = self.client.post('/projects/mlp/upload/', file_dict, follow=True)
+        self.assertRedirects(response, '/projects/mlp/confirmation/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'file upload was successful!')  # test message in conf page
+
+        # test that new occurrence was added to DB
+        self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test one record added

@@ -9,9 +9,27 @@ from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, COLLECTOR_CHOICES, ITE
 from random import random
 from datetime import datetime
 
+
+class ProjectViewsEmptyDB(TestCase):
+    """
+    Test PaleoCore project app with empty project table
+    """
+    fixtures = ['fixtures/fiber_data_150611.json', 'taxonomy/fixtures/taxonomy_data_150611.json']
+
+    def test_index_view_with_empty_database(self):
+        response = self.client.get('/projects/')  # expected url
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse('projects:index'))  # reverse lookup
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "There are no projects to display")  # Test empty project list message
+        self.assertEqual(len(response.context['project_list']), 0)  # number of projects returned to page
+        self.assertContains(response, "leaflet-container")  # leaflet map
+
+
 class ProjectMethodsTests(TestCase):
     """
-    Test Paleocore Project instance creation and methods
+    Test PaleoCore Project instance creation and methods
     """
 
     fixtures = ['fixtures/fiber_data_150611.json', 'taxonomy/fixtures/taxonomy_data_150611.json']

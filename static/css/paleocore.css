@@ -114,3 +114,41 @@ dd {
     padding-left:10px;
     padding-right:10px;
 }
+
+table.term {
+    width: 100%;
+
+}
+
+th.label {
+    width: 20%;
+    padding-top: 5%;
+    border: none;
+
+}
+
+th.data {
+    width: 80%;
+    padding-top: 5%;
+    border: none;
+
+}
+
+.term td {
+    background: white;
+    padding: 5px;
+}
+
+.term tr {
+    border: 1px solid black;
+}
+
+.term thead tr {
+    border: none;
+    line-height: 1px;
+
+}
+
+td.term-label {
+    background: lightgrey;
+}
