@@ -101,7 +101,7 @@ default_admin_fieldsets = (
     }),
     ('Provenience', {
         'fields': [('analytical_unit',),
-                   ('in_situ', 'ranked'),
+                   ('in_situ',),
                    # The following fields are based on methods and must be included in the read only field list
                    ('point_x', 'point_y'),
                    ('easting', 'northing'),

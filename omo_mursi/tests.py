@@ -6,9 +6,11 @@ from datetime import datetime
 from forms import UploadKMLForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import Point
+from django.contrib.auth.models import User
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \
     COLLECTING_METHOD_VOCABULARY, COLLECTOR_CHOICES, ITEM_TYPE_VOCABULARY
 from random import random
+from django.contrib.auth import authenticate
 
 ######################################
 # Tests for models and their methods #
@@ -269,6 +271,11 @@ class TestViews(TestCase):
         self.assertNotEqual(object1.geom.y, object2.geom.y)
         self.assertEqual(object1.collecting_method, "Surface Standard")
 
+        test_user = User.objects.create_user(username='test_user', password='password')
+        test_user.is_superuser = True
+        test_user.is_staff = True
+        test_user.save()
+
     def test_upload_view(self):
         response = self.client.get(reverse('projects:omo_mursi:omo_mursi_upload_kml'))
         self.assertEqual(response.status_code, 200)
@@ -330,3 +337,32 @@ class TestViews(TestCase):
 
         # test that new occurrence was added to DB
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)
+
+    def test_admin_list_view_with_login(self):
+        test_user = User.objects.get(username='test_user')
+        self.assertEqual(test_user.is_active, True)
+        self.assertEqual(test_user.is_superuser, True)  # Test user is superuser
+        self.assertEqual(test_user.is_staff, True)
+        test_user = authenticate(username='test_user', password='password')
+        self.assertNotEqual(test_user, None)
+        self.assertEqual(self.client.login(), False)
+        self.client.login(username='test_user', password='password')
+        self.assertEqual(self.client.login(username='test_user', password='password'), True)
+
+        response = self.client.get('/admin/omo_mursi/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PaleoCore administration')  # omo_mursi admin
+        self.assertContains(response, 'Omo Mursi')
+
+        response = self.client.get('/admin/omo_mursi/occurrence/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PaleoCore administration')  # omo_mursi occurrences admin
+        self.assertContains(response, 'Omo Mursi Occurrences')
+
+        occurrences = Occurrence.objects.all()
+        response = self.client.get('/admin/omo_mursi/occurrence/'+str(occurrences[0].pk), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'PaleoCore administration')  # redirects to login form
+        self.assertContains(response, 'Change Omo Mursi Occurrence')
+
+
