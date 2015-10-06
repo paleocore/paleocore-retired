@@ -46,7 +46,7 @@ class DownloadKMLView(generic.FormView):
         for o in os:
             if (o.geom):
                 p = kml.Placemark(ns, 'id', 'name', 'description')
-                #coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
+                # coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
                 pnt = Point(o.geom.coords[0], o.geom.coords[1])
                 p.name = o.__str__()
                 d = "<![CDATA[<table>"
@@ -82,7 +82,7 @@ class DownloadKMLView(generic.FormView):
                 p.geometry = pnt
                 f.append(p)
         r = k.to_string(prettyprint=True)
-        response = HttpResponse(r, mimetype='text/plain')
+        response = HttpResponse(r, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename="san_francisco.kml"'
         return response
 
@@ -309,17 +309,17 @@ class UploadShapefileView(generic.FormView):
         shapefilePath = os.path.join(settings.MEDIA_ROOT)
         shapefileName = shapefileProperName[:shapefileProperName.rfind('.')]
         san_francisco = shapefile.Reader(shapefilePath + "\\" + shapefileName)
-        # san_francisco = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
 
         shapes = san_francisco.shapes()
         return super(UploadShapefileView, self).form_valid(form)
+
 
 def ChangeXYView(request):
     if request.method == "POST":
         form = ChangeXYForm(request.POST)
         if form.is_valid():
             obs = Occurrence.objects.get(pk=request.POST["DB_id"])
-            latlong = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]),37,"N")
+            latlong = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]), 37, "N")
             pnt = GEOSGeometry("POINT (" + str(latlong[1]) + " " + str(latlong[0]) + ")", 4326)  # WKT
             obs.geom = pnt
             obs.save()
@@ -328,18 +328,17 @@ def ChangeXYView(request):
     else:
         selected = list(request.GET.get("ids", "").split(","))
         if len(selected) > 1:
-            messages.error(request,"You can't change the coordinates of multiple points at once.")
+            messages.error(request, "You can't change the coordinates of multiple points at once.")
             return redirect("/admin/san_francisco/occurrence")
         selected_object = Occurrence.objects.get(pk=int(selected[0]))
-        initialData = { "DB_id":selected_object.id,
-                        "barcode":selected_object.barcode,
-                        "old_easting":selected_object.easting,
-                        "old_northing":selected_object.northing,
-                        "item_scientific_name":selected_object.item_scientific_name,
-                        "item_description":selected_object.item_description
+        initialData = {"DB_id": selected_object.id,
+                       "barcode": selected_object.barcode,
+                       "old_easting": selected_object.easting,
+                       "old_northing": selected_object.northing,
+                       "item_scientific_name": selected_object.item_scientific_name,
+                       "item_description": selected_object.item_description
                     }
-        theForm = ChangeXYForm(initial = initialData)
+        the_form = ChangeXYForm(initial=initialData)
         return render_to_response('projects/changeXY.html',
-                                {"theForm":theForm},
-                              RequestContext(request))
-
+                                  {"theForm": the_form},
+                                  RequestContext(request))

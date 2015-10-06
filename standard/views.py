@@ -112,7 +112,7 @@ def ontology(request):
 
 def ontologyJSONtree(request):
 
-    response = HttpResponse(mimetype='application/json')
+    response = HttpResponse(content_type='application/json')
 
     theParents=[]
     theChildren=[]

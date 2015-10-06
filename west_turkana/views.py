@@ -73,7 +73,7 @@ class DownloadKMLView(generic.FormView):
                 p.geometry = pnt
                 f.append(p)
         r = k.to_string(prettyprint=True)
-        response = HttpResponse(r, mimetype='text/plain')
+        response = HttpResponse(r, content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename="west_turkana.kml"'
         return response
 

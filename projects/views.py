@@ -1,16 +1,15 @@
 from django.views import generic
-from django.core.urlresolvers import reverse
-from fiber.views import FiberPageMixin
 from projects.models import Project
-from django.shortcuts import HttpResponseRedirect, HttpResponse, render_to_response, get_object_or_404
+from django.shortcuts import HttpResponse, render_to_response
 from django.db.models.loading import get_model
 from django.template import RequestContext
 import json
 from ast import literal_eval
 from django.forms.models import model_to_dict
-from django.shortcuts import  get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+
 
 class ProjectIndexView(generic.ListView):
     template_name = 'projects/project_list.html'
@@ -35,7 +34,7 @@ class OccurrenceDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(OccurrenceDetailView, self).get_context_data(**kwargs)
-        proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
+        proj = Project.objects.get(paleocore_appname=self.kwargs["pcoreapp"])
         context['project'] = proj.full_name
         return context
 
@@ -45,16 +44,15 @@ class OccurrenceDetailView(generic.DetailView):
             model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
         except ObjectDoesNotExist:
             raise Http404("Django application does not exist")
-        #test for permissions if project is NOT public
+        # test for permissions if project is NOT public
         if not proj.is_public:
             permission_string = self.kwargs["pcoreapp"] + ".change_" + proj.occurrence_table_name
             if not self.request.user.has_perm(permission_string):
-                return {"unauthorized":"You are not authorized to view this data."}
-                #bail out if user doesn't have permission for non public project
+                return {"unauthorized": "You are not authorized to view this data."}
+                # bail out if user doesn't have permission for non public project
 
-        detailObject = get_object_or_404(model, pk=self.kwargs["occurrenceid"])
-        return model_to_dict(detailObject)
-
+        detail_object = get_object_or_404(model, pk=self.kwargs["occurrence_id"])
+        return model_to_dict(detail_object)
 
 
 class ProjectDataView(generic.ListView):
@@ -70,14 +68,14 @@ class ProjectDataView(generic.ListView):
 # view that returns ajax data for a given project
 # after testing that user has permission for the project
 def ajaxProjectData(request, pcoreapp):
-    response = HttpResponse(mimetype='application/json')
+    response = HttpResponse(content_type='application/json')
     project = Project.objects.get(paleocore_appname=pcoreapp)
 
     # test for permissions if project is NOT public
     if not project.is_public:
         permission_string = pcoreapp + ".change_" + project.occurrence_table_name
         if not request.user.has_perm(permission_string):
-            return HttpResponse(json.dumps([{"error":"unauthorized"}]))
+            return HttpResponse(json.dumps([{"error": "unauthorized"}]))
             # bail out if user doesn't have permission for non public project
 
     # go fetch whatever model is the occurrence table equivalent for this app
@@ -85,12 +83,12 @@ def ajaxProjectData(request, pcoreapp):
 
     # build up admin style filter arguments from url string
     filterArgs = {}
-    for key,value in request.GET.iteritems():
+    for key, value in request.GET.iteritems():
         if value:
-            if value <> "":
+            if value != "":
                 filterArgs[key] = value
 
-    try: # remove url GET parameter put in by DataTables
+    try:  # remove url GET parameter put in by DataTables
         cleanedFilterArgs = filterArgs
         cleanedFilterArgs.pop("_")
     except:
@@ -103,12 +101,13 @@ def ajaxProjectData(request, pcoreapp):
             responsedict["data"].append(object)
         response.write(json.dumps(responsedict))
     else:
-        objects = model.objects.all().values_list(* literal_eval(project.display_fields))
-        for object in objects:
-            responsedict["data"].append(object)
+        model_objects = model.objects.all().values_list(* literal_eval(project.display_fields))
+        for model_object in model_objects:
+            responsedict["data"].append(model_object)
         response.write(json.dumps(responsedict))
 
     return response
+
 
 # all this does is render a template with two context variables
 # it is kind of like a detail generic class based view with added context
@@ -117,20 +116,20 @@ def ajaxProjectData(request, pcoreapp):
 def projectDataTable(request, pcoreapp="drp"):
     project = get_object_or_404(Project, paleocore_appname = pcoreapp)
     filterArgs = {}
-    for key,value in request.GET.iteritems():
+    for key, value in request.GET.iteritems():
         if value:
-            if value <> "":
+            if value != "":
                 filterArgs[key] = value
 
-    #build list of unique values for fields to filter on
+    # build list of unique values for fields to filter on
     model = get_model(project.paleocore_appname, project.occurrence_table_name)
     filterChoices = {}
     for field in literal_eval(project.display_filter_fields):
         filterChoices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
 
     return render_to_response('projects/project_data.html',
-                             {"project": project,
-                              "displayFields":literal_eval(project.display_fields),
-                              "filterChoices":filterChoices,
-                              "filterArgs":filterArgs },
-                          context_instance=RequestContext(request))
+                              {"project": project,
+                               "displayFields": literal_eval(project.display_fields),
+                               "filterChoices": filterChoices,
+                               "filterArgs": filterArgs},
+                               context_instance=RequestContext(request))

@@ -29,7 +29,7 @@ urlpatterns = patterns('projects.views',
                        # TODO get working tests for this view
 
                        # url(r'^data/(?P<pcoreapp>[^/]+)/$', views.ProjectDataView.as_view(), name='data'),
-                       url(r'^(?P<pcoreapp>.+)/(?P<occurrenceid>\d+)/$', views.OccurrenceDetailView.as_view(),
+                       url(r'^(?P<pcoreapp>.+)/(?P<occurrence_id>\d+)/$', views.OccurrenceDetailView.as_view(),
                            name='occurrence_detail'),
                        # TODO get working test for this view
 
