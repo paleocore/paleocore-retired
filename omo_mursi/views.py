@@ -13,11 +13,13 @@ from datetime import datetime
 from django.contrib.gis.geos import GEOSGeometry
 import utm
 from zipfile import ZipFile
-from shapely.geometry import Point, LineString, Polygon
+from shapely.geometry import Point
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.contrib import messages
+from io import BytesIO
+from django.core.files import File
 
 
 class DownloadKMLView(generic.FormView):
@@ -33,41 +35,41 @@ class DownloadKMLView(generic.FormView):
         f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains place marks for specimens and observations.')
         k.append(d)
         d.append(f)
-        os = Occurrence.objects.all()
-        for o in os:
-            if (o.geom):
+        omo_occurrences = Occurrence.objects.all()
+        for o in omo_occurrences:
+            if o.geom:
                 p = kml.Placemark(ns, 'id', 'name', 'description')
-                #coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
+                # coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
                 pnt = Point(o.geom.coords[0], o.geom.coords[1])
                 p.name = o.__str__()
                 d = "<![CDATA[<table>"
-                openrow = "<tr><td>"
-                middlerow = "</td><td style='font-weight:bold'>"
-                closerow = "</td></tr>"
+                open_row = "<tr><td>"
+                middle_row = "</td><td style='font-weight:bold'>"
+                close_row = "</td></tr>"
 
-                d += openrow
-                d += ''.join(("Basis of Record", middlerow))
-                d += ''.join(filter(None, (o.basis_of_record, closerow, openrow)))
-                d += ''.join(("Time", middlerow))
-                d += ''.join(filter(None, (str(o.field_number), closerow, openrow)))
-                d += ''.join(("Item Type", middlerow))
-                d += ''.join(filter(None, (o.item_type, closerow, openrow)))
-                d += ''.join(("Collector", middlerow))
-                d += ''.join(filter(None, (o.collector, closerow, openrow)))
-                d += ''.join(("Collection Method", middlerow))
-                d += ''.join(filter(None, (o.collecting_method, closerow, openrow)))
-                d += ''.join(("Count", middlerow))
-                d += ''.join(filter(None, (str(o.individual_count), closerow, openrow)))
-                d += ''.join(("Bar Code", middlerow))
-                d += ''.join(filter(None, (str(o.barcode), closerow, openrow)))
-                d += ''.join(("Scientific Name", middlerow))
-                d += ''.join(filter(None, (o.item_scientific_name, closerow, openrow)))
-                d += ''.join(("Description", middlerow))
-                d += ''.join(filter(None, (o.item_description, closerow, openrow)))
-                d += ''.join(("Remarks", middlerow))
-                d += ''.join(filter(None, (o.remarks, closerow, openrow)))
-                d += ''.join(("In Situ", middlerow))
-                d += ''.join(filter(None, (str(o.in_situ), closerow)))
+                d += open_row
+                d += ''.join(("Basis of Record", middle_row))
+                d += ''.join(filter(None, (o.basis_of_record, close_row, open_row)))
+                d += ''.join(("Time", middle_row))
+                d += ''.join(filter(None, (str(o.field_number), close_row, open_row)))
+                d += ''.join(("Item Type", middle_row))
+                d += ''.join(filter(None, (o.item_type, close_row, open_row)))
+                d += ''.join(("Collector", middle_row))
+                d += ''.join(filter(None, (o.collector, close_row, open_row)))
+                d += ''.join(("Collection Method", middle_row))
+                d += ''.join(filter(None, (o.collecting_method, close_row, open_row)))
+                d += ''.join(("Count", middle_row))
+                d += ''.join(filter(None, (str(o.individual_count), close_row, open_row)))
+                d += ''.join(("Bar Code", middle_row))
+                d += ''.join(filter(None, (str(o.barcode), close_row, open_row)))
+                d += ''.join(("Scientific Name", middle_row))
+                d += ''.join(filter(None, (o.item_scientific_name, close_row, open_row)))
+                d += ''.join(("Description", middle_row))
+                d += ''.join(filter(None, (o.item_description, close_row, open_row)))
+                d += ''.join(("Remarks", middle_row))
+                d += ''.join(filter(None, (o.remarks, close_row, open_row)))
+                d += ''.join(("In Situ", middle_row))
+                d += ''.join(filter(None, (str(o.in_situ), close_row)))
                 d += "</table>"
                 p.description = d
                 p.geometry = pnt
@@ -92,28 +94,29 @@ class UploadKMLView(generic.FormView):
 
         # TODO parse the kml file more smartly to locate the first placemark and work from there.
         # TODO ingest kmz and kml. See the zipfile python library
-        KML_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on
-        # he file
-        KML_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
-        KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]  # get the file name no extension
-        KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]  # get the file extension
+        kml_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on the file
+        kml_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
+        # KML_file_name = kml_file_upload_name[:kml_file_upload_name.rfind('.')]  # get the file name without extension
+        kml_file_extension = kml_file_upload_name[kml_file_upload_name.rfind('.')+1:]  # get the file extension
 
-        KML_file_path = os.path.join(settings.MEDIA_ROOT)
+        kml_file_path = os.path.join(settings.MEDIA_ROOT)
 
-        # Define a routine for importing Placemarks from a list of placemark elements
+        # Define a routine for importing placemarks from a list of placemark elements
         def import_placemarks(placemark_list):
             feature_count = 0
 
-            for o in placemark_list:
+            for o in placemark_list:  # iterate through all the placemarks in the KML/KMZ file and process each one
 
                 # Check to make sure that the object is a Placemark, filter out folder objects
                 if type(o) is Placemark:
 
+                    # save the placemark attribute data located in the description element as an element tree
                     table = etree.fromstring(o.description)
                     attributes = table.xpath("//text()")
                     # TODO test attributes is even length
                     attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
+                    # Create a new, empty occurrence instance
                     omo_mursi_occ = Occurrence()
 
                     ###################
@@ -137,10 +140,13 @@ class UploadKMLView(generic.FormView):
                     elif item_type in ("Geological", "Geology"):
                         omo_mursi_occ.item_type = "Geological"
 
-                    # Field Number
+                    # Field Number and Year Collected
                     try:
-                        omo_mursi_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
-                        omo_mursi_occ.year_collected = omo_mursi_occ.field_number.year  # set the year collected form field number
+                        # parse field number
+                        omo_mursi_occ.field_number = datetime.strptime(attributes_dict.get("Time"),
+                                                                       "%b %d, %Y, %I:%M %p")
+                        # set the year collected from field number
+                        omo_mursi_occ.year_collected = omo_mursi_occ.field_number.year
                     except ValueError:
                         omo_mursi_occ.field_number = datetime.now()
                         omo_mursi_occ.problem = True
@@ -149,8 +155,6 @@ class UploadKMLView(generic.FormView):
                             omo_mursi_occ.problem_comment = omo_mursi_occ.problem_comment + " " +error_string
                         except TypeError:
                             omo_mursi_occ.problem_comment = error_string
-
-                    #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
 
                     # Process point, comes in as well known text string
                     # Assuming point is in GCS WGS84 datum = SRID 4326
@@ -166,7 +170,6 @@ class UploadKMLView(generic.FormView):
                     omo_mursi_occ.remarks = attributes_dict.get("Remarks")
                     omo_mursi_occ.item_scientific_name = attributes_dict.get("Scientific Name")
                     omo_mursi_occ.item_description = attributes_dict.get("Description")
-
 
                     # Validate Collecting Method
                     collection_method = attributes_dict.get("Collection Method")
@@ -192,9 +195,8 @@ class UploadKMLView(generic.FormView):
                     omo_mursi_occ.collecting_method = attributes_dict.get("Collection Method")
                     omo_mursi_occ.collector = attributes_dict.get("Collector")
                     omo_mursi_occ.individual_count = attributes_dict.get("Count")
-                    #if omo_mursi_occ:
-                    #    omo_mursi_occ.year_collected = omo_mursi_occ.field_number.year
 
+                    # In Situ
                     if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
                         omo_mursi_occ.in_situ = False
                     elif attributes_dict.get("In Situ") in ('Yes', "YES", 'yes'):
@@ -203,53 +205,46 @@ class UploadKMLView(generic.FormView):
                     ##############
                     # Save Image #
                     ##############
-                    image_file = ""
-                    image_added = False
+                    omo_mursi_occ.save()  # need to save record before adding image in order to obtain the DB ID
+
                     # Now look for images if this is a KMZ
-                    if KML_file_extension.lower() == "kmz":
-                        # grab image names from XML
-                        image_tags = table.xpath("//img/@src")
+                    if kml_file_extension.lower() == "kmz":
+                        # grab image names from XML element tree
+                        image_file_name_list = table.xpath("//img/@src")
                         # grab the name of the first image
                         try:
-                            image_tag = image_tags[0]
+                            image_file_name = image_file_name_list[0]
                             # grab the file info from the zip list
-                            for file_info in KMZ_file.filelist:
-                                if image_tag == file_info.orig_filename:
+                            for file_info in kmz_file.filelist:
+                                if image_file_name == file_info.orig_filename:
                                     # grab the image file itself
-                                    image_file = KMZ_file.extract(file_info, "media/uploads/images/omo_mursi")
-                                    image_added = True
+                                    image = kmz_file.open(image_file_name)  # get a handle on the image in the kmz file
+                                    image_stream = BytesIO(image.read()) # read the image without saving to disk
+                                    save_file_name = str(omo_mursi_occ.id) + "_" + image_file_name  # rename
+                                    omo_mursi_occ.image.save(save_file_name, File(image_stream))  # save the image
                                     break
                         except IndexError:
                             pass
 
-                    omo_mursi_occ.save()
-                    # need to save record before adding image in order to obtain the DB ID
-                    if image_added:
-                        # strip off the file name from the path
-                        image_path = image_file[:image_file.rfind(os.sep)]
-                        # construct new file name
-                        new_file_name = image_path + os.sep + str(omo_mursi_occ.id) + "_" + image_tag
-                        # rename extracted file with DB record ID
-                        os.rename(image_file, new_file_name)
-                        # need to strip off "media" folder from relative path saved to DB
-                        omo_mursi_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
-                        omo_mursi_occ.save()
                     feature_count += 1
 
                 elif type(o) is not Placemark:
                     raise IOError("KML File is badly formatted")
 
-        KML_file = kml.KML()
-        if KML_file_extension == "kmz":
-            KMZ_file = ZipFile(KML_file_upload, 'r')
-            KML_document = KMZ_file.open('doc.kml', 'r').read()
+        kml_file = kml.KML()
+        if kml_file_extension == "kmz":
+            kmz_file = ZipFile(kml_file_upload, 'r')
+            try:
+                kml_document = kmz_file.open('doc.kml', 'r').read()
+            except KeyError:
+                print "ERROR: Didn't find doc.kml in the zipped file."
         else:
-            KML_document = open(KML_file_path + "/" + KML_file_upload_name, 'r').read()  # read() loads entire file as one string
+            kml_document = open(kml_file_path + "/" + kml_file_upload_name, 'r').read()
 
-        KML_file.from_string(KML_document) # pass contents of kml string to kml document instance for parsing
+        kml_file.from_string(kml_document)  # pass contents of kml document for parsing
 
         # get the top level features object (this is essentially the layers list)
-        level1_elements = list(KML_file.features())
+        level1_elements = list(kml_file.features())
 
         # Check that the kml file is well-formed with a single document element.
         if len(level1_elements) == 1 and type(level1_elements[0]) == Document:
