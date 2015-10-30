@@ -169,7 +169,7 @@ def fill_lithics():
 
 def debugger(request):
     debug_message = os.path.join(BASE_DIR, 'context.csv')
-    return render(request, 'CC/debugger.html',{'debug_message': debug_message})
+    return render(request, 'cc/debugger.html',{'debug_message': debug_message})
 
 
 def populate_database(request):

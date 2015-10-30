@@ -26,9 +26,9 @@ class Migration(migrations.Migration):
                 ('points', django.contrib.gis.db.models.fields.GeometryField(srid=-1, dim=3, null=True, blank=True)),
             ],
             options={
-                'verbose_name': 'CC Context',
+                'verbose_name': 'cc Context',
                 'managed': True,
-                'verbose_name_plural': 'CC Context (Catalog)',
+                'verbose_name_plural': 'cc Context (Catalog)',
             },
         ),
         migrations.CreateModel(
@@ -87,9 +87,9 @@ class Migration(migrations.Migration):
                 ('scar_width', models.DecimalField(null=True, max_digits=10, decimal_places=2, blank=True)),
             ],
             options={
-                'verbose_name': 'CC Lithic',
+                'verbose_name': 'cc Lithic',
                 'managed': True,
-                'verbose_name_plural': 'CC Lithics',
+                'verbose_name_plural': 'cc Lithics',
             },
             bases=('cc.context',),
         ),
@@ -100,9 +100,9 @@ class Migration(migrations.Migration):
                 ('image01', models.ImageField(upload_to=b'/media/', null=True, verbose_name=b'Image', blank=True)),
             ],
             options={
-                'verbose_name': 'CC Image',
+                'verbose_name': 'cc Image',
                 'managed': True,
-                'verbose_name_plural': 'CC Images',
+                'verbose_name_plural': 'cc Images',
             },
             bases=('cc.context',),
         ),
@@ -116,9 +116,9 @@ class Migration(migrations.Migration):
                 ('fine_fauna_weight', models.IntegerField(null=True, blank=True)),
             ],
             options={
-                'verbose_name': 'CC Small find (bucket)',
+                'verbose_name': 'cc Small find (bucket)',
                 'managed': True,
-                'verbose_name_plural': 'CC Small finds (buckets)',
+                'verbose_name_plural': 'cc Small finds (buckets)',
             },
             bases=('cc.context',),
         ),
@@ -127,10 +127,10 @@ class Migration(migrations.Migration):
             fields=[
             ],
             options={
-                'verbose_name': 'CC Lithic (only with photo)',
+                'verbose_name': 'cc Lithic (only with photo)',
                 'managed': True,
                 'proxy': True,
-                'verbose_name_plural': 'CC Lithics (only with photos)',
+                'verbose_name_plural': 'cc Lithics (only with photos)',
             },
             bases=('cc.context',),
         ),
