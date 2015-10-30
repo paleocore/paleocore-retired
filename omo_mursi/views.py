@@ -166,7 +166,7 @@ class UploadKMLView(generic.FormView):
                     #######################
                     omo_mursi_occ.barcode = attributes_dict.get("Barcode")
                     omo_mursi_occ.item_number = omo_mursi_occ.barcode
-                    omo_mursi_occ.catalog_number = "WT-" + str(omo_mursi_occ.item_number)
+                    omo_mursi_occ.catalog_number = "MUR-" + str(omo_mursi_occ.item_number)
                     omo_mursi_occ.remarks = attributes_dict.get("Remarks")
                     omo_mursi_occ.item_scientific_name = attributes_dict.get("Scientific Name")
                     omo_mursi_occ.item_description = attributes_dict.get("Description")
