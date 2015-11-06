@@ -21,9 +21,45 @@ class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
 
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    actions = ["create_data_csv", "change_xy"]
+    readonly_fields = base.admin.default_read_only_fields+('photo',)  # Add photo to readonly data
+    list_display = base.admin.default_list_display+('thumbnail',)  # Add thumbnail to list view
+    # Customized from default fieldsets
+    fieldsets = (
+        ('Curatorial', {
+            'fields': [('barcode', 'catalog_number', 'id'),
+                       ('field_number', 'year_collected', 'date_last_modified'),
+                       ('collection_code', 'item_number', 'item_part')]
+        }),
 
-    #admin action to manually enter coordinates
+        ('Occurrence Details', {
+            'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
+                       ('collecting_method', 'finder', 'collector', 'individual_count'),
+                       ('item_description', 'item_scientific_name',),
+                       ('problem', 'problem_comment'),
+                       ('remarks',)],
+            # 'classes': ['collapse']
+        }),
+        ('Photos', {
+            'fields': [('photo', 'image')],
+            # 'classes': ['collapse'],
+        }),
+        ('Taphonomic Details', {
+            'fields': [('weathering', 'surface_modification')],
+            # 'classes': ['collapse'],
+        }),
+        ('Provenience', {
+            'fields': [('analytical_unit',),
+                       ('in_situ',),
+                       # The following fields are based on methods and must be included in the read only field list
+                       ('point_x', 'point_y'),
+                       ('easting', 'northing'),
+                       ('geom',)],
+            # 'classes': ['collapse'],
+        })
+    )
+
+    actions = ["create_data_csv", "change_xy"]
+    # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
         redirectURL = reverse("projects:san_francisco:change_xy")

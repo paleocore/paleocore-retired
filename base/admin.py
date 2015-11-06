@@ -93,11 +93,11 @@ default_admin_fieldsets = (
                    ('item_description', 'item_scientific_name', 'image'),
                    ('problem', 'problem_comment'),
                    ('remarks', )],
-        'classes': ['collapse']
+        #'classes': ['collapse']
     }),
     ('Taphonomic Details', {
         'fields': [('weathering', 'surface_modification')],
-        'classes': ['collapse'],
+        #'classes': ['collapse'],
     }),
     ('Provenience', {
         'fields': [('analytical_unit',),

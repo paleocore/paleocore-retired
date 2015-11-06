@@ -101,6 +101,31 @@ class Occurrence(models.Model):
         except:
             return 0
 
+    def photo(self):
+        try:
+            return u'<a href="%s"><img src="%s" style="width:600px" /></a>' \
+                   % (os.path.join(self.image.url), os.path.join(self.image.url))
+        except:
+            return None
+    photo.short_description = 'Photo'
+    photo.allow_tags = True
+    photo.mark_safe = True
+
+    def thumbnail(self):
+        try:
+            return u'<a href="%s"><img src="%s" style="width:100px" /></a>' \
+                   % (os.path.join(self.image.url), os.path.join(self.image.url))
+        except:
+            return None
+    thumbnail.short_description = 'Thumb'
+    thumbnail.allow_tags = True
+    thumbnail.mark_safe = True
+
+    # class Meta:
+    #     managed = True
+    #     verbose_name = "MLP thumbnail"
+    #     verbose_name_plural = "MLP thumbnails"
+
     @staticmethod
     def fields_to_display():
         fields = ("id", "barcode")
