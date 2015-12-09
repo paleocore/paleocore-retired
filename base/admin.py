@@ -29,7 +29,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
         A function that defines a custom admin action to send bulk emails to selected users. The function calls a
         custom template called email.html
         """
-        returnURL = "/admin/paleoschema/paleocoreuser/"
+        return_url = "/admin/paleoschema/paleocoreuser/"
         if 'apply' in request.POST:  # check if the email form has been completed
             # code to send emails. We use send_mass_email, which requires a four-part tuple
             # containing the subject, message, from_address and a list of to addresses.
@@ -37,7 +37,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
                 if request.POST["subject"] == '':
                     self.message_user(request, "Message is missing a subject")
                     t = loader.get_template("base/templates/email.html")
-                    c = RequestContext(request, {'returnURL': returnURL, 'emails': queryset,
+                    c = RequestContext(request, {'returnURL': return_url, 'emails': queryset,
                                                  'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME, })
                     return HttpResponse(t.render(c))
                 else:
@@ -46,7 +46,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
                 if request.POST["message"] == '':
                     self.message_user(request, "Message is empty")
                     t = loader.get_template("base/templates/email.html")
-                    c = RequestContext(request, {'returnURL': returnURL, 'emails': queryset,
+                    c = RequestContext(request, {'returnURL': return_url, 'emails': queryset,
                                                  'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME, })
                     return HttpResponse(t.render(c))
                 message = request.POST["message"]
@@ -65,7 +65,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
             self.message_user(request, "Mail sent successfully ")
         else:
             t = loader.get_template('base/email.html')
-            c = RequestContext(request, {'returnURL': returnURL, 'emails': queryset,
+            c = RequestContext(request, {'returnURL': return_url, 'emails': queryset,
                                          'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME, })
             return HttpResponse(t.render(c))
     send_emails.short_description = "Send an email to selected members"
@@ -76,10 +76,10 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
 ####################################
 
 default_list_display = ('barcode', 'field_number', 'catalog_number', 'basis_of_record', 'item_number', 'item_type',
-                        'collecting_method', 'collector', 'item_scientific_name',
-                        'item_description', 'year_collected', 'in_situ', 'problem', 'disposition', 'point_x', 'point_y')
+                        'collecting_method', 'collector', 'item_scientific_name', 'item_description', 'year_collected',
+                        'in_situ', 'problem', 'disposition', 'easting', 'northing')
 default_list_per_page = 1000
-default_read_only_fields = ('id', 'point_x', 'point_y', 'field_number', 'easting', 'northing', 'date_last_modified')
+default_read_only_fields = ('id', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
 default_admin_fieldsets = (
     ('Curatorial', {
         'fields': [('barcode', 'catalog_number', 'id'),
@@ -93,11 +93,9 @@ default_admin_fieldsets = (
                    ('item_description', 'item_scientific_name', 'image'),
                    ('problem', 'problem_comment'),
                    ('remarks', )],
-        #'classes': ['collapse']
     }),
     ('Taphonomic Details', {
         'fields': [('weathering', 'surface_modification')],
-        #'classes': ['collapse'],
     }),
     ('Provenience', {
         'fields': [('analytical_unit',),
@@ -106,7 +104,6 @@ default_admin_fieldsets = (
                    ('point_x', 'point_y'),
                    ('easting', 'northing'),
                    ('geom', )],
-        # 'classes': ['collapse'],
     })
 )
 default_list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number',

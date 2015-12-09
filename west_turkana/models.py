@@ -30,7 +30,7 @@ class Occurrence(models.Model):
     collector = models.CharField(max_length=50, blank=True, null=True, choices=COLLECTOR_CHOICES)
     finder = models.CharField(max_length=50, blank=True, null=True)
     disposition = models.CharField(max_length=255, blank=True, null=True)
-    field_number = models.DateTimeField(blank=False, null=False, editable=False)  # NOT NULL
+    field_number = models.DateTimeField(blank=False, null=False, editable=True)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
     individual_count = models.IntegerField(blank=True, null=True, default=1)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
