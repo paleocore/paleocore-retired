@@ -9,8 +9,8 @@ reasons and must be created during installation. A template for secrets.py is pr
 Add your local configuration settings and rename the file secrets.py. 
 
 ### Python Environment 
-Django==1.8.4
-Pillow==3.0.0
+Django==1.8.4  
+Pillow==3.0.0  
 Shapely==1.5.12  
 django-appconf==1.0.1  
 django-compressor==1.5  
