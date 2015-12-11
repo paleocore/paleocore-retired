@@ -57,7 +57,6 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         })
     )
 
-
     # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -125,7 +124,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     create_data_csv.short_description = "Download Selected to .csv"
 
 ############################
-## Register Admin Classes ##
+#  Register Admin Classes  #
 ############################
 admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Biology, BiologyAdmin)

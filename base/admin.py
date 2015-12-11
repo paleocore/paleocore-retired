@@ -75,7 +75,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
 # PaleoCore Default Admin Settings #
 ####################################
 
-default_list_display = ('barcode', 'field_number', 'catalog_number', 'basis_of_record', 'item_number', 'item_type',
+default_list_display = ('barcode', 'field_number', 'catalog_number', 'basis_of_record', 'item_type',
                         'collecting_method', 'collector', 'item_scientific_name', 'item_description', 'year_collected',
                         'in_situ', 'problem', 'disposition', 'easting', 'northing')
 default_list_per_page = 1000
@@ -145,6 +145,19 @@ class PaleoCoreBiologyAdmin(GeoModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
     }
 
+    def get_search_results(self, request, queryset, search_term):
+        # search_term is what you input in admin site
+        # queryset is search results
+        queryset, use_distinct = super(PaleoCoreBiologyAdmin, self).get_search_results(request, queryset, search_term)
+
+        try:
+            search_term_as_int = int(search_term)
+        except ValueError:
+            pass
+        else:
+            queryset |= self.model.objects.filter(barcode=search_term_as_int)
+        return queryset, use_distinct
+
 
 class PaleoCoreOccurrenceAdmin(GeoModelAdmin):
     list_display = default_list_display
@@ -158,6 +171,19 @@ class PaleoCoreOccurrenceAdmin(GeoModelAdmin):
         models.CharField: {'widget': TextInput(attrs={'size': '25'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
     }
+
+    def get_search_results(self, request, queryset, search_term):
+        # search_term is what you input in admin site
+        # queryset is search results
+        queryset, use_distinct = super(PaleoCoreOccurrenceAdmin, self).get_search_results(request, queryset, search_term)
+
+        try:
+            search_term_as_int = int(search_term)
+        except ValueError:
+            pass
+        else:
+            queryset |= self.model.objects.filter(barcode=search_term_as_int)
+        return queryset, use_distinct
 
 ##################
 # Register Admins #

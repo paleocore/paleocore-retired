@@ -31,7 +31,7 @@ class LocalityMethodsTests(TestCase):
         self.assertEqual(Locality.objects.count(), starting_record_count+1)
 
 
-class OccurrenceMethodTests(TestCase):
+class OccurrenceCreationMethodTests(TestCase):
     """
     Test Occurrence instance creation and methods
     """
@@ -66,7 +66,7 @@ class OccurrenceMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 41.1)
+        self.assertEqual(new_occurrence.point_x(), 41.1)
         self.assertEqual(new_occurrence.locality.paleolocality_number, 1)
 
     def test_occurrence_create_simple(self):
@@ -81,7 +81,7 @@ class OccurrenceMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 41.2)
+        self.assertEqual(new_occurrence.point_x(), 41.2)
 
     def test_occurrence_admin_view(self):
         starting_record_count = Occurrence.objects.count()  # get current number of occurrence records
@@ -95,11 +95,55 @@ class OccurrenceMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 41.3)
+        self.assertEqual(new_occurrence.point_x(), 41.3)
 
         response = self.client.get('/admin/drp/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Username')  # redirects to login form
+
+
+class OccurrenceMethodTests(TestCase):
+    """
+    Test Occurrence Methods
+    """
+
+    def setUp(self):
+        def create_square_locality(x, y):
+            return Polygon(
+                (
+                    (x-0.01, y+0.01),
+                    (x+0.01, y+0.01),
+                    (x+0.01, y-0.01),
+                    (x-0.01, y-0.01),
+                    (x-0.01, y+0.01)
+                )
+            )
+        # Create four simple square locality polygons
+        Locality.objects.create(paleolocality_number=1, geom=create_square_locality(41.1, 11.1))
+
+        # Create one occurrence point in polygon 1
+        Occurrence.objects.create(geom=Point(41.1, 11.1),
+                                  barcode=1,
+                                  catalog_number='DIK-1-1',
+                                  locality=Locality.objects.get(paleolocality_number=1),
+                                  field_number=datetime.now())
+
+    def test_point_x_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.point_x(), 41.1)
+
+    def test_point_y_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.point_y(), 11.1)
+
+    def test_easting_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.easting(), 729382.2689836712)
+
+    def test_northing_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.northing(), 1227846.080614904)
+
 
 
 class BiologyMethodTests(TestCase):
@@ -162,7 +206,7 @@ class BiologyMethodTests(TestCase):
 
         self.assertEqual(new_bio.catalog_number, "DRP-1-1")  # test catalog number generation in save method
         self.assertEqual(new_bio.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_bio.point_X(), 41.1)
+        self.assertEqual(new_bio.point_x(), 41.1)
 
     def test_biology_create_observation(self):
         """
@@ -188,7 +232,7 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # one record added?
         self.assertEqual(new_occurrence.catalog_number, "COL-2-1")  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_X(), 41.21)
+        self.assertEqual(new_occurrence.point_x(), 41.21)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # no biology record was added?
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
         response = self.client.get('/admin/drp/', follow=True)

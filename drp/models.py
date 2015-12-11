@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 from mysite.ontologies import *
+import utm, os
 
 item_typeCHOICES = (("Artifactual", "Artifactual"),
                     ("Faunal", "Faunal"),
@@ -100,11 +101,25 @@ class Occurrence(models.Model):
         fields = ("id", "barcode")
         return fields
 
-    def point_X(self):
+    def point_x(self):
         return self.geom.x
 
-    def point_Y(self):
+    def point_y(self):
         return self.geom.y
+
+    def easting(self):
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[0]
+        except:
+            return 0
+
+    def northing(self):
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[1]
+        except:
+            return 0
 
     def __unicode__(self):
         nice_name = str(self.collection_code) + "-" + str(self.paleolocality_number) + "-" + str(self.item_number) + \
@@ -119,6 +134,26 @@ class Occurrence(models.Model):
 
         # call the normal drp_occurrence save method using alternate database
         super(Occurrence, self).save(*args, **kwargs)
+
+    def photo(self):
+        try:
+            return u'<a href="%s"><img src="%s" style="width:600px" /></a>' \
+                   % (os.path.join(self.image.url), os.path.join(self.image.url))
+        except:
+            return None
+    photo.short_description = 'Photo'
+    photo.allow_tags = True
+    photo.mark_safe = True
+
+    def thumbnail(self):
+        try:
+            return u'<a href="%s"><img src="%s" style="width:100px" /></a>' \
+                   % (os.path.join(self.image.url), os.path.join(self.image.url))
+        except:
+            return None
+    thumbnail.short_description = 'Thumb'
+    thumbnail.allow_tags = True
+    thumbnail.mark_safe = True
 
     class Meta:
         verbose_name = "DRP Occurrence"
