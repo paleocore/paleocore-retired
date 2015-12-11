@@ -187,10 +187,6 @@ class UploadKMLView(generic.FormView):
                         omo_mursi_occ.collecting_method = "Dry Screen 2mm"
                     elif collection_method in ("Dry Screen 1mm", "Dry Screen 1 Mm", "Dry Screen 1 mm"):
                         omo_mursi_occ.collecting_method = "Dry Screen 1mm"
-                    # else:
-                    #     omo_mursi_occ.collecting_method = None
-                    #     omo_mursi_occ.problem = True
-                    #     omo_mursi_occ.problem_comment = omo_mursi_occ.problem_comment + " problem importing collecting method"
 
                     omo_mursi_occ.collecting_method = attributes_dict.get("Collection Method")
                     omo_mursi_occ.collector = attributes_dict.get("Collector")
@@ -302,16 +298,18 @@ class UploadShapefileView(generic.FormView):
         return super(UploadShapefileView, self).form_valid(form)
 
 
-def ChangeXYView(request):
+def change_coordinates_view(request):
     if request.method == "POST":
         form = ChangeXYForm(request.POST)
         if form.is_valid():
             obs = Occurrence.objects.get(pk=request.POST["DB_id"])
-            coordinates = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]), 37, "N")
+            coordinates = utm.to_latlon(float(request.POST["new_easting"]),
+                                        float(request.POST["new_northing"]), 37, "N")
             pnt = GEOSGeometry("POINT (" + str(coordinates[1]) + " " + str(coordinates[0]) + ")", 4326)  # WKT
             obs.geom = pnt
             obs.save()
-            messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
+            messages.add_message(request, messages.INFO,
+                                 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
             return redirect("/admin/omo_mursi/occurrence")
     else:
         selected = list(request.GET.get("ids", "").split(","))
@@ -328,4 +326,3 @@ def ChangeXYView(request):
                         }
         the_form = ChangeXYForm(initial=initial_data)
         return render_to_response('projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
-

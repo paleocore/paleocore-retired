@@ -18,6 +18,6 @@ urlpatterns = patterns('',
     url(r'^upload/shapefile/', west_turkana_views.UploadShapefileView.as_view(), name="west_turkana_upload_shapefile"),
 
     # /projects/west_turkana/change_xy/
-    url(r'^change_xy/', west_turkana_views.ChangeXYView, name="west_turkana_change_xy"),
+    url(r'^change_xy/', west_turkana_views.change_coordinates_view, name="west_turkana_change_xy"),
 
 )

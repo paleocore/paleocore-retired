@@ -18,6 +18,6 @@ urlpatterns = patterns('',
     url(r'^upload/shapefile/', san_francisco_views.UploadKMLView.as_view(), name="san_francisco_upload"),
 
     # /projects/san_francisco/change_xy/
-    url(r'^change_xy/', san_francisco_views.ChangeXYView, name="change_xy"),
+    url(r'^change_xy/', san_francisco_views.change_coordinates_view, name="change_xy"),
 
 )

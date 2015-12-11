@@ -59,8 +59,8 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        redirectURL = reverse("projects:west_turkana:west_turkana_change_xy")
-        return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
+        redirect_url = reverse("projects:omo_mursi:omo_mursi_change_xy")
+        return HttpResponseRedirect(redirect_url + "?ids=%s" % (",".join(selected)))
     change_xy.short_description = "Manually change coordinates for a point"
 
     # admin action to download data in csv format

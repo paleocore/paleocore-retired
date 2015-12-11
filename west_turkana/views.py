@@ -307,12 +307,13 @@ class UploadShapefileView(generic.FormView):
         return super(UploadShapefileView, self).form_valid(form)
 
 
-def ChangeXYView(request):
+def change_coordinates_view(request):
     if request.method == "POST":
         form = ChangeXYForm(request.POST)
         if form.is_valid():
             obs = Occurrence.objects.get(pk=request.POST["DB_id"])
-            coordinates = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]), 37, "N")
+            coordinates = utm.to_latlon(float(request.POST["new_easting"]),
+                                        float(request.POST["new_northing"]), 37, "N")
             pnt = GEOSGeometry("POINT (" + str(coordinates[1]) + " " + str(coordinates[0]) + ")", 4326)  # WKT
             obs.geom = pnt
             obs.save()

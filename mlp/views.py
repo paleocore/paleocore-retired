@@ -1,14 +1,8 @@
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 from django.conf import settings
 from django.views import generic
 import os
-import shutil
 from models import Occurrence
-from django.core.urlresolvers import reverse
-from fiber.views import FiberPageMixin
-import shapefile
-from mlp.forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
+from mlp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
@@ -16,7 +10,7 @@ from datetime import datetime
 from django.contrib.gis.geos import GEOSGeometry
 import utm
 from zipfile import ZipFile
-from shapely.geometry import Point, LineString, Polygon
+from shapely.geometry import Point
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -33,14 +27,15 @@ class DownloadKMLView(generic.FormView):
         k = kml.KML()
         ns = '{http://www.opengis.net/kml/2.2}'
         d = kml.Document(ns, 'docid', 'MLP Observations', 'KML Document')
-        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder', 'Contains place marks for specimens and observations.')
+        f = kml.Folder(ns, 'fid', 'MLP Observations Root Folder',
+                       'Contains place marks for specimens and observations.')
         k.append(d)
         d.append(f)
-        os = Occurrence.objects.all()
-        for o in os:
-            if (o.geom):
+        occurrences = Occurrence.objects.all()
+        for o in occurrences:
+            if o.geom:
                 p = kml.Placemark(ns, 'id', 'name', 'description')
-                #coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
+                # coord = utm.to_latlon(o.geom.coords[0], o.geom.coords[1], 37, 'P')
                 pnt = Point(o.geom.coords[0], o.geom.coords[1])
                 p.name = o.__str__()
                 d = "<![CDATA[<table>"
@@ -95,19 +90,19 @@ class UploadKMLView(generic.FormView):
 
         # TODO parse the kml file more smartly to locate the first placemark and work from there.
         # TODO ingest kmz and kml. See the zipfile python library
-        KML_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on
-        # he file
-        KML_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
-        KML_file_name = KML_file_upload_name[:KML_file_upload_name.rfind('.')]  # get the file name no extension
-        KML_file_extension = KML_file_upload_name[KML_file_upload_name.rfind('.')+1:]  # get the file extension
+        kml_file_upload = self.request.FILES['kmlfileUpload']  # get a handle on the file
 
-        KML_file_path = os.path.join(settings.MEDIA_ROOT)
+        kml_file_upload_name = self.request.FILES['kmlfileUpload'].name  # get the file name
+        # kml_file_name = kml_file_upload_name[:kml_file_upload_name.rfind('.')]  # get the file name no extension
+        kml_file_extension = kml_file_upload_name[kml_file_upload_name.rfind('.')+1:]  # get the file extension
+
+        kml_file_path = os.path.join(settings.MEDIA_ROOT)
 
         # Define a routine for importing Placemarks from a list of placemark elements
-        def import_placemarks(placemark_list):
+        def import_placemarks(kml_placemark_list):
             feature_count = 0
 
-            for o in placemark_list:
+            for o in kml_placemark_list:
 
                 # Check to make sure that the object is a Placemark, filter out folder objects
                 if type(o) is Placemark:
@@ -142,18 +137,19 @@ class UploadKMLView(generic.FormView):
 
                     # Field Number
                     try:
-                        mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")  # parse field nubmer
+                        # parse the field number
+                        mlp_occ.field_number = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
                         mlp_occ.year_collected = mlp_occ.field_number.year  # set the year collected form field number
                     except ValueError:
+                        # If there's a problem getting the fieldnumber, use the current date time and set the
+                        # problem flag to True.
                         mlp_occ.field_number = datetime.now()
                         mlp_occ.problem = True
                         try:
                             error_string = "Upload error, missing field number, using current date and time instead."
-                            mlp_occ.problem_comment = mlp_occ.problem_comment + " " +error_string
+                            mlp_occ.problem_comment = mlp_occ.problem_comment + " " + error_string
                         except TypeError:
                             mlp_occ.problem_comment = error_string
-
-                    #utmPoint = utm.from_latlon(o.geometry.y, o.geometry.x)
 
                     # Process point, comes in as well known text string
                     # Assuming point is in GCS WGS84 datum = SRID 4326
@@ -169,7 +165,6 @@ class UploadKMLView(generic.FormView):
                     mlp_occ.remarks = attributes_dict.get("Remarks")
                     mlp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
                     mlp_occ.item_description = attributes_dict.get("Description")
-
 
                     # Validate Collecting Method
                     collection_method = attributes_dict.get("Collection Method")
@@ -195,8 +190,6 @@ class UploadKMLView(generic.FormView):
                     mlp_occ.collecting_method = attributes_dict.get("Collection Method")
                     mlp_occ.collector = attributes_dict.get("Collector")
                     mlp_occ.individual_count = attributes_dict.get("Count")
-                    #if mlp_occ:
-                    #    mlp_occ.year_collected = mlp_occ.field_number.year
 
                     if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
                         mlp_occ.in_situ = False
@@ -209,17 +202,17 @@ class UploadKMLView(generic.FormView):
                     image_file = ""
                     image_added = False
                     # Now look for images if this is a KMZ
-                    if KML_file_extension.lower() == "kmz":
+                    if kml_file_extension.lower() == "kmz":
                         # grab image names from XML
                         image_tags = table.xpath("//img/@src")
                         # grab the name of the first image
                         try:
                             image_tag = image_tags[0]
                             # grab the file info from the zip list
-                            for file_info in KMZ_file.filelist:
+                            for file_info in kmz_file.filelist:
                                 if image_tag == file_info.orig_filename:
                                     # grab the image file itself
-                                    image_file = KMZ_file.extract(file_info, "media/uploads/images/mlp")
+                                    image_file = kmz_file.extract(file_info, "media/uploads/images/mlp")
                                     image_added = True
                                     break
                         except IndexError:
@@ -242,17 +235,18 @@ class UploadKMLView(generic.FormView):
                 elif type(o) is not Placemark:
                     raise IOError("KML File is badly formatted")
 
-        KML_file = kml.KML()
-        if KML_file_extension == "kmz":
-            KMZ_file = ZipFile(KML_file_upload, 'r')
-            KML_document = KMZ_file.open('doc.kml', 'r').read()
+        kml_file = kml.KML()
+        if kml_file_extension == "kmz":
+            kmz_file = ZipFile(kml_file_upload, 'r')
+            kml_document = kmz_file.open('doc.kml', 'r').read()
         else:
-            KML_document = open(KML_file_path + "/" + KML_file_upload_name, 'r').read()  # read() loads entire file as one string
+            # read() loads entire file as one string
+            kml_document = open(kml_file_path + "/" + kml_file_upload_name, 'r').read()
 
-        KML_file.from_string(KML_document) # pass contents of kml string to kml document instance for parsing
+        kml_file.from_string(kml_document)  # pass contents of kml string to kml document instance for parsing
 
         # get the top level features object (this is essentially the layers list)
-        level1_elements = list(KML_file.features())
+        level1_elements = list(kml_file.features())
 
         # Check that the kml file is well-formed with a single document element.
         if len(level1_elements) == 1 and type(level1_elements[0]) == Document:
@@ -283,43 +277,44 @@ class Confirmation(generic.ListView):
     model = Occurrence
 
 
-class UploadShapefileView(generic.FormView):
-    template_name = 'projects/upload_shapefile.html'
-    form_class = UploadForm
-    context_object_name = 'upload'
-    success_url = 'confirmation'
+# class UploadShapefileView(generic.FormView):
+#     template_name = 'projects/upload_shapefile.html'
+#     form_class = UploadForm
+#     context_object_name = 'upload'
+#     success_url = 'confirmation'
+# 
+#     def form_valid(self, form):
+#         # This method is called when valid form data has been POSTed.
+#         # It should return an HttpResponse.
+#         shapefileProper = self.request.FILES['shapefileUpload']
+#         shapefileIndex = self.request.FILES['shapefileIndexUpload']
+#         shapefileData = self.request.FILES['shapefileDataUpload']
+#         shapefileProperName = self.request.FILES['shapefileUpload'].name
+#         shapefileIndexName = self.request.FILES['shapefileIndexUpload'].name
+#         shapefileDataName = self.request.FILES['shapefileDataUpload'].name
+#         shapefileProperSaved = default_storage.save(shapefileProperName, ContentFile(shapefileProper.read()))
+#         shapefileIndexSaved = default_storage.save(shapefileIndexName, ContentFile(shapefileIndex.read()))
+#         shapefileDataSaved = default_storage.save(shapefileDataName, ContentFile(shapefileData.read()))
+#         shapefilePath = os.path.join(settings.MEDIA_ROOT)
+#         shapefileName = shapefileProperName[:shapefileProperName.rfind('.')]
+#         sf = shapefile.Reader(shapefilePath + "\\" + shapefileName)
+# 
+#         shapes = sf.shapes()
+#         return super(UploadShapefileView, self).form_valid(form)
 
-    def form_valid(self, form):
-        # This method is called when valid form data has been POSTed.
-        # It should return an HttpResponse.
-        shapefileProper = self.request.FILES['shapefileUpload']
-        shapefileIndex = self.request.FILES['shapefileIndexUpload']
-        shapefileData = self.request.FILES['shapefileDataUpload']
-        shapefileProperName = self.request.FILES['shapefileUpload'].name
-        shapefileIndexName = self.request.FILES['shapefileIndexUpload'].name
-        shapefileDataName = self.request.FILES['shapefileDataUpload'].name
-        shapefileProperSaved = default_storage.save(shapefileProperName, ContentFile(shapefileProper.read()))
-        shapefileIndexSaved = default_storage.save(shapefileIndexName, ContentFile(shapefileIndex.read()))
-        shapefileDataSaved = default_storage.save(shapefileDataName, ContentFile(shapefileData.read()))
-        shapefilePath = os.path.join(settings.MEDIA_ROOT)
-        shapefileName = shapefileProperName[:shapefileProperName.rfind('.')]
-        sf = shapefile.Reader(shapefilePath + "\\" + shapefileName)
-        # sf = shapefile.Reader("C:\\Users\\turban\\Documents\\Development\\PyCharm\\paleocore\\media\\air_photo_areas")
 
-        shapes = sf.shapes()
-        return super(UploadShapefileView, self).form_valid(form)
-
-
-def ChangeXYView(request):
+def change_coordinates_view(request):
     if request.method == "POST":
         form = ChangeXYForm(request.POST)
         if form.is_valid():
             obs = Occurrence.objects.get(pk=request.POST["DB_id"])
-            coordinates = utm.to_latlon(int(request.POST["new_easting"]), int(request.POST["new_northing"]), 37, "N")
+            coordinates = utm.to_latlon(float(request.POST["new_easting"]), 
+                                        float(request.POST["new_northing"]), 37, "N")
             pnt = GEOSGeometry("POINT (" + str(coordinates[1]) + " " + str(coordinates[0]) + ")", 4326)  # WKT
             obs.geom = pnt
             obs.save()
-            messages.add_message(request, messages.INFO, 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
+            messages.add_message(request, messages.INFO, 
+                                 'Successfully Updated Coordinates For %s.' % obs.catalog_number)
             return redirect("/admin/mlp/occurrence")
     else:
         selected = list(request.GET.get("ids", "").split(","))
@@ -336,4 +331,3 @@ def ChangeXYView(request):
                         }
         the_form = ChangeXYForm(initial=initial_data)
         return render_to_response('projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
-

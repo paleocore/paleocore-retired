@@ -18,6 +18,6 @@ urlpatterns = patterns('',
     url(r'^upload/shapefile/', omo_mursi_views.UploadShapefileView.as_view(), name="omo_mursi_upload_shapefile"),
 
     # /projects/omo_mursi/change_xy/
-    url(r'^change_xy/', omo_mursi_views.ChangeXYView, name="omo_mursi_change_xy"),
+    url(r'^change_xy/', omo_mursi_views.change_coordinates_view, name="omo_mursi_change_xy"),
 
 )
