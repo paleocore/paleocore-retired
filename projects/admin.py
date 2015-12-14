@@ -2,6 +2,7 @@ from django.contrib.gis import admin
 from models import Project, ProjectTerm
 from olwidget.admin import GeoModelAdmin
 
+
 class ProjectTermInline(admin.TabularInline):
     model = ProjectTerm
     extra = 1
