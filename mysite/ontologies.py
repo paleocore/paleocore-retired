@@ -17,6 +17,13 @@ COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Denne Reed", "Denne Reed"),
                      ("Jonathan Wynn", "Jonathan Wynn"))
 
+HRP_COLLECTOR_CHOICES = (("Christopher Campisano", "Christopher Campisano"),
+                         ("William Kimbel", "William Kimbel"),
+                         ("Kaye Reed", "Kaye Reed"),
+                         )
+
+HRP_COLLECTION_CODES = (("AL", "AL"),)
+
 SIDE_VOCABULARY = (("Left", "Left"),
                    ("Right", "Right"),
                    ("Both", "Both"),

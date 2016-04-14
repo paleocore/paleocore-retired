@@ -1,0 +1,38 @@
+p.withTopPadding
+{
+    padding-top: 1em;
+}
+
+
+input.impactSubmit
+{
+    background:#cf7d47;
+    padding:6px;
+    border-radius:3px;
+    border:1px solid black;
+    color:white;
+    font-size: 12pt;
+}
+
+form
+{
+    background: #f8f5f9;
+    display:inline-block;
+
+}
+
+label
+{
+    display: inline-block;
+    width: 150px; }
+
+
+tr:hover
+{
+    background-color: #cf7d47;
+    color: white !important
+}
+
+tr:hover a{
+    color: white;
+}

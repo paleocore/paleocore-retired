@@ -71,7 +71,8 @@ INSTALLED_APPS = (
 
     # Project Apps
     'mlp',  # Mille-Logya Project
-    'drp',   # Dikika Research Project
+    'drp',  # Dikika Research Project
+    'hrp',  # Hadar Research Project
     'turkana',  # Turkana Project Data
     'cc',  # Combe Capelle project
     'fc',  # Fontechevade project
