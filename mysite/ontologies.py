@@ -18,6 +18,8 @@ COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Jonathan Wynn", "Jonathan Wynn"))
 
 HRP_COLLECTOR_CHOICES = (("Christopher Campisano", "Christopher Campisano"),
+                         ("Donald Johanson","Donald Johanson"),
+                         ("Thomas Gray","Thomas Gray"),
                          ("William Kimbel", "William Kimbel"),
                          ("Kaye Reed", "Kaye Reed"),
                          )

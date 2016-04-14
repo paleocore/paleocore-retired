@@ -78,7 +78,7 @@ class Occurrence(models.Model):
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
     problem = models.BooleanField(default=False)
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
-    geom = models.GeometryField(srid=4326, blank=True, null=True)  # NOT NULL
+    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
     objects = models.GeoManager()
 
     # HRP Specific Fields
@@ -119,12 +119,12 @@ class Occurrence(models.Model):
             return 0
 
     def __unicode__(self):
-        nice_name = str(self.collection_code) + "-" + str(self.paleolocality_number) + "-" + str(self.item_number) + \
+        nice_name = str(self.collection_code) + " " + str(self.paleolocality_number) + "-" + str(self.item_number) + \
                     str(self.item_part) + " [" + str(self.item_scientific_name) + " " + str(self.item_description) + "]"
         return nice_name.replace("None", "").replace("--", "")
 
     def save(self, *args, **kwargs):  # custom save method for occurrence
-        the_catalog_number = str(self.collection_code) + "-" + str(self.paleolocality_number) + \
+        the_catalog_number = str(self.collection_code) + " " + str(self.paleolocality_number) + \
                              str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
         self.catalog_number = the_catalog_number.replace("None","")
         self.date_last_modified = datetime.now()  # TODO change date_last_modified autonow option to accomplish this
