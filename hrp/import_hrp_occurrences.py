@@ -32,6 +32,7 @@ HRP_collector_list = ['C.J. Campisano', 'W.H. Kimbel', 'T.K. Nalley', 'D.N. Reed
 HRP_strat_member_list = ['Basal', 'Basal-Sidi Hakoma', 'Denen Dora', 'Denen Dora-Kada Hadar', 'Kada Hadar',
                          'Sidi Hakoma', 'Sidi Hakoma-Denen Dora']
 
+
 # Helper Functions
 def transform_point(row):
     """
@@ -39,7 +40,7 @@ def transform_point(row):
     :param row:
     :return point_object:
     """
-
+    pt = None
     # Fetch coordinates from row data
     occurrence_coordinates = row[field_list.index('POINT_X'):field_list.index('POINT_Y') + 1]
     occurrence_id = row[field_list.index('CatalogNumberNumeric')]
@@ -167,6 +168,8 @@ def validate_row(row):
     if coordinates_list and coordinates_list[0] > 100000 and coordinates_list[1] > 1000000:
         pt = transform_point(row)
         row_dict['geom'] = pt
+    elif len(coordinates_list) == 2 and (coordinates_list[0] is None or coordinates_list[1] is None):
+        row_dict['geom'] = None
     else:
         print "Error validating coordinates for Occurrence %s" % occurrence_id
         return False
@@ -197,26 +200,26 @@ def validate_row(row):
         return False
 
     # Validate PaleoLocalityNumber
-    paleolocality_number = row[field_list.index('PaleoLocalityNumber')]
-    if basis_of_record == 'Collection' and int(paleolocality_number) > 0:
-        row_dict['paleolocality_number'] = int(paleolocality_number)
-    elif basis_of_record == 'Observation' and not paleolocality_number:
-        row_dict['paleolocality_number'] = None
+    locality_number = row[field_list.index('PaleoLocalityNumber')]
+    if basis_of_record == 'Collection' and int(locality_number) > 0:
+        row_dict['locality_number'] = int(locality_number)
+    elif basis_of_record == 'Observation' and not locality_number:
+        row_dict['locality_number'] = None
     else:
-        print "Invalid paleolocality number %s for Occurrence %s" % (paleolocality_number, occurrence_id)
+        print "Invalid locality number %s for Occurrence %s" % (locality_number, occurrence_id)
         return False
 
-    # Validate paleo_sublocality
-    paleo_sublocality = row[field_list.index('PaleoSubLocality')]
-    if paleo_sublocality and not paleolocality_number:
-        print "Invalid paleo_sublocality %s for Occurrence %s" % (paleo_sublocality, occurrence_id)
+    # Validate sublocality
+    sublocality = row[field_list.index('PaleoSubLocality')]
+    if sublocality and not locality_number:
+        print "Invalid sublocality %s for Occurrence %s" % (sublocality, occurrence_id)
         return False
     else:
-        row_dict['paleo_sublocality'] = paleo_sublocality
+        row_dict['sublocality'] = sublocality
 
     # Validate item number
     item_number = row[field_list.index('ItemNumber')]
-    if item_number and not paleolocality_number:
+    if item_number and not locality_number:
         print "Invalid item number %s for Occurrence %s" % (item_number, occurrence_id)
         return False
     else:
@@ -231,48 +234,48 @@ def validate_row(row):
         row_dict['item_part'] = item_part
 
     # Validate Catalog Number
-    catalog_number = row[field_list.index('CatalogNumber')]
-    if basis_of_record == "Collection" and not catalog_number:
-        print "Invalid catalog number %s for Occurrence %s" % (catalog_number, occurrence_id)
-        return False
-
-    elif basis_of_record == "Collection" and catalog_number:
-        collection_code_text = ''
-        locality_text = ''
-        item_text = ''
-
-        # Validate and build collection code text
-        if collection_code and collection_code != '':
-            collection_code_text = collection_code + ' '
-
-        # Validate and build locality text
-        if paleolocality_number:
-            if paleo_sublocality and paleo_sublocality != '':
-                locality_text = str(int(paleolocality_number)) + paleo_sublocality
-            else:
-                locality_text = str(int(paleolocality_number))
-
-        # Validate and build item_text
-        if item_number and item_number != '':
-            if item_part and item_part != '':
-                item_text = '-' + item_number + item_part
-            else:
-                item_text = '-' + item_number
-
-        catnum = collection_code_text + locality_text + item_text
-
-        if catnum != catalog_number:
-            print "Invalid catnum %s does not match %s for Occurrence %s" % (catnum, catalog_number, occurrence_id)
-            return False
-        else:
-            row_dict['catalog_number'] = catalog_number
-
-    if basis_of_record == 'Observation' and catalog_number:
-        print "Invalid catalog number %s for Observation Occurrence %s" % (catalog_number, occurrence_id)
-        return False
-
-    elif basis_of_record == 'Observation' and not catalog_number:
-        row_dict['catalog_number'] = None
+    # catalog_number = row[field_list.index('CatalogNumber')]
+    # if basis_of_record == "Collection" and not catalog_number:
+    #     print "Invalid catalog number %s for Occurrence %s" % (catalog_number, occurrence_id)
+    #     return False
+    #
+    # elif basis_of_record == "Collection" and catalog_number:
+    #     collection_code_text = ''
+    #     locality_text = ''
+    #     item_text = ''
+    #
+    #     # Validate and build collection code text
+    #     if collection_code and collection_code != '':
+    #         collection_code_text = collection_code + ' '
+    #
+    #     # Validate and build locality text
+    #     if locality_number:
+    #         if sublocality and sublocality != '':
+    #             locality_text = str(int(locality_number)) + sublocality
+    #         else:
+    #             locality_text = str(int(locality_number))
+    #
+    #     # Validate and build item_text
+    #     if item_number and item_number != '':
+    #         if item_part and item_part != '':
+    #             item_text = '-' + item_number + item_part
+    #         else:
+    #             item_text = '-' + item_number
+    #
+    #     catnum = collection_code_text + locality_text + item_text
+    #
+    #     if catnum != catalog_number:
+    #         print "Invalid catnum %s does not match %s for Occurrence %s" % (catnum, catalog_number, occurrence_id)
+    #         return False
+    #     else:
+    #         row_dict['catalog_number'] = catalog_number
+    #
+    # if basis_of_record == 'Observation' and catalog_number:
+    #     print "Invalid catalog number %s for Observation Occurrence %s" % (catalog_number, occurrence_id)
+    #     return False
+    #
+    # elif basis_of_record == 'Observation' and not catalog_number:
+    #     row_dict['catalog_number'] = None
 
     # Validate Drainage Region
     row_dict['drainage_region'] = row[field_list.index('DrainageRegion')]
@@ -326,17 +329,18 @@ def validate_row(row):
     # Validate Collection Remarks
     row_dict['collection_remarks'] = row[field_list.index('CollectionRemarks')]
 
-    # Validate date_recordeds. Check that entries are either Null, Date, or DateTime
+    # Validate date_recorded. Check that entries are either Null, Date, or DateTime
     date_recorded = convert_date_recorded(row)
     row_dict['date_recorded'] = date_recorded
 
     # Validate year collected
     year_collected_string = row[field_list.index('YearCollected')]
+    year_collected = None
     try:
         year_collected = int(year_collected_string)  # try converting year collected from str to int
         if date_recorded and (int(date_recorded.year) != year_collected):
-            print "Year collected %s does not match date_recorded %s for Occurrence %s" % (year_collected, date_recorded,
-                                                                                       occurrence_id)
+            print "Year collected %s does not match date_recorded %s for Occurrence %s" % (year_collected,
+                                                                                           date_recorded, occurrence_id)
             return False
         if 1970 < year_collected <= datetime.datetime.now().year:
             row_dict['year_collected'] = year_collected
@@ -345,8 +349,7 @@ def validate_row(row):
             return False
     except TypeError:  # Null raises TypeError
         if not year_collected_string:
-            year_collected = None
-            print "Warning year collected is Null for Occurrence %s" % (occurrence_id)
+            print "Warning year collected is Null for Occurrence %s" % occurrence_id
         else:  # If not null something else bad is happening, print general error
             print "Invalid year collected %s for Occurrnce %s" % (year_collected, occurrence_id)
             return False
@@ -355,6 +358,7 @@ def validate_row(row):
         return False
 
     # Validate Individual Count
+    individual_count = None
     try:
         individual_count = row[field_list.index('IndividualCount')]
         row_dict['individual_count'] = individual_count
@@ -479,13 +483,13 @@ def validate_row(row):
         row_dict['date_last_modified'] = dlm
 
     # Validate length of row dictionary
-    if len(row_dict.keys()) != 50:
+    if len(row_dict.keys()) != 49:
         print "Invalid row dictionary length %s for Occurrence %s" % (len(row_dict.keys()), occurrence_id)
         print row_dict.keys()
     return row_dict
 
 
-def get_locality(row):
+def get_locality(row_dict):
     """
     Fetch the corresponding locality object for an occurrence and create a new one if necessary.
     :param row:
@@ -493,11 +497,12 @@ def get_locality(row):
     """
 
     # Validate and build locality text
-    basis_of_record = row[field_list.index('BasisOfRecord')]
-    collection_code = row[field_list.index('CollectionCode')]
-    locality_number = row[field_list.index('PaleoLocalityNumber')]
-    sublocality = row[field_list.index('PaleoSubLocality')]
-    pt = transform_point(row)
+    basis_of_record = row_dict['basis_of_record']
+    collection_code = row_dict['collection_code']
+    locality_number = row_dict['locality_number']
+    sublocality = row_dict['sublocality']
+    geom = row_dict['geom']
+    locality_text = ''
 
     if basis_of_record == 'Collection':
         if locality_number:
@@ -515,15 +520,11 @@ def get_locality(row):
             locality = Locality(id=locality_text,
                                 collection_code=collection_code,
                                 locality_number=locality_number,
-                                collection_code=collection_code,
                                 sublocality=sublocality,
                                 date_last_modified=datetime.datetime.now(),
-                                geom=pt)
-            try:
-                locality.save()
-            except:
-                print "locality save error for locality %s" % locality_number
+                                geom=geom)
 
+            locality.save()
             return locality
 
 
@@ -536,7 +537,7 @@ def import_collection(row_dict, locality):
                                 locality=locality,
                                 item_number=row_dict['item_number'],
                                 item_part=row_dict['item_part'],
-                                catalog_number=row_dict['catalog_number'],
+                                # catalog_number=row_dict['catalog_number'],
                                 remarks=row_dict['remarks'],
                                 item_scientific_name=row_dict['item_scientific_name'],
                                 item_description=row_dict['item_description'],
@@ -621,13 +622,11 @@ def validate_new_record(occurrence_object, row):
     if occurrence_object.id != int(row[field_list.index('CatalogNumberNumeric')]):
         print "Problem importing id for Occurrence %s" % occurrence_object.id
         return False
-
     if occurrence_object.basis_of_record != row[field_list.index('BasisOfRecord')]:
         print "Problem importing basis of record %s for Occurrence %s" % \
               (occurrence_object.basis_of_record,
                occurrence_object.id)
         return False
-
     if occurrence_object.item_type != row[field_list.index('ItemType')]:
         print "Problem importing item type %s for Occurrence %s" % \
               (occurrence_object.basis_of_record, occurrence_object.id)
@@ -636,13 +635,14 @@ def validate_new_record(occurrence_object, row):
         print "Problem importing collection code %s for Occurrence %s" % \
               (occurrence_object.collection_code, occurrence_object.id)
         return False
-    if occurrence_object.catalog_number != row[field_list.index('CatalogNumber')]:
+    if occurrence_object.catalog_number() != row[field_list.index('CatalogNumber')]:
         print "Catalog Number %s does not match CatalogNumber %s for Occurrence %s" % \
-              (occurrence_object.catalog_number, row[field_list.index('CatalogNumber')], occurrence_object.id)
+              (occurrence_object.catalog_number(), row[field_list.index('CatalogNumber')], occurrence_object.id)
         return False
     if occurrence_object.item_scientific_name != row[field_list.index('ItemScientificName')]:
         print "Item scientific name %s does not match ItemScientificName %s for Occurrence %s" % \
-              (occurrence_object.item_scientific_name, row[field_list.index('ItemScientificName')], occurrence_object.id)
+              (occurrence_object.item_scientific_name, row[field_list.index('ItemScientificName')],
+               occurrence_object.id)
         return False
     if occurrence_object.item_description != row[field_list.index('ItemDescription')]:
         print "Item description %s does not match ItemDescription %s for Occurrence %s" % \
@@ -684,7 +684,7 @@ def main():
         if valid_row_dict:
             basis_of_record = valid_row_dict['basis_of_record']
             if basis_of_record == 'Collection':
-                locality = get_locality(row)
+                locality = get_locality(valid_row_dict)
                 new_occurrence = import_collection(valid_row_dict, locality)
                 import_count += 1
                 collection_count += 1
@@ -699,10 +699,7 @@ def main():
                 import_count += 1
                 observation_count += 1
                 if validate_new_record(new_occurrence, row):
-                    try:
-                        new_occurrence.save()
-                    except:
-                        print "Problem saving occurrence %s" % new_occurrence.id
+                    new_occurrence.save()
         else:
             print "Invalid row for Occurrence %s " % row[field_list.index('CatalogNumberNumeric')]
     print "Number of rows processed: %s \nNumber of records imported: %s" % (row_count, import_count)

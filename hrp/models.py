@@ -17,7 +17,7 @@ class Locality(models.Model):
     lower_limit_in_section = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     error_notes = models.CharField(max_length=255, null=True, blank=True)
     notes = models.CharField(max_length=254, null=True, blank=True)
-    geom = models.PointField(srid=4326)
+    geom = models.PointField(srid=4326, blank=True, null=True)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     objects = models.GeoManager()
 
@@ -162,18 +162,6 @@ class Occurrence(models.Model):
     # HRP Specific Fields
     drainage_region = models.CharField(null=True, blank=True, max_length=255)
 
-    # Temporary fields, delete after import
-    #paleolocality_number = models.IntegerField("Locality #", null=True, blank=True)
-    #paleo_sublocality = models.CharField("Sublocality", null=True, blank=True, max_length=50)
-    #locality_text = models.CharField(null=True, blank=True, max_length=255, db_column="locality")
-
-    # verbatim_coordinates = models.CharField(null=True, blank=True, max_length=50)
-    # verbatim_coordinate_system = models.CharField(null=True, blank=True, max_length=50)
-    # geodetic_datum = models.CharField(null=True, blank=True, max_length=20)
-    # stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
-    # stratigraphic_height_in_meters = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-
-
     @staticmethod
     def fields_to_display():
         fields = ("id", "barcode")
@@ -255,14 +243,21 @@ class Occurrence(models.Model):
 
         if self.basis_of_record == 'Collection':
             #  Crate catalog number string. Null values become None when converted to string
-            catnum_string = str(self.collection_code) + " " + str(self.locality_id) + "-" + str(self.item_number) + \
-                    str(self.item_part)
-            return catnum_string.replace('None', '')  # replace None with empty string
+            if self.item_number:
+                if self.item_part:
+                    item_text = '-' + str(self.item_number) + str(self.item_part)
+                else:
+                    item_text = '-' + str(self.item_number)
+            else:
+                item_text = ''
+
+            catalog_number_string = str(self.collection_code) + " " + str(self.locality_id) + item_text
+            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
         else:
             return None
 
     def __unicode__(self):
-        nice_name = self.catalog_number() + ' ' + str(self.item_scientific_name) + ' ' \
+        nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
                     + str(self.item_description) + "]"
         return nice_name.replace("None", "").replace("--", "")
 

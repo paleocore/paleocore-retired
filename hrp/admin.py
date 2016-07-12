@@ -101,7 +101,7 @@ occurrence_fieldsets = (
                    ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
-                   ('locality',)]
+                   ('locality', 'drainage_region')]
     }),
 
     ('Location Details', {
