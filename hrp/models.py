@@ -1,61 +1,134 @@
-# This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
-from datetime import datetime
 from taxonomy.models import Taxon, IdentificationQualifier
 from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
-    COLLECTING_METHOD_VOCABULARY, BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
-import utm
+    HRP_COLLECTING_METHOD_VOCABULARY, HRP_BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
 import os
+from django.contrib.gis.geos import Point
 
 
 class Locality(models.Model):
-    paleolocality_number = models.IntegerField(null=True, blank=True)
+    id = models.CharField(primary_key=True, max_length=255)
     collection_code = models.CharField(null=True, blank=True, choices=HRP_COLLECTION_CODES, max_length=10)
-    paleo_sublocality = models.CharField(null=True, blank=True, max_length=50)
-    description_1 = models.TextField(null=True, blank=True, max_length=255)
-    description_2 = models.TextField(null=True, blank=True, max_length=255)
-    description_3 = models.TextField(null=True, blank=True, max_length=255)
+    locality_number = models.IntegerField(null=True, blank=True)
+    sublocality = models.CharField(null=True, blank=True, max_length=50)
+    description = models.TextField(null=True, blank=True, max_length=255)
     stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
     upper_limit_in_section = models.IntegerField(null=True, blank=True)
     lower_limit_in_section = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     error_notes = models.CharField(max_length=255, null=True, blank=True)
     notes = models.CharField(max_length=254, null=True, blank=True)
-    geom = models.PolygonField(srid=4326)
+    geom = models.PointField(srid=4326)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     objects = models.GeoManager()
 
     def __unicode__(self):
-        return str(self.collection_code) + " " + str(self.paleolocality_number)
+        nice_name = str(self.collection_code) + " " + str(self.locality_number) + str(self.sublocality)
+        return nice_name.replace("None", "").replace("--", "")
+
+    def point_x(self):
+        """
+        Return the x coordinate for the point in its native coordinate system
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            return self.geom.x
+        else:
+            return None
+
+    def point_y(self):
+        """
+        Return the y coordinate for the point in its native coordinate system
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            return self.geom.y
+        else:
+            return None
+
+    def longitude(self):
+        """
+        Return the longitude for the point in the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(4326)  # transform to GCS WGS84
+            return pt.x
+        else:
+            return None
+
+    def latitude(self):
+        """
+        Return the latitude for the point in the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(4326)
+            return pt.y
+        else:
+            return None
+
+    def easting(self):
+        """
+        Return the easting for the point in UTM meters using the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(32637)  # transform to UTM WGS84
+            return pt.x
+        else:
+            return None
+
+    def northing(self):
+        """
+        Return the easting for the point in UTM meters using the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(32637)  # transform to UTM WGS84
+            return pt.y
+        else:
+            return None
 
     class Meta:
         verbose_name = "HRP Locality"
         verbose_name_plural = "HRP Localities"
-        ordering = ("collection_code", "paleolocality_number", "paleo_sublocality")
+        ordering = ("locality_number", "sublocality")
 
 
 # This is the HRP data model. It is only partly PaleoCore compliant.
 class Occurrence(models.Model):
-    barcode = models.IntegerField("Barcode", null=True, blank=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
+    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
+    # TODO basis is Null for import Not Null afterwards
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
-                                       choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
+                                       choices=HRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True,
-                                       choices=HRP_COLLECTION_CODES)
+    # During initial import remove collection code choices. Add later for validation.
+    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
+    # Foreign key to locality table
+    locality = models.ForeignKey(Locality, null=True, blank=True)
+    # Splitting item number and part allows more fine grained searches
     item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
-    catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
+    # Keep catalog number temporarily, but going forward create method to build from other fields
+    # catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     georeference_remarks = models.CharField(max_length=50, null=True, blank=True)
-    collecting_method = models.CharField("Collecting Method", max_length=50,
-                                         choices=COLLECTING_METHOD_VOCABULARY, null=False)
+    collecting_method = models.CharField(max_length=50,
+                                         choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
+    field_number = models.CharField(max_length=50, null=True, blank=True)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True, max_length=50)
     disposition = models.CharField(max_length=255, blank=True, null=True)
-    field_number = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
+    collection_remarks = models.CharField("Remarks", null=True, blank=True, max_length=255)
+    date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
     individual_count = models.IntegerField(blank=True, null=True, default=1)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
@@ -67,10 +140,14 @@ class Occurrence(models.Model):
     distance_from_found = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
     stratigraphic_marker_likely = models.CharField(max_length=255, blank=True, null=True)
     distance_from_likely = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
+    stratigraphic_formation = models.CharField(max_length=255, blank=True, null=True)
     stratigraphic_member = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
+    analytical_unit_found = models.CharField(max_length=255, blank=True, null=True)
+    analytical_unit_likely = models.CharField(max_length=255, blank=True, null=True)
+    analytical_unit_simplified = models.CharField(max_length=255, blank=True, null=True)
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/hrp", null=True)
@@ -78,20 +155,24 @@ class Occurrence(models.Model):
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
     problem = models.BooleanField(default=False)
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
-    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
+    barcode = models.IntegerField("Barcode", null=True, blank=True)
+    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     objects = models.GeoManager()
 
     # HRP Specific Fields
-    paleolocality_number = models.IntegerField("Locality #", null=True, blank=True)
-    paleo_sublocality = models.CharField("Sublocality", null=True, blank=True, max_length=50)
-    locality_text = models.CharField(null=True, blank=True, max_length=255, db_column="locality")
-    verbatim_coordinates = models.CharField(null=True, blank=True, max_length=50)
-    verbatim_coordinate_system = models.CharField(null=True, blank=True, max_length=50)
-    geodetic_datum = models.CharField(null=True, blank=True, max_length=20)
-    collection_remarks = models.CharField("Remarks", null=True, blank=True, max_length=255)
-    stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
-    stratigraphic_height_in_meters = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    locality = models.ForeignKey(Locality, null=True, blank=True)
+    drainage_region = models.CharField(null=True, blank=True, max_length=255)
+
+    # Temporary fields, delete after import
+    #paleolocality_number = models.IntegerField("Locality #", null=True, blank=True)
+    #paleo_sublocality = models.CharField("Sublocality", null=True, blank=True, max_length=50)
+    #locality_text = models.CharField(null=True, blank=True, max_length=255, db_column="locality")
+
+    # verbatim_coordinates = models.CharField(null=True, blank=True, max_length=50)
+    # verbatim_coordinate_system = models.CharField(null=True, blank=True, max_length=50)
+    # geodetic_datum = models.CharField(null=True, blank=True, max_length=20)
+    # stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
+    # stratigraphic_height_in_meters = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+
 
     @staticmethod
     def fields_to_display():
@@ -99,35 +180,105 @@ class Occurrence(models.Model):
         return fields
 
     def point_x(self):
-        return self.geom.x
+        """
+        Return the x coordinate for the point in its native coordinate system
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            return self.geom.x
+        else:
+            return None
 
     def point_y(self):
-        return self.geom.y
+        """
+        Return the y coordinate for the point in its native coordinate system
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            return self.geom.y
+        else:
+            return None
+
+    def longitude(self):
+        """
+        Return the longitude for the point in the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(4326)  # transform to GCS WGS84
+            return pt.x
+        else:
+            return None
+
+    def latitude(self):
+        """
+        Return the latitude for the point in the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(4326)
+            return pt.y
+        else:
+            return None
 
     def easting(self):
-        try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[0]
-        except:
-            return 0
+        """
+        Return the easting for the point in UTM meters using the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(32637)  # transform to UTM WGS84
+            return pt.x
+        else:
+            return None
 
     def northing(self):
-        try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[1]
-        except:
-            return 0
+        """
+        Return the easting for the point in UTM meters using the WGS84 datum
+        :return:
+        """
+        if self.geom and type(self.geom) == Point:
+            pt = self.geom
+            pt.transform(32637)  # transform to UTM WGS84
+            return pt.y
+        else:
+            return None
+
+    def catalog_number(self):
+        """
+        Generate a pretty string formatted catalog number from constituent fields
+        :return: catalog number as string
+        """
+
+        if self.basis_of_record == 'Collection':
+            #  Crate catalog number string. Null values become None when converted to string
+            catnum_string = str(self.collection_code) + " " + str(self.locality_id) + "-" + str(self.item_number) + \
+                    str(self.item_part)
+            return catnum_string.replace('None', '')  # replace None with empty string
+        else:
+            return None
 
     def __unicode__(self):
-        nice_name = str(self.collection_code) + " " + str(self.paleolocality_number) + "-" + str(self.item_number) + \
-                    str(self.item_part) + " [" + str(self.item_scientific_name) + " " + str(self.item_description) + "]"
+        nice_name = self.catalog_number() + ' ' + str(self.item_scientific_name) + ' ' \
+                    + str(self.item_description) + "]"
         return nice_name.replace("None", "").replace("--", "")
 
-    def save(self, *args, **kwargs):  # custom save method for occurrence
-        the_catalog_number = str(self.collection_code) + " " + str(self.paleolocality_number) + \
-                             str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
-        self.catalog_number = the_catalog_number.replace("None","")
-        self.date_last_modified = datetime.now()  # TODO change date_last_modified autonow option to accomplish this
+    def save(self, *args, **kwargs):
+        """
+        Custom save method for Occurrence objects. Automatically updates catalog_number field
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # The following code automatically updates the catalog number field. It is commented out for
+        # now to experiment with a model that does not have a dedicated catalog number field in the database,
+        # but uses a method to dynamically construct a catalog number as necessary.
+        # the_catalog_number = str(self.collection_code) + " " + str(self.paleolocality_number) + \
+        #                      str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
+        # self.catalog_number = the_catalog_number.replace("None", "")
 
         # call the normal hrp_occurrence save method using alternate database
         super(Occurrence, self).save(*args, **kwargs)
@@ -155,7 +306,7 @@ class Occurrence(models.Model):
     class Meta:
         verbose_name = "HRP Occurrence"
         verbose_name_plural = "HRP Occurrences"
-        ordering = ["collection_code", "paleolocality_number", "item_number", "item_part"]
+        ordering = ["collection_code", "locality", "item_number", "item_part"]
 
 
 class Image(models.Model):
