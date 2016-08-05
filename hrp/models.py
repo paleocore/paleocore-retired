@@ -119,7 +119,7 @@ class Occurrence(models.Model):
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
-    georeference_remarks = models.CharField(max_length=50, null=True, blank=True)
+    georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
     collecting_method = models.CharField(max_length=50,
                                          choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
@@ -127,7 +127,7 @@ class Occurrence(models.Model):
     collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True, max_length=50)
     disposition = models.CharField(max_length=255, blank=True, null=True)
-    collection_remarks = models.CharField("Remarks", null=True, blank=True, max_length=255)
+    collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
     date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
     individual_count = models.IntegerField(blank=True, null=True, default=1)
@@ -317,13 +317,17 @@ class File(models.Model):
 
 
 class Biology(Occurrence):
-    infraspecific_epithet = models.CharField(null=True, blank=True, max_length=50)
-    infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
-    author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
-    nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
+    #infraspecific_epithet = models.CharField(null=True, blank=True, max_length=50)
+    #infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
+    #author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
+    #nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
     # identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
+    taxon = models.ForeignKey(Taxon, related_name='hrp_biology_occurrences')
+    vertbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='hrp_biology_occurrences')
+    qualifier_taxon = models.ForeignKey(Taxon, related_name='hrp_biology_occurrences', null=True, blank=True)
     identified_by = models.CharField(null=True, blank=True, max_length=100)
-    date_identified = models.DateTimeField(null=True, blank=True)
+    year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
     sex = models.CharField(null=True, blank=True, max_length=50)
     life_stage = models.CharField(null=True, blank=True, max_length=50)
@@ -403,8 +407,6 @@ class Biology(Occurrence):
     lrm1 = models.BooleanField(default=False)
     lrm2 = models.BooleanField(default=False)
     lrm3 = models.BooleanField(default=False)
-    taxon = models.ForeignKey(Taxon, related_name='hrp_biology_occurrences')
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='hrp_biology_occurrences')
 
     class Meta:
         verbose_name = "HRP Biology"

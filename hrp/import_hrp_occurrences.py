@@ -1,30 +1,41 @@
 __author__ = 'reedd'
 
 import sqlite3
-from hrp.models import Occurrence, Locality
+from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
+from hrp.models import Occurrence, Locality, Biology
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ObjectDoesNotExist
-import datetime
+import datetime, re
+
+# Required imports for stand-along scripts
+# http://stackoverflow.com/questions/25244631/models-arent-loaded-yet-error-while-populating-in-django-1-8-and-python-2-7-8
+import django
+django.setup()
 
 # Global variables
 barcode_list = []
 hrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/HRP/HRP_Paleobase4_2016.sqlite'
 record_limit = ('20000',)
-field_list = ["OBJECTID", "Shape", "CatalogNumberNumeric",  "CatalogNumberNumeric_OLD", "BasisOfRecord", "ItemType",
-              "InstitutionalCode", "CollectionCode", "PaleoLocalityNumber", "PaleoLocalityText", "PaleoSubLocality",
-              "ItemNumber", "ItemPart", "CatalogNumber", "GeneralRemarks", "ItemScientificName", "ItemDescription",
-              "Continent", "Country", "StateProvince", "DrainageRegion", "County", "VerbatimCoordinates",
-              "VerbatimCoordinateSystem", "GeoreferenceRemarks", "UTMZone", "UTMEast", "UTMNorth", "CollectingMethod",
-              "RelatedCatalogItems", "Collector", "Finder", "Disposition", "CollectionRemarks", "TimeStamp_",
-              "YearCollected", "IndividualCount", "PreparationStatus", "StratigraphicMarkerUpper", "MetersFromUpper",
-              "StratigraphicMarkerLower", "MetersFromLower", "StratigraphicMarkerFound", "DistanceFromFound",
-              "StratigraphicMarkerLikely", "DistanceFromLikely", "StratigraphicFormation", "StratigraphicMember",
-              "GeologyRemarks", "AnalyticalUnitFound", "AnalyticalUnit1", "AnalyticalUnit2", "AnalyticalUnit3",
-              "AnalyticalUnitLikely", "AnalyticalUnitSimplified", "Insitu", "RankedUnit", "ImageURL",
-              "RelatedInformation", "LocalityID", "StratigraphicSection", "StratigraphicHeightInMeters",
-              "SpecimenImage", "Weathering", "SurfaceModification", "POINT_X", "POINT_Y", "Problem",
-              "ProblemComment", "MonthCollected", "GeodeticDatum", "Barcode", "DateLastModified",
-              "FieldNumber", "ProjectCode"]
+occurrence_field_list = ["OBJECTID", "Shape", "CatalogNumberNumeric", "CatalogNumberNumeric_OLD", "BasisOfRecord",
+                         "ItemType", "InstitutionalCode", "CollectionCode", "PaleoLocalityNumber", "PaleoLocalityText",
+                         "PaleoSubLocality", "ItemNumber", "ItemPart", "CatalogNumber", "GeneralRemarks",
+                         "ItemScientificName", "ItemDescription",
+                         "Continent", "Country", "StateProvince", "DrainageRegion", "County", "VerbatimCoordinates",
+                         "VerbatimCoordinateSystem", "GeoreferenceRemarks", "UTMZone", "UTMEast", "UTMNorth",
+                         "CollectingMethod",
+                         "RelatedCatalogItems", "Collector", "Finder", "Disposition", "CollectionRemarks", "TimeStamp_",
+                         "YearCollected", "IndividualCount", "PreparationStatus", "StratigraphicMarkerUpper",
+                         "MetersFromUpper",
+                         "StratigraphicMarkerLower", "MetersFromLower", "StratigraphicMarkerFound", "DistanceFromFound",
+                         "StratigraphicMarkerLikely", "DistanceFromLikely", "StratigraphicFormation",
+                         "StratigraphicMember",
+                         "GeologyRemarks", "AnalyticalUnitFound", "AnalyticalUnit1", "AnalyticalUnit2",
+                         "AnalyticalUnit3",
+                         "AnalyticalUnitLikely", "AnalyticalUnitSimplified", "Insitu", "RankedUnit", "ImageURL",
+                         "RelatedInformation", "LocalityID", "StratigraphicSection", "StratigraphicHeightInMeters",
+                         "SpecimenImage", "Weathering", "SurfaceModification", "POINT_X", "POINT_Y", "Problem",
+                         "ProblemComment", "MonthCollected", "GeodeticDatum", "Barcode", "DateLastModified",
+                         "FieldNumber", "ProjectCode"]
 
 HRP_collector_list = ['C.J. Campisano', 'W.H. Kimbel', 'T.K. Nalley', 'D.N. Reed', 'K.E. Reed', 'B.J. Schoville',
                       'A.E. Shapiro',  'HFS Student', 'HRP Team']
@@ -32,26 +43,38 @@ HRP_collector_list = ['C.J. Campisano', 'W.H. Kimbel', 'T.K. Nalley', 'D.N. Reed
 HRP_strat_member_list = ['Basal', 'Basal-Sidi Hakoma', 'Denen Dora', 'Denen Dora-Kada Hadar', 'Kada Hadar',
                          'Sidi Hakoma', 'Sidi Hakoma-Denen Dora']
 
+biology_field_list = ["CatalogNumberNumeric", "CatalogNumberNumericOLD", "Kingdom", "Phylum", "Class", "Order",
+                      "Family", "Subfamily", "Tribe",
+                      "Genus", "SpecificEpithet", "IdentificationQualifier", "IdentifiedBy", "DateIdentified",
+                      "TypeStatus",
+                      "TaxonomyRemarks", "Element", "ElementPortion", "Side", "ElementNumber", "ElementQualifier",
+                      "SizeClass",
+                      "LifeStage", "ElementRemarks", "DateLastModified", "Barcode", "BiologyRemarks"]
 
-# Helper Functions
+rank_list = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family']
+
+taxon_dict = {'Kingdom': '', 'Phylum': '', 'Class': '', 'Order': '', 'Family': '',
+              'Subfamily': '', 'Tribe': '', 'Genus': '', 'Species': ''}
+
+error_message = ''
+
+
+# Occurrence Helper Functions
 def transform_point(row):
     """
-    Create a point object from UTM coordinates
+    Create a point object from UTM coordinates and transform to GCS
     :param row:
-    :return point_object:
+    :return Point object in GCS or None
     """
-    pt = None
     # Fetch coordinates from row data
-    occurrence_coordinates = row[field_list.index('POINT_X'):field_list.index('POINT_Y') + 1]
-    occurrence_id = row[field_list.index('CatalogNumberNumeric')]
-    # Transform coordinates from UTM to GCS
-    try:
-        pt = Point(occurrence_coordinates, srid=32637)
-        pt.transform(4326)
-        # print "GCS coordinates: %f %f" % pt.coords
-    except ValueError:
-        print "Problem transforming coordinates for occurrence id %s" % occurrence_id
+    pointx, pointy = row[occurrence_field_list.index('POINT_X'):occurrence_field_list.index('POINT_Y') + 1]
 
+    # Transform coordinates from UTM to GCS
+    if pointx is None or pointy is None:  # Create Null point if no coordinates
+        pt = None
+    else:
+        pt = Point([pointx, pointy], srid=32637)  # Create point in UTM
+        pt.transform(4326)  # Transform to GCS
     return pt
 
 
@@ -61,8 +84,8 @@ def convert_date_recorded(row):
     :param row:
     :return date_recorded as datetime object:
     """
-    occurrence_id = row[field_list.index('CatalogNumberNumeric')]
-    date_recorded_string = row[field_list.index('TimeStamp_')]
+    occurrence_id = row[occurrence_field_list.index('CatalogNumberNumeric')]
+    date_recorded_string = row[occurrence_field_list.index('TimeStamp_')]
 
     # Import date_recorded from string
     if date_recorded_string and date_recorded_string != '':
@@ -86,7 +109,7 @@ def convert_date_last_modified(row):
     """
 
     dlm = None
-    dlm_string = row[field_list.index('DateLastModified')]
+    dlm_string = row[occurrence_field_list.index('DateLastModified')]
     if dlm_string and dlm_string != '':
         dlm = datetime.datetime.strptime(dlm_string, '%m/%d/%y %H:%M:%S')
     return dlm
@@ -98,7 +121,7 @@ def convert_in_situ(row):
     :param row:
     :return:
     """
-    in_situ_float = row[field_list.index('Insitu')]
+    in_situ_float = row[occurrence_field_list.index('Insitu')]
     in_situ = False
     if in_situ_float == 0.0:
         in_situ = False
@@ -115,7 +138,7 @@ def convert_ranked(row):
     :param row:
     :return:
     """
-    ranked_float = row[field_list.index('RankedUnit')]
+    ranked_float = row[occurrence_field_list.index('RankedUnit')]
     ranked = False
     if ranked_float == 0.0:
         ranked = False
@@ -132,14 +155,193 @@ def convert_problem(row):
     :param row:
     :return:
     """
-    problem_integer = row[field_list.index('Problem')]
+    problem_integer = row[occurrence_field_list.index('Problem')]
     if problem_integer in (1, -1):
         return True
     elif not problem_integer or problem_integer == 0:
         return False
 
 
-# Define validate function
+# Biology helper functions
+def create_taxon_dictionary(brow):
+    """
+    Read a DB row and load into a dictionary
+    :param brow:
+    :return: Return a dictionary with taxonomic information
+    """
+    td = taxon_dict  # initiate a new taxon dictionary
+    td['Kingdom'] = brow[biology_field_list.index('Kingdom')]
+    td['Phylum'] = brow[biology_field_list.index('Phylum')]
+    td['Class'] = brow[biology_field_list.index('Class')]
+    td['Order'] = brow[biology_field_list.index('Order')]
+    td['Family'] = brow[biology_field_list.index('Family')]
+    td['Subfamily'] = brow[biology_field_list.index('Subfamily')]
+    td['Tribe'] = brow[biology_field_list.index('Tribe')]
+    td['Genus'] = brow[biology_field_list.index('Genus')]
+    td['Trivial'] = brow[biology_field_list.index('SpecificEpithet')]
+    td['Qualifier'] = brow[biology_field_list.index('IdentificationQualifier')]
+    if td['Genus'] != '' and td['Trivial'] != '':
+        td['Species'] = td['Genus'] + ' ' + ['Trivial']
+    else:
+        td['Species'] = ''
+
+    return td
+
+
+def get_taxon_name_rank(brow):
+    """
+    Function to look up a taxon object for a row in the Biology table
+    :param brow:
+    :return: Returns a tuple of (taxon_name, taxon_rank_name) for taxa of Genus or higher, e.g. ('Hominidae', 'Family')
+    for species the function returns a tuple with the species binomen, e.g. ('Homo sapiens', 'SpecificEpithet')
+    """
+    taxon_list = brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    name_index = max([i for i, x in enumerate(taxon_list) if x])  # I love list comprehensions
+    taxon_name = taxon_list[name_index]
+    taxon_rank_name = biology_field_list[name_index+2]
+    if taxon_rank_name == 'SpecificEpithet':
+        taxon_name = taxon_list[name_index-1]+' '+taxon_list[name_index]
+    return [taxon_name, taxon_rank_name]
+
+
+def get_matching_taxon(row):
+    """
+    Searches taxon objects for taxa matching an occurrence
+    :param row:
+    :return: returns a single element record set
+    """
+    # get data from all taxon fields and collect them in a list
+    # e.g. ["Animalia", "Chordata", "Mammalia", "Primates", "", "Hominidae", "", "", "Homo", "sapiens"]
+    taxon_list = row[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    # get taxon name and rank
+    taxon_name, taxon_rank_name = get_taxon_name_rank(row)
+
+    if taxon_rank_name == 'SpecificEpithet':
+        genus_name, species_name = taxon_list[7:]
+        if Taxon.objects.filter(parent__name=genus_name).filter(name=species_name).exists():
+            taxon_object = Taxon.objects.get(parent__name=genus_name, name=species_name)
+        else:
+            taxon_object = None
+    else:
+        if Taxon.objects.filter(name=taxon_name).filter(rank__name=taxon_rank_name).exists():
+            taxon_object = Taxon.objects.get(name=taxon_name, rank__name=taxon_rank_name)
+        else:
+            taxon_object = None
+    return taxon_object
+
+
+def get_matching_parent(brow):
+    """
+    For a given occurrence searches list of parent names to find a matcing taxon
+    :param brow:
+    :return: Returns a taxon object, or None
+    """
+    taxon_list = brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    taxon_object = None
+    for taxon_name in reversed(taxon_list[:-1]):
+        if Taxon.objects.filter(name=taxon_name).count() == 1:  # if there's a single match, done
+            taxon_object = Taxon.objects.get(name=taxon_name)
+            break
+    return taxon_object
+
+
+def get_matching_parent_from_name(taxon, name):
+    """
+    For a given taxon object find a parent taxon object that matches the name
+    :param taxon:
+    :param name:
+    :return: Return a taxon object or None
+    """
+    return [t for t in taxon.full_lineage() if t == name][0]
+
+
+def create_taxon(brow):
+    """
+    Creates a new taxon for taxon names not encountered in the DB. Assumes ranks already exist.
+    :param brow:
+    :return: returns the newly created taxon object
+    """
+    taxon_name, taxon_rank_name = get_taxon_name_rank(brow)  # get taxon name and rank
+    if taxon_name:
+        print "Creating new %s: %s" % (taxon_rank_name, taxon_name)
+        if taxon_rank_name == 'SpecificEpithet':
+            # check genus and create if necessary
+            genus_name = taxon_name.split()[0]  # taxon_name is binomen for rank SpecificEpithet, use split to get genus
+            trivial_name = taxon_name.split()[1]  # get species name
+            if not Taxon.objects.filter(name=genus_name).exists():  # If genus name not in DB create it.
+                genus = Taxon(
+                    name=genus_name,
+                    parent=get_matching_parent(brow),
+                    rank=TaxonRank.objects.get(name='Genus')
+                )
+                # genus.save()
+            else:
+                genus = Taxon(name=genus_name)  # If genus name is in DB get it.
+            if not Taxon.objects.filter(name=trivial_name, parent=genus).exists():
+                new_species = Taxon(
+                    name=trivial_name,
+                    parent=genus,
+                    rank=TaxonRank.objects.get(name='Species')
+                )
+                # new_species.save()
+                return new_species
+
+        else:
+            if not Taxon.objects.filter(name=taxon_name).exists:
+                new_taxon = Taxon(
+                    name=taxon_name,
+                    parent=get_matching_parent(brow),
+                    rank=TaxonRank.objects.get(name=taxon_rank_name)
+                )
+                # new_taxon.save()
+                return new_taxon
+
+
+# Field Validation Functions
+def valid_occurrence_id(row):
+    """
+    Validates occurrence id value for use as primary key
+    :param row:
+    :return:True if valid, False if not valid
+    """
+    occurrence_id = row[occurrence_field_list.index('CatalogNumberNumeric')]  # read id from row data
+    if occurrence_id and occurrence_id > 0:  # if occurrence_id is not Null and positive
+        if Occurrence.objects.filter(id=occurrence_id).exists():  # if occurrence_id is duplicate
+            print "Warning, Occurrence id %s already exists" % occurrence_id   # print warning
+            return False  # return a failed validation
+        else:  # if occurrence_id not null and not duplicate then return True
+            return True
+
+    else:
+        print "Missing or non-positive occurrence ID!"
+        return False
+
+
+def valid_coordinates(row):
+    occurrence_id = row[occurrence_field_list.index('CatalogNumberNumeric')]  # read id from row data
+    # read coordinates from POINT_X and POINT_Y in row data
+    coordinates_list = row[occurrence_field_list.index('POINT_X'):occurrence_field_list.index('POINT_Y') + 1]
+    # Validate that UTM coordinates are proper size
+    if coordinates_list and coordinates_list[0] > 100000 and coordinates_list[1] > 1000000:
+        return True
+    elif len(coordinates_list) == 2 and (coordinates_list[0] is None or coordinates_list[1] is None):
+        return True
+    else:
+        print "Error validating coordinates for Occurrence %s" % occurrence_id
+        return False
+
+
+def valid_item_scientific_name(row):
+    item_scientific_name = row[occurrence_field_list.index('ItemScientificName')]
+    occurrence_id = row[occurrence_field_list.index('CatalogNumberNumeric')]
+    if item_scientific_name and item_scientific_name != '':  # if field value exists and not empty string...
+        return True
+    else:
+        print "Invalid ItemScientificName %s for Occurrence %s" % (item_scientific_name, occurrence_id)
+        return False
+
+
+# Main validate function
 def validate_row(row):
     """
     Validate row data, convert data types where necessary and
@@ -149,33 +351,20 @@ def validate_row(row):
     """
     row_dict = {}  # dictionary of row converted and clean row data
 
-    # Validate Occurrence ID
-    occurrence_id = row[field_list.index('CatalogNumberNumeric')]  # read id from row CatalogNumberNumeric in row data
-    if occurrence_id and occurrence_id > 0:  # if occurrence_id is not Null and positive
-        if Occurrence.objects.filter(id=occurrence_id).exists():  # if occurrence_id is duplicate
-            print "Warning, Occurrence id %s already exists" % occurrence_id   # print warning
-            return False  # return a failed validation
-        else:  # if occurrence_id not null and not duplicate then add to dictionary
-            row_dict['occurrence_id'] = occurrence_id
+    # Validate occurrence id
+    occurrence_id = row[occurrence_field_list.index('CatalogNumberNumeric')]  # read id from row data
+    if valid_occurrence_id(row):
+        row_dict['occurrence_id'] = occurrence_id
     else:
-        print "Missing or non-positive occurrence ID!"
         return False
 
     # Validate coordinates
-    # read coordinates from POINT_X and POINT_Y in row data
-    coordinates_list = row[field_list.index('POINT_X'):field_list.index('POINT_Y') + 1]
-    # Validate that UTM coordinates are proper size
-    if coordinates_list and coordinates_list[0] > 100000 and coordinates_list[1] > 1000000:
+    if valid_coordinates(row):
         pt = transform_point(row)
         row_dict['geom'] = pt
-    elif len(coordinates_list) == 2 and (coordinates_list[0] is None or coordinates_list[1] is None):
-        row_dict['geom'] = None
-    else:
-        print "Error validating coordinates for Occurrence %s" % occurrence_id
-        return False
 
     # Validate basis of record
-    basis_of_record = row[field_list.index('BasisOfRecord')]
+    basis_of_record = row[occurrence_field_list.index('BasisOfRecord')]
     if basis_of_record in ("Collection", "Observation"):
         row_dict['basis_of_record'] = basis_of_record
     else:
@@ -183,7 +372,7 @@ def validate_row(row):
         return False
 
     # Validate item type
-    item_type = row[field_list.index('ItemType')]
+    item_type = row[occurrence_field_list.index('ItemType')]
     if item_type in ("Faunal", "Floral", "Artifactual", "Geological"):
         row_dict['item_type'] = item_type
     else:
@@ -191,7 +380,7 @@ def validate_row(row):
         return False
 
     # Validate collection code
-    collection_code = row[field_list.index('CollectionCode')]
+    collection_code = row[occurrence_field_list.index('CollectionCode')]
     if (basis_of_record == "Collection" and collection_code == 'A.L.') or \
             (basis_of_record == "Observation" and not collection_code):
         row_dict['collection_code'] = collection_code
@@ -200,7 +389,7 @@ def validate_row(row):
         return False
 
     # Validate PaleoLocalityNumber
-    locality_number = row[field_list.index('PaleoLocalityNumber')]
+    locality_number = row[occurrence_field_list.index('PaleoLocalityNumber')]
     if basis_of_record == 'Collection' and int(locality_number) > 0:
         row_dict['locality_number'] = int(locality_number)
     elif basis_of_record == 'Observation' and not locality_number:
@@ -210,7 +399,7 @@ def validate_row(row):
         return False
 
     # Validate sublocality
-    sublocality = row[field_list.index('PaleoSubLocality')]
+    sublocality = row[occurrence_field_list.index('PaleoSubLocality')]
     if sublocality and not locality_number:
         print "Invalid sublocality %s for Occurrence %s" % (sublocality, occurrence_id)
         return False
@@ -218,7 +407,7 @@ def validate_row(row):
         row_dict['sublocality'] = sublocality
 
     # Validate item number
-    item_number = row[field_list.index('ItemNumber')]
+    item_number = row[occurrence_field_list.index('ItemNumber')]
     if item_number and not locality_number:
         print "Invalid item number %s for Occurrence %s" % (item_number, occurrence_id)
         return False
@@ -226,79 +415,32 @@ def validate_row(row):
         row_dict['item_number'] = item_number
 
     # Validate item part
-    item_part = row[field_list.index('ItemPart')]
+    item_part = row[occurrence_field_list.index('ItemPart')]
     if item_part and not item_number:
         print "Invalid item part %s for Occurrence %s" % (item_part, occurrence_id)
         return False
     else:
         row_dict['item_part'] = item_part
 
-    # Validate Catalog Number
-    # catalog_number = row[field_list.index('CatalogNumber')]
-    # if basis_of_record == "Collection" and not catalog_number:
-    #     print "Invalid catalog number %s for Occurrence %s" % (catalog_number, occurrence_id)
-    #     return False
-    #
-    # elif basis_of_record == "Collection" and catalog_number:
-    #     collection_code_text = ''
-    #     locality_text = ''
-    #     item_text = ''
-    #
-    #     # Validate and build collection code text
-    #     if collection_code and collection_code != '':
-    #         collection_code_text = collection_code + ' '
-    #
-    #     # Validate and build locality text
-    #     if locality_number:
-    #         if sublocality and sublocality != '':
-    #             locality_text = str(int(locality_number)) + sublocality
-    #         else:
-    #             locality_text = str(int(locality_number))
-    #
-    #     # Validate and build item_text
-    #     if item_number and item_number != '':
-    #         if item_part and item_part != '':
-    #             item_text = '-' + item_number + item_part
-    #         else:
-    #             item_text = '-' + item_number
-    #
-    #     catnum = collection_code_text + locality_text + item_text
-    #
-    #     if catnum != catalog_number:
-    #         print "Invalid catnum %s does not match %s for Occurrence %s" % (catnum, catalog_number, occurrence_id)
-    #         return False
-    #     else:
-    #         row_dict['catalog_number'] = catalog_number
-    #
-    # if basis_of_record == 'Observation' and catalog_number:
-    #     print "Invalid catalog number %s for Observation Occurrence %s" % (catalog_number, occurrence_id)
-    #     return False
-    #
-    # elif basis_of_record == 'Observation' and not catalog_number:
-    #     row_dict['catalog_number'] = None
-
     # Validate Drainage Region
-    row_dict['drainage_region'] = row[field_list.index('DrainageRegion')]
+    row_dict['drainage_region'] = row[occurrence_field_list.index('DrainageRegion')]
 
     # Validate Remarks
-    row_dict['remarks'] = row[field_list.index('GeneralRemarks')]
+    row_dict['remarks'] = row[occurrence_field_list.index('GeneralRemarks')]
 
     # Validate Item Scientific Name
-    item_scientific_name = row[field_list.index('ItemScientificName')]
-    if item_scientific_name and item_scientific_name != '':
-        row_dict['item_scientific_name'] = item_scientific_name
-    else:
-        print "Invalid ItemScientificName %s for Occurrence %s" % (item_scientific_name, occurrence_id)
-        return False
+    item_scientific_name = row[occurrence_field_list.index('ItemScientificName')]
+    if valid_item_scientific_name(row):
+        row_dict['item_scientific_name'] = item_scientific_name  # add scientific_name to dictionary
 
     # Validate Item Description
-    row_dict['item_description'] = row[field_list.index('ItemDescription')]
+    row_dict['item_description'] = row[occurrence_field_list.index('ItemDescription')]
 
     # Validate Georeference Remarks
-    row_dict['georeference_remarks'] = row[field_list.index('GeoreferenceRemarks')]
+    row_dict['georeference_remarks'] = row[occurrence_field_list.index('GeoreferenceRemarks')]
 
     # Validate Collecting Method
-    collecting_method = row[field_list.index('CollectingMethod')]
+    collecting_method = row[occurrence_field_list.index('CollectingMethod')]
     if collecting_method in ('Crawl Survey', 'dryscreen5mm', 'Dry Screen', 'Excavation', 'Survey',
                              'Transect Survey', 'Wet Screen', 'wetscreen1mm', None):
         row_dict['collecting_method'] = collecting_method
@@ -307,13 +449,13 @@ def validate_row(row):
         return False
 
     # Validate Related Catalog Items
-    row_dict['related_catalog_items'] = row[field_list.index('RelatedCatalogItems')]
+    row_dict['related_catalog_items'] = row[occurrence_field_list.index('RelatedCatalogItems')]
 
     # Validate Field Number
-    row_dict['field_number'] = row[field_list.index('FieldNumber')]
+    row_dict['field_number'] = row[occurrence_field_list.index('FieldNumber')]
 
     # Validate Collector
-    collector = row[field_list.index('Collector')]
+    collector = row[occurrence_field_list.index('Collector')]
     if not collector or (collector in HRP_collector_list):
         row_dict['collector'] = collector
     else:
@@ -321,20 +463,20 @@ def validate_row(row):
         return False
 
     # Validate Finder
-    row_dict['finder'] = row[field_list.index('Finder')]
+    row_dict['finder'] = row[occurrence_field_list.index('Finder')]
 
     # Validate Disposition
-    row_dict['disposition'] = row[field_list.index('Disposition')]
+    row_dict['disposition'] = row[occurrence_field_list.index('Disposition')]
 
     # Validate Collection Remarks
-    row_dict['collection_remarks'] = row[field_list.index('CollectionRemarks')]
+    row_dict['collection_remarks'] = row[occurrence_field_list.index('CollectionRemarks')]
 
     # Validate date_recorded. Check that entries are either Null, Date, or DateTime
     date_recorded = convert_date_recorded(row)
     row_dict['date_recorded'] = date_recorded
 
     # Validate year collected
-    year_collected_string = row[field_list.index('YearCollected')]
+    year_collected_string = row[occurrence_field_list.index('YearCollected')]
     year_collected = None
     try:
         year_collected = int(year_collected_string)  # try converting year collected from str to int
@@ -360,7 +502,7 @@ def validate_row(row):
     # Validate Individual Count
     individual_count = None
     try:
-        individual_count = row[field_list.index('IndividualCount')]
+        individual_count = row[occurrence_field_list.index('IndividualCount')]
         row_dict['individual_count'] = individual_count
     except TypeError:
         if not individual_count:
@@ -370,20 +512,20 @@ def validate_row(row):
             return False
 
     # Validate Preparation Status
-    row_dict['preparation_status'] = row[field_list.index('PreparationStatus')]
+    row_dict['preparation_status'] = row[occurrence_field_list.index('PreparationStatus')]
 
     # Validate stratigraphic information
-    row_dict['stratigraphic_marker_upper'] = row[field_list.index('StratigraphicMarkerUpper')]
-    row_dict['distance_from_upper'] = row[field_list.index('MetersFromUpper')]
-    row_dict['stratigraphic_marker_lower'] = row[field_list.index('StratigraphicMarkerLower')]
-    row_dict['distance_from_lower'] = row[field_list.index('MetersFromLower')]
-    row_dict['stratigraphic_marker_found'] = row[field_list.index('StratigraphicMarkerFound')]
-    row_dict['distance_from_found'] = row[field_list.index('DistanceFromFound')]
-    row_dict['stratigraphic_marker_likely'] = row[field_list.index('StratigraphicMarkerLikely')]
-    row_dict['distance_from_likely'] = row[field_list.index('DistanceFromLikely')]
+    row_dict['stratigraphic_marker_upper'] = row[occurrence_field_list.index('StratigraphicMarkerUpper')]
+    row_dict['distance_from_upper'] = row[occurrence_field_list.index('MetersFromUpper')]
+    row_dict['stratigraphic_marker_lower'] = row[occurrence_field_list.index('StratigraphicMarkerLower')]
+    row_dict['distance_from_lower'] = row[occurrence_field_list.index('MetersFromLower')]
+    row_dict['stratigraphic_marker_found'] = row[occurrence_field_list.index('StratigraphicMarkerFound')]
+    row_dict['distance_from_found'] = row[occurrence_field_list.index('DistanceFromFound')]
+    row_dict['stratigraphic_marker_likely'] = row[occurrence_field_list.index('StratigraphicMarkerLikely')]
+    row_dict['distance_from_likely'] = row[occurrence_field_list.index('DistanceFromLikely')]
 
     # Validate Stratigraphic Formation
-    stratigraphic_formation = row[field_list.index('StratigraphicFormation')]
+    stratigraphic_formation = row[occurrence_field_list.index('StratigraphicFormation')]
     if (not stratigraphic_formation) or (stratigraphic_formation == ''):
         row_dict['stratigraphic_formation'] = None
     elif stratigraphic_formation in ('Hadar', 'Busidima', 'Hadar-Busidima'):
@@ -393,7 +535,7 @@ def validate_row(row):
         return False
 
     # Validate Stratigraphic Member
-    stratigraphic_member = row[field_list.index('StratigraphicMember')]
+    stratigraphic_member = row[occurrence_field_list.index('StratigraphicMember')]
     if (not stratigraphic_member) or (stratigraphic_member in HRP_strat_member_list):
         row_dict['stratigraphic_member'] = stratigraphic_member
     else:
@@ -401,15 +543,15 @@ def validate_row(row):
         return False
 
     # Validate Analytical Unit
-    row_dict['analytical_unit'] = row[field_list.index('AnalyticalUnit1')]
-    row_dict['analytical_unit_2'] = row[field_list.index('AnalyticalUnit2')]
-    row_dict['analytical_unit_3'] = row[field_list.index('AnalyticalUnit3')]
-    row_dict['analytical_unit_found'] = row[field_list.index('AnalyticalUnitFound')]
-    row_dict['analytical_unit_likely'] = row[field_list.index('AnalyticalUnitLikely')]
-    row_dict['analytical_unit_simplified'] = row[field_list.index('AnalyticalUnitSimplified')]
+    row_dict['analytical_unit'] = row[occurrence_field_list.index('AnalyticalUnit1')]
+    row_dict['analytical_unit_2'] = row[occurrence_field_list.index('AnalyticalUnit2')]
+    row_dict['analytical_unit_3'] = row[occurrence_field_list.index('AnalyticalUnit3')]
+    row_dict['analytical_unit_found'] = row[occurrence_field_list.index('AnalyticalUnitFound')]
+    row_dict['analytical_unit_likely'] = row[occurrence_field_list.index('AnalyticalUnitLikely')]
+    row_dict['analytical_unit_simplified'] = row[occurrence_field_list.index('AnalyticalUnitSimplified')]
 
     # Validate In Situ
-    in_situ_float = row[field_list.index('Insitu')]
+    in_situ_float = row[occurrence_field_list.index('Insitu')]
     if in_situ_float in (None, -1.0, 0.0, 1.0):
         row_dict['in_situ'] = convert_in_situ(row)  # pass value to helper function
     else:
@@ -417,7 +559,7 @@ def validate_row(row):
         return False
 
     # Validate Ranked
-    ranked_float = row[field_list.index('RankedUnit')]
+    ranked_float = row[occurrence_field_list.index('RankedUnit')]
     if ranked_float in (None, -1.0, 0.0, 1.0):
         row_dict['ranked'] = convert_ranked(row)  # pass value to helper function
     else:
@@ -425,7 +567,7 @@ def validate_row(row):
         return False
 
     # Validate Weathering
-    weathering = row[field_list.index('Weathering')]
+    weathering = row[occurrence_field_list.index('Weathering')]
     if (weathering is None) or (weathering <= 5):
         row_dict['weathering'] = weathering
     else:
@@ -433,10 +575,10 @@ def validate_row(row):
         return False
 
     # Validate Surface Modification
-    row_dict['surface_modification'] = row[field_list.index('SurfaceModification')]
+    row_dict['surface_modification'] = row[occurrence_field_list.index('SurfaceModification')]
 
     # Validate Problem
-    problem_integer = row[field_list.index('Problem')]
+    problem_integer = row[occurrence_field_list.index('Problem')]
     if problem_integer in (None, 1, 0):
         row_dict['problem'] = convert_problem(row)
     else:
@@ -444,11 +586,11 @@ def validate_row(row):
         return False
 
     # Validate Problem Comment
-    row_dict['problem_comment'] = row[field_list.index('ProblemComment')]
+    row_dict['problem_comment'] = row[occurrence_field_list.index('ProblemComment')]
 
     # Validate barcode
     # Barcodes should exist for all Collected items and not for Observations
-    barcode = row[field_list.index('Barcode')]
+    barcode = row[occurrence_field_list.index('Barcode')]
     if basis_of_record == 'Collection':
         if not barcode:
             known_problem_tuple = (9900, 11307, 11310, 11311)
@@ -487,6 +629,107 @@ def validate_row(row):
         print "Invalid row dictionary length %s for Occurrence %s" % (len(row_dict.keys()), occurrence_id)
         print row_dict.keys()
     return row_dict
+
+
+def validate_biology(row, pk):
+    """
+    Validate biology row data, convert data types where necessary and
+    return a dictionary of cleaned, validated data.
+    :param row:
+    :return False or row_dict:
+    """
+    biology_row_dict = {}  # dictionary of row converted and clean row data
+
+    brow = biology_cursor.execute('SELECT * FROM Biology WHERE CatalogNumberNumeric = ?', (str(pk),)).fetchone()
+    if brow and len(brow) > 1:
+
+        # Validate Date Last Modified
+        dlm = convert_date_last_modified(row)
+        if not dlm:
+            biology_row_dict['date_last_modified'] = None
+
+        elif dlm.year < 1970:
+            print "Invalid date last modified {} for Occurrence {}".format(dlm, pk)
+            return False
+        else:
+            biology_row_dict['date_last_modified'] = dlm
+
+        # Validate taxon
+        taxon = get_matching_taxon(brow)
+        if not taxon:
+            name, rank = get_taxon_name_rank(brow)
+            print "No matching taxon found, creating new {}: {}".format(rank, name)
+            taxon = create_taxon(brow)
+            biology_row_dict['taxon'] = taxon
+        else:
+            print "Found matching taxon: ",
+            print taxon
+            biology_row_dict['taxon'] = taxon
+
+        # Validate Identification Qualifier
+        idq_string = brow[biology_field_list.index('IdentificationQualifier')]
+        biology_row_dict['verbatim_identification'] = idq_string  # preserve a copy of original idq
+        cf_obj = IdentificationQualifier.objects.get(name='cf.')
+        aff_obj = IdentificationQualifier.objects.get(name='aff.')
+        taxon = biology_row_dict['taxon']
+
+        # ex ? => cf.
+        if idq_string in ('?', 'cf.'):
+            biology_row_dict['identification_qualifier'] = cf_obj
+            biology_row_dict['qualifier_taxon'] = taxon  # cf. defaults to lowest id taxon
+
+        # ex ?Australopithecus => cf. Australopithecus
+        elif re.match(r'\?\w+', idq_string):  # if idq_string starts with question mark
+            taxon_name_string = idq_string[1:]  # strip of leading question mark
+            taxon_name_string = taxon_name_string.split()[-1]  # if binomen split gets trivial
+            if taxon_name_string == biology_row_dict['taxon'].name:  # if qualifier matches taxon
+                biology_row_dict['identification_qualifier'] = cf_obj
+                biology_row_dict['qualifier_taxon'] = taxon
+            else:  # if qualifier does not match taxon find name in parent list
+                biology_row_dict['identification_qualifier'] = cf_obj
+                biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
+
+        # ex cf. Australopithecus => cf. Australopithecus
+        elif re.match(r'cf\. \w+', idq_string):
+            taxon_name_string = idq_string[4:]  # strip off leading 'cf. '
+            biology_row_dict['identification_qualifier'] = cf_obj
+            biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
+
+        # ex aff. => aff.
+        elif idq_string == 'aff.':
+            biology_row_dict['identification_qualifier'] = aff_obj
+            biology_row_dict['qualifier_taxon'] = biology_row_dict['taxon']
+
+        # ex aff. Australopithecus => aff. Australopithecus
+        elif re.match(r'aff\. \w+', idq_string):
+            taxon_name_string = idq_string[5:]  # strip off leading 'aff. '
+            biology_row_dict['identification_qualifier'] = aff_obj
+            biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
+
+        # ex sp. => None
+        elif idq_string == 'sp.' or idq_string == 'Damalborea sp.':
+            biology_row_dict['identification_qualifier'] = None
+            biology_row_dict['qualifier_taxon'] = None
+
+
+        # Validate identified by
+        biology_row_dict['identified_by'] = brow[biology_field_list.index('IdentifiedBy')]
+
+        # Validate year identified
+        year_identified_string = brow[biology_field_list.index('DateIdentified')]
+        if year_identified_string:
+            year_identified = int(year_identified_string)
+            if 1900 < year_identified < 2017:
+                biology_row_dict['year_identified'] = int(year_identified_string)
+            else:
+                print "Invalid year identified for Biology Occurrence {}".format(pk)
+                return False
+        else:
+            biology_row_dict['year_identified'] = None
+
+    else:
+        print "No matching record found in Biology table for Occurrence {}".format(pk)
+        return False
 
 
 def get_locality(row_dict):
@@ -528,6 +771,7 @@ def get_locality(row_dict):
             return locality
 
 
+# Import Functions
 def import_collection(row_dict, locality):
     new_occurrence = Occurrence(id=row_dict['occurrence_id'],
                                 geom=row_dict['geom'],
@@ -570,6 +814,51 @@ def import_collection(row_dict, locality):
                                 date_last_modified=row_dict['date_last_modified'],
                                 )
     return new_occurrence
+
+
+def import_biology_collection(row_dict, bio_dict, locality):
+    new_bio_occurrence = Biology(id=row_dict['occurrence_id'],
+                                 geom=row_dict['geom'],
+                                 basis_of_record=row_dict['basis_of_record'],
+                                 item_type=row_dict['item_type'],
+                                 collection_code=row_dict['collection_code'],
+                                 locality=locality,
+                                 item_number=row_dict['item_number'],
+                                 item_part=row_dict['item_part'],
+                                 remarks=row_dict['remarks'],
+                                 item_scientific_name=row_dict['item_scientific_name'],
+                                 item_description=row_dict['item_description'],
+                                 drainage_region=row_dict['drainage_region'],
+                                 georeference_remarks=row_dict['georeference_remarks'],
+                                 collecting_method=row_dict['collecting_method'],
+                                 related_catalog_items=row_dict['related_catalog_items'],
+                                 field_number=row_dict['field_number'],
+                                 collector=row_dict['collector'],
+                                 finder=row_dict['finder'],
+                                 disposition=row_dict['disposition'],
+                                 collection_remarks=row_dict['collection_remarks'],
+                                 date_recorded=row_dict['date_recorded'],
+                                 year_collected=row_dict['year_collected'],
+                                 individual_count=row_dict['individual_count'],
+                                 preparation_status=row_dict['preparation_status'],
+                                 analytical_unit=row_dict['analytical_unit'],
+                                 analytical_unit_2=row_dict['analytical_unit_2'],
+                                 analytical_unit_3=row_dict['analytical_unit_3'],
+                                 analytical_unit_found=row_dict['analytical_unit_found'],
+                                 analytical_unit_likely=row_dict['analytical_unit_likely'],
+                                 analytical_unit_simplified=row_dict['analytical_unit_simplified'],
+                                 in_situ=row_dict['in_situ'],
+                                 ranked=row_dict['ranked'],
+                                 weathering=row_dict['weathering'],
+                                 surface_modification=row_dict['surface_modification'],
+                                 problem=row_dict['problem'],
+                                 problem_comment=row_dict['problem_comment'],
+                                 barcode=row_dict['barcode'],
+                                 date_last_modified=row_dict['date_last_modified'],
+                                 identified_by=bio_dict['identified_by'],
+                                 year_identified=bio_dict['year_identified']
+                                 )
+    return new_bio_occurrence
 
 
 def import_observation(row_dict):
@@ -619,102 +908,138 @@ def import_observation(row_dict):
 
 
 def validate_new_record(occurrence_object, row):
-    if occurrence_object.id != int(row[field_list.index('CatalogNumberNumeric')]):
+    if occurrence_object.id != int(row[occurrence_field_list.index('CatalogNumberNumeric')]):
         print "Problem importing id for Occurrence %s" % occurrence_object.id
         return False
-    if occurrence_object.basis_of_record != row[field_list.index('BasisOfRecord')]:
+    if occurrence_object.basis_of_record != row[occurrence_field_list.index('BasisOfRecord')]:
         print "Problem importing basis of record %s for Occurrence %s" % \
               (occurrence_object.basis_of_record,
                occurrence_object.id)
         return False
-    if occurrence_object.item_type != row[field_list.index('ItemType')]:
+    if occurrence_object.item_type != row[occurrence_field_list.index('ItemType')]:
         print "Problem importing item type %s for Occurrence %s" % \
               (occurrence_object.basis_of_record, occurrence_object.id)
         return False
-    if occurrence_object.collection_code != row[field_list.index('CollectionCode')]:
+    if occurrence_object.collection_code != row[occurrence_field_list.index('CollectionCode')]:
         print "Problem importing collection code %s for Occurrence %s" % \
               (occurrence_object.collection_code, occurrence_object.id)
         return False
-    if occurrence_object.catalog_number() != row[field_list.index('CatalogNumber')]:
+    if occurrence_object.catalog_number() != row[occurrence_field_list.index('CatalogNumber')]:
         print "Catalog Number %s does not match CatalogNumber %s for Occurrence %s" % \
-              (occurrence_object.catalog_number(), row[field_list.index('CatalogNumber')], occurrence_object.id)
+              (occurrence_object.catalog_number(), row[occurrence_field_list.index('CatalogNumber')], occurrence_object.id)
         return False
-    if occurrence_object.item_scientific_name != row[field_list.index('ItemScientificName')]:
+    if occurrence_object.item_scientific_name != row[occurrence_field_list.index('ItemScientificName')]:
         print "Item scientific name %s does not match ItemScientificName %s for Occurrence %s" % \
-              (occurrence_object.item_scientific_name, row[field_list.index('ItemScientificName')],
+              (occurrence_object.item_scientific_name, row[occurrence_field_list.index('ItemScientificName')],
                occurrence_object.id)
         return False
-    if occurrence_object.item_description != row[field_list.index('ItemDescription')]:
+    if occurrence_object.item_description != row[occurrence_field_list.index('ItemDescription')]:
         print "Item description %s does not match ItemDescription %s for Occurrence %s" % \
-              (occurrence_object.item_description, row[field_list.index('ItemDescription')], occurrence_object.id)
+              (occurrence_object.item_description, row[occurrence_field_list.index('ItemDescription')], occurrence_object.id)
         return False
-    if occurrence_object.collecting_method != row[field_list.index('CollectingMethod')]:
+    if occurrence_object.collecting_method != row[occurrence_field_list.index('CollectingMethod')]:
         print "Collecting method %s does not match CollectingMethod %s for Occurrence %s" % \
-              (occurrence_object.collecting_method, row[field_list.index('CollectingMethod')], occurrence_object.id)
+              (occurrence_object.collecting_method, row[occurrence_field_list.index('CollectingMethod')], occurrence_object.id)
         return False
-    if occurrence_object.collector != row[field_list.index('Collector')]:
+    if occurrence_object.collector != row[occurrence_field_list.index('Collector')]:
         print "Collector %s does not match Collector %s for Occurrence %s" % \
-              (occurrence_object.collector, row[field_list.index('Collector')], occurrence_object.id)
+              (occurrence_object.collector, row[occurrence_field_list.index('Collector')], occurrence_object.id)
         return False
-    if int(occurrence_object.year_collected) != int(row[field_list.index('YearCollected')]):
+    if int(occurrence_object.year_collected) != int(row[occurrence_field_list.index('YearCollected')]):
         print "Year collected %s does not match YearCollected %s for Occurrence %s" % \
-              (occurrence_object.year_collected, row[field_list.index('YearCollected')], occurrence_object.id)
+              (occurrence_object.year_collected, row[occurrence_field_list.index('YearCollected')], occurrence_object.id)
         return False
-    if occurrence_object.analytical_unit != row[field_list.index('AnalyticalUnit1')]:
+    if occurrence_object.analytical_unit != row[occurrence_field_list.index('AnalyticalUnit1')]:
         print "Analytical Unit %s does not match AnalyticalUnit1 %s for Occurrence %s" % \
-              (occurrence_object.analytical_unit, row[field_list.index('AnalyticalUnit1')], occurrence_object.id)
+              (occurrence_object.analytical_unit, row[occurrence_field_list.index('AnalyticalUnit1')], occurrence_object.id)
         return False
-    if occurrence_object.barcode != row[field_list.index('Barcode')]:
+    if occurrence_object.barcode != row[occurrence_field_list.index('Barcode')]:
         print "Barcode %s does not match Barcode %s for Occurrence %s" % \
-              (occurrence_object.barcode, row[field_list.index('Barcode')], occurrence_object.id)
+              (occurrence_object.barcode, row[occurrence_field_list.index('Barcode')], occurrence_object.id)
         return False
     else:
         return True
 
 
 def main():
-    import_count = 0
-    collection_count = 0
-    observation_count = 0
-    row_count = 0
-    print "Fetching a maximum of %s records" % record_limit
-    for row in cursor.execute('SELECT * FROM Occurrence WHERE ProjectCode = "HRP" LIMIT ?', record_limit):
+    import_count, collection_count, observation_count, row_count, ac, bc, gc, ao, bo, go = [0] * 10
+    print "Record limit is set to: %s\n" % record_limit
+    print "Processing records\n\n"
+
+    occurrence_recordset = occurrence_cursor.execute('SELECT * FROM Occurrence WHERE ProjectCode = "HRP" LIMIT ?', record_limit)
+    for row in occurrence_recordset:
         row_count += 1
+        print "Processing record %s" % row_count
+        print row
+
+        # Validate the Occurrence data for the row
+        print "Validating row data ...",
         valid_row_dict = validate_row(row)
+
         if valid_row_dict:
+            print "valid"
+            pk = valid_row_dict['occurrence_id']
             basis_of_record = valid_row_dict['basis_of_record']
-            if basis_of_record == 'Collection':
+            item_type = valid_row_dict['item_type']
+
+            # Biology Collection
+            if basis_of_record == 'Collection' and item_type in ('Faunal', 'Floral'):
+                print "Processing Biology Collection for occurrence %s" % pk
+                bc += 1
                 locality = get_locality(valid_row_dict)
-                new_occurrence = import_collection(valid_row_dict, locality)
-                import_count += 1
-                collection_count += 1
-                if validate_new_record(new_occurrence, row):
-                    new_occurrence.save()
-                    # try:
-                    #     new_occurrence.save()
-                    # except:
-                    #     print "Problem saving occurrence %s" % new_occurrence.id
-            elif basis_of_record == 'Observation':
-                new_occurrence = import_observation(valid_row_dict)
-                import_count += 1
-                observation_count += 1
-                if validate_new_record(new_occurrence, row):
-                    new_occurrence.save()
-        else:
-            print "Invalid row for Occurrence %s " % row[field_list.index('CatalogNumberNumeric')]
+                valid_biology_dict = validate_biology(row, pk)
+        #         new_bio = import_biology_collection(valid_row_dict, valid_biology_dict, locality)
+        #         import_count += 1
+        #         collection_count += 1
+        #         if validate_new_record(new_occurrence, row):
+        #             pass
+        #             # new_occurrence.save()
+        #             # try:
+        #             #     new_occurrence.save()
+        #             # except:
+        #             #     print "Problem saving occurrence %s" % new_occurrence.id
+            elif basis_of_record == 'Collection' and item_type == 'Artifactual':
+                print "Processing Archaeology Collection for Occurrence {}".format(pk)
+                ac += 1
+
+            elif basis_of_record == 'Collection' and item_type == 'Geological':
+                print "Processing Geological Collection for Occurrence {}".format(pk)
+                gc += 1
+
+            elif basis_of_record == 'Observation' and item_type in ('Faunal', 'Floral'):
+                print "Processing Biology Observation for Occurrence %s" % pk
+                bo += 1
+                valid_biology_dict = validate_biology(row, pk)
+                # new_occurrence = import_observation(valid_row_dict)
+                # import_count += 1
+                # observation_count += 1
+                # if validate_new_record(new_occurrence, row):
+                #     pass
+                    # new_occurrence.save()
+            elif basis_of_record == 'Observation' and item_type == 'Artifactual':
+                print "Processing Archaeology Observation for Occurrence %s" % pk
+                ao += 1
+            elif basis_of_record == 'Observation' and item_type == 'Geological':
+                print "Processing Geological Observation for Occurrence %s" % pk
+                go += 1
+        print "________________________________"
     print "Number of rows processed: %s \nNumber of records imported: %s" % (row_count, import_count)
     print "Imported %s collections and %s observations" % (collection_count, observation_count)
+    print "Processed %s biology, %s archaeology and %s geology collections" % (bc, ac, gc)
+    print "Processed %s biology, %s archaeology and %s geology observations" % (bo, ao, go)
 
 # Create a connection to the SQLite DB with HRP data
 
 # Open a connection to the local sqlite database
+print "Opening connection to %s" % hrpdb_path
 connection = sqlite3.connect(hrpdb_path)
-cursor = connection.cursor()
+occurrence_cursor = connection.cursor()
+biology_cursor = connection.cursor()
 
 # Fetch data from the database
-cursor.execute('SELECT * FROM Occurrence;')
-record_count = len(cursor.fetchall())
-print "Total record count %s" % record_count
+occurrence_cursor.execute('SELECT * FROM Occurrence WHERE CollectionCode = "HRP";')
+record_count = len(occurrence_cursor.fetchall())
+print "Database has a total of %s records" % record_count
 
 main()
 

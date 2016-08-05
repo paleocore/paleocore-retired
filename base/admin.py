@@ -110,7 +110,7 @@ default_list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collec
                        'disposition']
 default_list_editable = ['problem', 'disposition']
 default_search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
-default_list_display_links = ['barcode', 'field_number']
+default_list_display_links = ['barcode',]
 default_map_options = {'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00, }
 
 default_biology_inline_fieldsets = (

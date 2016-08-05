@@ -1,5 +1,6 @@
 
 BASIS_OF_RECORD_VOCABULARY = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
+HRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
 ITEM_TYPE_VOCABULARY = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"), ("Floral", "Floral"), ("Geological", "Geological"))
 COLLECTING_METHOD_VOCABULARY = (("Surface Standard", "Surface Standard"),
                                 ("Surface Intensive", "Surface Intensive"),
@@ -9,6 +10,10 @@ COLLECTING_METHOD_VOCABULARY = (("Surface Standard", "Surface Standard"),
                                 ("Dry Screen 2mm", "Dry Screen 2mm"),
                                 ("Wet Screen 1mm", "Wet Screen 1mm"))
 
+HRP_COLLECTING_METHOD_VOCABULARY = (("Survey", "Survey"),
+                                ("dryscreen5mm", "dryscreen5mm"),
+                                ("wetscreen1mm", "wetscreen1mm"))
+
 COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Andrew Barr", "Andrew Barr"),
                      ("Rene Bobe", "Rene Bobe"),
@@ -17,14 +22,19 @@ COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Denne Reed", "Denne Reed"),
                      ("Jonathan Wynn", "Jonathan Wynn"))
 
-HRP_COLLECTOR_CHOICES = (("Christopher Campisano", "Christopher Campisano"),
-                         ("Donald Johanson","Donald Johanson"),
-                         ("Thomas Gray","Thomas Gray"),
-                         ("William Kimbel", "William Kimbel"),
+HRP_COLLECTOR_CHOICES = (("C.J. Campisano", "C.J. Campisano"),
+                         ("W.H. Kimbel", "W.H. Kimbel"),
+                         ("T.K. Nalley", "T.K. Nalley"),
+                         ("D.N. Reed", "D.N. Reed"),
                          ("Kaye Reed", "Kaye Reed"),
+                         ("B.J. Schoville", "B.J. Schoville"),
+                         ("A.E. Shapiro", "A.E. Shapiro"),
+                         ("HFS Student", "HFS Student"),
+                         ("HRP Team", "HRP Team")
                          )
 
-HRP_COLLECTION_CODES = (("AL", "AL"),)
+
+HRP_COLLECTION_CODES = (("A.L.", "A.L."),)
 
 SIDE_VOCABULARY = (("Left", "Left"),
                    ("Right", "Right"),

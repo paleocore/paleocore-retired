@@ -13,14 +13,6 @@ class TaxonRank(models.Model):
         verbose_name = "Taxon Rank"
 
 
-class IdentificationQualifier(models.Model):
-    name = models.CharField(null=False, blank=True, max_length=15, unique=True)
-    qualified = models.BooleanField()
-
-    def __unicode__(self):
-        return self.name
-
-
 class Taxon(models.Model):
     name = models.CharField(null=False, blank=False, max_length=255, unique=False)
     parent = models.ForeignKey('self', null=True, blank=True)
@@ -46,6 +38,18 @@ class Taxon(models.Model):
         else:
             return self.parent.full_name() + ", " + self.name
 
+    def full_lineage(self):
+        """
+        Get a list of taxon object representing the full lineage hierarchy
+        :return: list of taxon objects ordered highest rank to lowest
+        """
+        if self.parent is None:
+            return [self]
+        if self.parent.parent is None:
+            return [self]
+        else:
+            return self.parent.full_lineage()+[self]
+
     def __unicode__(self):
         if self.rank.name == 'Species':
             return "[" + self.rank.name + "] " + self.parent.name + " " + self.name
@@ -56,3 +60,11 @@ class Taxon(models.Model):
         verbose_name = "Taxon"
         verbose_name_plural = "taxa"
         ordering = ['rank__ordinal', 'name']
+
+
+class IdentificationQualifier(models.Model):
+    name = models.CharField(null=False, blank=True, max_length=15, unique=True)
+    qualified = models.BooleanField()
+
+    def __unicode__(self):
+        return self.name
