@@ -15,7 +15,7 @@ django.setup()
 # Global variables
 barcode_list = []
 hrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/HRP/HRP_Paleobase4_2016.sqlite'
-record_limit = ('20000',)
+record_limit = ('1',)
 occurrence_field_list = ["OBJECTID", "Shape", "CatalogNumberNumeric", "CatalogNumberNumeric_OLD", "BasisOfRecord",
                          "ItemType", "InstitutionalCode", "CollectionCode", "PaleoLocalityNumber", "PaleoLocalityText",
                          "PaleoSubLocality", "ItemNumber", "ItemPart", "CatalogNumber", "GeneralRemarks",
@@ -44,17 +44,29 @@ HRP_strat_member_list = ['Basal', 'Basal-Sidi Hakoma', 'Denen Dora', 'Denen Dora
                          'Sidi Hakoma', 'Sidi Hakoma-Denen Dora']
 
 biology_field_list = ["CatalogNumberNumeric", "CatalogNumberNumericOLD", "Kingdom", "Phylum", "Class", "Order",
-                      "Family", "Subfamily", "Tribe",
-                      "Genus", "SpecificEpithet", "IdentificationQualifier", "IdentifiedBy", "DateIdentified",
-                      "TypeStatus",
-                      "TaxonomyRemarks", "Element", "ElementPortion", "Side", "ElementNumber", "ElementQualifier",
-                      "SizeClass",
+                      "Family", "Subfamily", "Tribe", "Genus", "SpecificEpithet", "IdentificationQualifier",
+                      "IdentifiedBy", "DateIdentified", "TypeStatus", "TaxonomyRemarks",
+                      "Element", "ElementPortion", "Side", "ElementNumber", "ElementQualifier", "SizeClass",
                       "LifeStage", "ElementRemarks", "DateLastModified", "Barcode", "BiologyRemarks"]
 
 rank_list = ['Kingdom', 'Phylum', 'Class', 'Order', 'Family']
 
 taxon_dict = {'Kingdom': '', 'Phylum': '', 'Class': '', 'Order': '', 'Family': '',
               'Subfamily': '', 'Tribe': '', 'Genus': '', 'Species': ''}
+
+element_list = ['astragalus', 'bacculum', 'bone (indet.)', 'calcaneus', 'canine', 'capitate', 'carapace',
+                        'carpal (indet.)', 'carpal/tarsal', 'carpometacarpus', 'carpus', 'chela', 'clavicle', 'coccyx',
+                        'coprolite', 'cranium', 'cranium w/horn core', 'cuboid', 'cubonavicular', 'cuneiform',
+                        'dermal plate', 'egg shell', 'endocast', 'ethmoid', 'femur', 'fibula', 'frontal', 'hamate',
+                        'horn core', 'humerus', 'hyoid', 'ilium', 'incisor', 'innominate', 'ischium', 'lacrimal',
+                        'long bone', 'lunate', 'mandible', 'manus', 'maxilla', 'metacarpal', 'metapodial',
+                        'metatarsal', 'molar', 'nasal', 'navicular', 'naviculocuboid', 'occipital', 'ossicone',
+                        'parietal', 'patella', 'pes', 'phalanx', 'pisiform', 'plastron', 'premaxilla', 'premolar',
+                        'pubis', 'radioulna', 'radius', 'rib', 'sacrum', 'scaphoid', 'scapholunar', 'scapula', 'scute',
+                        'sesamoid', 'shell', 'skeleton', 'skull', 'sphenoid', 'sternum', 'talon', 'talus',
+                        'tarsal (indet.)', 'tarsometatarsus', 'tarsus', 'temporal', 'tibia', 'tibiotarsus',
+                        'tooth (indet.)', 'trapezium', 'trapezoid', 'triquetrum', 'ulna', 'vertebra', 'vomer',
+                        'zygomatic']
 
 error_message = ''
 
@@ -188,6 +200,27 @@ def create_taxon_dictionary(brow):
     return td
 
 
+def get_taxon_list(brow):
+    """"
+    Get a list of all taxonomic names for the record in order from highest to lowest rank including Null values
+    :param brow:
+    :return: Returns a list with taxonomic names, e.g. (u'Animalia', u'Chordata', None, u'Bovini')
+    """
+    taxon_list = list(brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1])
+    if taxon_list[-1] == 'sp.':  # Replace 'sp.' with None
+        taxon_list[-1] = None
+    return taxon_list
+
+
+def get_verbatim_taxon_list(brow):
+    """"
+    Get a list of taxonomic names, unmodified from original in DB.
+    :param brow:
+    :return:
+    """
+    return brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+
+
 def get_taxon_name_rank(brow):
     """
     Function to look up a taxon object for a row in the Biology table
@@ -195,7 +228,7 @@ def get_taxon_name_rank(brow):
     :return: Returns a tuple of (taxon_name, taxon_rank_name) for taxa of Genus or higher, e.g. ('Hominidae', 'Family')
     for species the function returns a tuple with the species binomen, e.g. ('Homo sapiens', 'SpecificEpithet')
     """
-    taxon_list = brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    taxon_list = get_taxon_list(brow)
     name_index = max([i for i, x in enumerate(taxon_list) if x])  # I love list comprehensions
     taxon_name = taxon_list[name_index]
     taxon_rank_name = biology_field_list[name_index+2]
@@ -204,7 +237,7 @@ def get_taxon_name_rank(brow):
     return [taxon_name, taxon_rank_name]
 
 
-def get_matching_taxon(row):
+def get_matching_taxon(brow):
     """
     Searches taxon objects for taxa matching an occurrence
     :param row:
@@ -212,9 +245,9 @@ def get_matching_taxon(row):
     """
     # get data from all taxon fields and collect them in a list
     # e.g. ["Animalia", "Chordata", "Mammalia", "Primates", "", "Hominidae", "", "", "Homo", "sapiens"]
-    taxon_list = row[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    taxon_list = get_taxon_list(brow)
     # get taxon name and rank
-    taxon_name, taxon_rank_name = get_taxon_name_rank(row)
+    taxon_name, taxon_rank_name = get_taxon_name_rank(brow)
 
     if taxon_rank_name == 'SpecificEpithet':
         genus_name, species_name = taxon_list[7:]
@@ -232,11 +265,11 @@ def get_matching_taxon(row):
 
 def get_matching_parent(brow):
     """
-    For a given occurrence searches list of parent names to find a matcing taxon
+    For a given occurrence searches list of parent names to find a matching taxon
     :param brow:
     :return: Returns a taxon object, or None
     """
-    taxon_list = brow[biology_field_list.index('Kingdom'):biology_field_list.index('SpecificEpithet')+1]
+    taxon_list = get_taxon_list(brow)
     taxon_object = None
     for taxon_name in reversed(taxon_list[:-1]):
         if Taxon.objects.filter(name=taxon_name).count() == 1:  # if there's a single match, done
@@ -245,14 +278,24 @@ def get_matching_parent(brow):
     return taxon_object
 
 
-def get_matching_parent_from_name(taxon, name):
+def get_qualifier_taxon(taxon, name):
     """
     For a given taxon object find a parent taxon object that matches the name
     :param taxon:
     :param name:
     :return: Return a taxon object or None
     """
-    return [t for t in taxon.full_lineage() if t == name][0]
+    # if len(name.split()) == 1:
+    #     return [t for t in taxon.full_lineage() if t.name == name][0]
+    # elif len(name.split()) == 2:
+    #     return [t for t in taxon.full_lineage() if t.name == name.split()[1:]][0]
+    # else:
+    #     raise IndexError
+    if taxon.name == name:
+        return taxon
+    elif len(name.split())==2 and name.split()[0] != 'sp.':
+        species_name = name.split()[1]
+        return [t for t in taxon.full_lineage() if t.name == species_name][0]
 
 
 def create_taxon(brow):
@@ -267,33 +310,30 @@ def create_taxon(brow):
         if taxon_rank_name == 'SpecificEpithet':
             # check genus and create if necessary
             genus_name = taxon_name.split()[0]  # taxon_name is binomen for rank SpecificEpithet, use split to get genus
-            trivial_name = taxon_name.split()[1]  # get species name
+            # Note trivial name may be more than word, e.g. 'Ugandax sp. nov.' the trivial will be 'sp. nov.'
+            trivial_name = ' '.join(taxon_name.split()[1:])  # get species (and all infraspecific) name(s)
             if not Taxon.objects.filter(name=genus_name).exists():  # If genus name not in DB create it.
-                genus = Taxon(
+                genus = Taxon.objects.create(
                     name=genus_name,
                     parent=get_matching_parent(brow),
                     rank=TaxonRank.objects.get(name='Genus')
                 )
-                # genus.save()
             else:
-                genus = Taxon(name=genus_name)  # If genus name is in DB get it.
+                genus = Taxon.objects.get(name=genus_name)  # If genus name is in DB get it.
             if not Taxon.objects.filter(name=trivial_name, parent=genus).exists():
-                new_species = Taxon(
+                new_species = Taxon.objects.create(
                     name=trivial_name,
                     parent=genus,
                     rank=TaxonRank.objects.get(name='Species')
                 )
-                # new_species.save()
                 return new_species
-
         else:
-            if not Taxon.objects.filter(name=taxon_name).exists:
-                new_taxon = Taxon(
+            if not Taxon.objects.filter(name=taxon_name, rank__name=taxon_rank_name).exists():
+                new_taxon = Taxon.objects.create(
                     name=taxon_name,
                     parent=get_matching_parent(brow),
                     rank=TaxonRank.objects.get(name=taxon_rank_name)
                 )
-                # new_taxon.save()
                 return new_taxon
 
 
@@ -341,7 +381,7 @@ def valid_item_scientific_name(row):
         return False
 
 
-# Main validate function
+# Occurrence validation function
 def validate_row(row):
     """
     Validate row data, convert data types where necessary and
@@ -631,7 +671,8 @@ def validate_row(row):
     return row_dict
 
 
-def validate_biology(row, pk):
+# Biology validation function
+def validate_biology(row, brow, pk):
     """
     Validate biology row data, convert data types where necessary and
     return a dictionary of cleaned, validated data.
@@ -640,19 +681,8 @@ def validate_biology(row, pk):
     """
     biology_row_dict = {}  # dictionary of row converted and clean row data
 
-    brow = biology_cursor.execute('SELECT * FROM Biology WHERE CatalogNumberNumeric = ?', (str(pk),)).fetchone()
+    # print brow
     if brow and len(brow) > 1:
-
-        # Validate Date Last Modified
-        dlm = convert_date_last_modified(row)
-        if not dlm:
-            biology_row_dict['date_last_modified'] = None
-
-        elif dlm.year < 1970:
-            print "Invalid date last modified {} for Occurrence {}".format(dlm, pk)
-            return False
-        else:
-            biology_row_dict['date_last_modified'] = dlm
 
         # Validate taxon
         taxon = get_matching_taxon(brow)
@@ -662,54 +692,86 @@ def validate_biology(row, pk):
             taxon = create_taxon(brow)
             biology_row_dict['taxon'] = taxon
         else:
-            print "Found matching taxon: ",
-            print taxon
+            #print "Found matching taxon: ",
+            #print taxon
             biology_row_dict['taxon'] = taxon
+        # Save original taxon names in color separated string, e.g. 'Animalia:Chrodata:Mammalia:Primates:::Homo:sapeins'
+        biology_row_dict['verbatim_taxon'] = get_verbatim_taxon_list(brow)
 
         # Validate Identification Qualifier
         idq_string = brow[biology_field_list.index('IdentificationQualifier')]
-        biology_row_dict['verbatim_identification'] = idq_string  # preserve a copy of original idq
-        cf_obj = IdentificationQualifier.objects.get(name='cf.')
-        aff_obj = IdentificationQualifier.objects.get(name='aff.')
+        biology_row_dict['verbatim_identification_qualifier'] = idq_string  # preserve a copy of original idq
         taxon = biology_row_dict['taxon']
+        # Exception handling in case Taxonomy Tables not populated
+        try:
+            cf_obj = IdentificationQualifier.objects.get(name='cf.')
+        except ObjectDoesNotExist:
+            cf_obj = IdentificationQualifier.objects.create(name='cf.', qualified='True')
+        try:
+            aff_obj = IdentificationQualifier.objects.get(name='aff.')
+        except ObjectDoesNotExist:
+            aff_obj = IdentificationQualifier.objects.create(name='aff', qualified='True')
+        try:
+            sp_nov_obj = IdentificationQualifier.objects.get(name='sp. nov.')
+        except ObjectDoesNotExist:
+            sp_nov_obj = IdentificationQualifier.objects.create(name='sp. nov.', qualified='True')
+
+        if idq_string is None:
+            biology_row_dict['identification_qualifier'] = None
+            biology_row_dict['qualifier_taxon'] = None
 
         # ex ? => cf.
-        if idq_string in ('?', 'cf.'):
+        elif idq_string in ('?', 'cf.'):
             biology_row_dict['identification_qualifier'] = cf_obj
             biology_row_dict['qualifier_taxon'] = taxon  # cf. defaults to lowest id taxon
 
+        # ex aff. => aff.
+        elif idq_string == 'aff.':  # if idq_string starts with aff. alone
+            biology_row_dict['identification_qualifier'] = aff_obj
+            biology_row_dict['qualifier_taxon'] = taxon
+
         # ex ?Australopithecus => cf. Australopithecus
         elif re.match(r'\?\w+', idq_string):  # if idq_string starts with question mark
+            biology_row_dict['identification_qualifier'] = cf_obj
             taxon_name_string = idq_string[1:]  # strip of leading question mark
-            taxon_name_string = taxon_name_string.split()[-1]  # if binomen split gets trivial
-            if taxon_name_string == biology_row_dict['taxon'].name:  # if qualifier matches taxon
-                biology_row_dict['identification_qualifier'] = cf_obj
-                biology_row_dict['qualifier_taxon'] = taxon
-            else:  # if qualifier does not match taxon find name in parent list
-                biology_row_dict['identification_qualifier'] = cf_obj
-                biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
+            biology_row_dict['qualifier_taxon'] = get_qualifier_taxon(taxon, taxon_name_string)
 
         # ex cf. Australopithecus => cf. Australopithecus
-        elif re.match(r'cf\. \w+', idq_string):
-            taxon_name_string = idq_string[4:]  # strip off leading 'cf. '
+        elif re.match(r'cf\. \w+', idq_string):  # if idq_string starts with cf followed by text
             biology_row_dict['identification_qualifier'] = cf_obj
-            biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
-
-        # ex aff. => aff.
-        elif idq_string == 'aff.':
-            biology_row_dict['identification_qualifier'] = aff_obj
-            biology_row_dict['qualifier_taxon'] = biology_row_dict['taxon']
+            taxon_name_string = idq_string[4:]  # strip off leading 'cf. '
+            biology_row_dict['qualifier_taxon'] = get_qualifier_taxon(taxon, taxon_name_string)
 
         # ex aff. Australopithecus => aff. Australopithecus
-        elif re.match(r'aff\. \w+', idq_string):
-            taxon_name_string = idq_string[5:]  # strip off leading 'aff. '
+        elif re.match(r'aff\. \w+', idq_string):  # if idq_string starts with aff. followed by text
             biology_row_dict['identification_qualifier'] = aff_obj
-            biology_row_dict['qualifier_taxon'] = get_matching_parent_from_name(taxon, taxon_name_string)
+            taxon_name_string = idq_string[5:]  # strip off leading 'aff. '
+            biology_row_dict['qualifier_taxon'] = get_qualifier_taxon(taxon, taxon_name_string)
 
         # ex sp. => None
-        elif idq_string == 'sp.' or idq_string == 'Damalborea sp.':
+        elif idq_string in ['sp.', 'Damalborea sp.', 'indet.', 'sp. Indet']:  # of idq_string is other special case
             biology_row_dict['identification_qualifier'] = None
             biology_row_dict['qualifier_taxon'] = None
+
+        # ex sp. nov. => sp. nov.
+        elif idq_string == 'sp. nov.':
+            biology_row_dict['identification_qualifier'] = sp_nov_obj
+            biology_row_dict['qualifier_taxon'] = biology_row_dict['taxon']
+
+        # ex sp. A => sp. nov.
+        elif re.match(r'sp. +', idq_string):
+            biology_row_dict['identification_qualifier'] = sp_nov_obj
+            taxon_name_string = idq_string[4:]
+            try:
+                taxon = Taxon.objects.get(name=taxon_name_string)
+            except ObjectDoesNotExist:
+                taxon_string = idq_string[4:]
+                taxon = Taxon.objects.create(name=taxon_string, parent=None, rank=TaxonRank.objects.get(name='Species'))
+            biology_row_dict['qualifier_taxon'] = taxon
+
+        else:
+            print "Unable to validate identification qualifier {}".format(idq_string)
+            return False
 
 
         # Validate identified by
@@ -726,6 +788,46 @@ def validate_biology(row, pk):
                 return False
         else:
             biology_row_dict['year_identified'] = None
+
+        # Validate type status
+        biology_row_dict['type_status'] = brow[biology_field_list.index('TypeStatus')]
+
+        # Validate taxonomy remarks
+        biology_row_dict['taxonomy_remarks'] = brow[biology_field_list.index('TaxonomyRemarks')]
+
+        # Validate element
+        element = brow[biology_field_list.index('Element')]
+        if (not element) or (element in element_list):
+            biology_row_dict['element'] = element
+        else:
+            print "Invalid element entry {} for biology occurrence {}".format(element, pk)
+            return False
+
+        # Validate element portion
+        biology_row_dict['element_portion'] = brow[biology_field_list.index('ElementPortion')]
+
+        # Validate Side
+        biology_row_dict['side'] = brow[biology_field_list.index(('Side'))]
+
+        # Validate element number
+        biology_row_dict['element_number'] = brow[biology_field_list.index('ElementNumber')]
+
+        # Validate element qualifier
+        biology_row_dict['element_qualifier'] = brow[biology_field_list.index('ElementQualifier')]
+
+        # Validate size class
+        biology_row_dict['size_class'] = brow[biology_field_list.index('SizeClass')]
+
+        # Validate life stage
+        biology_row_dict['life_stage'] = brow[biology_field_list.index('LifeStage')]
+
+        # Validate element remarks
+        biology_row_dict['element_remarks'] = brow[biology_field_list.index('ElementRemarks')]
+
+        # Validate bioloy remarks
+        biology_row_dict['biology_remarks'] = brow[biology_field_list.index('BiologyRemarks')]
+
+        return biology_row_dict
 
     else:
         print "No matching record found in Biology table for Occurrence {}".format(pk)
@@ -817,47 +919,13 @@ def import_collection(row_dict, locality):
 
 
 def import_biology_collection(row_dict, bio_dict, locality):
-    new_bio_occurrence = Biology(id=row_dict['occurrence_id'],
-                                 geom=row_dict['geom'],
-                                 basis_of_record=row_dict['basis_of_record'],
-                                 item_type=row_dict['item_type'],
-                                 collection_code=row_dict['collection_code'],
-                                 locality=locality,
-                                 item_number=row_dict['item_number'],
-                                 item_part=row_dict['item_part'],
-                                 remarks=row_dict['remarks'],
-                                 item_scientific_name=row_dict['item_scientific_name'],
-                                 item_description=row_dict['item_description'],
-                                 drainage_region=row_dict['drainage_region'],
-                                 georeference_remarks=row_dict['georeference_remarks'],
-                                 collecting_method=row_dict['collecting_method'],
-                                 related_catalog_items=row_dict['related_catalog_items'],
-                                 field_number=row_dict['field_number'],
-                                 collector=row_dict['collector'],
-                                 finder=row_dict['finder'],
-                                 disposition=row_dict['disposition'],
-                                 collection_remarks=row_dict['collection_remarks'],
-                                 date_recorded=row_dict['date_recorded'],
-                                 year_collected=row_dict['year_collected'],
-                                 individual_count=row_dict['individual_count'],
-                                 preparation_status=row_dict['preparation_status'],
-                                 analytical_unit=row_dict['analytical_unit'],
-                                 analytical_unit_2=row_dict['analytical_unit_2'],
-                                 analytical_unit_3=row_dict['analytical_unit_3'],
-                                 analytical_unit_found=row_dict['analytical_unit_found'],
-                                 analytical_unit_likely=row_dict['analytical_unit_likely'],
-                                 analytical_unit_simplified=row_dict['analytical_unit_simplified'],
-                                 in_situ=row_dict['in_situ'],
-                                 ranked=row_dict['ranked'],
-                                 weathering=row_dict['weathering'],
-                                 surface_modification=row_dict['surface_modification'],
-                                 problem=row_dict['problem'],
-                                 problem_comment=row_dict['problem_comment'],
-                                 barcode=row_dict['barcode'],
-                                 date_last_modified=row_dict['date_last_modified'],
-                                 identified_by=bio_dict['identified_by'],
-                                 year_identified=bio_dict['year_identified']
-                                 )
+    new_bio_occurrence = Biology(id=row_dict['occurrence_id'])
+    for f in new_bio_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_bio_occurrence, f, row_dict[f])
+        elif f in bio_dict:
+            setattr(new_bio_occurrence, f, bio_dict[f])
+    new_bio_occurrence.locality = locality
     return new_bio_occurrence
 
 
@@ -961,68 +1029,80 @@ def validate_new_record(occurrence_object, row):
         return True
 
 
+def validate_new_biology(biology_object, brow):
+    if len(biology_object.verbatim_taxon) < 1:
+        print "Verbatim Taxon too short"
+        return False
+    return True
+
+
 def main():
     import_count, collection_count, observation_count, row_count, ac, bc, gc, ao, bo, go = [0] * 10
     print "Record limit is set to: %s\n" % record_limit
-    print "Processing records\n\n"
+    print "Processing records\n\n",
 
     occurrence_recordset = occurrence_cursor.execute('SELECT * FROM Occurrence WHERE ProjectCode = "HRP" LIMIT ?', record_limit)
     for row in occurrence_recordset:
+
         row_count += 1
-        print "Processing record %s" % row_count
-        print row
+        #print "Processing record %s" % row_count
+        #print row
 
         # Validate the Occurrence data for the row
-        print "Validating row data ...",
+        #print "Validating row data ...",
         valid_row_dict = validate_row(row)
 
         if valid_row_dict:
-            print "valid"
+            #print "valid"
             pk = valid_row_dict['occurrence_id']
             basis_of_record = valid_row_dict['basis_of_record']
             item_type = valid_row_dict['item_type']
+            import_count += 1
 
             # Biology Collection
             if basis_of_record == 'Collection' and item_type in ('Faunal', 'Floral'):
-                print "Processing Biology Collection for occurrence %s" % pk
+                #print "Processing Biology Collection for occurrence %s" % pk
+                brow = biology_cursor.execute('SELECT * FROM Biology WHERE CatalogNumberNumeric = ?', (str(pk),)).fetchone()
                 bc += 1
                 locality = get_locality(valid_row_dict)
-                valid_biology_dict = validate_biology(row, pk)
-        #         new_bio = import_biology_collection(valid_row_dict, valid_biology_dict, locality)
-        #         import_count += 1
-        #         collection_count += 1
-        #         if validate_new_record(new_occurrence, row):
-        #             pass
-        #             # new_occurrence.save()
-        #             # try:
-        #             #     new_occurrence.save()
-        #             # except:
-        #             #     print "Problem saving occurrence %s" % new_occurrence.id
+                valid_biology_dict = validate_biology(row, brow, pk)
+                new_bio = import_biology_collection(valid_row_dict, valid_biology_dict, locality)
+                collection_count += 1
+                if validate_new_record(new_bio, row) and validate_new_biology(new_bio, brow):
+                    new_bio.save()
+
+            # Archaeology Collection
             elif basis_of_record == 'Collection' and item_type == 'Artifactual':
-                print "Processing Archaeology Collection for Occurrence {}".format(pk)
+                #print "Processing Archaeology Collection for Occurrence {}".format(pk)
                 ac += 1
+                collection_count += 1
 
             elif basis_of_record == 'Collection' and item_type == 'Geological':
-                print "Processing Geological Collection for Occurrence {}".format(pk)
+                #print "Processing Geological Collection for Occurrence {}".format(pk)
                 gc += 1
+                collection_count += 1
 
             elif basis_of_record == 'Observation' and item_type in ('Faunal', 'Floral'):
-                print "Processing Biology Observation for Occurrence %s" % pk
+                #print "Processing Biology Observation for Occurrence %s" % pk
                 bo += 1
                 valid_biology_dict = validate_biology(row, pk)
                 # new_occurrence = import_observation(valid_row_dict)
                 # import_count += 1
-                # observation_count += 1
+                observation_count += 1
                 # if validate_new_record(new_occurrence, row):
                 #     pass
                     # new_occurrence.save()
             elif basis_of_record == 'Observation' and item_type == 'Artifactual':
-                print "Processing Archaeology Observation for Occurrence %s" % pk
+                #print "Processing Archaeology Observation for Occurrence %s" % pk
                 ao += 1
+                observation_count += 1
             elif basis_of_record == 'Observation' and item_type == 'Geological':
-                print "Processing Geological Observation for Occurrence %s" % pk
+                #print "Processing Geological Observation for Occurrence %s" % pk
                 go += 1
-        print "________________________________"
+                observation_count += 1
+        # print "________________________________"
+        if row_count in range(500,10000,500):
+            print '.',
     print "Number of rows processed: %s \nNumber of records imported: %s" % (row_count, import_count)
     print "Imported %s collections and %s observations" % (collection_count, observation_count)
     print "Processed %s biology, %s archaeology and %s geology collections" % (bc, ac, gc)
@@ -1037,8 +1117,8 @@ occurrence_cursor = connection.cursor()
 biology_cursor = connection.cursor()
 
 # Fetch data from the database
-occurrence_cursor.execute('SELECT * FROM Occurrence WHERE CollectionCode = "HRP";')
-record_count = len(occurrence_cursor.fetchall())
+rs = occurrence_cursor.execute('SELECT * FROM Occurrence WHERE ProjectCode = "HRP";')
+record_count = len(rs.fetchall())
 print "Database has a total of %s records" % record_count
 
 main()
