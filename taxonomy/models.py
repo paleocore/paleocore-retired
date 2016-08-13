@@ -51,7 +51,7 @@ class Taxon(models.Model):
             return self.parent.full_lineage()+[self]
 
     def __unicode__(self):
-        if self.rank.name == 'Species':
+        if self.rank.name == 'Species' and self.parent:
             return "[" + self.rank.name + "] " + self.parent.name + " " + self.name
         else:
             return "[" + self.rank.name + "] " + str(self.name)
