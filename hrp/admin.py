@@ -191,10 +191,22 @@ class BiologyInline(admin.TabularInline):
     fieldsets = biology_fieldsets
 
 
-class BiologyAdmin(admin.ModelAdmin):
+class BiologyAdmin(OccurrenceAdmin):
+    inlines = (BiologyInline, ImagesInline, FilesInline)
+
+
+
+class ArchaeologyAdmin(OccurrenceAdmin):
+    pass
+
+
+class GeologyAdmin(OccurrenceAdmin):
+    pass
+
+class BiologyAdmin_old(admin.ModelAdmin):
     list_display = ("id", "collection_code", "locality", "item_number", "item_part",
                     'stratigraphic_member', "barcode", 'basis_of_record', 'item_type', 'taxon', )
-    fieldsets = biology_fieldsets
+    #fieldsets = biology_fieldsets
 
     # note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
     # also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included
@@ -219,6 +231,8 @@ class BiologyAdmin(admin.ModelAdmin):
 ##########################
 
 admin.site.register(Biology, BiologyAdmin)
+admin.site.register(Archaeology, ArchaeologyAdmin)
+admin.site.register(Geology, GeologyAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
 admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)

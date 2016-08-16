@@ -5,7 +5,7 @@ from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
 import os
 from django.contrib.gis.geos import Point
 
-
+# Locality Class
 class Locality(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
     collection_code = models.CharField(null=True, blank=True, choices=HRP_COLLECTION_CODES, max_length=10)
@@ -99,7 +99,7 @@ class Locality(models.Model):
         ordering = ("locality_number", "sublocality")
 
 
-# This is the HRP data model. It is only partly PaleoCore compliant.
+# Occurrence Class and Subclasses
 class Occurrence(models.Model):
     geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
     # TODO basis is Null for import Not Null afterwards
@@ -304,27 +304,10 @@ class Occurrence(models.Model):
         ordering = ["collection_code", "locality", "item_number", "item_part"]
 
 
-class Image(models.Model):
-    occurrence = models.ForeignKey("Occurrence", related_name='hrp_occurrences')
-    image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-
-
-class File(models.Model):
-    occurrence = models.ForeignKey("Occurrence")
-    file = models.FileField(upload_to="uploads/files", null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
-
-
 class Biology(Occurrence):
-    #infraspecific_epithet = models.CharField(null=True, blank=True, max_length=50)
-    #infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
-    #author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
-    #nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
-    # identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     taxon = models.ForeignKey(Taxon, related_name='hrp_biology_occurrences')
-    vertbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
+    verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='hrp_biology_occurrences',
                                                  null=True, blank=True)
     qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True)
@@ -418,6 +401,29 @@ class Biology(Occurrence):
         return str(self.taxon.__unicode__())
 
 
+class Archaeology(Occurrence):
+    find_type = models.CharField(null=True, blank=True, max_length=255)
+    length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "HRP Archaeology"
+        verbose_name_plural = "HRP Archaeology"
+
+
+class Geology(Occurrence):
+    find_type = models.CharField(null=True, blank=True, max_length=255)
+    dip = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    strike = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    color = models.CharField(null=True, blank=True, max_length=255)
+    texture = models.CharField(null=True, blank=True, max_length=255)
+
+    class Meta:
+        verbose_name = "HRP Geology"
+        verbose_name_plural = "HRP Geology"
+
+
+# Hydrology Class
 class Hydrology(models.Model):
     length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     name = models.CharField(null=True, blank=True, max_length=50)
@@ -432,3 +438,16 @@ class Hydrology(models.Model):
     class Meta:
         verbose_name = "HRP Hydrology"
         verbose_name_plural = "HRP Hydrology"
+
+
+# Media Classes
+class Image(models.Model):
+    occurrence = models.ForeignKey("Occurrence", related_name='hrp_occurrences')
+    image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+
+class File(models.Model):
+    occurrence = models.ForeignKey("Occurrence")
+    file = models.FileField(upload_to="uploads/files", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)

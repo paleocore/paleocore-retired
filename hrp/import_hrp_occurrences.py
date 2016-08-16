@@ -2,7 +2,7 @@ __author__ = 'reedd'
 
 import sqlite3
 from taxonomy.models import Taxon, TaxonRank, IdentificationQualifier
-from hrp.models import Occurrence, Locality, Biology
+from hrp.models import Occurrence, Locality, Archaeology, Biology, Geology
 from django.contrib.gis.geos import Point
 from django.core.exceptions import ObjectDoesNotExist
 import datetime, re
@@ -15,7 +15,7 @@ django.setup()
 # Global variables
 barcode_list = []
 hrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/HRP/HRP_Paleobase4_2016.sqlite'
-record_limit = ('1',)
+record_limit = ('20000',)
 occurrence_field_list = ["OBJECTID", "Shape", "CatalogNumberNumeric", "CatalogNumberNumeric_OLD", "BasisOfRecord",
                          "ItemType", "InstitutionalCode", "CollectionCode", "PaleoLocalityNumber", "PaleoLocalityText",
                          "PaleoSubLocality", "ItemNumber", "ItemPart", "CatalogNumber", "GeneralRemarks",
@@ -874,6 +874,7 @@ def get_locality(row_dict):
 
 
 # Import Functions
+# Delete me
 def import_collection(row_dict, locality):
     new_occurrence = Occurrence(id=row_dict['occurrence_id'],
                                 geom=row_dict['geom'],
@@ -929,6 +930,24 @@ def import_biology_collection(row_dict, bio_dict, locality):
     return new_bio_occurrence
 
 
+def import_archaeology_collection(row_dict, locality):
+    new_arch_occurrence = Archaeology(id=row_dict['occurrence_id'])
+    for f in new_arch_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_arch_occurrence, f, row_dict[f])
+    new_arch_occurrence.locality = locality
+    return new_arch_occurrence
+
+
+def import_geology_collection(row_dict, locality):
+    new_geo_occurrence = Geology(id=row_dict['occurrence_id'])
+    for f in new_geo_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_geo_occurrence, f, row_dict[f])
+    new_geo_occurrence.locality = locality
+    return new_geo_occurrence
+
+
 def import_observation(row_dict):
     new_occurrence = Occurrence(id=row_dict['occurrence_id'],
                                 geom=row_dict['geom'],
@@ -973,6 +992,32 @@ def import_observation(row_dict):
 
     # new_occurrence.save()
     return new_occurrence
+
+
+def import_biology_observation(row_dict, bio_dict):
+    new_bio_occurrence = Biology(id=row_dict['occurrence_id'])
+    for f in new_bio_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_bio_occurrence, f, row_dict[f])
+        elif f in bio_dict:
+            setattr(new_bio_occurrence, f, bio_dict[f])
+    return new_bio_occurrence
+
+
+def import_archaeology_observation(row_dict):
+    new_arch_occurrence = Archaeology(id=row_dict['occurrence_id'])
+    for f in new_arch_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_arch_occurrence, f, row_dict[f])
+    return new_arch_occurrence
+
+
+def import_geology_observation(row_dict):
+    new_geo_occurrence = Geology(id=row_dict['occurrence_id'])
+    for f in new_geo_occurrence._meta.get_all_field_names():
+        if f in row_dict:
+            setattr(new_geo_occurrence, f, row_dict[f])
+    return new_geo_occurrence
 
 
 def validate_new_record(occurrence_object, row):
@@ -1033,6 +1078,13 @@ def validate_new_biology(biology_object, brow):
     if len(biology_object.verbatim_taxon) < 1:
         print "Verbatim Taxon too short"
         return False
+    if not biology_object.taxon:
+        print "Missing taxon"
+        return False
+    if biology_object.verbatim_identification_qualifier != brow[biology_field_list.index('IdentificationQualifier')]:
+        vidq = biology_object.vertbatim_identification_qualifier
+        idq = brow[biology_field_list.index('IdentificationQualifier')]
+        print "Verbatim identification qualifier {} does not match IdentificationQualifer {}".format(vidq, idq)
     return True
 
 
@@ -1075,33 +1127,53 @@ def main():
             elif basis_of_record == 'Collection' and item_type == 'Artifactual':
                 #print "Processing Archaeology Collection for Occurrence {}".format(pk)
                 ac += 1
+                locality = get_locality(valid_row_dict)
+                new_arch = import_archaeology_collection(valid_row_dict, locality)
                 collection_count += 1
-
+                if validate_new_record(new_arch, row):
+                    new_arch.save()
+            
+            # Geology Collection
             elif basis_of_record == 'Collection' and item_type == 'Geological':
                 #print "Processing Geological Collection for Occurrence {}".format(pk)
                 gc += 1
                 collection_count += 1
+                locality = get_locality(valid_row_dict)
+                new_geo = import_geology_collection(valid_row_dict, locality)
+                collection_count += 1
+                if validate_new_record(new_geo, row):
+                    new_geo.save()
 
+            # Biology Observation
             elif basis_of_record == 'Observation' and item_type in ('Faunal', 'Floral'):
                 #print "Processing Biology Observation for Occurrence %s" % pk
+                brow = biology_cursor.execute('SELECT * FROM Biology WHERE CatalogNumberNumeric = ?', (str(pk),)).fetchone()
                 bo += 1
-                valid_biology_dict = validate_biology(row, pk)
-                # new_occurrence = import_observation(valid_row_dict)
-                # import_count += 1
                 observation_count += 1
-                # if validate_new_record(new_occurrence, row):
-                #     pass
-                    # new_occurrence.save()
+                valid_biology_dict = validate_biology(row, brow, pk)
+                new_bio = import_biology_observation(valid_row_dict, valid_biology_dict)
+                if validate_new_record(new_bio, row) and validate_new_biology(new_bio, brow):
+                    new_bio.save()
+            
+            # Archaeology Observation
             elif basis_of_record == 'Observation' and item_type == 'Artifactual':
                 #print "Processing Archaeology Observation for Occurrence %s" % pk
                 ao += 1
                 observation_count += 1
+                new_arch = import_archaeology_observation(valid_row_dict)
+                if validate_new_record(new_arch, row):
+                    new_arch.save()
+                    
+            # Geology Observation
             elif basis_of_record == 'Observation' and item_type == 'Geological':
                 #print "Processing Geological Observation for Occurrence %s" % pk
                 go += 1
                 observation_count += 1
-        # print "________________________________"
-        if row_count in range(500,10000,500):
+                new_geo = import_geology_observation(valid_row_dict)
+                if validate_new_record(new_geo, row):
+                    new_geo.save()
+
+        if row_count in range(500, 10000, 500):
             print '.',
     print "Number of rows processed: %s \nNumber of records imported: %s" % (row_count, import_count)
     print "Imported %s collections and %s observations" % (collection_count, observation_count)
