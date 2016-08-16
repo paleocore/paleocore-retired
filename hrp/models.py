@@ -5,6 +5,7 @@ from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
 import os
 from django.contrib.gis.geos import Point
 
+
 # Locality Class
 class Locality(models.Model):
     id = models.CharField(primary_key=True, max_length=255)
@@ -298,6 +299,9 @@ class Occurrence(models.Model):
     thumbnail.allow_tags = True
     thumbnail.mark_safe = True
 
+    def get_all_field_names(self):
+        return self._meta.get_all_field_names()
+
     class Meta:
         verbose_name = "HRP Occurrence"
         verbose_name_plural = "HRP Occurrences"
@@ -340,6 +344,7 @@ class Biology(Occurrence):
     lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     element = models.CharField(null=True, blank=True, max_length=50)
     element_modifier = models.CharField(null=True, blank=True, max_length=50)
+    # upper dentition fields
     uli1 = models.BooleanField(default=False)
     uli2 = models.BooleanField(default=False)
     uli3 = models.BooleanField(default=False)
@@ -366,6 +371,7 @@ class Biology(Occurrence):
     urm1 = models.BooleanField(default=False)
     urm2 = models.BooleanField(default=False)
     urm3 = models.BooleanField(default=False)
+    # lower dentition fields
     lli1 = models.BooleanField(default=False)
     lli2 = models.BooleanField(default=False)
     lli3 = models.BooleanField(default=False)
@@ -392,6 +398,13 @@ class Biology(Occurrence):
     lrm1 = models.BooleanField(default=False)
     lrm2 = models.BooleanField(default=False)
     lrm3 = models.BooleanField(default=False)
+    # indeterminate dental fields
+    indet_incisor = models.BooleanField(default=False)
+    indet_canine = models.BooleanField(default=False)
+    indet_premolar = models.BooleanField(default=False)
+    indet_molar = models.BooleanField(default=False)
+    indet_tooth = models.BooleanField(default=False)
+    deciduous = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "HRP Biology"

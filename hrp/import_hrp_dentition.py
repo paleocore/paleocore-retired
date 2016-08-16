@@ -1,7 +1,11 @@
 __author__ = 'reedd'
 """
 This loader/importer script is designed to read data from a sqlite database storing the Hadar Research Project (HRP)
-data, and load those data into the PaleoCore postgres database. The script:
+data, and load those data into the PaleoCore postgres database. It assumes that the occurrence and biology table data
+has already been imported. This script reads in the data form the dentition table and adds it to the appropriate
+Biology occurrences.
+
+The script:
 1) reads and validates the raw data read in from the occurrence table in the sqlite database and loads the data into
 a dictionary (row_dict).  The validation function cleans the data and converts the data to an appropriate format
 where necessar;
