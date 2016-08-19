@@ -70,30 +70,8 @@ class BiologyInline(admin.TabularInline):
     fieldsets = biology_fieldsets
 
 
-class BiologyAdmin(admin.ModelAdmin):
-    list_display = ("id", "collection_code", "paleolocality_number", "item_number", "item_part",
-                    'stratigraphic_member', "barcode", 'basis_of_record', 'item_type', 'taxon', )
-    list_filter = ("family",)
-    readonly_fields = ("id",)
-    fieldsets = biology_fieldsets
-
-    # note: autonumber fields like id are not editable, and can't be added to fieldsets unless specified as read only.
-    # also, any dynamically created fields (e.g. point_X) in models.py must be declared as read only to be included
-    # in fieldset or fields
-    readonly_fields = ("id", "field_number", "catalog_number", "date_last_modified")
-
-    list_filter = ["basis_of_record", "year_collected", "stratigraphic_member", "collection_code", "item_type"]
-    search_fields = ("id", "item_scientific_name", "barcode", "catalog_number")
-    inlines = (BiologyInline, ImagesInline, FilesInline)
-    fieldsets = occurrence_fieldsets
-    formfield_overrides = {
-        models.CharField: {'widget': TextInput(attrs={'size':'25'})},
-        models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
-    }
-    list_per_page = 500  # show 500 records per page
-    # change_form_template = "occurrence_change_form.html"
-    actions = ["move_selected", "get_nearest_locality"]  # TODO clarify actions
-    actions = ["get_nearest_locality", "create_data_csv"]
+class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
+    model = Biology
 
 
 ###################
