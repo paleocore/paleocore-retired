@@ -122,7 +122,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     list_display.insert(2, 'item_number')
     list_display.insert(3, 'item_part')
     fieldsets = occurrence_fieldsets
-    list_filter = base.admin.default_list_filter+['collection_code']
+    list_filter = base.admin.default_list_filter
     search_fields = list(base.admin.default_search_fields)+['id']
     search_fields.pop(search_fields.index('catalog_number'))
     list_per_page = 500
@@ -192,7 +192,7 @@ biology_element_fieldsets = (
         ('lli1', 'lli2', 'llc', 'llp3', 'llp4', 'llm1', 'llm2', 'llm3'),
         ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'),
         'deciduous'
-                           )}),
+    )}),
 )
 
 
@@ -230,15 +230,6 @@ biology_fieldsets = (
                    ('easting', 'northing',),
                    ('geom',)]
     }),
-    # ('Elements', {'fields': (
-    #     ('element', 'element_modifier'),
-    #     ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
-    #     ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
-        # ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
-        # ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
-        # ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'),
-        # 'deciduous'
-                          #)}),
 )
 
 
@@ -258,6 +249,11 @@ class ElementInLine(admin.StackedInline):
 class BiologyAdmin(OccurrenceAdmin):
     fieldsets = biology_fieldsets
     inlines = (BiologyInline, ImagesInline, FilesInline)
+    list_display = list(base.admin.default_list_display) + ['thumbnail', 'element']
+    list_display.pop(list_display.index('item_type'))
+    list_display.pop(list_display.index('field_number'))
+
+    list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element']
 
 
 class ArchaeologyAdmin(OccurrenceAdmin):
