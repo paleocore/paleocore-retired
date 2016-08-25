@@ -3,6 +3,7 @@ from taxonomy.models import Taxon, IdentificationQualifier
 from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
     HRP_COLLECTING_METHOD_VOCABULARY, HRP_BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
 import os
+import utm
 from django.contrib.gis.geos import Point
 
 
@@ -75,12 +76,11 @@ class Locality(models.Model):
         Return the easting for the point in UTM meters using the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(32637)  # transform to UTM WGS84
-            return pt.x
-        else:
-            return None
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[0]
+        except:
+            return 0
 
     def northing(self):
         """
@@ -89,8 +89,8 @@ class Locality(models.Model):
         """
         if self.geom and type(self.geom) == Point:
             pt = self.geom
-            pt.transform(32637)  # transform to UTM WGS84
-            return pt.y
+            utm_point = utm.from_latlon(pt.y, pt.x)
+            return utm_point[0]
         else:
             return None
 
@@ -217,11 +217,10 @@ class Occurrence(models.Model):
         Return the easting for the point in UTM meters using the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(32637)  # transform to UTM WGS84
-            return pt.x
-        else:
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[0]
+        except:
             return None
 
     def northing(self):
@@ -229,11 +228,10 @@ class Occurrence(models.Model):
         Return the easting for the point in UTM meters using the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(32637)  # transform to UTM WGS84
-            return pt.y
-        else:
+        try:
+            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
+            return utmPoint[1]
+        except:
             return None
 
     def catalog_number(self):
