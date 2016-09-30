@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     'mlp',  # Mille-Logya Project
     'drp',  # Dikika Research Project
     'hrp',  # Hadar Research Project
+    'lgrp', # Ledi-Geraru Research Project
     'turkana',  # Turkana Project Data
     'cc',  # Combe Capelle project
     'fc',  # Fontechevade project
@@ -85,8 +86,6 @@ INSTALLED_APPS = (
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',
-
-
 )
 
 # These entries extended by entries BELOW in Django Fiber section

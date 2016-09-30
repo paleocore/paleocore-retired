@@ -1,103 +1,11 @@
 from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
-from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
-    HRP_COLLECTING_METHOD_VOCABULARY, HRP_BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
+from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCABULARY, LGRP_BASIS_OF_RECORD_VOCABULARY,\
+    LGRP_COLLECTION_CODES
+from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
 import utm
 from django.contrib.gis.geos import Point
-
-
-# Locality Class
-class Locality(models.Model):
-    id = models.CharField(primary_key=True, max_length=255)
-    collection_code = models.CharField(null=True, blank=True, choices=HRP_COLLECTION_CODES, max_length=10)
-    locality_number = models.IntegerField(null=True, blank=True)
-    sublocality = models.CharField(null=True, blank=True, max_length=50)
-    description = models.TextField(null=True, blank=True, max_length=255)
-    stratigraphic_section = models.CharField(null=True, blank=True, max_length=50)
-    upper_limit_in_section = models.IntegerField(null=True, blank=True)
-    lower_limit_in_section = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    error_notes = models.CharField(max_length=255, null=True, blank=True)
-    notes = models.CharField(max_length=254, null=True, blank=True)
-    geom = models.PointField(srid=4326, blank=True, null=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
-    objects = models.GeoManager()
-
-    def __unicode__(self):
-        nice_name = str(self.collection_code) + " " + str(self.locality_number) + str(self.sublocality)
-        return nice_name.replace("None", "").replace("--", "")
-
-    def point_x(self):
-        """
-        Return the x coordinate for the point in its native coordinate system
-        :return:
-        """
-        if self.geom and type(self.geom) == Point:
-            return self.geom.x
-        else:
-            return None
-
-    def point_y(self):
-        """
-        Return the y coordinate for the point in its native coordinate system
-        :return:
-        """
-        if self.geom and type(self.geom) == Point:
-            return self.geom.y
-        else:
-            return None
-
-    def longitude(self):
-        """
-        Return the longitude for the point in the WGS84 datum
-        :return:
-        """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(4326)  # transform to GCS WGS84
-            return pt.x
-        else:
-            return None
-
-    def latitude(self):
-        """
-        Return the latitude for the point in the WGS84 datum
-        :return:
-        """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(4326)
-            return pt.y
-        else:
-            return None
-
-    def easting(self):
-        """
-        Return the easting for the point in UTM meters using the WGS84 datum
-        :return:
-        """
-        try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[0]
-        except:
-            return 0
-
-    def northing(self):
-        """
-        Return the easting for the point in UTM meters using the WGS84 datum
-        :return:
-        """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            utm_point = utm.from_latlon(pt.y, pt.x)
-            return utm_point[0]
-        else:
-            return None
-
-    class Meta:
-        verbose_name = "HRP Locality"
-        verbose_name_plural = "HRP Localities"
-        ordering = ("locality_number", "sublocality")
 
 
 # Occurrence Class and Subclasses
@@ -105,15 +13,13 @@ class Occurrence(models.Model):
     geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
     # TODO basis is Null for import Not Null afterwards
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
-                                       choices=HRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
+                                       choices=LGRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     # During initial import remove collection code choices. Add later for validation.
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
-    # Foreign key to locality table
-    locality = models.ForeignKey(Locality, null=True, blank=True)
     # Splitting item number and part allows more fine grained searches
-    item_number = models.IntegerField("Item #", null=True, blank=True)
+    item_number = models.CharField("Item #",  max_length=10, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     # Keep catalog number temporarily, but going forward create method to build from other fields
     # catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
@@ -122,10 +28,10 @@ class Occurrence(models.Model):
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
     collecting_method = models.CharField(max_length=50,
-                                         choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True)
+                                         choices=LGRP_COLLECTING_METHOD_VOCABULARY, null=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
     field_number = models.CharField(max_length=50, null=True, blank=True)
-    collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
+    collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True, max_length=50)
     disposition = models.CharField(max_length=255, blank=True, null=True)
     collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
@@ -151,7 +57,7 @@ class Occurrence(models.Model):
     analytical_unit_simplified = models.CharField(max_length=255, blank=True, null=True)
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
-    image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/hrp", null=True)
+    image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/lgrp", null=True)
     weathering = models.SmallIntegerField(blank=True, null=True)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
     problem = models.BooleanField(default=False)
@@ -160,7 +66,7 @@ class Occurrence(models.Model):
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     objects = models.GeoManager()
 
-    # HRP Specific Fields
+    # LGRP Specific Fields
     drainage_region = models.CharField(null=True, blank=True, max_length=255)
 
     @staticmethod
@@ -241,16 +147,7 @@ class Occurrence(models.Model):
         """
 
         if self.basis_of_record == 'Collection':
-            #  Crate catalog number string. Null values become None when converted to string
-            if self.item_number:
-                if self.item_part:
-                    item_text = '-' + str(self.item_number) + str(self.item_part)
-                else:
-                    item_text = '-' + str(self.item_number)
-            else:
-                item_text = ''
-
-            catalog_number_string = str(self.collection_code) + " " + str(self.locality_id) + item_text
+            catalog_number_string = str(self.collection_code) + " " + str(self.barcode)
             return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
         else:
             return None
@@ -267,14 +164,6 @@ class Occurrence(models.Model):
         :param kwargs:
         :return:
         """
-        # The following code automatically updates the catalog number field. It is commented out for
-        # now to experiment with a model that does not have a dedicated catalog number field in the database,
-        # but uses a method to dynamically construct a catalog number as necessary.
-        # the_catalog_number = str(self.collection_code) + " " + str(self.paleolocality_number) + \
-        #                      str(self.paleo_sublocality) + "-" + str(self.item_number) + str(self.item_part)
-        # self.catalog_number = the_catalog_number.replace("None", "")
-
-        # call the normal hrp_occurrence save method using alternate database
         super(Occurrence, self).save(*args, **kwargs)
 
     def photo(self):
@@ -301,18 +190,18 @@ class Occurrence(models.Model):
         return self._meta.get_all_field_names()
 
     class Meta:
-        verbose_name = "HRP Occurrence"
-        verbose_name_plural = "HRP Occurrences"
-        ordering = ["collection_code", "locality", "item_number", "item_part"]
+        verbose_name = "LGRP Occurrence"
+        verbose_name_plural = "LGRP Occurrences"
+        ordering = ["collection_code", "item_number", "item_part"]
 
 
 class Biology(Occurrence):
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
-    taxon = models.ForeignKey(Taxon, related_name='hrp_taxon_bio_occurrences')
+    taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_taxon_bio_occurrences')
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='hrp_id_qualifier_bio_occurrences',
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='lgrp_id_qualifier_bio_occurrences',
                                                  null=True, blank=True)
-    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='hrp_qualifier_taxon_bio_occurrences')
+    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_qualifier_taxon_bio_occurrences')
     identified_by = models.CharField(null=True, blank=True, max_length=100)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
@@ -405,11 +294,12 @@ class Biology(Occurrence):
     deciduous = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = "HRP Biology"
-        verbose_name_plural = "HRP Biology"
+        verbose_name = "LGRP Biology"
+        verbose_name_plural = "LGRP Biology"
 
     def __unicode__(self):
-        return str(self.taxon.__unicode__())
+        return str(self.id)
+        #return str(self.taxon.__unicode__())
 
 
 class Archaeology(Occurrence):
@@ -418,8 +308,8 @@ class Archaeology(Occurrence):
     width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
 
     class Meta:
-        verbose_name = "HRP Archaeology"
-        verbose_name_plural = "HRP Archaeology"
+        verbose_name = "LGRP Archaeology"
+        verbose_name_plural = "LGRP Archaeology"
 
 
 class Geology(Occurrence):
@@ -430,8 +320,8 @@ class Geology(Occurrence):
     texture = models.CharField(null=True, blank=True, max_length=255)
 
     class Meta:
-        verbose_name = "HRP Geology"
-        verbose_name_plural = "HRP Geology"
+        verbose_name = "LGRP Geology"
+        verbose_name_plural = "LGRP Geology"
 
 
 # Hydrology Class
@@ -447,13 +337,13 @@ class Hydrology(models.Model):
         return str(self.name)
 
     class Meta:
-        verbose_name = "HRP Hydrology"
-        verbose_name_plural = "HRP Hydrology"
+        verbose_name = "LGRP Hydrology"
+        verbose_name_plural = "LGRP Hydrology"
 
 
 # Media Classes
 class Image(models.Model):
-    occurrence = models.ForeignKey("Occurrence", related_name='hrp_occurrences')
+    occurrence = models.ForeignKey("Occurrence", related_name='lgrp_occurrences')
     image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
