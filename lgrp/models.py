@@ -18,6 +18,7 @@ class Occurrence(models.Model):
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     # During initial import remove collection code choices. Add later for validation.
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
+    locality_number = models.IntegerField("Locality", null=True, blank=True)
     # Splitting item number and part allows more fine grained searches
     item_number = models.CharField("Item #",  max_length=10, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)

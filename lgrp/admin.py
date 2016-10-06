@@ -45,7 +45,7 @@ occurrence_fieldsets = (
     ('Item Details', {
         'fields': [('barcode', 'catalog_number',),
                    ('date_recorded', 'year_collected',),
-                   ("collection_code", "item_number", "item_part")]
+                   ("collection_code", "locality_number", "item_number", "item_part")]
     }),
 
     ('Occurrence Details', {
@@ -78,18 +78,20 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     actions = ['create_data_csv', 'change_xy']
     readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number', 'longitude', 'latitude')
     list_display = list(base.admin.default_list_display+('thumbnail',))
-    list_index = list_display.index('field_number')
-    list_display.pop(list_index)
-    list_display.insert(2, 'item_number')
-    list_display.insert(3, 'item_part')
+    field_number_index = list_display.index('field_number')
+    list_display.pop(field_number_index)
+    list_display.insert(2,'collection_code')
+    list_display.insert(3, 'locality_number')
+    list_display.insert(4, 'item_number')
+    list_display.insert(5, 'item_part')
     fieldsets = occurrence_fieldsets
-    list_filter = base.admin.default_list_filter
+    list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem']
     search_fields = list(base.admin.default_search_fields)+['id']
     search_fields.pop(search_fields.index('catalog_number'))
     list_per_page = 500
-    options = {
-        'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00,
-    }
+    # options = {
+    #     'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00,
+    # }
 
 
 ###################
@@ -131,7 +133,7 @@ biology_fieldsets = (
     ('Item Details', {
         'fields': [('barcode', 'catalog_number',),
                    ('date_recorded', 'year_collected',),
-                   ("collection_code", "item_number", "item_part")]
+                   ("collection_code", "locality_number", "item_number", "item_part")]
     }),
 
     ('Occurrence Details', {
