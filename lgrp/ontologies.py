@@ -36,6 +36,10 @@ LGRP_COLLECTOR_CHOICES = (
     ("D. I. Garello", "D. I. Garello"),
 )
 
+LGRP_FINDER_CHOICES = (
+    ("Afar", "Afar")
+)
+
 LGRP_COLLECTION_CODES = (
     ("AA", "AA"),
     ("AM", "AM"),

@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
 from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCABULARY, LGRP_BASIS_OF_RECORD_VOCABULARY,\
-    LGRP_COLLECTION_CODES
+    LGRP_COLLECTION_CODES, LGRP_FINDER_CHOICES
 from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
 import utm
@@ -33,7 +33,7 @@ class Occurrence(models.Model):
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
     field_number = models.CharField(max_length=50, null=True, blank=True)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)
-    finder = models.CharField(null=True, blank=True, max_length=50)
+    finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
     disposition = models.CharField(max_length=255, blank=True, null=True)
     collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
     date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
