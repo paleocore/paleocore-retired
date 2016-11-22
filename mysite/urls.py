@@ -69,4 +69,4 @@ IMPORTANT: One key difference between the paleocore implementation and the docum
 is that the MEDIA_URL settings are added to the beginning of the url patterns. If appened
 to the end as shown in the documentation the fiber.view.page entry catches and returns 404.
 """
-urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + urlpatterns
+#urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + urlpatterns
