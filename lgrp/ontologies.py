@@ -1,3 +1,5 @@
+import sqlite3
+
 
 LGRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
 
@@ -37,7 +39,7 @@ LGRP_COLLECTOR_CHOICES = (
 )
 
 LGRP_FINDER_CHOICES = (
-    ("Afar", "Afar")
+    ("Afar", "Afar"),
 )
 
 LGRP_COLLECTION_CODES = (
@@ -66,3 +68,184 @@ LGRP_COLLECTION_CODES = (
     ("OI", "OI"),
     ("SS", "SS"),
 )
+
+LGRP_ELEMENT_CHOICES = (
+    ('astragalus', 'astragalus'),
+    ('bacculum', 'bacculum'),
+    ('bone (indet.)', 'bone (indet.)'),
+    ('calcaneus', 'calcaneus'),
+    ('canine', 'canine'),
+    ('capitate', 'capitate'),
+    ('carapace', 'carapace'),
+    ('carpal (indet.)', 'carpal (indet.)'),
+    ('carpal/tarsal', 'carpal/tarsal'),
+    ('carpometacarpus', 'carpometacarpus'),
+    ('carpus', 'carpus'),
+    ('chela', 'chela'),
+    ('clavicle', 'clavicle'),
+    ('coccyx', 'coccyx'),
+    ('coprolite', 'coprolite'),
+    ('cranium', 'cranium'),
+    ('cranium w/horn core', 'cranium w/horn core'),
+    ('cuboid', 'cuboid'),
+    ('cubonavicular', 'cubonavicular'),
+    ('cuneiform', 'cuneiform'),
+    ('dermal plate', 'dermal plate'),
+    ('egg shell', 'egg shell'),
+    ('endocast', 'endocast'),
+    ('ethmoid', 'ethmoid'),
+    ('femur', 'femur'),
+    ('fibula', 'fibula'),
+    ('frontal', 'frontal'),
+    ('hamate', 'hamate'),
+    ('horn core', 'horn core'),
+    ('humerus', 'humerus'),
+    ('hyoid', 'hyoid'),
+    ('Ilium', 'Ilium'),
+    ('incisor', 'incisor'),
+    ('innominate', 'innominate'),
+    ('ischium', 'ischium'),
+    ('lacrimal', 'lacrimal'),
+    ('long bone ', 'long bone '),
+    ('lunate', 'lunate'),
+    ('mandible', 'mandible'),
+    ('manus', 'manus'),
+    ('maxilla', 'maxilla'),
+    ('metacarpal', 'metacarpal'),
+    ('metapodial', 'metapodial'),
+    ('metatarsal', 'metatarsal'),
+    ('molar', 'molar'),
+    ('nasal', 'nasal'),
+    ('navicular', 'navicular'),
+    ('naviculocuboid', 'naviculocuboid'),
+    ('occipital', 'occipital'),
+    ('ossicone', 'ossicone'),
+    ('parietal', 'parietal'),
+    ('patella', 'patella'),
+    ('pes', 'pes'),
+    ('phalanx', 'phalanx'),
+    ('pisiform', 'pisiform'),
+    ('plastron', 'plastron'),
+    ('premaxilla', 'premaxilla'),
+    ('premolar', 'premolar'),
+    ('pubis', 'pubis'),
+    ('radioulna', 'radioulna'),
+    ('radius', 'radius'),
+    ('rib', 'rib'),
+    ('sacrum', 'sacrum'),
+    ('scaphoid', 'scaphoid'),
+    ('scapholunar', 'scapholunar'),
+    ('scapula', 'scapula'),
+    ('scute', 'scute'),
+    ('sesamoid', 'sesamoid'),
+    ('shell', 'shell'),
+    ('skeleton', 'skeleton'),
+    ('skull', 'skull'),
+    ('sphenoid', 'sphenoid'),
+    ('sternum', 'sternum'),
+    ('talon', 'talon'),
+    ('talus', 'talus'),
+    ('tarsal (indet.)', 'tarsal (indet.)'),
+    ('tarsometatarsus', 'tarsometatarsus'),
+    ('tarsus', 'tarsus'),
+    ('temporal', 'temporal'),
+    ('tibia', 'tibia'),
+    ('tibiotarsus', 'tibiotarsus'),
+    ('tooth (indet.)', 'tooth (indet.)'),
+    ('trapezium', 'trapezium'),
+    ('trapezoid', 'trapezoid'),
+    ('triquetrum', 'triquetrum'),
+    ('ulna', 'ulna'),
+    ('vertebra', 'vertebra'),
+    ('vomer', 'vomer'),
+    ('zygomatic', 'zygomatic'),
+)
+
+LGRP_ELEMENT_PORTION_CHOICES = (
+    ('almost complete', 'almost complete'),
+    ('anterior', 'anterior'),
+    ('basal', 'basal'),
+    ('complete', 'complete'),
+    ('diaphysis', 'diaphysis'),
+    ('diaphysis+distal', 'diaphysis+distal'),
+    ('diaphysis+proximal', 'diaphysis+proximal'),
+    ('distal', 'distal'),
+    ('dorsal', 'dorsal'),
+    ('epiphysis', 'epiphysis'),
+    ('fragment', 'fragment'),
+    ('fragments', 'fragments'),
+    ('indeterminate', 'indeterminate'),
+    ('lateral', 'lateral'),
+    ('medial', 'medial'),
+    ('midsection', 'midsection'),
+    ('midsection+basal', 'midsection+basal'),
+    ('midsection+distal', 'midsection+distal'),
+    ('posterior', 'posterior'),
+    ('proximal', 'proximal'),
+    ('symphysis', 'symphysis'),
+    ('ventral', 'ventral'),
+)
+
+LGRP_ELEMENT_NUMBER_CHOICES = (
+    ('1', '1'),
+    ('2', '2'),
+    ('3', '3'),
+    ('3(medial)', '3(medial)'),
+    ('4', '4'),
+    ('4(lateral)', '4(lateral)'),
+    ('5', '5'),
+    ('6', '6'),
+    ('7', '7'),
+    ('8', '8'),
+    ('9', '9'),
+    ('10', '10'),
+    ('11', '11'),
+    ('12', '12'),
+    ('2-7', '2-7'),
+    ('8-12', '8-12'),
+    ('indeterminate', 'indeterminate'),
+)
+
+LGRP_ELEMENT_MODIFIER_CHOICES = (
+    ('articulated', 'articulated'),
+    ('caudal', 'caudal'),
+    ('cervical', 'cervical'),
+    ('coccygeal', 'coccygeal'),
+    ('distal', 'distal'),
+    ('intermediate', 'intermediate'),
+    ('lower', 'lower'),
+    ('lumbar', 'lumbar'),
+    ('manual', 'manual'),
+    ('manual distal', 'manual distal'),
+    ('manual intermediate', 'manual intermediate'),
+    ('manual proximal', 'manual proximal'),
+    ('pedal', 'pedal'),
+    ('pedal distal', 'pedal distal'),
+    ('pedal intermediate', 'pedal intermediate'),
+    ('pedal proximal', 'pedal proximal'),
+    ('proximal', 'proximal'),
+    ('sacral', 'sacral'),
+    ('thoracic', 'thoracic'),
+    ('upper', 'upper'),
+    ('indeterminate', 'indeterminate')
+)
+
+LGRP_SIDE_CHOICES = (
+    (u'L', u'L'),
+    (u'R', u'R'),
+    (u'Indeterminate', u'Indeterminate'),
+    (u'L+R', u'L+R')
+)
+
+lgrp_db_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+def import_vocabulary(column_name, path=lgrp_db_path):
+    connection = sqlite3.connect(lgrp_db_path)
+    cursor = connection.cursor()
+    colrs = cursor.execute("SELECT {} FROM LookUpTable WHERE {} IS NOT NULL".format(column_name, column_name))
+    column_names = [c[0] for c in cursor.description]
+    col_list = []
+    for row in colrs:
+        l = list(row)
+        l.append(row[0])
+        col_list.append(tuple(l))
+    return tuple(col_list)

@@ -169,7 +169,7 @@ biology_inline_fieldsets = (
 
 biology_element_fieldsets = (
     ('Elements', {'fields': (
-        ('element', 'element_modifier'),
+        ('element', 'element_portion', 'side', 'element_number','element_modifier'),
         ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
         ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
         ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),

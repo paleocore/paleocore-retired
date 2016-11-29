@@ -1,7 +1,8 @@
 from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
 from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCABULARY, LGRP_BASIS_OF_RECORD_VOCABULARY,\
-    LGRP_COLLECTION_CODES, LGRP_FINDER_CHOICES
+    LGRP_FINDER_CHOICES, LGRP_ELEMENT_CHOICES, LGRP_ELEMENT_PORTION_CHOICES, LGRP_ELEMENT_NUMBER_CHOICES, \
+    LGRP_ELEMENT_MODIFIER_CHOICES, LGRP_SIDE_CHOICES
 from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
 import utm
@@ -210,7 +211,7 @@ class Biology(Occurrence):
     life_stage = models.CharField(null=True, blank=True, max_length=50)
     preparations = models.CharField(null=True, blank=True, max_length=50)
     morphobank_number = models.IntegerField(null=True, blank=True)
-    side = models.CharField(null=True, blank=True, max_length=50)
+    side = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_SIDE_CHOICES)
     attributes = models.CharField(null=True, blank=True, max_length=50)
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
@@ -230,8 +231,10 @@ class Biology(Occurrence):
     lm_2_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    element = models.CharField(null=True, blank=True, max_length=50)
-    element_modifier = models.CharField(null=True, blank=True, max_length=50)
+    element = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_CHOICES)
+    element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_MODIFIER_CHOICES)
+    element_portion = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_PORTION_CHOICES)
+    element_number = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_NUMBER_CHOICES)
     # upper dentition fields
     uli1 = models.BooleanField(default=False)
     uli2 = models.BooleanField(default=False)
