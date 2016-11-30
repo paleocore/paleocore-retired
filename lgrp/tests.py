@@ -21,10 +21,9 @@ class OccurrenceCreationMethodTests(TestCase):
         new_occurrence.save()
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.catalog_number(), None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.1)
-        self.assertEqual(new_occurrence.locality.paleolocality_number, 1)
 
     def test_occurrence_create_simple(self):
         """
@@ -35,7 +34,7 @@ class OccurrenceCreationMethodTests(TestCase):
                                                    field_number=datetime.now())
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.catalog_number(), None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.2)
 
@@ -48,7 +47,7 @@ class OccurrenceCreationMethodTests(TestCase):
                                                    field_number=datetime.now())
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.catalog_number, "--")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.old_catalog_number(), None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.3)
 
@@ -67,7 +66,6 @@ class OccurrenceMethodTests(TestCase):
         # Create one occurrence point in polygon 1
         Occurrence.objects.create(geom=Point(41.1, 11.1),
                                   barcode=1,
-                                  catalog_number='DIK-1-1',
                                   field_number=datetime.now())
 
     def test_point_x_method(self):
@@ -94,7 +92,7 @@ class BiologyMethodTests(TestCase):
     """
     fixtures = [
         'fixtures/fiber_data_150611.json',
-        'taxonomy/fixtures/taxonomy_data_150611.json'
+        'taxonomy/fixtures/taxonomy_161020.json'
     ]
 
     def test_biology_save_method(self):
@@ -113,9 +111,9 @@ class BiologyMethodTests(TestCase):
 
         new_bio = Biology(
             barcode=1111,
-            basis_of_record="FossilSpecimen",
+            basis_of_record="Collection",
             collection_code="HRP",
-            paleolocality_number="1",
+            locality_number="1",
             item_number="1",
             geom="POINT (41.1 11.1)",
             taxon=new_taxon,
@@ -127,7 +125,7 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_occurrence_record_count+1)
         self.assertEqual(Biology.objects.count(), starting_biology_record_count+1)
 
-        self.assertEqual(new_bio.catalog_number, "HRP-1-1")  # test catalog number generation in save method
+        self.assertEqual(new_bio.old_catalog_number(), "HRP 1-1")  # test catalog number generation in save method
         self.assertEqual(new_bio.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_bio.point_x(), 41.1)
 
@@ -141,9 +139,9 @@ class BiologyMethodTests(TestCase):
         # Using the instance creation and then save methods
         new_occurrence = Biology.objects.create(
             barcode=2222,
-            basis_of_record="HumanObservation",
+            basis_of_record="Observation",
             collection_code="COL",
-            paleolocality_number="2",
+            locality_number="2",
             item_number="1",
             geom=Point(41.21, 11.21),
             taxon=Taxon.objects.get(name__exact="Primates"),
@@ -152,11 +150,11 @@ class BiologyMethodTests(TestCase):
         )
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # one record added?
-        self.assertEqual(new_occurrence.catalog_number, "COL-2-1")  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.old_catalog_number(), None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.21)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # no biology record was added?
-        self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
+        self.assertEqual(Biology.objects.filter(basis_of_record__exact="Observation").count(), 1)
         response = self.client.get('/admin/lgrp/', follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Username')  # redirects to login form
@@ -192,7 +190,7 @@ class HRPViewsTests(TestCase):
                 barcode=barcode_index,
                 basis_of_record="HumanObservation",
                 collection_code="HRP",
-                paleolocality_number="1",
+                locality_number="1",
                 item_number=barcode_index,
                 geom=Point(41.11, 11.11),
                 taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
@@ -234,7 +232,7 @@ class HRPAdminViewTests(TestCase):
                 barcode=barcode_index,
                 basis_of_record="HumanObservation",
                 collection_code="HRP",
-                paleolocality_number="1",
+                locality_number="1",
                 item_number=barcode_index,
                 geom=Point(41.11, 11.11),
                 taxon=Taxon.objects.get(name__exact=order_tuple_element[0]),
