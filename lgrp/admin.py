@@ -46,7 +46,8 @@ occurrence_fieldsets = (
     ('Item Details', {
         'fields': [('barcode', 'catalog_number',),
                    ('date_recorded', 'year_collected',),
-                   ("collection_code", "locality_number", "item_number", "item_part")]
+                   ('collection_code', 'locality_number', 'item_number', 'item_part'),
+                   ('collection_remarks',)]
     }),
 
     ('Occurrence Details', {
@@ -62,13 +63,15 @@ occurrence_fieldsets = (
                    ('stratigraphic_marker_found', 'distance_from_found'),
                    ('stratigraphic_marker_likely', 'distance_from_likely'),
                    ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
+                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
                    ('drainage_region',)]
     }),
 
     ('Location Details', {
-        'fields': [('longitude', 'latitude'),
+        'fields': [('georeference_remarks',),
+                   ('longitude', 'latitude'),
                    ('easting', 'northing',),
                    ('geom',)]
     }),
@@ -86,7 +89,8 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     list_display.insert(4, 'item_number')
     list_display.insert(5, 'item_part')
     fieldsets = occurrence_fieldsets
-    list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem']
+    list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem',
+                   'weathering']
     search_fields = list(base.admin.default_search_fields)+['id']
     search_fields.pop(search_fields.index('catalog_number'))
     list_per_page = 500
@@ -111,10 +115,10 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         except ValueError:  # raised if geom field is not in the dictionary list
             pass
         # Replace the geom field with new fields
-        occurrence_field_list.append("longitude")  # add new fields for coordinates of the geom object
-        occurrence_field_list.append("latitude")
-        occurrence_field_list.append("easting")
-        occurrence_field_list.append("northing")
+        occurrence_field_list.append('longitude')  # add new fields for coordinates of the geom object
+        occurrence_field_list.append('latitude')
+        occurrence_field_list.append('easting')
+        occurrence_field_list.append('northing')
 
         writer.writerow(occurrence_field_list)  # write column headers
 
@@ -145,7 +149,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
 
         return response
 
-    create_data_csv.short_description = "Download Selected to .csv"
+    create_data_csv.short_description = 'Download Selected to .csv'
 
 
 ###################
@@ -153,10 +157,10 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
 ###################
 
 class TaxonomyAdmin(admin.ModelAdmin):
-    list_display = ("id", "rank", "taxon", "full_lineage")
-    search_fields = ("taxon",)
-    list_filter = ("rank",)
-    readonly_fields = "full_lineage"
+    list_display = ('id', 'rank', 'taxon', 'full_lineage')
+    search_fields = ('taxon',)
+    list_filter = ('rank',)
+    readonly_fields = 'full_lineage'
 
 #################
 # Biology Admin #
@@ -164,12 +168,12 @@ class TaxonomyAdmin(admin.ModelAdmin):
 
 
 biology_inline_fieldsets = (
-    ('Taxonomy', {'fields': (('taxon',), 'id')}),
+    ('Taxonomy', {'fields': (('taxon', 'identification_qualifier'), 'identified_by', 'year_identified', 'type_status')}),
 )
 
 biology_element_fieldsets = (
     ('Elements', {'fields': (
-        ('element', 'element_portion', 'side', 'element_number','element_modifier'),
+        ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
         ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
         ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
         ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),
@@ -187,7 +191,8 @@ biology_fieldsets = (
     ('Item Details', {
         'fields': [('barcode', 'catalog_number',),
                    ('date_recorded', 'year_collected',),
-                   ("collection_code", "locality_number", "item_number", "item_part")]
+                   ('collection_code', 'locality_number', 'item_number', 'item_part'),
+                   ('collection_remarks',)]
     }),
 
     ('Occurrence Details', {
@@ -195,22 +200,30 @@ biology_fieldsets = (
                    ('collecting_method', 'finder', 'collector', 'individual_count'),
                    ('item_description', 'item_scientific_name', 'image'),
                    ('problem', 'problem_comment'),
-                   ('remarks',)]
+                   ('remarks',),
+                   ('sex', 'life_stage')
+                   ]
     }),
     biology_element_fieldsets[0],
+    ('Taphonomic Details', {
+        'fields': [('weathering', 'surface_modification')],
+        # 'classes': ['collapse'],
+    }),
     ('Geological Context', {
         'fields': [('stratigraphic_marker_upper', 'distance_from_upper'),
                    ('stratigraphic_marker_lower', 'distance_from_lower'),
                    ('stratigraphic_marker_found', 'distance_from_found'),
                    ('stratigraphic_marker_likely', 'distance_from_likely'),
                    ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
+                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
                    ('drainage_region',)]
     }),
 
     ('Location Details', {
-        'fields': [('longitude', 'latitude'),
+        'fields': [('georeference_remarks',),
+                   ('longitude', 'latitude'),
                    ('easting', 'northing',),
                    ('geom',)]
     }),
@@ -220,7 +233,7 @@ biology_fieldsets = (
 class BiologyInline(admin.TabularInline):
     model = Biology
     extra = 0
-    readonly_fields = ("id",)
+    readonly_fields = ('id',)
     fieldsets = biology_inline_fieldsets
 
 
@@ -237,7 +250,7 @@ class BiologyAdmin(OccurrenceAdmin):
     list_display.pop(list_display.index('item_type'))
     list_display.pop(list_display.index('field_number'))
 
-    list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element']
+    list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element', 'weathering']
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -256,10 +269,10 @@ class BiologyAdmin(OccurrenceAdmin):
         except ValueError:  # raised if geom field is not in the dictionary list
             pass
         # Replace the geom field with new fields
-        occurrence_field_list.append("longitude")  # add new fields for coordinates of the geom object
-        occurrence_field_list.append("latitude")
-        occurrence_field_list.append("easting")
-        occurrence_field_list.append("northing")
+        occurrence_field_list.append('longitude')  # add new fields for coordinates of the geom object
+        occurrence_field_list.append('latitude')
+        occurrence_field_list.append('easting')
+        occurrence_field_list.append('northing')
 
         biology_field_list = b.__dict__.keys()  # get biology fields
         try:  # try removing the state field
@@ -301,7 +314,7 @@ class BiologyAdmin(OccurrenceAdmin):
 
         return response
 
-    create_data_csv.short_description = "Download Selected to .csv"
+    create_data_csv.short_description = 'Download Selected to .csv'
 
 
 class ArchaeologyAdmin(OccurrenceAdmin):

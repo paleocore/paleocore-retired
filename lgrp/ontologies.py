@@ -42,6 +42,39 @@ LGRP_FINDER_CHOICES = (
     ("Afar", "Afar"),
 )
 
+LGRP_IDENTIFIER_CHOICES = (
+    (u'D. Braun', u'D. Braun'),
+    (u'J. Thompson', u'J. Thompson'),
+    (u'E. Scott', u'E. Scott'),
+    (u'E. Locke', u'E. Locke'),
+    (u'A.E. Shapiro', u'A.E. Shapiro'),
+    (u'A.W. Gentry', u'A.W. Gentry'),
+    (u'B.J. Schoville', u'B.J. Schoville'),
+    (u'B.M. Latimer', u'B.M. Latimer'),
+    (u'C. Denys', u'C. Denys'),
+    (u'C.A. Lockwood', u'C.A. Lockwood'),
+    (u'D. Geraads', u'D. Geraads'),
+    (u'D.C. Johanson', u'D.C. Johanson'),
+    (u'E. Delson', u'E. Delson'),
+    (u'E.S. Vrba', u'E.S. Vrba'),
+    (u'F.C. Howell', u'F.C. Howell'),
+    (u'G. Petter', u'G. Petter'),
+    (u'G. Suwa', u'G. Suwa'),
+    (u'G.G. Eck', u'G.G. Eck'),
+    (u'H.B. Krentza', u'H.B. Krentza'),
+    (u'H.B. Wesselman', u'H.B. Wesselman'),
+    (u'H.B.S. Cooke', u'H.B.S. Cooke'), (u'Institute Staff', u'Institute Staff'), (u'J.C. Rage', u'J.C. Rage'),
+    (u'K.E. Reed', u'K.E. Reed'), (u'L.A. Werdelin', u'L.A. Werdelin'), (u'L.J. Flynn', u'L.J. Flynn'),
+    (u'M. Sabatier', u'M. Sabatier'), (u'M.E. Lewis', u'M.E. Lewis'), (u'N. Fessaha', u'N. Fessaha'),
+    (u'P. Brodkorb', u'P. Brodkorb'), (u'R. Bobe-Quinteros', u'R. Bobe-Quinteros'), (u'R. Geze', u'R. Geze'),
+    (u'R.L. Bernor', u'R.L. Bernor'), (u'S.R. Frost', u'S.R. Frost'), (u'T.D. White', u'T.D. White'),
+    (u'T.K. Nalley', u'T.K. Nalley'), (u'V. Eisenmann', u'V. Eisenmann'), (u'W.H. Kimbel', u'W.H. Kimbel'),
+    (u'Z. Alemseged', u'Z. Alemseged'), (u'S. Oestmo', u'S. Oestmo'), (u'J. Rowan', u'J. Rowan'),
+    (u'C.J. Campisano', u'C.J. Campisano'), (u'J. Robinson', u'J. Robinson'), (u'I. Smail', u'I. Smail'),
+    (u'I. Lazagabaster', u'I. Lazagabaster')
+)
+
+
 LGRP_COLLECTION_CODES = (
     ("AA", "AA"),
     ("AM", "AM"),
@@ -235,6 +268,15 @@ LGRP_SIDE_CHOICES = (
     (u'R', u'R'),
     (u'Indeterminate', u'Indeterminate'),
     (u'L+R', u'L+R')
+)
+
+LGRP_WEATHERING_CHOICES = (
+    (0, '0 - unweathered'),
+    (1, '1 - parallel cracking'),
+    (2, '2 - flaking'),
+    (3, '3 - rough'),
+    (4, '4 - fibrous'),
+    (5, '5 - crumbling')
 )
 
 lgrp_db_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'

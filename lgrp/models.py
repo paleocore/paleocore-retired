@@ -2,7 +2,7 @@ from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
 from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCABULARY, LGRP_BASIS_OF_RECORD_VOCABULARY,\
     LGRP_FINDER_CHOICES, LGRP_ELEMENT_CHOICES, LGRP_ELEMENT_PORTION_CHOICES, LGRP_ELEMENT_NUMBER_CHOICES, \
-    LGRP_ELEMENT_MODIFIER_CHOICES, LGRP_SIDE_CHOICES
+    LGRP_ELEMENT_MODIFIER_CHOICES, LGRP_SIDE_CHOICES, LGRP_IDENTIFIER_CHOICES, LGRP_WEATHERING_CHOICES
 from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
 import utm
@@ -60,7 +60,7 @@ class Occurrence(models.Model):
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/lgrp", null=True)
-    weathering = models.SmallIntegerField(blank=True, null=True)
+    weathering = models.SmallIntegerField(blank=True, null=True, choices=LGRP_WEATHERING_CHOICES)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
     problem = models.BooleanField(default=False)
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
@@ -204,7 +204,7 @@ class Biology(Occurrence):
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='lgrp_id_qualifier_bio_occurrences',
                                                  null=True, blank=True)
     qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_qualifier_taxon_bio_occurrences')
-    identified_by = models.CharField(null=True, blank=True, max_length=100)
+    identified_by = models.CharField(null=True, blank=True, max_length=100, choices=LGRP_IDENTIFIER_CHOICES)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
     sex = models.CharField(null=True, blank=True, max_length=50)
