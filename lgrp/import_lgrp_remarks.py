@@ -3,6 +3,7 @@ This script includes functions to connect to a local sqlite DB, read specific da
 """
 # Import libraries
 import sqlite3
+import os.path
 from lgrp.models import Biology, Occurrence
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -13,7 +14,11 @@ django.setup()
 
 # Global variables
 record_limit = ('20000',)  # a limiter setting the maximum number of records to be read from the database, for debugging
-lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+
+if os.path.isfile('/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+elif os.path.isfile('/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'
 
 
 def valid_dentition(row):
