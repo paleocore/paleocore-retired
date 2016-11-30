@@ -66,7 +66,8 @@ occurrence_fieldsets = (
                    ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
-                   ('drainage_region',)]
+                   ('drainage_region',),
+                   ('geology_remarks',)]
     }),
 
     ('Location Details', {
@@ -168,7 +169,10 @@ class TaxonomyAdmin(admin.ModelAdmin):
 
 
 biology_inline_fieldsets = (
-    ('Taxonomy', {'fields': (('taxon', 'identification_qualifier'), 'identified_by', 'year_identified', 'type_status')}),
+    ('Taxonomy', {'fields': [('taxon', 'identification_qualifier'),
+                             ('identified_by', 'year_identified', 'type_status'),
+                             ('taxonomy_remarks',)]
+                  }),
 )
 
 biology_element_fieldsets = (
@@ -178,9 +182,10 @@ biology_element_fieldsets = (
         ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
         ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),
         ('lli1', 'lli2', 'llc', 'llp3', 'llp4', 'llm1', 'llm2', 'llm3'),
-        ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'),
-        'deciduous'
-    )}),
+        ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'), 'deciduous',
+        ('element_remarks',)),
+
+    }),
 )
 
 
@@ -201,7 +206,8 @@ biology_fieldsets = (
                    ('item_description', 'item_scientific_name', 'image'),
                    ('problem', 'problem_comment'),
                    ('remarks',),
-                   ('sex', 'life_stage')
+                   ('sex', 'life_stage'),
+                   ('biology_remarks',)
                    ]
     }),
     biology_element_fieldsets[0],
@@ -218,7 +224,8 @@ biology_fieldsets = (
                    ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
-                   ('drainage_region',)]
+                   ('drainage_region',),
+                   ('geology_remarks',)]
     }),
 
     ('Location Details', {

@@ -23,12 +23,15 @@ class Occurrence(models.Model):
     # Splitting item number and part allows more fine grained searches
     item_number = models.CharField("Item #",  max_length=10, null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
+
     # Keep catalog number temporarily, but going forward create method to build from other fields
     # catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
-    remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
+
+    #  max length influences size of input widget for TextField but not amount of text stored in DB
+    remarks = models.TextField(max_length=500, null=True, blank=True)
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
-    georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
+    georeference_remarks = models.TextField(max_length=500, null=True, blank=True)
     collecting_method = models.CharField(max_length=50,
                                          choices=LGRP_COLLECTING_METHOD_VOCABULARY, null=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
@@ -36,8 +39,8 @@ class Occurrence(models.Model):
     collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
     disposition = models.CharField(max_length=255, blank=True, null=True)
-    collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
-    date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
+    collection_remarks = models.TextField(max_length=500, null=True, blank=True)
+    date_recorded = models.DateTimeField(blank=True, null=True, editable=True)
     year_collected = models.IntegerField(blank=True, null=True)
     individual_count = models.IntegerField(blank=True, null=True, default=1)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
@@ -59,6 +62,7 @@ class Occurrence(models.Model):
     analytical_unit_simplified = models.CharField(max_length=255, blank=True, null=True)
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
+    geology_remarks = models.TextField(max_length=500, null=True, blank=True)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/lgrp", null=True)
     weathering = models.SmallIntegerField(blank=True, null=True, choices=LGRP_WEATHERING_CHOICES)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
@@ -200,6 +204,7 @@ class Occurrence(models.Model):
 class Biology(Occurrence):
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_taxon_bio_occurrences')
+    taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='lgrp_id_qualifier_bio_occurrences',
                                                  null=True, blank=True)
@@ -209,6 +214,7 @@ class Biology(Occurrence):
     type_status = models.CharField(null=True, blank=True, max_length=50)
     sex = models.CharField(null=True, blank=True, max_length=50)
     life_stage = models.CharField(null=True, blank=True, max_length=50)
+    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
     preparations = models.CharField(null=True, blank=True, max_length=50)
     morphobank_number = models.IntegerField(null=True, blank=True)
     side = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_SIDE_CHOICES)
@@ -296,6 +302,7 @@ class Biology(Occurrence):
     indet_molar = models.BooleanField(default=False)
     indet_tooth = models.BooleanField(default=False)
     deciduous = models.BooleanField(default=False)
+    element_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     class Meta:
         verbose_name = "LGRP Biology"
