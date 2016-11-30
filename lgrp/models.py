@@ -54,7 +54,7 @@ class Occurrence(models.Model):
     distance_from_likely = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
     stratigraphic_formation = models.CharField(max_length=255, blank=True, null=True)
     stratigraphic_member = models.CharField(max_length=255, blank=True, null=True)
-    analytical_unit = models.CharField(max_length=255, blank=True, null=True)
+    analytical_unit_1 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_found = models.CharField(max_length=255, blank=True, null=True)
