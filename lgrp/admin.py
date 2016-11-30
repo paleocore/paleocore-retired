@@ -44,7 +44,7 @@ occurrence_fieldsets = (
         'fields': [('id', 'date_last_modified',)]
     }),
     ('Item Details', {
-        'fields': [('barcode', 'catalog_number',),
+        'fields': [('barcode', 'catalog_number', 'old_catalog_number'),
                    ('date_recorded', 'year_collected',),
                    ('collection_code', 'locality_number', 'item_number', 'item_part'),
                    ('collection_remarks',)]
@@ -62,7 +62,7 @@ occurrence_fieldsets = (
                    ('stratigraphic_marker_lower', 'distance_from_lower'),
                    ('stratigraphic_marker_found', 'distance_from_found'),
                    ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
+                   ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
                    ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
@@ -81,19 +81,20 @@ occurrence_fieldsets = (
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     actions = ['create_data_csv', 'change_xy']
-    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number', 'longitude', 'latitude')
+    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number', 'old_catalog_number',
+                                                           'longitude', 'latitude')
     list_display = list(base.admin.default_list_display+('thumbnail',))
     field_number_index = list_display.index('field_number')
     list_display.pop(field_number_index)
-    list_display.insert(2, 'collection_code')
-    list_display.insert(3, 'locality_number')
-    list_display.insert(4, 'item_number')
-    list_display.insert(5, 'item_part')
+    list_display.insert(2, 'old_catalog_number')
+    #list_display.insert(3, 'locality_number')
+    #list_display.insert(4, 'item_number')
+    #list_display.insert(5, 'item_part')
     fieldsets = occurrence_fieldsets
     list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem',
                    'weathering']
     search_fields = list(base.admin.default_search_fields)+['id']
-    search_fields.pop(search_fields.index('catalog_number'))
+    search_fields.pop(search_fields.index('catalog_number'))  # can't search on methods
     list_per_page = 500
     # options = {
     #     'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00,
@@ -220,7 +221,7 @@ biology_fieldsets = (
                    ('stratigraphic_marker_lower', 'distance_from_lower'),
                    ('stratigraphic_marker_found', 'distance_from_found'),
                    ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
+                   ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
                    ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('in_situ', 'ranked'),
                    ('stratigraphic_member',),
@@ -253,10 +254,6 @@ class ElementInLine(admin.StackedInline):
 class BiologyAdmin(OccurrenceAdmin):
     fieldsets = biology_fieldsets
     inlines = (BiologyInline, ImagesInline, FilesInline)
-    list_display = list(base.admin.default_list_display) + ['thumbnail', 'element']
-    list_display.pop(list_display.index('item_type'))
-    list_display.pop(list_display.index('field_number'))
-
     list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element', 'weathering']
 
     def create_data_csv(self, request, queryset):

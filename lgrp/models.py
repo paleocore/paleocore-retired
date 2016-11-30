@@ -158,6 +158,26 @@ class Occurrence(models.Model):
         else:
             return None
 
+    def old_catalog_number(self):
+        """
+        Generate a pretty string formated catalog number from constituent fields
+        :return: old version of catalog number as string
+        """
+        if self.basis_of_record == 'Collection':
+            #  Crate catalog number string. Null values become None when converted to string
+            if self.item_number:
+                if self.item_part:
+                    item_text = '-' + str(self.item_number) + str(self.item_part)
+                else:
+                    item_text = '-' + str(self.item_number)
+            else:
+                item_text = ''
+
+            catalog_number_string = str(self.collection_code) + " " + str(self.locality_number) + item_text
+            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
+        else:
+            return None
+
     def __unicode__(self):
         nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
                     + str(self.item_description) + "]"
