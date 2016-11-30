@@ -20,6 +20,7 @@ from django.contrib.gis.geos import Point
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 import re
+import os.path
 from lgrp.ontologies import LGRP_COLLECTION_CODES
 from lgrp.ontologies import LGRP_COLLECTOR_CHOICES
 
@@ -33,7 +34,10 @@ django.setup()
 # initiate a list of barcodes used to verify that each barcode added in the validate_row function is unique
 barcode_list = []
 # absolute file path to the lgrp sqlite database from which we are reading data
-lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+if os.path.isfile('/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+elif os.path.isfile('/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'
 record_limit = ('5000',)  # a limiter setting the maximum number of records to be read from the database, for debugging
 # list of fields as they occur in the lgrp sqlite database occurrence table. The list is used to correctly find
 # specific data read in from each row of the occurrence table.

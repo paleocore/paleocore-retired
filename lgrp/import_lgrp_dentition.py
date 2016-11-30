@@ -11,6 +11,7 @@ The script:
 
 # Import libraries
 import sqlite3
+import os.path
 from lgrp.models import Biology
 
 
@@ -54,7 +55,10 @@ element_list = ['astragalus', 'bacculum', 'bone (indet.)', 'calcaneus', 'canine'
                 'tooth (indet.)', 'trapezium', 'trapezoid', 'triquetrum', 'ulna', 'vertebra', 'vomer',
                 'zygomatic']
 
-lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+if os.path.isfile('/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+elif os.path.isfile('/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'):
+    lgrpdb_path = '/home/dnr266/paleocore/lgrp/LGRP_Paleobase4_2016.sqlite'
 
 
 def valid_dentition(row):
