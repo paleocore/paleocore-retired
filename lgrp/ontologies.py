@@ -38,7 +38,7 @@ LGRP_COLLECTOR_CHOICES = (
     ("D. I. Garello", "D. I. Garello"),
 )
 
-LGRP_FINDER_CHOICES = (
+LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
     ("Afar", "Afar"),
 )
 
