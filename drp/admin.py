@@ -1,17 +1,15 @@
 from django.contrib import admin
+import base.admin  # import default PaleoCore admin classes
 from models import *  # import database models from models.py
 from django.forms import TextInput, Textarea  # import custom form widgets
 from django.http import HttpResponse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
-from olwidget.admin import GeoModelAdmin
-import base.admin
 
 
 ###############
 # Media Admin #
 ###############
-
 
 class ImagesInline(admin.TabularInline):
     model = Image
@@ -78,35 +76,18 @@ class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
 # Hydrology Admin #
 ###################
 
-class HydrologyAdmin(GeoModelAdmin):
-    list_display = ("id", "size")
+class HydrologyAdmin(base.admin.DGGeoAdmin):
+    list_display = ("id", "size",)
     search_fields = ("id",)
     list_filter = ("size",)
 
-    options = {
-        'layers': ['google.terrain']
-    }
-
-
-##################
-# Locality Admin #
-##################
-
-class LocalityAdmin(GeoModelAdmin):
-    list_display = ("collection_code", "paleolocality_number", "paleo_sublocality")
-    list_filter = ("collection_code",)
-    search_fields = ("paleolocality_number",)
-
-    options = {
-        'layers': ['google.terrain']
-    }
 
 ####################
 # Occurrence Admin #
 ####################
 
 
-class OccurrenceAdminOriginal(GeoModelAdmin):
+class OccurrenceAdminOriginal(base.admin.DGGeoAdmin):
     list_display = ("id", "collection_code", "paleolocality_number", "item_number", "item_part", 'stratigraphic_member',
                     "barcode", 'basis_of_record', 'item_type',
                     "item_scientific_name", "item_description", "year_collected")
@@ -276,5 +257,5 @@ class TaxonomyAdmin(admin.ModelAdmin):
 
 admin.site.register(Biology, BiologyAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
-admin.site.register(Locality, LocalityAdmin)
+admin.site.register(Locality, base.admin.PaleoCoreLocalityAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)

@@ -5,8 +5,16 @@ from django.contrib.admin import helpers
 from django.contrib.gis.db import models
 from django.http import HttpResponse
 from django.core.mail import send_mass_mail
-from olwidget.admin import GeoModelAdmin
 from django.forms import TextInput, Textarea  # import custom form widgets
+from django.contrib.gis.admin import OSMGeoAdmin
+
+
+class DGGeoAdmin(OSMGeoAdmin):
+    """
+    Modified Geographic Admin Class using Digital Globe basemaps
+    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
+    """
+    map_template = 'gis/admin/digital_globe.html'
 
 
 class PaleocoreUserAdmin(admin.ModelAdmin):
@@ -131,7 +139,7 @@ default_biology_admin_fieldsets = (
 )
 
 
-class PaleoCoreBiologyAdmin(GeoModelAdmin):
+class PaleoCoreBiologyAdmin(DGGeoAdmin):
     list_display = default_list_display
     list_per_page = default_list_per_page
     list_display_links = default_list_display_links
@@ -159,7 +167,7 @@ class PaleoCoreBiologyAdmin(GeoModelAdmin):
         return queryset, use_distinct
 
 
-class PaleoCoreOccurrenceAdmin(GeoModelAdmin):
+class PaleoCoreOccurrenceAdmin(DGGeoAdmin):
     list_display = default_list_display
     list_display_links = default_list_display_links
     list_filter = default_list_filter
@@ -184,6 +192,13 @@ class PaleoCoreOccurrenceAdmin(GeoModelAdmin):
         else:
             queryset |= self.model.objects.filter(barcode=search_term_as_int)
         return queryset, use_distinct
+
+
+class PaleoCoreLocalityAdmin(DGGeoAdmin):
+    list_display = ("collection_code", "paleolocality_number", "paleo_sublocality")
+    list_filter = ("collection_code",)
+    search_fields = ("paleolocality_number",)
+
 
 ##################
 # Register Admins #

@@ -1,10 +1,10 @@
 from django.contrib import admin
+import base.admin  # import default PaleoCore admin classes
 from models import Occurrence, Biology
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import unicodecsv
 from django.core.exceptions import ObjectDoesNotExist
-import base.admin
 
 
 class BiologyInline(admin.TabularInline):

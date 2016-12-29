@@ -1,10 +1,10 @@
 from django.contrib import admin
 from models import Occurrence, Biology, Locality
-from olwidget.admin import GeoModelAdmin
+import base.admin
 
 
 # Register your models here.
-class LocalityAdmin(GeoModelAdmin):
+class LocalityAdmin(base.admin.DGGeoAdmin):
     list_display = ('locality_number', 'locality_field_number', 'name', 'date_discovered',
                     'point_x', 'point_y')
     readonly_fields = ('locality_number', 'point_x', 'point_y', 'easting', 'northing', 'date_last_modified')
