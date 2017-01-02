@@ -4,6 +4,7 @@ from taxonomy.models import Taxon, IdentificationQualifier
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import Point, Polygon
+from django.core.management import call_command  # to call dumpdata and other manaage.py commands
 
 
 class LocalityMethodsTests(TestCase):
@@ -377,3 +378,41 @@ class DRPAdminViewTests(TestCase):
         response = self.client.get('/admin/drp/', follow=True)
         self.assertEqual(response.status_code, 403)
         #self.assertContains(response, 'Username')  # redirects to login form
+
+
+class DRPDataValidationTests(TestCase):
+    fixtures = ['fixtures/taxonomy_validation_test_data.json', 'fixtures/drp_validation_test_data.json']
+
+    def test_objects_exist(self):
+        self.assertGreaterEqual(Occurrence.objects.all().count(), 1900)
+        self.assertGreaterEqual(Taxon.objects.all().count(), 300)
+
+    def test_occurrence_id(self):
+        seen = set()
+        dups = []
+        occurrences = Occurrence.objects.all()
+        for o in occurrences:
+            if o.id in seen:
+                dups.append(o.id)
+            seen.add(o.id)
+        self.assertEquals(dups, [])  # Check that there are no duplicate id values
+
+    def test_occurrence_barcode(self):
+        seen = set() # create an empty set
+        dups = [] # initialize list of duplicates
+        occurrences = Occurrence.objects.all()
+        for o in occurrences:
+            if o.barcode and o.barcode in seen:
+                dups.append(o.barcode)
+            seen.add(o.barcode)
+        self.assertEquals(dups, [])
+
+
+
+
+
+
+
+
+
+
