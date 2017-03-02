@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'olwidget',
 
     # Project Apps
+    'psr',  # Palaeo silk road Project
     'mlp',  # Mille-Logya Project
     'drp',  # Dikika Research Project
     'hrp',  # Hadar Research Project

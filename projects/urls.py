@@ -13,6 +13,7 @@ urlpatterns = patterns('projects.views',
                        # ex. /projects/mlp/
                        url(r'^(?P<pcoreapp>\w+)/$', views.ProjectDetailView.as_view(), name='detail'),
 
+
                        # Individual project public data table view
                        # ex. /projects/data_table/mlp/
                        url(r'^data_table/(?P<pcoreapp>.+)/$', views.projectDataTable, name='data_table'),
@@ -32,6 +33,10 @@ urlpatterns = patterns('projects.views',
                        url(r'^(?P<pcoreapp>.+)/(?P<occurrence_id>\d+)/$', views.OccurrenceDetailView.as_view(),
                            name='occurrence_detail'),
                        # TODO get working test for this view
+
+                       # mlp project url includes
+                       # ex. /projects/mlp/upload/
+                       url(r'^drp/', include('drp.urls', namespace='drp')),
 
                        # mlp project url includes
                        # ex. /projects/mlp/upload/

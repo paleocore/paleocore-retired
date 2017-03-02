@@ -28,6 +28,14 @@ class ProjectDetailView(generic.DetailView):
         return Project.objects.get(paleocore_appname=self.kwargs["pcoreapp"])
 
 
+class ProjectSummaryView(generic.DateDetailView):
+    template_name = 'projects/project_summary.html'
+    context_object_name = 'project'
+
+    def get_object(self):
+        return Project.objects.get(paleocore_appname=self.kwargs["pcoreapp"])
+
+
 class OccurrenceDetailView(generic.DetailView):
     template_name = 'projects/occurrence_detail.html'
     context_object_name = 'occurrence'

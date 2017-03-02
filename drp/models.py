@@ -155,10 +155,16 @@ class Occurrence(models.Model):
     thumbnail.allow_tags = True
     thumbnail.mark_safe = True
 
+    def summary(self):
+        summary_dict = {}
+        summary_dict["record_count"] = self.object.all().count()
+        return summary_dict
+
     class Meta:
         verbose_name = "DRP Occurrence"
         verbose_name_plural = "DRP Occurrences"
         ordering = ["collection_code", "paleolocality_number", "item_number", "item_part"]
+
 
 
 class Image(models.Model):

@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% load leaflet_tags %}
+
+{% block extra_js %}
+    {% leaflet_js %}
+    {% leaflet_css %}
+{% endblock %}
+
+
+{% block page_content %}
+
+<div id="main-wrapper" class="subpage">
+    <div class="container">
+        <div class="row">
+            <h2>{{ project.full_name }}</h2>
+            <a href='{% url 'projects:index' %}'>All PaleoCore Project Summary</a>
+        </div>
+
+        <div class="row">
+            {% if project.graphic %}
+            <div class="3u">
+                <img src="/media/{{ project.graphic }}" style="height:300px;"/>
+            </div>
+            {% endif %}
+
+            {% if project.graphic %}
+            <div class="9u">
+            {% else %}
+            <div class="12u">
+            {% endif %}
+
+
+            {% leaflet_map "main" callback="main_map_init" %}
+
+            <script type="text/javascript">
+
+                function filterFeatures(feature,layer){
+                    var currentProjectID = {{ project.id }}
+                    if(feature.id === currentProjectID) return true
+                }
+
+                function onEachFeature(feature, layer) {
+                    layer.bindPopup(feature.properties.full_name);
+                }
+
+                function main_map_init (map, options) {
+
+                var dataurl = '{% url "projects:projects_geojson" %}';
+                // Download GeoJSON via Ajax
+                $.getJSON(dataurl, function (data) {
+                    // Add GeoJSON layer
+                    L.geoJson(data, {
+                    onEachFeature: onEachFeature,
+                    filter: filterFeatures
+                    }).addTo(map);
+                });
+
+                map.setView([{{ project.geom.coords.1 }}, {{ project.geom.coords.0 }}], 6);
+                // map.scrollWheelZoom.disable();
+                map.eachLayer(function(marker) {
+                    marker.openPopup()
+                });
+
+                }
+            </script>
+
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="12u">
+                <h2>Occurrence Summary</h2>
+                    <table style="margin-top:25px;">
+                        <tr>
+                            <th>Item Type</th>
+                            <th>Collected</th>
+                            <th>Observed</th>
+                            <th>Totals</th>
+                        </tr>
+                        <tr>
+                            <td>Archaeology</td>
+                            <td>{{ arch_coll }}</td>
+                            <td>{{ arch_obs }}</td>
+                            <td>{{ arch_occur }}</td>
+                        </tr>
+                        <tr>
+                            <td>Biology</td>
+                            <td>{{ bio_coll }}</td>
+                            <td>{{ bio_obs }}</td>
+                            <td>{{ bio_occur }}</td>
+                        </tr>
+                        <tr>
+                            <td>Geology</td>
+                            <td>{{ geo_coll }}</td>
+                            <td>{{ geo_obs }}</td>
+                            <td>{{ geo_occur }}</td>
+                        </tr>
+                        <tr>
+                            <td>Totals</td>
+                            <td>{{ coll_count }}</td>
+                            <td>{{ obs_count }}</td>
+                            <td>{{ occur_count }}</td>
+                        </tr>
+
+                    </table>
+                {% if barcode_duplicates %}
+                <h2>Duplicate Barcodes</h2>
+                    <ul>
+                    {% for b in barcode_duplicates %}
+                        <li>{{ b }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <h2>Taxon List</h2>
+                <table>
+                    {% for t in taxon_list %}
+                    <tr>
+                    <td>{{ t.name }}</td><td>{{ t.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                {%  if dik_taxon_list %}
+                    <h2>ASB Taxon List</h2>
+                    <table>
+                    {% for t in asb_taxon_list %}
+                    <tr>
+                    <td>{{ t.name }}</td><td>{{ t.count }}</td>
+                    </tr>
+                    {% endfor %}
+                    </table>
+                {% endif %}
+
+                {% if asb_taxon_list %}
+                <h2>ASB Taxon List</h2>
+                    <table>
+                    {% for t in asb_taxon_list %}
+                    <tr>
+                    <td>{{ t.name }}</td><td> {{ t.count }}</td>
+                    </tr>
+                    {% endfor %}
+                    </table>
+                {% endif %}
+
+
+
+
+
+            </div>
+
+
+       </div>
+   </div>
+</div>
+
+{% endblock %}
