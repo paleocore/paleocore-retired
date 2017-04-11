@@ -25,17 +25,6 @@ class FilesInline(admin.TabularInline):
     readonly_fields = ("id",)
 
 
-###################
-# Hydrology Admin #
-###################
-class HydrologyAdmin(GeoModelAdmin):
-    list_display = ("id", "size")
-    search_fields = ("id",)
-    list_filter = ("size",)
-
-    options = {
-        'layers': ['google.terrain']
-    }
 
 
 ##################
@@ -66,8 +55,8 @@ locality_fieldsets = (
 
 
 class LocalityAdmin(GeoModelAdmin):
-    list_display = ('id', 'collection_code', 'locality_number', 'sublocality')
-    list_filter = ('collection_code',)
+    list_display = ['id', 'collection_code']
+    list_filter = ['collection_code']
     readonly_fields = ('point_x', 'point_y', 'longitude', 'latitude', 'easting', 'northing')
     search_fields = ('locality_number,', 'id')
     fieldsets = locality_fieldsets
@@ -81,30 +70,18 @@ class LocalityAdmin(GeoModelAdmin):
 ####################
 occurrence_fieldsets = (
     ('Record Details', {
-        'fields': [('id', 'date_last_modified',)]
+        'fields': [('id', 'modified',)]
     }),
     ('Item Details', {
-        'fields': [('barcode', 'catalog_number',),
-                   ('date_recorded', 'year_collected',),
+        'fields': [('catalog_number',),
+                   ('date_recorded',),
                    ("collection_code", "locality", "item_number", "item_part")]
     }),
 
     ('Occurrence Details', {
         'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                   ('collecting_method', 'finder', 'collector', 'individual_count'),
-                   ('item_description', 'item_scientific_name', 'image'),
-                   ('problem', 'problem_comment'),
+                   ('collecting_method', 'collected_by', 'individual_count'),
                    ('remarks',)]
-    }),
-    ('Geological Context', {
-        'fields': [('stratigraphic_marker_upper', 'distance_from_upper'),
-                   ('stratigraphic_marker_lower', 'distance_from_lower'),
-                   ('stratigraphic_marker_found', 'distance_from_found'),
-                   ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
-                   ('in_situ', 'ranked'),
-                   ('stratigraphic_member',),
-                   ('locality', 'drainage_region')]
     }),
 
     ('Location Details', {
@@ -116,17 +93,13 @@ occurrence_fieldsets = (
 
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number', 'longitude', 'latitude')
-    list_display = list(base.admin.default_list_display+('thumbnail',))
-    list_index = list_display.index('field_number')
-    list_display.pop(list_index)
-    list_display.insert(1, 'locality')
-    list_display.insert(2, 'item_number')
-    list_display.insert(3, 'item_part')
+    readonly_fields = ['id', 'point_x', 'point_y', 'easting', 'northing', 'modified', 'longitude', 'latitude']
+    list_display = ['catalog_number', 'locality', 'basis_of_record', 'item_type', 'collecting_method', 'recorded_by',
+                    'date_recorded', 'disposition', 'easting', 'northing']
+    list_display_links = ['catalog_number', ]
     fieldsets = occurrence_fieldsets
-    list_filter = base.admin.default_list_filter
-    search_fields = list(base.admin.default_search_fields)+['id']
-    search_fields.pop(search_fields.index('catalog_number'))
+    list_filter = ['basis_of_record', 'date_recorded', 'item_type', 'recorded_by', 'problem', 'disposition']
+    search_fields = ['id', 'catalog_number']
     list_per_page = 500
     options = {
         'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00,
@@ -316,11 +289,7 @@ class ElementInLine(admin.StackedInline):
 class BiologyAdmin(OccurrenceAdmin):
     fieldsets = biology_fieldsets
     inlines = (BiologyInline, ImagesInline, FilesInline)
-    list_display = list(base.admin.default_list_display) + ['thumbnail', 'element']
-    list_display.pop(list_display.index('item_type'))
-    list_display.pop(list_display.index('field_number'))
-
-    list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element']
+    list_filter = ['basis_of_record', 'date_recorded', 'recorded_by', 'problem', 'element']
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -402,6 +371,5 @@ class GeologyAdmin(OccurrenceAdmin):
 admin.site.register(Biology, BiologyAdmin)
 admin.site.register(Archaeology, ArchaeologyAdmin)
 admin.site.register(Geology, GeologyAdmin)
-admin.site.register(Hydrology, HydrologyAdmin)
 admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)

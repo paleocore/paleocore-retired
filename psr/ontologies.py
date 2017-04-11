@@ -1,46 +1,46 @@
 
-BASIS_OF_RECORD_VOCABULARY = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
+PSR_COLLECTION_CODES = (("Altai", "Altai"),
+                        ("Dzungar", "Dzungar"),
+                        ("Tian Shan", "Tian Shan"),
+                        ("Karatau", "Karatau"),
+                        )
+
+PSR_LOCALITY_TYPE = (("Cave", "Cave"),
+                     ("Rockshelter", "Rockshelter"),
+                     ("Loess", "Loess"),
+                     ("Surface", "Surface"),
+                     )
+
+PSR_ASPECT_CHOICES = (("N", "N"),
+                      ("NE", "NE"),
+                      ("E", "E"),
+                      ("SE", "SE"),
+                      ("S", "S"),
+                      ("SW", "SW"),
+                      ("W", "W"),
+                      ("NW", "NW"),
+                      )
+
 PSR_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
-ITEM_TYPE_VOCABULARY = (("Artifactual", "Artifactual"), ("Faunal", "Faunal"), ("Floral", "Floral"), ("Geological", "Geological"))
-COLLECTING_METHOD_VOCABULARY = (("Surface Standard", "Surface Standard"),
-                                ("Surface Intensive", "Surface Intensive"),
-                                ("Surface Complete", "Surface Complete"),
-                                ("Exploratory Survey", "Exploratory Survey"),
-                                ("Dry Screen 5mm", "Dry Screen 5mm"),
-                                ("Dry Screen 2mm", "Dry Screen 2mm"),
-                                ("Wet Screen 1mm", "Wet Screen 1mm"))
 
-PSR_COLLECTING_METHOD_VOCABULARY = (("Survey", "Survey"),
-                                ("dryscreen5mm", "dryscreen5mm"),
-                                ("wetscreen1mm", "wetscreen1mm"))
+PSR_ITEM_TYPE_VOCABULARY = (("Archaeology", "Archaeology"), ("Biology", "Biology"), ("Geology", "Geology"), ("Bulk", "Bulk"))
 
-COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
-                     ("Andrew Barr", "Andrew Barr"),
-                     ("Rene Bobe", "Rene Bobe"),
-                     ("Denis Geraads", "Denis Geraads"),
-                     ("Shannon McPherron", "Shannon McPherron"),
-                     ("Denne Reed", "Denne Reed"),
-                     ("Jonathan Wynn", "Jonathan Wynn"))
+PSR_COLLECTING_METHOD_VOCABULARY = (("Survey", "Survey"), ("Excavation", " Excavation"))
 
-PSR_COLLECTOR_CHOICES = (("C.J. Campisano", "C.J. Campisano"),
-                         ("W.H. Kimbel", "W.H. Kimbel"),
-                         ("T.K. Nalley", "T.K. Nalley"),
-                         ("D.N. Reed", "D.N. Reed"),
-                         ("Kaye Reed", "Kaye Reed"),
-                         ("B.J. Schoville", "B.J. Schoville"),
-                         ("A.E. Shapiro", "A.E. Shapiro"),
-                         ("HFS Student", "HFS Student"),
+
+PSR_COLLECTOR_CHOICES = (("iovita", "iovita"),
                          ("PSR Team", "PSR Team")
                          )
 
-
-PSR_COLLECTION_CODES = (("A.L.", "A.L."),)
-
-SIDE_VOCABULARY = (("Left", "Left"),
+PSR_SIDE_VOCABULARY = (("Left", "Left"),
                    ("Right", "Right"),
                    ("Both", "Both"),
                    ("Axial", "Axial"),  # a median, unsided element
                    ("Unknown", "Unknown"))
+
+PSR_ID_QUALIFIER_VOCABULARY = (("cf", "cf"),
+                               ("aff", "aff")
+                               )
 
 SKULL_BONES = (("complete skull", "complete skull"),
                    ("partial skull", "partial skull"),
@@ -161,8 +161,7 @@ MISCELLANEOUS = (("tooth", "tooth"),
                    ("carapace", "carapace"),
                    ("dermal element", "dermal element"))
 
-TIME_OF_DAY = (("AM", "AM"),
-               ("PM", "PM"))
+
 
 GNATHIC = (("mandible with teeth", "mandible with teeth"),
                    ("edentulous mandible", "edentulous mandible"),
@@ -171,14 +170,16 @@ GNATHIC = (("mandible with teeth", "mandible with teeth"),
                    ("mandibular symphysis", "mandibular symphysis"),
                    ("mandibular condyle", "mandibular condyle"))
 
-NALMA_CHOICES = (("Wasatchian", "Wasatchian"),
-                ("Clarkforkian", "Clarkforkian"))
 
-CONTINENT_CHOICES = (("Africa", "Africa"), ("Europe", "Europe"), ("Asia", "Asia"), ("North America", "North America"),
-                     ("South America", "South America"), ("Australia", "Australia"), ("Antarctica", "Antarctica"))
 
-REGION_CHOICES = (("southern_africa", "southern Africa"), ("eastern_africa", "eastern Africa"),
-                 ("northern_africa", "northern Africa"), ("", ""), ("", ""))
+EPOCH_CHOICES = (("Pliocene", "Pliocene"), ("Pleistocene", "Pleistocene"), ("Holocene", "Holocene"))
+
+MATERIAL_CHOICES = (("basketry", "basketry"), ("building material", "building material"), ("ceramic", "ceramic"), ("chipped stone", "chipped stone"), ("dating sample", "dating sample"),
+                   ("fauna", "fauna"), ("fire-cracked rock", "fire-cracked rock"), ("glass", "glass"), ("ground stone", "ground stone"), ("hide", "hide"), ("human remains", "human remains"),
+                   ("macrobotanical", "macrobotanical"), ("metal", "metal"), ("mineral", "mineral"), ("pollen", "pollen"), ("shell", "shell"), ("textile", "textile"), ("wood", "wood")) #Choice list comes from tDAR"
+
+SETTING_CHOICES = (("open-air", "open-air"), ("cave", "cave"), ("rockshelter", "rockshelter"))
+
 
 COUNTRY_CHOICES = (
     ('United States of America', ('United States of America')),
@@ -421,13 +422,6 @@ COUNTRY_CHOICES = (
     ('Zimbabwe', ('Zimbabwe')),
 )
 
-EPOCH_CHOICES = (("Pliocene", "Pliocene"), ("Pleistocene", "Pleistocene"), ("Holocene", "Holocene"))
-
-MATERIAL_CHOICES = (("basketry", "basketry"), ("building material", "building material"), ("ceramic", "ceramic"), ("chipped stone", "chipped stone"), ("dating sample", "dating sample"),
-                   ("fauna", "fauna"), ("fire-cracked rock", "fire-cracked rock"), ("glass", "glass"), ("ground stone", "ground stone"), ("hide", "hide"), ("human remains", "human remains"),
-                   ("macrobotanical", "macrobotanical"), ("metal", "metal"), ("mineral", "mineral"), ("pollen", "pollen"), ("shell", "shell"), ("textile", "textile"), ("wood", "wood")) #Choice list comes from tDAR"
-
-SETTING_CHOICES = (("open-air", "open-air"), ("cave", "cave"), ("rockshelter", "rockshelter"))
 
 
 
