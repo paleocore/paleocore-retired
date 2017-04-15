@@ -19,7 +19,7 @@ class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
 
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    actions = ["create_data_csv", "change_xy"]
+    actions = ["create_data_csv", "change_xy", "change_occurrence2biology"]
     readonly_fields = base.admin.default_read_only_fields+('photo',)
     list_display = base.admin.default_list_display+('thumbnail',)
 
@@ -63,6 +63,14 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         redirectURL = reverse("projects:mlp:mlp_change_xy")
         return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
     change_xy.short_description = "Manually change coordinates for a point"
+
+    def change_occurrence2biology(selfself, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        redirectURL = reverse("projects:mlp:mlp_occurrence2biology")
+        return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
+    change_occurrence2biology.short_description = "Change Occurrence to Biology"
+
+
 
     # admin action to download data in csv format
     def create_data_csv(self, request, queryset):

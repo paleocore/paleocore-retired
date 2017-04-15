@@ -1,5 +1,5 @@
 from django import forms
-from mlp.models import Occurrence
+from mlp.models import Occurrence, Biology
 import utm
 
 
@@ -39,3 +39,14 @@ class ChangeXYForm(forms.ModelForm):
     old_northing = forms.DecimalField(max_digits=12)
     new_easting = forms.DecimalField(max_digits=12)
     new_northing = forms.DecimalField(max_digits=12)
+
+
+class Occurrence2Biology(forms.ModelForm):
+    class Meta:
+        model = Biology
+        fields = ["barcode", "catalog_number",
+                  "basis_of_record", "item_type", "collector", "collecting_method",
+                  "field_number", "year_collected",
+                  "item_scientific_name", "item_description", "taxon", "identification_qualifier"
+                  ]
+        #fields = ['barcode', 'taxon', 'identification_qualifier']

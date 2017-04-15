@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.views import generic
 import os
-from models import Occurrence
-from mlp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm
+from models import Occurrence, Biology
+from taxonomy.models import Taxon, IdentificationQualifier
+from mlp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm, Occurrence2Biology
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
@@ -331,3 +332,53 @@ def change_coordinates_view(request):
                         }
         the_form = ChangeXYForm(initial=initial_data)
         return render_to_response('projects/changeXY.html', {"theForm": the_form}, RequestContext(request))
+
+
+def occurrence2biology_view(request):
+    if request.method == "POST":
+        form = Occurrence2Biology(request.POST)
+        if form.is_valid():
+            occurrence_object = Occurrence.objects.get(barcode__exact=request.POST["barcode"])
+            if occurrence_object.item_type in ('Faunal', 'Floral'):
+                taxon = Taxon.objects.get(pk=request.POST["taxon"])
+                id_qual = IdentificationQualifier.objects.get(pk=request.POST["identification_qualifier"])
+                new_biology = Biology(barcode=occurrence_object.barcode,
+                                      item_type=occurrence_object.item_type,
+                                      basis_of_record=occurrence_object.basis_of_record,
+                                      collecting_method=occurrence_object.collecting_method,
+                                      field_number=occurrence_object.field_number,
+                                      taxon=taxon,
+                                      identification_qualifier=id_qual,
+                                      geom=occurrence_object.geom
+                                      )
+                for key in occurrence_object.__dict__.keys():
+                    new_biology.__dict__[key] = occurrence_object.__dict__[key]
+
+                occurrence_object.delete()
+                new_biology.save()
+                messages.add_message(request, messages.INFO,
+                                     'Successfully converted occurrence to biology.')
+            else:
+                pass
+                messages.error(request, "Can only convert items of type Faunal or Floral")
+            return redirect("/admin/mlp/occurrence")
+    else:
+        selected = list(request.GET.get("ids", "").split(","))
+        if len(selected) > 1:
+            messages.add_message(request, messages.INFO, "Do you wish to update all the following occurrences?")
+            return redirect("/admin/mlp/occurrence")
+        selected_object = Occurrence.objects.get(pk=int(selected[0]))
+        initial_data = {
+                        "barcode": selected_object.barcode,
+                        "catalog_number": selected_object.catalog_number,
+                        "basis_of_record": selected_object.basis_of_record,
+                        "item_type": selected_object.item_type,
+                        "collector": selected_object.collector,
+                        "collecting_method": selected_object.collecting_method,
+                        "field_number": selected_object.field_number,
+                        "year_collected": selected_object.year_collected,
+                        "item_scientific_name": selected_object.item_scientific_name,
+                        "item_description": selected_object.item_description
+                        }
+        the_form = Occurrence2Biology(initial=initial_data)
+        return render_to_response('projects/occurrence2biology.html', {"theForm": the_form, "initial_data": initial_data}, RequestContext(request))

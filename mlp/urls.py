@@ -20,4 +20,7 @@ urlpatterns = patterns('',
     # /projects/mlp/change_xy/
     url(r'^change_xy/', mlp_views.change_coordinates_view, name="mlp_change_xy"),
 
+    # /projects/mlp/occurrence2biology/
+    url(r'^occurrence2biology/', mlp_views.occurrence2biology_view, name="mlp_occurrence2biology"),
+
 )
