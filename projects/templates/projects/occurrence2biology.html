@@ -1,0 +1,42 @@
+{% extends "base_nofiber.html" %}
+{% block main_content %}
+      <style>
+    span.grey {
+    background-color: #ccc;
+        padding: 0em 0.25em;
+    }
+    </style>
+
+    <h2>Convert Occurrence to Biology</h2>
+    <p>
+    Barcode: <span class="grey"> {{ initial_data.barcode }} </span> <br/>
+    Catalog number: <span class="grey"> {{ initial_data.catalog_number }} </span> <br/>
+    Field number: <span class="grey"> {{ initial_data.field_number }}</span><br/>
+    Basis of record: <span class="grey">{{ initial_data.basis_of_record }}</span><br/>
+    Item type: <span class="grey">{{ initial_data.item_type }}</span><br/>
+    Scientific name: <span class="grey">{{ initial_data.item_scientific_name }}</span><br/>
+    Description: <span class="grey">{{ iniitial_data.item_description }}</span><br/>
+    </p>
+    <hr/>
+    <h2>Additional biology info</h2>
+    <form action="." method="post"> {% csrf_token %}
+        {{theForm.as_p }}
+    <input type="submit" method="POST">
+    </form>
+
+    {% comment %}
+    below is a javascript function which is called on submit so that user double checks coords
+    {% endcomment %}
+    <script>
+    function userDoubleCheck() {
+        //else we are confirming data before save
+            var newX = $("#id_new_easting").val();
+            var newY = $("#id_new_northing").val();
+            if( confirm("Confirm Before Changing Coordinates:\n\nNew Easting = " + newX + "\n\n" +
+                                "New Northing = " + newY ))
+                {return true;}
+            else
+                {return false;}
+        };
+    </script>
+{% endblock %}
