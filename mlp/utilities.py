@@ -79,7 +79,7 @@ def occurrence2biology(oi):
     if oi.item_type == 'Faunal':  # convert only faunal items to Biology
         # Intiate variables
         #taxon=''
-        #id_qual=''
+        id_qual=IdentificationQualifier.objects.get(name="None")
 
         # try defining variables from value of item sci name
 
