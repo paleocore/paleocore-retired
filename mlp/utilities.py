@@ -99,7 +99,7 @@ def occurrence2biology(oi):
         if len(oi.item_scientific_name.split(' ')) > 1:  # test if item sci name is 2 words or more
             id_qual_name = oi.item_scientific_name.split(' ')[0]  # take first element as the id qualifier
             try:
-                id_qual = IdentificationQualifier.objects.get(nam=id_qual_name)  # try to get the id qualifier
+                id_qual = IdentificationQualifier.objects.get(name=id_qual_name)  # try to get the id qualifier
             except ObjectDoesNotExist:
                 print "Error: Cannot match Identification qualifier info for id %s" % oi.id
         else:
