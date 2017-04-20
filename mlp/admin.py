@@ -14,8 +14,7 @@ class BiologyInline(admin.TabularInline):
     fieldsets = base.admin.default_biology_inline_fieldsets
 
 
-class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
-    models = Biology
+
 
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
@@ -23,7 +22,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     readonly_fields = base.admin.default_read_only_fields+('photo',)
     list_display = base.admin.default_list_display+('thumbnail',)
 
-    fieldsets = (
+    fieldsets = [
         ('Curatorial', {
             'fields': [('barcode', 'catalog_number', 'id'),
                        ('field_number', 'year_collected', 'date_last_modified'),
@@ -55,7 +54,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
                        ('geom',)],
             # 'classes': ['collapse'],
         })
-    )
+    ]
 
     # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
@@ -131,6 +130,14 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
 
     create_data_csv.short_description = "Download Selected to .csv"
 
+
+class BiologyAdmin(OccurrenceAdmin):
+    biology_fieldsets = OccurrenceAdmin.fieldsets
+    taxonomy_fieldsets = ('Identification', {'fields': [('taxon', 'identification_qualifier', 'identified_by')]})
+    element_fieldsets = ('Detailed Description', {'fields': [('element', 'element_modifier')]})
+    biology_fieldsets.insert(2, taxonomy_fieldsets)
+    biology_fieldsets.insert(3, element_fieldsets)
+    fieldsets = biology_fieldsets
 ############################
 #  Register Admin Classes  #
 ############################
