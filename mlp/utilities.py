@@ -6,10 +6,11 @@ from django.core.files import File
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 import collections
 from update_taxonomy import update_tuple_list
-import os
+import os, re
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 import calendar
+from update_taxonomy import id_test_list, occurrence_test_list
 
 
 image_folder_path = "/Users/reedd/Documents/projects/PaleoCore/projects/Omo Mursi/Final_Import/omo_mursi_data/omo_mursi_data/"
@@ -69,19 +70,60 @@ def update_mlp_bio(updatelist=update_tuple_list):
             print "Does Not Exist or Duplicate:"+cat
 
 
+def get_taxon_from_scientific_name(scientific_name):
+    """
+    Function retrieves a taxon object from a colon delimited item_scientific_name string
+    :param scientific_name: colon delimited item_scientific_name string, e.g. 'Rodentia:Muridae:Golunda gurai'
+    :return: returns a taxon object.
+    """
+    clean_name = scientific_name.strip()  # remove leading or trailing spaces
+    taxon = None  # initiate taxon return
+    id_qualifier = None  # initiate identification_qualifier return
+
+    # split colon delimited string into list e.g. Rodentia:Muridae to ['Rodentia', 'Muridae']
+    taxon_name_list = re.split('\s|:|_|,', clean_name)  # split using space, colon, underscore or comma delimeters
+    taxon_name_list_length = len(taxon_name_list)
+    if taxon_name_list_length == 0:
+        taxon = None
+    if taxon_name_list_length >= 1:
+        taxon_string = taxon_name_list[-1]
+        try:
+            taxon = Taxon.objects.get(name__exact=taxon_string)
+        except MultipleObjectsReturned:
+            parent = Taxon.objects.get(name__exact=taxon_name_list[-2])
+            taxon = Taxon.objects.filter(name__exact=taxon_string).filter(parent=parent)
+    return taxon
+
+
+def mlp_missing_biology_occurrences():
+    """
+    Function to identify occurrences that should also be biology but are missing from biology table
+    :return: returns a list of occurrence object ids.
+    """
+    result_list = []  # Initialize result list
+    # Biology occurrences should be all occurrences that are item_type "Faunal" or "Floral"
+    biology_occurrences = Occurrence.objects.filter(item_type__in=['Faunal', 'Floral'])
+    for occurrence in biology_occurrences:
+        try: Biology.objects.get(occurrence_ptr_id__exact=occurrence.id)  # Find matching occurrence in bio
+        except ObjectDoesNotExist:
+            result_list.append(occurrence.id)
+    return result_list
+
+
 def occurrence2biology(oi):
     """
-    Function to convert Occurrence object instances to Biology instances.
+    Function to convert Occurrence instances to Biology instances. The new Biology instances are given a default
+    taxon = Life.
     :param oi: occurrence instance
-    :return:
+    :return: returns nothing.
     """
 
     if oi.item_type == 'Faunal':  # convert only faunal items to Biology
         # Intiate variables
-        #taxon=''
-        id_qual=IdentificationQualifier.objects.get(name="None")
+        default_taxon = Taxon.objects.get(name__exact='Life')
+        defaulat_identification_qualifier=IdentificationQualifier.objects.get(name="None")
 
-        # try defining variables from value of item sci name
+        taxon = get_taxon_from_scientific_name(oi.item_scientific_name)
 
         try:
             taxon=Taxon.objects.get(name=oi.item_scientific_name.strip())  # try getting the taxon based on item sci name
@@ -90,7 +132,7 @@ def occurrence2biology(oi):
                 taxon_name = oi.item_scientific_name.split(' ')[1]  # if no match try matching just the last word
                 taxon = Taxon.objects.get(name=taxon_name)
             except ObjectDoesNotExist:
-                return "Error: Cannot match taxonomic information for id %s" % oi.id
+                return "Error: Cannot match taxonomic information for id:{} barcode:{}".format(oi.id, oi.barcode)
             except IndexError:
                 try:
                     taxon = Taxon.objects.get(name=oi.item_scientific_name)
@@ -127,10 +169,10 @@ def update_occurrence2biology():
     for f in mlp_fossils:
         try:
             mlpb = Biology.objects.get(pk=f.id)
-            print "%s is already a Biology object." % str(f.barcode)
+            print "Occurence barcode:{} is already a Biology object.".format(f.barcode)
         except ObjectDoesNotExist:
-            print "converting %s to Biology." % str(f.barcode)
-            occurrence2biology(f)
+            print "converting Occrrence with barcode:{} to Biology.".format(f.barcode)
+            return occurrence2biology(f)
 
 
 def find_unmatched_barcodes():
@@ -150,7 +192,7 @@ def import_dg_updates():
     data_list = []
     index = 0
     for row in data[1:]:
-        data_list.append(row[:-2].split(';'))  # split scv data by semicolon separators and remove line terminators
+        data_list.append(row[:-2].split(';'))  # split data by semicolon separators and remove line terminators
     for row in data_list:
         if row[2] == 'January2014':
             row[2] = 'January 2014'  # fix bad date format
@@ -160,7 +202,7 @@ def import_dg_updates():
         row.insert(0, index)  # add a row id starting at 0
         index += 1
     print 'Importing data from {}'.format(file_location)
-    print 'Removing {} duplicate records from raw data list\n'.format(len(data_list)-len(unique_data_list))
+    print 'Removing {} duplicate records from raw data list,'.format(len(data_list)-len(unique_data_list))
     return unique_data_list
 
 
@@ -169,6 +211,13 @@ def set_data_list(data_list):
 
 
 def match_catalog_number(catalog_number_string):
+    """
+    Function to get occurrence objects from MLP catalog number in the form MLP-001
+    the function splits the catalog number at the dash and strips leading zeros from the numberic portion of the
+    catalog number. It then searches for a matching catalog number.
+    :param catalog_number_string:
+    :return:
+    """
     cn_split = catalog_number_string.split('-')
     try:
         catalog_number_integer = int(cn_split[1])
@@ -183,6 +232,14 @@ def match_catalog_number(catalog_number_string):
 
 
 def match_coordinates(longitude, latitude):
+    """
+    Function to match an Occurrence instance given coordinates
+    :param longitude: in decimal degrees
+    :param latitude: in decimal degrees
+    :return: returns a two element tuple. The first element is True/False indicating whether there was a single match
+    The second element in None by default, or a list of queryset of matches based on coordinates.
+    """
+
     lon = float(longitude)
     lat = float(latitude)
     pnt = Point(lon, lat)
@@ -198,6 +255,11 @@ def match_coordinates(longitude, latitude):
 
 
 def match(data_list):
+    """
+    Function to match Occurrence objects based on barcode or coordinates.
+    :param data_list:
+    :return:
+    """
     counter = 0
     row_counter = 0
     match_list = []
@@ -285,3 +347,51 @@ def main():
     udl = import_dg_updates()
     matches = match(udl)
     validate_matches(matches)
+
+
+
+def test_get_taxon_from_scientific_name(test_list=id_test_list):
+    count=0
+    for i in test_list:
+        try:
+            taxon = get_taxon_from_scientific_name(i)
+            #print '{}, {} = {}'.format(count, i, taxon)
+        except ObjectDoesNotExist:
+            print '{}, {} = {}'.format(count, i, "Does Not Exist")
+        except MultipleObjectsReturned:
+            '{}, {} = {}'.format(count, i, 'Multiple Objects Returned')
+        count+=1
+
+
+def test_match(list=occurrence_test_list):
+    print 'Starting run on {} items in list'.format(len(list))
+    count = 0
+    full_match_count = 0
+    coordinate_match_count = 0
+    bad_match_count = 0
+    for t in list:
+        catno = t[0]
+        lon = t[1]
+        lat = t[2]
+        cat_match_result = match_catalog_number(catno)
+        coord_match_result = match_coordinates(lon, lat)
+        if cat_match_result[0] and coord_match_result[0] and cat_match_result[1] == coord_match_result[1][0]:
+            matched_object = cat_match_result[1]
+            #print "{count}. Catalog number {catno} and coordinates {lon} {lat}, matched to occurrence object id:{id} barcode {barcode}".format(count=count, catno=catno, lon=lon, lat=lat, id=matched_object.id, barcode=matched_object.barcode)
+            full_match_count += 1
+        elif coord_match_result[0] and not cat_match_result[0]:
+            matched_object = coord_match_result[1][0]
+            #print "{} {} Remarks:{}".format(catno, matched_object.barcode, matched_object.remarks)
+            coordinate_match_count += 1
+        elif cat_match_result[0] and len(coord_match_result[1])>=2:
+            matched_object = cat_match_result[1]
+            if matched_object in coord_match_result[1]:
+                #print "{} {} Remarks:{}".format(catno, matched_object.barcode, matched_object.remarks)
+                coordinate_match_count += 1
+        else:
+            print "{}. Catalog number {} and coordinates {} {}, bad match.".format(count, catno, lon, lat)
+            bad_match_count += 1
+        count += 1
+    print "Matches: {}\nCoordinate Matches: {}\nBad Matches: {}".format(full_match_count, coordinate_match_count, bad_match_count)
+
+
