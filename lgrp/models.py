@@ -223,7 +223,9 @@ class Occurrence(models.Model):
 
 class Biology(Occurrence):
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
-    taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_taxon_bio_occurrences')
+    taxon = models.ForeignKey(Taxon, null=True, blank=True,
+                              default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
+                              related_name='lgrp_taxon_bio_occurrences')
     taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
     identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='lgrp_id_qualifier_bio_occurrences',
