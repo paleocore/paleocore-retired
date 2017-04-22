@@ -222,15 +222,20 @@ class Occurrence(models.Model):
 
 
 class Biology(Occurrence):
-    verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
-    taxon = models.ForeignKey(Taxon, null=True, blank=True,
+    taxon = models.ForeignKey(Taxon,
                               default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
                               related_name='lgrp_taxon_bio_occurrences')
+    identification_qualifier = models.ForeignKey(IdentificationQualifier,
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='lgrp_id_qualifier_bio_occurrences',
+                                                 null=True, blank=True)
+    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True,
+                                        on_delete=models.SET_NULL,
+                                        related_name='lgrp_qualifier_taxon_bio_occurrences')
+    verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='lgrp_id_qualifier_bio_occurrences',
-                                                 null=True, blank=True)
-    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='lgrp_qualifier_taxon_bio_occurrences')
+
     identified_by = models.CharField(null=True, blank=True, max_length=100, choices=LGRP_IDENTIFIER_CHOICES)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
