@@ -415,25 +415,22 @@ def validate_matches(match_list, coordinate_match_list, problem_match_list):
     match_no = 1
 
     print "\n Catalog Number Matches\n"
-    for p in match_list:
+    # for p in match_list:
+    #     print 'Match {}'.format(match_no)
+    #     match_no += 1
+    #     display_match(p)
+    for p in coordinate_match_list:
         print 'Match {}'.format(match_no)
         match_no += 1
         display_match(p)
 
 
-
-
 def main():
-    #existing, converted = update_occurrence2biology()  # convert all faunal and floral occurrences to biology
+    # existing, converted = update_occurrence2biology()  # convert all faunal and floral occurrences to biology
     hl, dl = import_dg_updates()  # import header and data list from file
     udl, du, dls = show_duplicate_rows(dl)  # check for duplicates
     ml, cl, pl = match(udl)
     validate_matches(ml, cl, pl)
-
-
-
-
-
 
 
 def find_duplicate_catalog_number(list):
