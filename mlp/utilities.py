@@ -11,6 +11,7 @@ from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import Distance
 import calendar
 from update_taxonomy import id_test_list, occurrence_test_list, cat_number_list
+from datetime import datetime
 
 
 image_folder_path = "/Users/reedd/Documents/projects/PaleoCore/projects/Omo Mursi/Final_Import/omo_mursi_data/omo_mursi_data/"
@@ -83,6 +84,13 @@ def get_identification_qualifier_from_scientific_name(scientific_name):
     id_qual_name_list = [i.name for i in IdentificationQualifier.objects.all()]  # list of all IdQal names
     id_qual_name = [val for val in taxon_name_list if val in id_qual_name_list]  # get id_qual from taxon name list
     return IdentificationQualifier.objects.get(name__exact=id_qual_name)
+
+
+def get_identification_qualifier_from_string(id_qual_string):
+    try:
+        return IdentificationQualifier.objects.get(name=id_qual_string)
+    except ObjectDoesNotExist:
+        return None
 
 
 def get_taxon_from_scientific_name(scientific_name):
@@ -186,7 +194,7 @@ def update_occurrence2biology():
             # print "{}. Occurence {} barcode: {} is already a Biology object.".format(count, f.id, f.barcode)
             existing.append(f.id)
         except ObjectDoesNotExist:
-            print "{}. Converting Occrrence id: {} barcode: {} to Biology.".format(count, f.id, f.barcode)
+            print "{}. Converting Occurrence id: {} barcode: {} to Biology.".format(count, f.id, f.barcode)
             occurrence2biology(f)
             converted.append(f.id)
         count += 1
@@ -212,10 +220,10 @@ def import_dg_updates(file_path='/Users/reedd/Documents/projects/PaleoCore/proje
     data = dbfile.readlines()
     dbfile.close()
     data_list = []
-    header_list = data[0][:-2].split('|')  # list of column headers
+    header_list = data[0][:-1].split('|')  # list of column headers
     # populate data list
     for row in data[1:]:  # skip header row
-        data_list.append(row[:-2].split('|'))  # remove newlines and split by delimiter
+        data_list.append(row[:-1].split('|'))  # remove newlines and split by delimiter
     print 'Importing data from {}'.format(file_path)
     return header_list, data_list
 
@@ -261,6 +269,27 @@ def match_catalog_number(catalog_number_string):
             return (False, catalog_number_string)
     except(IndexError):
         return (False, catalog_number_string)
+
+
+def match_barcode_from_catalog_number(catalog_number_string):
+    """
+    Function to get occurrence objects from MLP catalog number in the form MLP-001
+    the function splits the catalog number at the dash and strips leading zeros from the numberic portion of the
+    catalog number. It then searches for a matching barcode number.
+    :param catalog_number_string:
+    :return:
+    """
+    cn_split = catalog_number_string.split('-')
+    try:
+        catalog_number_integer = int(cn_split[1])
+        #cleaned_catalog_number = 'MLP-' + str(catalog_number_integer)
+        try:
+            occurrence_obj = Biology.objects.get(barcode__exact=catalog_number_integer)
+            return (True, occurrence_obj)
+        except(ObjectDoesNotExist):
+            return (False, catalog_number_integer)
+    except(IndexError):
+        return (False, catalog_number_integer)
 
 
 def match_coordinates(longitude, latitude):
@@ -414,23 +443,57 @@ def validate_matches(match_list, coordinate_match_list, problem_match_list):
     print "\n## Summary of Matches ##\n"
     match_no = 1
 
-    print "\n Catalog Number Matches\n"
+    # print "\n Catalog Number Matches\n"
     # for p in match_list:
     #     print 'Match {}'.format(match_no)
     #     match_no += 1
     #     display_match(p)
+    print "\n Coordinate Matches\n"
     for p in coordinate_match_list:
         print 'Match {}'.format(match_no)
         match_no += 1
         display_match(p)
 
 
+def update_matches(match_list):
+    print "\n## Updating Matches ##"
+    counter = 0
+    for m in match_list:
+        row = m[0]
+        obj = m[1]
+        description = row[6]
+        sciname = row[8]
+        taxon_string = row[11]
+        taxon_obj = get_taxon_from_scientific_name(taxon_string)
+        id_qualifier_string = row[12]
+        identifier = row[15]
+        if id_qualifier_string != '':
+            id_qual_obj = IdentificationQualifier.objects.get(name=id_qualifier_string)
+        elif id_qualifier_string == '':
+            id_qual_obj = IdentificationQualifier.objects.get(name='None')
+
+        obj.item_scientific_name = sciname
+        obj.item_description = description
+        obj.taxon = taxon_obj
+        obj.identification_qualifier = id_qual_obj
+        obj.identified_by = identifier
+        print "updated match {} cat:{}".format(row[0], row[1])
+        counter += 1
+        obj.save()
+    print "{} records updated successfully.".format(counter)
+
+
 def main():
-    # existing, converted = update_occurrence2biology()  # convert all faunal and floral occurrences to biology
-    hl, dl = import_dg_updates()  # import header and data list from file
+    existing, converted = update_occurrence2biology()  # convert all faunal and floral occurrences to biology
+    hl, dl = import_dg_updates(file_path='/home/dnr266/paleocore/mlp/fixtures/DG_updates.txt')  # import header and data list from file
+    #hl, dl = import_dg_updates()  # import header and data list from file
     udl, du, dls = show_duplicate_rows(dl)  # check for duplicates
     ml, cl, pl = match(udl)
     validate_matches(ml, cl, pl)
+    update_matches(ml)
+    update_matches(cl)
+
+    return existing, converted, hl, dl, udl, du, dls, ml, cl, pl
 
 
 def find_duplicate_catalog_number(list):
@@ -452,3 +515,63 @@ def get_parent_name(taxon_name_list):
         index -= 1
         parent_name = taxon_name_list[index]
     return parent_name
+
+
+def fixpts():
+    update_list = [(530, 40.8249787777, 11.5880623344), (650, 40.8157221399, 11.5580415457),
+                   (1790, 40.8414173126, 11.5584075832),
+                   (1796, 40.8387199127, 11.5635939209),
+                   (1800, 40.8396148682, 11.5641256533),
+                   (1804, 40.8408664654, 11.563696463),
+                   (1805, 40.8411042121, 11.5613672431),
+                   (1808, 40.8414761456, 11.5594843559),
+                   (1812, 40.8380699158, 11.5653869765),
+                   (1886, 40.7597923279, 11.5538666796)]
+    for i in update_list:
+        pk = i[0]
+        x = i[1]
+        y = i[2]
+        o = Biology.objects.get(pk=pk)
+        o.geom = Point(x, y)
+        o.save()
+
+
+def test_taxon_usage(taxon_id):
+    uses = Biology.objects.filter(taxon=taxon_id)
+    print "mlp has {} Biology instances pointing to taxon {}".format(uses.count(), taxon_id)
+    return uses
+
+# hl, dl = import_dg_updates(file_path='/Users/reedd/Documents/projects/PaleoCore/projects/mlp/data_cleaining_170412/DG_additions.txt')'
+def create_biology(row):
+    catalog_number_match = match_catalog_number(row[0])
+    catalog_number = catalog_number_match[1]
+    barcode_match = match_barcode_from_catalog_number(row[0])
+    barcode = barcode_match[1]
+    taxon=get_taxon_from_scientific_name(row[10])
+    idq = get_identification_qualifier_from_string(row[11])
+    lon = float(row[1])
+    lat = float(row[2])
+    fn = datetime(year=2014, month=1, day=1)
+    if not barcode_match[0]:
+        return Biology(catalog_number=catalog_number,
+                           barcode=barcode,
+                           basis_of_record='FossilSpecimen',
+                           item_type='Faunal',
+                           collection_code='MLP',
+                           item_number=barcode,
+                           remarks='Missing data from 2014, added in May 2015.',
+                           item_scientific_name=row[10],
+                           item_description=row[5],
+                           collecting_method='Surface Standard',
+                           year_collected=2014,
+                           field_number=fn,
+                           field_season='Jan 2014',
+                           individual_count=1,
+                           problem=True,
+                           problem_comment='Missing data added in May 2015, verify in museum.',
+                           geom=Point(lon, lat, srid=4326),
+                           taxon=taxon,
+                           identification_qualifier=idq
+                           )
+    else:
+        print "Occurrence {} already exists.".format(barcode)
