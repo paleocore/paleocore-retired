@@ -485,8 +485,9 @@ def update_matches(match_list):
 
 def main():
     existing, converted = update_occurrence2biology()  # convert all faunal and floral occurrences to biology
-    hl, dl = import_dg_updates(file_path='/home/dnr266/paleocore/mlp/fixtures/DG_updates.txt')  # import header and data list from file
-    #hl, dl = import_dg_updates()  # import header and data list from file
+    # import header and data list from file
+    hl, dl = import_dg_updates(file_path='/home/dnr266/paleocore/mlp/fixtures/DG_updates.txt')
+    # hl, dl = import_dg_updates()  # import header and data list from file
     udl, du, dls = show_duplicate_rows(dl)  # check for duplicates
     ml, cl, pl = match(udl)
     validate_matches(ml, cl, pl)
@@ -496,10 +497,10 @@ def main():
     return existing, converted, hl, dl, udl, du, dls, ml, cl, pl
 
 
-def find_duplicate_catalog_number(list):
+def find_duplicate_catalog_number(mylist):
     unique_list = []
     duplicate_list = []
-    for i in list:
+    for i in mylist:
         if i not in unique_list:
             unique_list.append(i)
         else:
@@ -541,37 +542,37 @@ def test_taxon_usage(taxon_id):
     print "mlp has {} Biology instances pointing to taxon {}".format(uses.count(), taxon_id)
     return uses
 
-# hl, dl = import_dg_updates(file_path='/Users/reedd/Documents/projects/PaleoCore/projects/mlp/data_cleaining_170412/DG_additions.txt')'
+
 def create_biology(row):
     catalog_number_match = match_catalog_number(row[0])
     catalog_number = catalog_number_match[1]
     barcode_match = match_barcode_from_catalog_number(row[0])
     barcode = barcode_match[1]
-    taxon=get_taxon_from_scientific_name(row[10])
+    taxon = get_taxon_from_scientific_name(row[10])
     idq = get_identification_qualifier_from_string(row[11])
     lon = float(row[1])
     lat = float(row[2])
     fn = datetime(year=2014, month=1, day=1)
     if not barcode_match[0]:
         return Biology(catalog_number=catalog_number,
-                           barcode=barcode,
-                           basis_of_record='FossilSpecimen',
-                           item_type='Faunal',
-                           collection_code='MLP',
-                           item_number=barcode,
-                           remarks='Missing data from 2014, added in May 2015.',
-                           item_scientific_name=row[10],
-                           item_description=row[5],
-                           collecting_method='Surface Standard',
-                           year_collected=2014,
-                           field_number=fn,
-                           field_season='Jan 2014',
-                           individual_count=1,
-                           problem=True,
-                           problem_comment='Missing data added in May 2015, verify in museum.',
-                           geom=Point(lon, lat, srid=4326),
-                           taxon=taxon,
-                           identification_qualifier=idq
-                           )
+                       barcode=barcode,
+                       basis_of_record='FossilSpecimen',
+                       item_type='Faunal',
+                       collection_code='MLP',
+                       item_number=barcode,
+                       remarks='Missing data from 2014, added in May 2015.',
+                       item_scientific_name=row[10],
+                       item_description=row[5],
+                       collecting_method='Surface Standard',
+                       year_collected=2014,
+                       field_number=fn,
+                       field_season='Jan 2014',
+                       individual_count=1,
+                       problem=True,
+                       problem_comment='Missing data added in May 2015, verify in museum.',
+                       geom=Point(lon, lat, srid=4326),
+                       taxon=taxon,
+                       identification_qualifier=idq
+                       )
     else:
         print "Occurrence {} already exists.".format(barcode)
