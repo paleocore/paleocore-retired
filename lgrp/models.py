@@ -71,6 +71,7 @@ class Occurrence(models.Model):
     barcode = models.IntegerField("Barcode", null=True, blank=True)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     objects = models.GeoManager()
+    old_cat_number = models.CharField(max_length=255, blank=True, null=True)
 
     # LGRP Specific Fields
     drainage_region = models.CharField(null=True, blank=True, max_length=255)

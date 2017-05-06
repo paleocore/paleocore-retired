@@ -81,19 +81,20 @@ occurrence_fieldsets = (
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     actions = ['create_data_csv', 'change_xy']
-    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number', 'old_catalog_number',
+    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number',
                                                            'longitude', 'latitude')
     list_display = list(base.admin.default_list_display+('thumbnail',))
     field_number_index = list_display.index('field_number')
     list_display.pop(field_number_index)
-    list_display.insert(2, 'old_catalog_number')
-    #list_display.insert(3, 'locality_number')
+    list_display.insert(2, 'old_cat_number')
+    list_display.insert(3, 'collection_code')
     #list_display.insert(4, 'item_number')
     #list_display.insert(5, 'item_part')
     fieldsets = occurrence_fieldsets
     list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem',
                    'weathering']
-    search_fields = list(base.admin.default_search_fields)+['id']
+    additional_search_fields = ['id', 'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
+    search_fields = list(base.admin.default_search_fields)+additional_search_fields
     search_fields.pop(search_fields.index('catalog_number'))  # can't search on methods
     list_per_page = 500
     # options = {
@@ -254,7 +255,7 @@ class ElementInLine(admin.StackedInline):
 class BiologyAdmin(OccurrenceAdmin):
     fieldsets = biology_fieldsets
     inlines = (BiologyInline, ImagesInline, FilesInline)
-    list_filter = ['basis_of_record', 'year_collected', 'collector', 'problem', 'element', 'weathering']
+    list_filter = ['basis_of_record', 'year_collected', 'collector', 'collection_code', 'problem', 'element', 'weathering']
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
