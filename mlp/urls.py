@@ -6,7 +6,7 @@ urlpatterns = patterns('',
     # Project URLs are included by main urls.py
 
     # /projects/mlp/summary/
-    url(r'summary/$', mlp_views.mlp_summary_view, name="mlp_summary"),
+    # url(r'summary/$', mlp_views.mlp_summary_view, name="mlp_summary"),
 
     # /projects/mlp/upload/
     url(r'^upload/$', login_required(mlp_views.UploadKMLView.as_view(), login_url='/login/'), name="mlp_upload_kml"),
