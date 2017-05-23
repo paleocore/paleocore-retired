@@ -307,12 +307,20 @@ class Occurrence(models.Model):
 
 
 class Biology(Occurrence):
+    # Foreign keys
+    taxon = models.ForeignKey(Taxon,
+                              default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
+                              related_name='hrp_taxon_bio_occurrences')
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, null=True, blank=True,
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='hrp_id_qualifier_bio_occurrences')
+    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True,
+                                        on_delete=models.SET_NULL,
+                                        related_name='hrp_qualifier_taxon_bio_occurrences')
+
+
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
-    taxon = models.ForeignKey(Taxon, related_name='hrp_taxon_bio_occurrences')
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='hrp_id_qualifier_bio_occurrences',
-                                                 null=True, blank=True)
-    qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True, related_name='hrp_qualifier_taxon_bio_occurrences')
     identified_by = models.CharField(null=True, blank=True, max_length=100)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)

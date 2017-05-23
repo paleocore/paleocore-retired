@@ -14,37 +14,34 @@ class BiologyInline(admin.TabularInline):
     fieldsets = base.admin.default_biology_inline_fieldsets
 
 
-class BiologyAdmin(base.admin.PaleoCoreBiologyAdmin):
-    models = Biology
-
-
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    actions = ["create_data_csv", "change_xy"]
-    readonly_fields = base.admin.default_read_only_fields+('photo',)
-    list_display = base.admin.default_list_display+('thumbnail',)
+    actions = ["create_data_csv", "change_xy", "change_occurrence2biology"]
+    readonly_fields = base.admin.default_read_only_fields+('photo',)  # defaults plus photo
+    list_display = base.admin.default_list_display+('thumbnail',)  # defaults plus thumbnail
+    list_filter = ['basis_of_record', 'item_type', 'field_season',
+                   'field_number', 'collector', 'problem', 'disposition']
 
-    fieldsets = (
+    fieldsets = [
         ('Curatorial', {
             'fields': [('barcode', 'catalog_number', 'id'),
-                       ('field_number', 'year_collected', 'date_last_modified'),
+                       ('field_number', 'year_collected', 'field_season', 'date_last_modified'),
                        ('collection_code', 'item_number', 'item_part')]
         }),
-
         ('Occurrence Details', {
             'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                       ('collecting_method', 'finder', 'collector', 'individual_count'),
+                       ('collector', 'finder', 'collecting_method', 'individual_count'),
                        ('item_description', 'item_scientific_name',),
                        ('problem', 'problem_comment'),
                        ('remarks',)],
-            # 'classes': ['collapse']
+            'classes': ['collapse']
         }),
         ('Photos', {
             'fields': [('photo', 'image')],
-            # 'classes': ['collapse'],
+            'classes': ['collapse'],
         }),
         ('Taphonomic Details', {
             'fields': [('weathering', 'surface_modification')],
-            # 'classes': ['collapse'],
+            'classes': ['collapse'],
         }),
         ('Provenience', {
             'fields': [('analytical_unit',),
@@ -53,16 +50,22 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
                        ('point_x', 'point_y'),
                        ('easting', 'northing'),
                        ('geom',)],
-            # 'classes': ['collapse'],
+            'classes': ['collapse'],
         })
-    )
+    ]
 
     # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        redirectURL = reverse("projects:mlp:mlp_change_xy")
-        return HttpResponseRedirect(redirectURL + "?ids=%s" % (",".join(selected)))
+        redirect_url = reverse("projects:mlp:mlp_change_xy")
+        return HttpResponseRedirect(redirect_url + "?ids=%s" % (",".join(selected)))
     change_xy.short_description = "Manually change coordinates for a point"
+
+    def change_occurrence2biology(self, request, queryset):
+        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
+        redirect_url = reverse("projects:mlp:mlp_occurrence2biology")
+        return HttpResponseRedirect(redirect_url + "?ids=%s" % (",".join(selected)))
+    change_occurrence2biology.short_description = "Change Occurrence to Biology"
 
     # admin action to download data in csv format
     def create_data_csv(self, request, queryset):
@@ -122,6 +125,16 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         return response
 
     create_data_csv.short_description = "Download Selected to .csv"
+
+
+class BiologyAdmin(OccurrenceAdmin):
+    biology_fieldsets = list(OccurrenceAdmin.fieldsets)  # creates a separate copy of the fielset list
+    taxonomy_fieldsets = ('Identification', {'fields': [('taxon', 'identification_qualifier', 'identified_by')]})
+    element_fieldsets = ('Detailed Description', {'fields': [('element', 'element_modifier')]})
+    biology_fieldsets.insert(2, taxonomy_fieldsets)
+    biology_fieldsets.insert(3, element_fieldsets)
+    fieldsets = biology_fieldsets
+
 
 ############################
 #  Register Admin Classes  #

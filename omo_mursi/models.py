@@ -133,7 +133,7 @@ class Biology(Occurrence):
     infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
     author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
     nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
-    identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
+    #identification_qualifier = models.CharField(null=True, blank=True, max_length=50)
     identified_by = models.CharField(null=True, blank=True, max_length=100)
     date_identified = models.DateTimeField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
@@ -215,8 +215,12 @@ class Biology(Occurrence):
     lrm1 = models.BooleanField(default=False)
     lrm2 = models.BooleanField(default=False)
     lrm3 = models.BooleanField(default=False)
-    taxon = models.ForeignKey(Taxon, related_name='omo_mursi_biology_occurrences')
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='omo_mursi_biology_occurrences')
+    taxon = models.ForeignKey(Taxon,
+                              default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
+                              related_name='omo_mursi_biology_occurrences')
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, null=True, blank=True,
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='omo_mursi_biology_occurrences')
 
     class Meta:
         verbose_name = "Omo Mursi Biology"

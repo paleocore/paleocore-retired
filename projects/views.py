@@ -9,6 +9,7 @@ from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from mysite.settings import INSTALLED_APPS
 
 
 class ProjectIndexView(generic.ListView):
@@ -17,7 +18,9 @@ class ProjectIndexView(generic.ListView):
 
     def get_queryset(self):
         # build a query set of projects.
-        return Project.objects.filter(display_summary_info=True, is_standard=False)
+        return Project.objects.filter(display_summary_info=True,  # get projects with public summaries
+                                      is_standard=False,  # don't get standards such as darwin core
+                                      paleocore_appname__in=INSTALLED_APPS)  # verify project app is installed
 
 
 class ProjectDetailView(generic.DetailView):
@@ -68,7 +71,7 @@ class ProjectDataView(generic.ListView):
     context_object_name = 'occurrences'
 
     def get_queryset(self):
-        proj = Project.objects.get(paleocore_appname = self.kwargs["pcoreapp"])
+        proj = Project.objects.get(paleocore_appname=self.kwargs["pcoreapp"])
         model = get_model(proj.paleocore_appname, proj.occurrence_table_name)
         return model.objects.all()
 
@@ -97,16 +100,16 @@ def ajaxProjectData(request, pcoreapp):
                 filterArgs[key] = value
 
     try:  # remove url GET parameter put in by DataTables
-        cleanedFilterArgs = filterArgs
-        cleanedFilterArgs.pop("_")
+        cleaned_filter_args = filterArgs
+        cleaned_filter_args.pop("_")
     except:
-        cleanedFilterArgs = filterArgs
+        cleaned_filter_args = filterArgs
 
     responsedict = {"data":[]}
     if filterArgs:
-        objects = model.objects.filter(** cleanedFilterArgs).values_list(* literal_eval(project.display_fields))
-        for object in objects:
-            responsedict["data"].append(object)
+        objects = model.objects.filter(** cleaned_filter_args).values_list(* literal_eval(project.display_fields))
+        for obj in objects:
+            responsedict["data"].append(obj)
         response.write(json.dumps(responsedict))
     else:
         model_objects = model.objects.all().values_list(* literal_eval(project.display_fields))
@@ -123,21 +126,21 @@ def ajaxProjectData(request, pcoreapp):
 # so I opted for a simple functional view.
 def projectDataTable(request, pcoreapp="drp"):
     project = get_object_or_404(Project, paleocore_appname = pcoreapp)
-    filterArgs = {}
+    filter_args = {}
     for key, value in request.GET.iteritems():
         if value:
             if value != "":
-                filterArgs[key] = value
+                filter_args[key] = value
 
     # build list of unique values for fields to filter on
     model = get_model(project.paleocore_appname, project.occurrence_table_name)
-    filterChoices = {}
+    filter_choices = {}
     for field in literal_eval(project.display_filter_fields):
-        filterChoices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
+        filter_choices[field] = sorted(model.objects.order_by().values_list(field, flat=True).distinct())
 
     return render_to_response('projects/project_data.html',
                               {"project": project,
                                "displayFields": literal_eval(project.display_fields),
-                               "filterChoices": filterChoices,
-                               "filterArgs": filterArgs},
-                               context_instance=RequestContext(request))
+                               "filterChoices": filter_choices,
+                               "filterArgs": filter_args},
+                              context_instance=RequestContext(request))

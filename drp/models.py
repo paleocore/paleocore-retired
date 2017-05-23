@@ -266,8 +266,12 @@ class Biology(Occurrence):
     lrm1 = models.BooleanField(default=False)
     lrm2 = models.BooleanField(default=False)
     lrm3 = models.BooleanField(default=False)
-    taxon = models.ForeignKey(Taxon, related_name='drp_biology_occurrences')
-    identification_qualifier = models.ForeignKey(IdentificationQualifier, related_name='drp_biology_occurrences')
+    taxon = models.ForeignKey(Taxon,
+                              default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
+                              related_name='drp_biology_occurrences')
+    identification_qualifier = models.ForeignKey(IdentificationQualifier, null=True, blank=True,
+                                                 on_delete=models.SET_NULL,
+                                                 related_name='drp_biology_occurrences')
 
     class Meta:
         verbose_name = "DRP Biology"

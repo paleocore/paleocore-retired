@@ -18,6 +18,7 @@ COLLECTOR_CHOICES = (("Zeresenay Alemseged", "Zeresenay Alemseged"),
                      ("Andrew Barr", "Andrew Barr"),
                      ("Rene Bobe", "Rene Bobe"),
                      ("Denis Geraads", "Denis Geraads"),
+                     ("Weldeyared Hailu", "Waldeyared Hailu"),
                      ("Shannon McPherron", "Shannon McPherron"),
                      ("Denne Reed", "Denne Reed"),
                      ("Jonathan Wynn", "Jonathan Wynn"))

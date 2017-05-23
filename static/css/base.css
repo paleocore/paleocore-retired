@@ -294,3 +294,7 @@ ol li {
 table.term {
 	border: 1px solid black;
 }
+
+span.grey {
+    background-color: #ccc;
+}
