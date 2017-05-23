@@ -1,25 +1,33 @@
 from django.contrib.gis.db import models
-
-from .ontologies import *
-
-import utm
+from psr.ontologies import *
 from django.contrib.gis.geos import Point
+import utm
 
 
 class TaxonRank(models.Model):
-    name = models.CharField(null=False, blank=False, max_length=50, unique=True)
-    plural = models.CharField(null=False, blank=False, max_length=50, unique=True)
+    """
+    The hierarchical rank of a biological taxon, e.g. 'Genus'
+    """
+    name = models.CharField(null=False, blank=False, max_length=50, unique=True,
+                            help_text='The name of the taxonomic rank, such as Order, Family, Genus etc.')
+    # The name of the taxonomic rank, such as the standards from the Linnaen hierarchy of
+    # Kingdom, Phylum, Class, Order, Family, Genus, Species as well as more esoteric ranks including
+    # Division, Subfamily, Tribe etc.
+
+    plural = models.CharField(null=False, blank=False, max_length=50, unique=True,
+                              help_text='The plural form of the taxonomic rank name, such as Orders, Families, Genera')
+    # The plural form of the taxonomic rank name, such as Genera as the plural for Genus.
+
     ordinal = models.IntegerField(null=False, blank=False, unique=True)
 
     def __unicode__(self):
         return str(self.name)
 
-    class Meta:
-        verbose_name = "Taxon Rank"
-
-
 
 class Taxon(models.Model):
+    """
+
+    """
     name = models.CharField(null=False, blank=False, max_length=255, unique=False)
     parent = models.ForeignKey('self', null=True, blank=True)
     rank = models.ForeignKey(TaxonRank)
@@ -63,11 +71,8 @@ class Taxon(models.Model):
             return "[" + self.rank.name + "] " + str(self.name)
 
     class Meta:
-        verbose_name = "Taxon"
         verbose_name_plural = "taxa"
         ordering = ['rank__ordinal', 'name']
-
-
 
 
 # Locality Class
@@ -164,7 +169,7 @@ class Locality(models.Model):
 
 # Occurrence Class and Subclasses
 class Occurrence(models.Model):
-    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
+
     # TODO basis is Null for import Not Null afterwards
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        choices=PSR_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
@@ -187,10 +192,8 @@ class Occurrence(models.Model):
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
     modified = models.DateTimeField("Date Last Modified", auto_now=True)
 
-
-    # Foreign key to locality table
-    locality = models.ForeignKey(Locality, null=True, blank=True)
-
+    locality = models.ForeignKey(Locality, null=True, blank=True)  # Foreign key to locality table
+    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
     # Define geoManager
     objects = models.GeoManager()
 
