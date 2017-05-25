@@ -10,15 +10,26 @@ class TaxonRank(models.Model):
     """
     name = models.CharField(null=False, blank=False, max_length=50, unique=True,
                             help_text='The name of the taxonomic rank, such as Order, Family, Genus etc.')
-    # The name of the taxonomic rank, such as the standards from the Linnaen hierarchy of
-    # Kingdom, Phylum, Class, Order, Family, Genus, Species as well as more esoteric ranks including
-    # Division, Subfamily, Tribe etc.
+    """
+    The name of the taxonomic rank, such as the standards from the Linnaen hierarchy of
+    Kingdom, Phylum, Class, Order, Family, Genus, Species as well as more esoteric ranks including
+    Division, Subfamily, Tribe etc.
+    """
 
     plural = models.CharField(null=False, blank=False, max_length=50, unique=True,
                               help_text='The plural form of the taxonomic rank name, such as Orders, Families, Genera')
-    # The plural form of the taxonomic rank name, such as Genera as the plural for Genus.
+    """
+    The plural form of the taxonomic rank name, such as Genera as the plural for Genus.
+    """
 
-    ordinal = models.IntegerField(null=False, blank=False, unique=True)
+    ordinal = models.IntegerField(null=False, blank=False, unique=True,
+                                  help_text='The Numeric rank of taxon category. Lower numbers indicate broader '
+                                            'categories.')
+    """
+    The numeric rank of the taxonomic category. The root rank has value 0 and more restrictive ranks have
+    higher values. As a rule of thumb the major levels in the hierarchy are ten units apart, e.g. Kingdom
+    has a value of 10 and Phylum a value of 20.
+    """
 
     def __unicode__(self):
         return str(self.name)
@@ -26,13 +37,33 @@ class TaxonRank(models.Model):
 
 class Taxon(models.Model):
     """
-
+    Named groupings of organisms, i.e. taxa.
     """
-    name = models.CharField(null=False, blank=False, max_length=255, unique=False)
-    parent = models.ForeignKey('self', null=True, blank=True)
-    rank = models.ForeignKey(TaxonRank)
+    name = models.CharField(null=False, blank=False, max_length=255, unique=False,
+                            help_text='The name of the taxon, e.g. sapiens')
+    """
+    Names for species store only the trivial portion (or smaller) or the species name rather than the full binomen.
+    For example the species name for 'Homo sapiens' is just 'sapiens'.
+    The unicode method shows the name for ranks for Genus and higher, and shows the binomen for species.
+    """
+
+    parent = models.ForeignKey('self', null=True, blank=True,
+                               help_text='The parent taxon.')
+    """
+    A pointer to the parent taxon object.
+    """
+
+    rank = models.ForeignKey(TaxonRank, help_text='The Linnaen rank of the taxon, e.g. Order, Genus etc.')
+    """
+    The taxonomic rank of the taxon, e.g. Order, Genus.
+    Many-to-one foreign key to the TaxonRank table.
+    """
 
     def parent_rank(self):
+        """
+        The rank of the parent taxon
+        :return: The parent taxon name as a string.
+        """
         return self.parent.rank.name
 
     def rank_ordinal(self):
@@ -77,19 +108,80 @@ class Taxon(models.Model):
 
 # Locality Class
 class Locality(models.Model):
+    """
+    dwc: locality
+    Locality class for recording information about general locations and places
+    """
     id = models.CharField(primary_key=True, max_length=255)
-    geom = models.PointField(srid=4326, blank=True, null=True)
+    """
+    Unique database identifier and primary key for localities.
+    """
+
     collection_code = models.CharField(null=True, blank=True, max_length=10, choices=PSR_COLLECTION_CODES)
+    """
+    dwc:collectionCode
+    A short string indicating the collection area.
+    """
+
     locality_type = models.CharField(null=True, blank=True, max_length=255, choices=PSR_LOCALITY_TYPE)
+    """
+    The physical type of the locality, e.g. rockshelter, cave etc.
+    """
+
     slope = models.IntegerField(null=True, blank=True)
+    """
+    The steepness of the terrain, measured in degrees from 0-90
+    """
+
     aspect = models.CharField(null=True, blank=True, max_length=10, choices=PSR_ASPECT_CHOICES)
+    """
+    The direction or orientation of the slope in cardinal directions (N, NW etc).
+    """
+
     remarks = models.TextField(null=True, blank=True, max_length=255)
+    """
+    General comments about the locality.
+    """
+
     group = models.CharField(null=True, blank=True, max_length=255)
+    """
+    dwc: group
+    The stratigraphic group the locality is in.
+    """
+
     formation = models.CharField(null=True, blank=True, max_length=255)
+    """
+    dwc: formation
+    The stratigraphic formation of the locality.
+    """
+
     member = models.CharField(null=True, blank=True, max_length=255)
+    """
+    dwc: member
+    The stratigraphic member of the locality.
+    """
+
     bed = models.CharField(null=True, blank=True, max_length=255)
+    """
+    dwc:bed
+    The stratigraphic bed of the locality.
+    """
+
     modified = models.DateTimeField("Date Last Modified", auto_now=True)
+    """
+    dwc: modified
+    The date and time the locality record was last modified.
+    """
+
+    geom = models.PointField(srid=4326, blank=True, null=True)
+    """
+    The geographic spatial location in geographic coordinates using the WGS84 datum.
+    """
+
     objects = models.GeoManager()
+    """
+    The spatial ojbects manageer. Internal attribute for managing geospatial objects.
+    """
 
     def __unicode__(self):
         nice_name = str(self.collection_code) + " " + str(self.id)
@@ -169,14 +261,30 @@ class Locality(models.Model):
 
 # Occurrence Class and Subclasses
 class Occurrence(models.Model):
+    """
+    Class Find (temporarily named Occurrence for backward compatibility)
+    """
 
     # TODO basis is Null for import Not Null afterwards
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
-                                       choices=PSR_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
+                                       choices=PSR_BASIS_OF_RECORD_VOCABULARY,
+                                       help_text= 'The type of collection, e.g. Observation or Collection')
+    """
+    dwc:basisOfRecord
+    The evidentiary basis for the record. This field records whether the record is based on a visual observation
+    or a collected specimen.
+    Controlled vocabulary: Observation, Collection
+    """
+
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=PSR_ITEM_TYPE_VOCABULARY)  # NOT NULL
-    # During initial import remove collection code choices. Add later for validation.
-    collection_code = models.CharField(null=True, blank=True, max_length=10, choices=PSR_COLLECTION_CODES)
+    """
+    The type of collection, e.g. faunal, floral, archaeological, geological.
+    This field duplicates the subclassing and is perhaps redundant.
+    """
+
+
+
     catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
 
