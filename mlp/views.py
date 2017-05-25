@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.views import generic
 import os
-from models import Occurrence, Biology
+from .models import Occurrence, Biology
 from taxonomy.models import Taxon, IdentificationQualifier
 from mlp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm, Occurrence2Biology
 from fastkml import kml
@@ -46,27 +46,27 @@ class DownloadKMLView(generic.FormView):
 
                 d += openrow
                 d += ''.join(("Basis of Record", middlerow))
-                d += ''.join(filter(None, (o.basis_of_record, closerow, openrow)))
+                d += ''.join([_f for _f in (o.basis_of_record, closerow, openrow) if _f])
                 d += ''.join(("Time", middlerow))
-                d += ''.join(filter(None, (str(o.field_number), closerow, openrow)))
+                d += ''.join([_f for _f in (str(o.field_number), closerow, openrow) if _f])
                 d += ''.join(("Item Type", middlerow))
-                d += ''.join(filter(None, (o.item_type, closerow, openrow)))
+                d += ''.join([_f for _f in (o.item_type, closerow, openrow) if _f])
                 d += ''.join(("Collector", middlerow))
-                d += ''.join(filter(None, (o.collector, closerow, openrow)))
+                d += ''.join([_f for _f in (o.collector, closerow, openrow) if _f])
                 d += ''.join(("Collection Method", middlerow))
-                d += ''.join(filter(None, (o.collecting_method, closerow, openrow)))
+                d += ''.join([_f for _f in (o.collecting_method, closerow, openrow) if _f])
                 d += ''.join(("Count", middlerow))
-                d += ''.join(filter(None, (str(o.individual_count), closerow, openrow)))
+                d += ''.join([_f for _f in (str(o.individual_count), closerow, openrow) if _f])
                 d += ''.join(("Bar Code", middlerow))
-                d += ''.join(filter(None, (str(o.barcode), closerow, openrow)))
+                d += ''.join([_f for _f in (str(o.barcode), closerow, openrow) if _f])
                 d += ''.join(("Scientific Name", middlerow))
-                d += ''.join(filter(None, (o.item_scientific_name, closerow, openrow)))
+                d += ''.join([_f for _f in (o.item_scientific_name, closerow, openrow) if _f])
                 d += ''.join(("Description", middlerow))
-                d += ''.join(filter(None, (o.item_description, closerow, openrow)))
+                d += ''.join([_f for _f in (o.item_description, closerow, openrow) if _f])
                 d += ''.join(("Remarks", middlerow))
-                d += ''.join(filter(None, (o.remarks, closerow, openrow)))
+                d += ''.join([_f for _f in (o.remarks, closerow, openrow) if _f])
                 d += ''.join(("In Situ", middlerow))
-                d += ''.join(filter(None, (str(o.in_situ), closerow)))
+                d += ''.join([_f for _f in (str(o.in_situ), closerow) if _f])
                 d += "</table>"
                 p.description = d
                 p.geometry = pnt
@@ -111,7 +111,7 @@ class UploadKMLView(generic.FormView):
                     table = etree.fromstring(o.description)
                     attributes = table.xpath("//text()")
                     # TODO test attributes is even length
-                    attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
+                    attributes_dict = dict(list(zip(attributes[0::2], attributes[1::2])))
 
                     mlp_occ = Occurrence()
 
@@ -351,7 +351,7 @@ def occurrence2biology_view(request):
                                       identification_qualifier=id_qual,
                                       geom=occurrence_object.geom
                                       )
-                for key in occurrence_object.__dict__.keys():
+                for key in list(occurrence_object.__dict__.keys()):
                     new_biology.__dict__[key] = occurrence_object.__dict__[key]
 
                 occurrence_object.delete()

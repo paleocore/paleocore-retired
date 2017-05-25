@@ -64,9 +64,9 @@ class TermsIndexView(FiberPageMixin, generic.ListView):
 def standard(request):
     categories = TermCategory.objects.all()
     nCategories = categories.count()
-    indices = range(1,nCategories)
+    indices = list(range(1,nCategories))
     # zip the iterables into one so they can be iterated in tandem in the template
-    categories_indices = zip(categories,indices)
+    categories_indices = list(zip(categories,indices))
     return render_to_response('standard.html', {"categories_indices": categories_indices}, RequestContext(request))
 
 
@@ -124,8 +124,8 @@ def ontologyJSONtree(request):
         else:
             theParents.append("NONE")
             theChildren.append(category.id)
-    links=zip(theParents, theChildren)
-    parents, children = zip(*links)
+    links=list(zip(theParents, theChildren))
+    parents, children = list(zip(*links))
 
     def get_nodes(node):
         d = {}
@@ -204,7 +204,7 @@ def fetchAll(cursor):
     "Returns all rows from a cursor as a dict"
     desc = cursor.description
     return [
-        dict(zip([col[0] for col in desc], row))
+        dict(list(zip([col[0] for col in desc], row)))
         for row in cursor.fetchall()
     ]
 

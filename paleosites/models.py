@@ -34,7 +34,7 @@ class Site(models.Model):
         #db_table = 'sites'
 
     def __unicode__(self):
-        return u'%s, %s' % (self.site, self.country)
+        return '%s, %s' % (self.site, self.country)
 
 
 class Date(models.Model):
@@ -64,7 +64,7 @@ class Date(models.Model):
         #db_table = 'dates'
 
     def __unicode__(self):
-        return u'%s %s %s' % (self.site,self.layer,self.industry)
+        return '%s %s %s' % (self.site,self.layer,self.industry)
 
 
 class Site_plus_dates(Site):

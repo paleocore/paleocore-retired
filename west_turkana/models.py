@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
+from .ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
     COLLECTOR_CHOICES, SIDE_VOCABULARY, COLLECTION_CODES
 from taxonomy.models import Taxon, IdentificationQualifier
 from uuid import uuid4

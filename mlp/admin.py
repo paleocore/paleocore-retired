@@ -1,6 +1,6 @@
 from django.contrib import admin
 import base.admin  # import default PaleoCore admin classes
-from models import Occurrence, Biology
+from .models import Occurrence, Biology
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import unicodecsv
@@ -75,7 +75,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         o = Occurrence()  # create an empty instance of an occurrence object
         b = Biology()  # create an empty instance of a biology object
 
-        occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        occurrence_field_list = list(o.__dict__.keys())  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
             occurrence_field_list.remove('_state')  # remove the _state field
         except ValueError:  # raised if _state field is not in the dictionary list
@@ -88,7 +88,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         occurrence_field_list.append("point_x")  # add new fields for coordinates of the geom object
         occurrence_field_list.append("point_y")
 
-        biology_field_list = b.__dict__.keys()  # get biology fields
+        biology_field_list = list(b.__dict__.keys())  # get biology fields
         try:  # try removing the state field
             biology_field_list.remove('_state')
         except ValueError:  # raised if _state field is not in the dictionary list

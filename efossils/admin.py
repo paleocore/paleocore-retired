@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import PaleoSite, Occurrence
+from .models import PaleoSite, Occurrence
 from olwidget.admin import GeoModelAdmin
 
 # Register your models here.

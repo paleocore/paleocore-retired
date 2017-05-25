@@ -92,7 +92,7 @@ def get_field_names(cursor):
 
 def main():
     # Open a connection to the local sqlite database
-    print "Opening connection to %s" % lgrpdb_path
+    print("Opening connection to %s" % lgrpdb_path)
     connection = sqlite3.connect(lgrpdb_path)  # open a connection to the HRP sqlite database
     dentition_cursor = connection.cursor()  # cursor for reading data in the dentition table
 
@@ -196,7 +196,7 @@ INNER JOIN Occurrence ON (biology.CatalogNumberNumeric = Occurrence.CatalogNumbe
         biology_instance.save()
         update_count += 1
 
-    print "Processed {} records, and updated {} biology objects".format(row_count, update_count)
+    print("Processed {} records, and updated {} biology objects".format(row_count, update_count))
     connection.close()  # close the connection
 
 

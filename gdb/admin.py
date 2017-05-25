@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Occurrence, Biology, Locality
+from .models import Occurrence, Biology, Locality
 import base.admin
 
 

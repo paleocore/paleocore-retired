@@ -1,5 +1,5 @@
 from django import forms
-from models import Occurrence
+from .models import Occurrence
 
 
 class UploadKMLForm(forms.Form):

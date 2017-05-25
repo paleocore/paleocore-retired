@@ -1,5 +1,5 @@
 from django.test import TestCase
-from models import Occurrence, Biology, Locality
+from .models import Occurrence, Biology, Locality
 from datetime import datetime
 from fiber.models import Page
 

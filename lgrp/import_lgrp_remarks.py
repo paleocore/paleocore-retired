@@ -45,7 +45,7 @@ def get_field_names(cursor):
 
 
 def import_lgrp_remarks():
-    print "Opening connection to %s" % lgrpdb_path
+    print("Opening connection to %s" % lgrpdb_path)
     connection = sqlite3.connect(lgrpdb_path)
     cursor = connection.cursor()  # connect to the LGRP sqlite DB
 
@@ -88,7 +88,7 @@ IS NULL AND biology.BiologyRemarks IS NULL);
                 instance.save()
                 update_count += 1
             except ObjectDoesNotExist:
-                print "No matching biology instance for ID {}".format(row_id)
+                print("No matching biology instance for ID {}".format(row_id))
         elif item_type in ('Artifactual', 'Geological'):
             try:
                 instance = Occurrence.objects.get(pk=row_id)
@@ -96,9 +96,9 @@ IS NULL AND biology.BiologyRemarks IS NULL);
                 instance.save()
                 update_count += 1
             except ObjectDoesNotExist:
-                print "No matching Occurrence instance for ID {}".format(row_id)
+                print("No matching Occurrence instance for ID {}".format(row_id))
         else:
-            print "Error matching instance"
+            print("Error matching instance")
 
 
     #
@@ -119,7 +119,7 @@ IS NULL AND biology.BiologyRemarks IS NULL);
     #     biology_instance.save()
     #     update_count += 1
 
-    print "Processed {} records, and updated {} biology objects".format(row_count, update_count)
+    print("Processed {} records, and updated {} biology objects".format(row_count, update_count))
     connection.close()  # close the connection
 
 

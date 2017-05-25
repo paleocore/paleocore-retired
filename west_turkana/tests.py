@@ -1,9 +1,9 @@
 from django.test import TestCase
-from models import Occurrence, Biology
+from .models import Occurrence, Biology
 from taxonomy.models import Taxon, IdentificationQualifier
 from django.core.urlresolvers import reverse
 from datetime import datetime
-from forms import UploadKMLForm
+from .forms import UploadKMLForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import Point
 from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import *  # import database models from models.py
+from .models import *  # import database models from models.py
 from django.forms import TextInput, Textarea  # import custom form widgets
 from olwidget.admin import GeoModelAdmin
 import base.admin
@@ -146,7 +146,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         writer = unicodecsv.writer(response)  # open a .csv writer
         o = Occurrence()  # create an empty instance of an occurrence object
 
-        occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        occurrence_field_list = list(o.__dict__.keys())  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
             occurrence_field_list.remove('_state')  # remove the _state field
         except ValueError:  # raised if _state field is not in the dictionary list
@@ -329,7 +329,7 @@ class BiologyAdmin(OccurrenceAdmin):
         o = Occurrence()  # create an empty instance of an occurrence object
         b = Biology()  # create an empty instance of a biology object
 
-        occurrence_field_list = o.__dict__.keys()  # fetch the fields names from the instance dictionary
+        occurrence_field_list = list(o.__dict__.keys())  # fetch the fields names from the instance dictionary
         try:  # try removing the state field from the list
             occurrence_field_list.remove('_state')  # remove the _state field
         except ValueError:  # raised if _state field is not in the dictionary list
@@ -344,7 +344,7 @@ class BiologyAdmin(OccurrenceAdmin):
         occurrence_field_list.append("easting")
         occurrence_field_list.append("northing")
 
-        biology_field_list = b.__dict__.keys()  # get biology fields
+        biology_field_list = list(b.__dict__.keys())  # get biology fields
         try:  # try removing the state field
             biology_field_list.remove('_state')
         except ValueError:  # raised if _state field is not in the dictionary list

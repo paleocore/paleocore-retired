@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-import views as west_turkana_views
+from . import views as west_turkana_views
 
 
 urlpatterns = patterns('',

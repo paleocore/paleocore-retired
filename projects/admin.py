@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from models import Project, ProjectTerm
+from .models import Project, ProjectTerm
 from olwidget.admin import GeoModelAdmin
 
 

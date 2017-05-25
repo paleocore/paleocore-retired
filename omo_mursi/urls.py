@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-import views as omo_mursi_views
+from . import views as omo_mursi_views
 
 
 urlpatterns = patterns('',

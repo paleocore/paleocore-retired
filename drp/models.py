@@ -137,7 +137,7 @@ class Occurrence(models.Model):
 
     def photo(self):
         try:
-            return u'<a href="%s"><img src="%s" style="width:600px" /></a>' \
+            return '<a href="%s"><img src="%s" style="width:600px" /></a>' \
                    % (os.path.join(self.image.url), os.path.join(self.image.url))
         except:
             return None
@@ -147,7 +147,7 @@ class Occurrence(models.Model):
 
     def thumbnail(self):
         try:
-            return u'<a href="%s"><img src="%s" style="width:100px" /></a>' \
+            return '<a href="%s"><img src="%s" style="width:100px" /></a>' \
                    % (os.path.join(self.image.url), os.path.join(self.image.url))
         except:
             return None

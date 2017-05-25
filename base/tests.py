@@ -5,7 +5,7 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 from django.contrib.auth.models import User
-from models import PaleocoreUser
+from .models import PaleocoreUser
 
 from django.test import TestCase
 from django.core.urlresolvers import reverse

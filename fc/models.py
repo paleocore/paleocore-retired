@@ -12,7 +12,7 @@ class Excavation_unit(models.Model):
         verbose_name_plural = "FC Excavation units"
         verbose_name = "FC Excavation Unit"
     def __unicode__(self):
-        return u'%s' % (self.unit)
+        return '%s' % (self.unit)
 
 
 class Context(models.Model):
@@ -33,7 +33,7 @@ class Context(models.Model):
         verbose_name_plural = "FC Context (Catalog)"
         verbose_name = "FC Context"
     def __unicode__(self):
-        return u'%s' % (self.cat_no)
+        return '%s' % (self.cat_no)
 
 
 class Refits(models.Model):
@@ -144,12 +144,12 @@ class Galet_Weights(Context):
 class Photo(Context):
     image01 = models.ImageField('Image',upload_to='/media/',null=True,blank=True)
     def thumb01(self):
-        return u'<a href="%s"><img src="%s" style="width:300px" /></a>' % (os.path.join(self.image01.url),os.path.join(self.image01.url))
+        return '<a href="%s"><img src="%s" style="width:300px" /></a>' % (os.path.join(self.image01.url),os.path.join(self.image01.url))
     thumb01.short_description = 'Image'
     thumb01.allow_tags = True
     thumb01.mark_safe = True
     def thumb02(self):
-        return u'<a href="%s"><img src="%s" style="width:100px" /></a>' % (os.path.join(self.image01.url),os.path.join(self.image01.url))
+        return '<a href="%s"><img src="%s" style="width:100px" /></a>' % (os.path.join(self.image01.url),os.path.join(self.image01.url))
     thumb02.short_description = 'Image'
     thumb02.allow_tags = True
     thumb02.mark_safe = True

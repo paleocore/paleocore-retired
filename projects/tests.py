@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from models import Project
+from .models import Project
 from mlp.models import Occurrence, Biology
 from django.contrib.gis.geos import Point
 from taxonomy.models import Taxon, IdentificationQualifier

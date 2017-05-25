@@ -1,6 +1,6 @@
 __author__ = 'reedd'
 
-from models import Occurrence, Biology
+from .models import Occurrence, Biology
 from taxonomy.models import Taxon, IdentificationQualifier
 from django.core.files import File
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
@@ -25,8 +25,8 @@ def find_mlp_duplicate_biological_barcodes():
         try:
             barcode_list.append(item.barcode)
         except:
-            print "Error"
-    for item, count in collections.Counter(barcode_list).items():
+            print("Error")
+    for item, count in list(collections.Counter(barcode_list).items()):
                 if count > 1:
                     duplicate_list.append(item)
     return duplicate_list
@@ -40,8 +40,8 @@ def find_mlp_duplicate_biological_catalog_numbers():
         try:
             catalog_list.append(item.catalog_number)
         except:
-            print "Error"
-    for item, count in collections.Counter(catalog_list).items():
+            print("Error")
+    for item, count in list(collections.Counter(catalog_list).items()):
                 if count > 1:
                     duplicate_list.append(item)
     return duplicate_list
@@ -68,7 +68,7 @@ def update_mlp_bio(updatelist=update_tuple_list):
             occurrence.item_description = des  # update item_description
             occurrence.save()  # save updates
         except ObjectDoesNotExist:  # handle if object is not found or is duplicate returning more than 1 match
-            print "Does Not Exist or Duplicate:"+cat
+            print("Does Not Exist or Duplicate:"+cat)
 
 
 def split_scientific_name(scientific_name):
@@ -120,7 +120,7 @@ def get_taxon_from_scientific_name(scientific_name):
             parent = Taxon.objects.get(name__exact=parent_name)  # find the matching parent object
             taxon = Taxon.objects.filter(name__exact=taxon_string).filter(parent=parent)[0]
         except ObjectDoesNotExist:
-            print "No taxon found to match {}".format(taxon_string)
+            print("No taxon found to match {}".format(taxon_string))
     return taxon
 
 
@@ -131,7 +131,7 @@ def test_get_taxon_from_scientific_name(test_list=id_test_list):
             taxon = get_taxon_from_scientific_name(i)
             #print '{}, {} = {}'.format(count, i, taxon)
         except ObjectDoesNotExist:
-            print '{}, {} = {}'.format(count, i, "Does Not Exist")
+            print('{}, {} = {}'.format(count, i, "Does Not Exist"))
         except MultipleObjectsReturned:
             '{}, {} = {}'.format(count, i, 'Multiple Objects Returned')
         count+=1
@@ -175,7 +175,7 @@ def occurrence2biology(oi):
                                  identification_qualifier=id_qual,
                                  geom=oi.geom
                                  )
-        for key in oi.__dict__.keys():
+        for key in list(oi.__dict__.keys()):
             new_biology.__dict__[key]=oi.__dict__[key]
 
         oi.delete()
@@ -184,7 +184,7 @@ def occurrence2biology(oi):
 
 def update_occurrence2biology():
     mlp_fossils = Occurrence.objects.filter(item_type__in=["Faunal", "Floral"])
-    print 'Processing {} Occurrence records'.format(mlp_fossils.count())
+    print('Processing {} Occurrence records'.format(mlp_fossils.count()))
     count = 0
     existing = []
     converted = []
@@ -194,11 +194,11 @@ def update_occurrence2biology():
             # print "{}. Occurence {} barcode: {} is already a Biology object.".format(count, f.id, f.barcode)
             existing.append(f.id)
         except ObjectDoesNotExist:
-            print "{}. Converting Occurrence id: {} barcode: {} to Biology.".format(count, f.id, f.barcode)
+            print("{}. Converting Occurrence id: {} barcode: {} to Biology.".format(count, f.id, f.barcode))
             occurrence2biology(f)
             converted.append(f.id)
         count += 1
-    print "Run completed. {} occurrences already existed. {} were converted.".format(len(existing), len(converted))
+    print("Run completed. {} occurrences already existed. {} were converted.".format(len(existing), len(converted)))
     return existing, converted
 
 
@@ -224,12 +224,12 @@ def import_dg_updates(file_path='/Users/reedd/Documents/projects/PaleoCore/proje
     # populate data list
     for row in data[1:]:  # skip header row
         data_list.append(row[:-1].split('|'))  # remove newlines and split by delimiter
-    print 'Importing data from {}'.format(file_path)
+    print('Importing data from {}'.format(file_path))
     return header_list, data_list
 
 
 def show_duplicate_rows(data_list):
-    print "\nChecking for duplicate records."
+    print("\nChecking for duplicate records.")
     unique_data_list = []
     duplicates = []
     data_list_set = [list(x) for x in set(tuple(x) for x in data_list)]
@@ -242,7 +242,7 @@ def show_duplicate_rows(data_list):
     for row in unique_data_list:
         row.insert(0, rowcount)
         rowcount += 1
-    print "Unique rows: {} ?= Row set: {}\nDuplicate rows: {}".format(len(unique_data_list), len(data_list_set), len(duplicates))
+    print("Unique rows: {} ?= Row set: {}\nDuplicate rows: {}".format(len(unique_data_list), len(data_list_set), len(duplicates)))
     return unique_data_list, duplicates, data_list_set
 
 
@@ -341,15 +341,15 @@ def old_match(data_list):
             elif not coordinate_match_result[0]:
                 problem_tuple = (row, coordinate_match_result[1])
                 problem_list.append(problem_tuple)
-    print 'Matched {} records using catalog numbers'.format(len(match_list))
-    print 'Matched {} records using coordinates'.format(len(coordinate_match_list))
-    print 'There are {} remaining unmatched records\n'.format(len(problem_list))
+    print('Matched {} records using catalog numbers'.format(len(match_list)))
+    print('Matched {} records using coordinates'.format(len(coordinate_match_list)))
+    print('There are {} remaining unmatched records\n'.format(len(problem_list)))
 
     return match_list, coordinate_match_list, problem_list
 
 
 def match(data_list):
-    print '\nMatching {} items in list'.format(len(data_list))
+    print('\nMatching {} items in list'.format(len(data_list)))
     full_match_list = []
     coordinate_match_list = []
     bad_match_list = []
@@ -388,9 +388,9 @@ def match(data_list):
             bad_match_list.append(match_tuple)
             #print match_tuple
 
-    print "Matches: {}\nCoordinate Matches: {}\nBad Matches: {}".format(len(full_match_list),
+    print("Matches: {}\nCoordinate Matches: {}\nBad Matches: {}".format(len(full_match_list),
                                                                         len(coordinate_match_list),
-                                                                        len(bad_match_list))
+                                                                        len(bad_match_list)))
     return full_match_list, coordinate_match_list, bad_match_list
 
 
@@ -422,25 +422,25 @@ def display_match(match_tuple):
     #                      bio:  id  catno  basis   lon         lat     coll   mo    yr    desc    sci  tname qual  rem
     object_print_string = '{:3}:{:5}  {:8}  {:10}  {:10.10f} {:10.10f}  {:20}  {:8}  {:4}  {:30}  {:30}  {:30} {:5} {}'
 
-    print object_print_string.format('bio', obj.id, obj.catalog_number,
+    print(object_print_string.format('bio', obj.id, obj.catalog_number,
                                      obj.basis_of_record,
                                      obj.point_x(), obj.point_y(),
                                      obj.collector, omonth, oyear,
                                      obj.item_description, obj.item_scientific_name, obj.taxon,
                                      obj.identification_qualifier,
-                                     obj.remarks)
-    print row_print_string.format('row', id, catalog_number, basis,
+                                     obj.remarks))
+    print(row_print_string.format('row', id, catalog_number, basis,
                                   longitude, latitude,
                                   collector,
                                   month, year,
                                   description,
                                   taxon_string, taxon_obj,
                                   id_qualifier,
-                                  notes)
+                                  notes))
 
 
 def validate_matches(match_list, coordinate_match_list, problem_match_list):
-    print "\n## Summary of Matches ##\n"
+    print("\n## Summary of Matches ##\n")
     match_no = 1
 
     # print "\n Catalog Number Matches\n"
@@ -448,15 +448,15 @@ def validate_matches(match_list, coordinate_match_list, problem_match_list):
     #     print 'Match {}'.format(match_no)
     #     match_no += 1
     #     display_match(p)
-    print "\n Coordinate Matches\n"
+    print("\n Coordinate Matches\n")
     for p in coordinate_match_list:
-        print 'Match {}'.format(match_no)
+        print('Match {}'.format(match_no))
         match_no += 1
         display_match(p)
 
 
 def update_matches(match_list):
-    print "\n## Updating Matches ##"
+    print("\n## Updating Matches ##")
     counter = 0
     for m in match_list:
         row = m[0]
@@ -477,10 +477,10 @@ def update_matches(match_list):
         obj.taxon = taxon_obj
         obj.identification_qualifier = id_qual_obj
         obj.identified_by = identifier
-        print "updated match {} cat:{}".format(row[0], row[1])
+        print("updated match {} cat:{}".format(row[0], row[1]))
         counter += 1
         obj.save()
-    print "{} records updated successfully.".format(counter)
+    print("{} records updated successfully.".format(counter))
 
 
 def main():
@@ -539,7 +539,7 @@ def fixpts():
 
 def test_taxon_usage(taxon_id):
     uses = Biology.objects.filter(taxon=taxon_id)
-    print "mlp has {} Biology instances pointing to taxon {}".format(uses.count(), taxon_id)
+    print("mlp has {} Biology instances pointing to taxon {}".format(uses.count(), taxon_id))
     return uses
 
 
@@ -575,4 +575,4 @@ def create_biology(row):
                        identification_qualifier=idq
                        )
     else:
-        print "Occurrence {} already exists.".format(barcode)
+        print("Occurrence {} already exists.".format(barcode))

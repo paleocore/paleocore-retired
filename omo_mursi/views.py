@@ -3,9 +3,9 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 from django.views import generic
 import os
-from models import Occurrence
+from .models import Occurrence
 import shapefile
-from forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
+from .forms import UploadForm, UploadKMLForm, DownloadKMLForm, ChangeXYForm
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
@@ -49,27 +49,27 @@ class DownloadKMLView(generic.FormView):
 
                 d += open_row
                 d += ''.join(("Basis of Record", middle_row))
-                d += ''.join(filter(None, (o.basis_of_record, close_row, open_row)))
+                d += ''.join([_f for _f in (o.basis_of_record, close_row, open_row) if _f])
                 d += ''.join(("Time", middle_row))
-                d += ''.join(filter(None, (str(o.field_number), close_row, open_row)))
+                d += ''.join([_f for _f in (str(o.field_number), close_row, open_row) if _f])
                 d += ''.join(("Item Type", middle_row))
-                d += ''.join(filter(None, (o.item_type, close_row, open_row)))
+                d += ''.join([_f for _f in (o.item_type, close_row, open_row) if _f])
                 d += ''.join(("Collector", middle_row))
-                d += ''.join(filter(None, (o.collector, close_row, open_row)))
+                d += ''.join([_f for _f in (o.collector, close_row, open_row) if _f])
                 d += ''.join(("Collection Method", middle_row))
-                d += ''.join(filter(None, (o.collecting_method, close_row, open_row)))
+                d += ''.join([_f for _f in (o.collecting_method, close_row, open_row) if _f])
                 d += ''.join(("Count", middle_row))
-                d += ''.join(filter(None, (str(o.individual_count), close_row, open_row)))
+                d += ''.join([_f for _f in (str(o.individual_count), close_row, open_row) if _f])
                 d += ''.join(("Bar Code", middle_row))
-                d += ''.join(filter(None, (str(o.barcode), close_row, open_row)))
+                d += ''.join([_f for _f in (str(o.barcode), close_row, open_row) if _f])
                 d += ''.join(("Scientific Name", middle_row))
-                d += ''.join(filter(None, (o.item_scientific_name, close_row, open_row)))
+                d += ''.join([_f for _f in (o.item_scientific_name, close_row, open_row) if _f])
                 d += ''.join(("Description", middle_row))
-                d += ''.join(filter(None, (o.item_description, close_row, open_row)))
+                d += ''.join([_f for _f in (o.item_description, close_row, open_row) if _f])
                 d += ''.join(("Remarks", middle_row))
-                d += ''.join(filter(None, (o.remarks, close_row, open_row)))
+                d += ''.join([_f for _f in (o.remarks, close_row, open_row) if _f])
                 d += ''.join(("In Situ", middle_row))
-                d += ''.join(filter(None, (str(o.in_situ), close_row)))
+                d += ''.join([_f for _f in (str(o.in_situ), close_row) if _f])
                 d += "</table>"
                 p.description = d
                 p.geometry = pnt
@@ -114,7 +114,7 @@ class UploadKMLView(generic.FormView):
                     table = etree.fromstring(o.description)
                     attributes = table.xpath("//text()")
                     # TODO test attributes is even length
-                    attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
+                    attributes_dict = dict(list(zip(attributes[0::2], attributes[1::2])))
 
                     # Create a new, empty occurrence instance
                     omo_mursi_occ = Occurrence()
@@ -233,7 +233,7 @@ class UploadKMLView(generic.FormView):
             try:
                 kml_document = kmz_file.open('doc.kml', 'r').read()
             except KeyError:
-                print "ERROR: Didn't find doc.kml in the zipped file."
+                print("ERROR: Didn't find doc.kml in the zipped file.")
         else:
             kml_document = open(kml_file_path + "/" + kml_file_upload_name, 'r').read()
 

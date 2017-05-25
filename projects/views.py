@@ -86,7 +86,7 @@ def ajaxProjectData(request, pcoreapp):
 
     # build up admin style filter arguments from url string
     filterArgs = {}
-    for key, value in request.GET.iteritems():
+    for key, value in request.GET.items():
         if value:
             if value != "":
                 filterArgs[key] = value
@@ -119,7 +119,7 @@ def ajaxProjectData(request, pcoreapp):
 def projectDataTable(request, pcoreapp="drp"):
     project = get_object_or_404(Project, paleocore_appname = pcoreapp)
     filter_args = {}
-    for key, value in request.GET.iteritems():
+    for key, value in request.GET.items():
         if value:
             if value != "":
                 filter_args[key] = value

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import *
+from .models import *
 
 
 class GrainsInLine(admin.TabularInline):
@@ -164,7 +164,7 @@ class Lithics_with_Photos_admin(admin.ModelAdmin):
     inlines = [PhotosInline, LithicsInline]
     ordering = ('unit','id',)
     def get_thumb(self, instance):
-        return u'<a href="%s"><img src="%s" style="width:100px" /></a>' % (os.path.join(instance.photo.image01.url),os.path.join(instance.photo.image01.url))
+        return '<a href="%s"><img src="%s" style="width:100px" /></a>' % (os.path.join(instance.photo.image01.url),os.path.join(instance.photo.image01.url))
     get_thumb.allow_tags = True
     get_thumb.mark_safe = True
     def get_queryset(self, request):

@@ -103,7 +103,7 @@ def get_field_names(cursor):
 
 def main():
     # Open a connection to the local sqlite database
-    print "Opening connection to %s" % lgrpdb_path
+    print("Opening connection to %s" % lgrpdb_path)
     connection = sqlite3.connect(lgrpdb_path)
     occurrence_cursor = connection.cursor()  # cursor for reading data in the occurrence table
     biology_cursor = connection.cursor()  # cursor for reading data in the biology table
@@ -149,24 +149,24 @@ def main():
             biology_instance.element_number = en
         else:
             number_problems.append(row_id)
-            print "Number {} for id {} not in choice_list".format(en, row_id)
+            print("Number {} for id {} not in choice_list".format(en, row_id))
 
         em = row[biology_field_list.index('ElementQualifier')]
         if em is None or (em in [x[0] for x in LGRP_ELEMENT_MODIFIER_CHOICES[0:]]):
             biology_instance.element_modifier = em
         else:
             modifier_problems.append(row_id)
-            print "Modifier {} for id {} not in choice list".format(em, row_id)
+            print("Modifier {} for id {} not in choice list".format(em, row_id))
 
 
         biology_instance.save()
 
-    print "Finished updating {} records \n".format(row_count)
-    print "Found {} Orphans:".format(len(orphans))
+    print("Finished updating {} records \n".format(row_count))
+    print("Found {} Orphans:".format(len(orphans)))
     #print orphans
-    print "Found {} Portion Problems".format(len(portion_problems))
+    print("Found {} Portion Problems".format(len(portion_problems)))
     #print portion_problems
 
-    print "Found {} Number Problems".format(len(number_problems))
-    print "Found {} Modifier Problems".format(len(modifier_problems))
+    print("Found {} Number Problems".format(len(number_problems)))
+    print("Found {} Modifier Problems".format(len(modifier_problems)))
     connection.close()

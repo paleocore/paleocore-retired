@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from models import Site, Date
+from .models import Site, Date
 from django.contrib.gis.shortcuts import render_to_kml
 from django.shortcuts import render_to_response
-from forms import SiteSearch
+from .forms import SiteSearch
 from django.http import HttpResponse, HttpResponseRedirect
 import csv
 

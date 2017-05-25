@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
+from .ontologies import BASIS_OF_RECORD_VOCABULARY, ITEM_TYPE_VOCABULARY, COLLECTING_METHOD_VOCABULARY, \
     COLLECTOR_CHOICES, SIDE_VOCABULARY, COLLECTION_CODES
 from taxonomy.models import Taxon, IdentificationQualifier
 import utm, os
@@ -98,7 +98,7 @@ class Occurrence(models.Model):
 
     def photo(self):
         try:
-            return u'<a href="%s"><img src="%s" style="width:600px" /></a>' \
+            return '<a href="%s"><img src="%s" style="width:600px" /></a>' \
                    % (os.path.join(self.image.url), os.path.join(self.image.url))
         except:
             return None
@@ -109,7 +109,7 @@ class Occurrence(models.Model):
 
     def thumbnail(self):
         try:
-            return u'<a href="%s"><img src="%s" style="width:100px" /></a>' \
+            return '<a href="%s"><img src="%s" style="width:100px" /></a>' \
                    % (os.path.join(self.image.url), os.path.join(self.image.url))
         except:
             return None

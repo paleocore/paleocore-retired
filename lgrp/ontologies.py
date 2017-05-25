@@ -43,35 +43,35 @@ LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
 )
 
 LGRP_IDENTIFIER_CHOICES = (
-    (u'D. Braun', u'D. Braun'),
-    (u'J. Thompson', u'J. Thompson'),
-    (u'E. Scott', u'E. Scott'),
-    (u'E. Locke', u'E. Locke'),
-    (u'A.E. Shapiro', u'A.E. Shapiro'),
-    (u'A.W. Gentry', u'A.W. Gentry'),
-    (u'B.J. Schoville', u'B.J. Schoville'),
-    (u'B.M. Latimer', u'B.M. Latimer'),
-    (u'C. Denys', u'C. Denys'),
-    (u'C.A. Lockwood', u'C.A. Lockwood'),
-    (u'D. Geraads', u'D. Geraads'),
-    (u'D.C. Johanson', u'D.C. Johanson'),
-    (u'E. Delson', u'E. Delson'),
-    (u'E.S. Vrba', u'E.S. Vrba'),
-    (u'F.C. Howell', u'F.C. Howell'),
-    (u'G. Petter', u'G. Petter'),
-    (u'G. Suwa', u'G. Suwa'),
-    (u'G.G. Eck', u'G.G. Eck'),
-    (u'H.B. Krentza', u'H.B. Krentza'),
-    (u'H.B. Wesselman', u'H.B. Wesselman'),
-    (u'H.B.S. Cooke', u'H.B.S. Cooke'), (u'Institute Staff', u'Institute Staff'), (u'J.C. Rage', u'J.C. Rage'),
-    (u'K.E. Reed', u'K.E. Reed'), (u'L.A. Werdelin', u'L.A. Werdelin'), (u'L.J. Flynn', u'L.J. Flynn'),
-    (u'M. Sabatier', u'M. Sabatier'), (u'M.E. Lewis', u'M.E. Lewis'), (u'N. Fessaha', u'N. Fessaha'),
-    (u'P. Brodkorb', u'P. Brodkorb'), (u'R. Bobe-Quinteros', u'R. Bobe-Quinteros'), (u'R. Geze', u'R. Geze'),
-    (u'R.L. Bernor', u'R.L. Bernor'), (u'S.R. Frost', u'S.R. Frost'), (u'T.D. White', u'T.D. White'),
-    (u'T.K. Nalley', u'T.K. Nalley'), (u'V. Eisenmann', u'V. Eisenmann'), (u'W.H. Kimbel', u'W.H. Kimbel'),
-    (u'Z. Alemseged', u'Z. Alemseged'), (u'S. Oestmo', u'S. Oestmo'), (u'J. Rowan', u'J. Rowan'),
-    (u'C.J. Campisano', u'C.J. Campisano'), (u'J. Robinson', u'J. Robinson'), (u'I. Smail', u'I. Smail'),
-    (u'I. Lazagabaster', u'I. Lazagabaster')
+    ('D. Braun', 'D. Braun'),
+    ('J. Thompson', 'J. Thompson'),
+    ('E. Scott', 'E. Scott'),
+    ('E. Locke', 'E. Locke'),
+    ('A.E. Shapiro', 'A.E. Shapiro'),
+    ('A.W. Gentry', 'A.W. Gentry'),
+    ('B.J. Schoville', 'B.J. Schoville'),
+    ('B.M. Latimer', 'B.M. Latimer'),
+    ('C. Denys', 'C. Denys'),
+    ('C.A. Lockwood', 'C.A. Lockwood'),
+    ('D. Geraads', 'D. Geraads'),
+    ('D.C. Johanson', 'D.C. Johanson'),
+    ('E. Delson', 'E. Delson'),
+    ('E.S. Vrba', 'E.S. Vrba'),
+    ('F.C. Howell', 'F.C. Howell'),
+    ('G. Petter', 'G. Petter'),
+    ('G. Suwa', 'G. Suwa'),
+    ('G.G. Eck', 'G.G. Eck'),
+    ('H.B. Krentza', 'H.B. Krentza'),
+    ('H.B. Wesselman', 'H.B. Wesselman'),
+    ('H.B.S. Cooke', 'H.B.S. Cooke'), ('Institute Staff', 'Institute Staff'), ('J.C. Rage', 'J.C. Rage'),
+    ('K.E. Reed', 'K.E. Reed'), ('L.A. Werdelin', 'L.A. Werdelin'), ('L.J. Flynn', 'L.J. Flynn'),
+    ('M. Sabatier', 'M. Sabatier'), ('M.E. Lewis', 'M.E. Lewis'), ('N. Fessaha', 'N. Fessaha'),
+    ('P. Brodkorb', 'P. Brodkorb'), ('R. Bobe-Quinteros', 'R. Bobe-Quinteros'), ('R. Geze', 'R. Geze'),
+    ('R.L. Bernor', 'R.L. Bernor'), ('S.R. Frost', 'S.R. Frost'), ('T.D. White', 'T.D. White'),
+    ('T.K. Nalley', 'T.K. Nalley'), ('V. Eisenmann', 'V. Eisenmann'), ('W.H. Kimbel', 'W.H. Kimbel'),
+    ('Z. Alemseged', 'Z. Alemseged'), ('S. Oestmo', 'S. Oestmo'), ('J. Rowan', 'J. Rowan'),
+    ('C.J. Campisano', 'C.J. Campisano'), ('J. Robinson', 'J. Robinson'), ('I. Smail', 'I. Smail'),
+    ('I. Lazagabaster', 'I. Lazagabaster')
 )
 
 
@@ -264,10 +264,10 @@ LGRP_ELEMENT_MODIFIER_CHOICES = (
 )
 
 LGRP_SIDE_CHOICES = (
-    (u'L', u'L'),
-    (u'R', u'R'),
-    (u'Indeterminate', u'Indeterminate'),
-    (u'L+R', u'L+R')
+    ('L', 'L'),
+    ('R', 'R'),
+    ('Indeterminate', 'Indeterminate'),
+    ('L+R', 'L+R')
 )
 
 LGRP_WEATHERING_CHOICES = (

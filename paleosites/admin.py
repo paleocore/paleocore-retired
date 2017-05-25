@@ -1,4 +1,4 @@
-from models import Site, Date, Site_plus_dates
+from .models import Site, Date, Site_plus_dates
 from django.contrib.gis import admin
 import django.contrib.gis.geos
 import csv

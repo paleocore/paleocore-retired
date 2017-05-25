@@ -8,7 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 # Import sensitive data from separate file not on GitHub
-import secrets
+from . import secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
@@ -20,7 +20,7 @@ PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, '../paleocore_media')
+#MEDIA_ROOT = os.path.join(BASE_DIR, '../paleocore_media')
 MEDIA_ROOT = secrets.MEDIA_ROOT
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',  # enables geodjango
+    'debug_toolbar',
 
     # Django Fiber Apps
     'mptt',

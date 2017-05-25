@@ -101,8 +101,8 @@ def add_dentition_data(row, obj):
 
 def main():
     import_count, collection_count, observation_count, row_count, ac, bc, gc, ao, bo, go = [0] * 10
-    print "Record limit is set to: %s\n" % record_limit
-    print "Processing records\n\n",
+    print("Record limit is set to: %s\n" % record_limit)
+    print("Processing records\n\n", end=' ')
 
     # Fetch all Biology occurrences
     biology_objects_rs = Biology.objects.all()
@@ -123,10 +123,10 @@ def main():
             updated_obj.save()
         # print report
             import_count += 1
-    print "Completed update of {} biological occurrences".format(import_count)
+    print("Completed update of {} biological occurrences".format(import_count))
 
 # Open a connection to the local sqlite database
-print "Opening connection to %s" % hrpdb_path
+print("Opening connection to %s" % hrpdb_path)
 connection = sqlite3.connect(hrpdb_path)  # open a connection to the HRP sqlite database
 dentition_cursor = connection.cursor()  # cursor for reading data in the dentition table
 
