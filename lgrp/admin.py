@@ -44,7 +44,7 @@ occurrence_fieldsets = (
         'fields': [('id', 'date_last_modified',)]
     }),
     ('Item Details', {
-        'fields': [('barcode', 'catalog_number', 'old_catalog_number'),
+        'fields': [('barcode', 'catalog_number'),
                    ('date_recorded', 'year_collected',),
                    ('collection_code', 'locality_number', 'item_number', 'item_part'),
                    ('collection_remarks',)]
