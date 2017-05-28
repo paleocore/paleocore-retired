@@ -83,13 +83,10 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     actions = ['create_data_csv', 'change_xy']
     readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number',
                                                            'longitude', 'latitude')
-    list_display = list(base.admin.default_list_display+('thumbnail',))
-    field_number_index = list_display.index('field_number')
-    list_display.pop(field_number_index)
-    list_display.insert(2, 'old_cat_number')
-    list_display.insert(3, 'collection_code')
-    #list_display.insert(4, 'item_number')
-    #list_display.insert(5, 'item_part')
+    # list_display = list(base.admin.default_list_display+('thumbnail',))
+    list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
+                    'item_type', 'item_scientific_name', 'item_description', 'collector', 'year_collected',
+                    'collecting_method', 'thumbnail', 'date_last_modified', 'easting', 'northing']
     fieldsets = occurrence_fieldsets
     list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem',
                    'weathering']

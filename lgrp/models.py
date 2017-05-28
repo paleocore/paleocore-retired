@@ -18,7 +18,7 @@ class Occurrence(models.Model):
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     # During initial import remove collection code choices. Add later for validation.
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
+    collection_code = models.CharField("Coll Code", max_length=20, blank=True, null=True)
     locality_number = models.IntegerField("Locality", null=True, blank=True)
     # Splitting item number and part allows more fine grained searches
     item_number = models.CharField("Item #",  max_length=10, null=True, blank=True)
@@ -69,7 +69,7 @@ class Occurrence(models.Model):
     problem = models.BooleanField(default=False)
     problem_comment = models.TextField(max_length=255, blank=True, null=True)
     barcode = models.IntegerField("Barcode", null=True, blank=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
+    date_last_modified = models.DateTimeField("Modified", auto_now=True)
     objects = models.GeoManager()
     old_cat_number = models.CharField(max_length=255, blank=True, null=True)
 
