@@ -122,7 +122,7 @@ class Occurrence(models.Model):
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
     collecting_method = models.CharField(max_length=50,
-                                         choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True)
+                                         choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True, blank=True)
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
     field_number = models.CharField(max_length=50, null=True, blank=True)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
