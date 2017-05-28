@@ -6,8 +6,8 @@ LGRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation",
 LGRP_COLLECTING_METHOD_VOCABULARY = (
     ("Survey", "Survey"),
     ("Wet Screen", "Wet Screen"),
-    ("Crawl survey", "Crawl survey"),
-    ("Transect survey", "Transect survey"),
+    ("Crawl Survey", "Crawl Survey"),
+    ("Transect Survey", "Transect Survey"),
     ("Dry Screen", "Dry Screen"),
     ("Excavation", "Excavation"),
 )
