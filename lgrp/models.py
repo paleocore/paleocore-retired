@@ -81,6 +81,17 @@ class Occurrence(models.Model):
         fields = ("id", "barcode")
         return fields
 
+    @staticmethod
+    def method_fields_to_export():
+        """
+        Method to store a list of fields that should be added to data exports.
+        Called by export admin actions.
+        These fields are defined in methods and are not concrete fields in the DB so have to be declared.
+        :return:
+        """
+        fields = ['longitude', 'latitude', 'easting', 'northing', 'catalog_number']
+        return fields
+
     def point_x(self):
         """
         Return the x coordinate for the point in its native coordinate system
@@ -159,39 +170,39 @@ class Occurrence(models.Model):
         else:
             return None
 
-    def old_catalog_number(self):
-        """
-        Generate a pretty string formated catalog number from constituent fields
-        :return: old version of catalog number as string
-        """
-        if self.basis_of_record == 'Collection':
-            #  Crate catalog number string. Null values become None when converted to string
-            if self.item_number:
-                if self.item_part:
-                    item_text = '-' + str(self.item_number) + str(self.item_part)
-                else:
-                    item_text = '-' + str(self.item_number)
-            else:
-                item_text = ''
-
-            catalog_number_string = str(self.collection_code) + " " + str(self.locality_number) + item_text
-            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
-        else:
-            return None
+    # def old_catalog_number(self):
+    #     """
+    #     Generate a pretty string formated catalog number from constituent fields
+    #     :return: old version of catalog number as string
+    #     """
+    #     if self.basis_of_record == 'Collection':
+    #         #  Crate catalog number string. Null values become None when converted to string
+    #         if self.item_number:
+    #             if self.item_part:
+    #                 item_text = '-' + str(self.item_number) + str(self.item_part)
+    #             else:
+    #                 item_text = '-' + str(self.item_number)
+    #         else:
+    #             item_text = ''
+    #
+    #         catalog_number_string = str(self.collection_code) + " " + str(self.locality_number) + item_text
+    #         return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
+    #     else:
+    #         return None
 
     def __unicode__(self):
         nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
                     + str(self.item_description) + "]"
         return nice_name.replace("None", "").replace("--", "")
 
-    def save(self, *args, **kwargs):
-        """
-        Custom save method for Occurrence objects. Automatically updates catalog_number field
-        :param args:
-        :param kwargs:
-        :return:
-        """
-        super(Occurrence, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     """
+    #     Custom save method for Occurrence objects. Automatically updates catalog_number field
+    #     :param args:
+    #     :param kwargs:
+    #     :return:
+    #     """
+    #     super(Occurrence, self).save(*args, **kwargs)
 
     def photo(self):
         try:
@@ -410,6 +421,6 @@ class Image(models.Model):
 
 
 class File(models.Model):
-    occurrence = models.ForeignKey("Occurrence")
+    occurrence = models.ForeignKey("Occurrence", related_name='files')
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
