@@ -252,7 +252,8 @@ class ElementInLine(admin.StackedInline):
 class BiologyAdmin(OccurrenceAdmin):
     fieldsets = biology_fieldsets
     inlines = (BiologyInline, ImagesInline, FilesInline)
-    list_filter = ['basis_of_record', 'year_collected', 'collector', 'collection_code', 'problem', 'element', 'weathering']
+    list_filter = ['basis_of_record', 'year_collected', 'collector', 'collection_code', 'problem', 'element',
+                   'weathering']
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -260,63 +261,53 @@ class BiologyAdmin(OccurrenceAdmin):
         writer = unicodecsv.writer(response)  # open a .csv writer
         b = Biology()  # create an empty instance of a biology object
 
-        field_list = b._meta.get_fields()  # fetch the fields from the instance meta information
-        field_names = [f.name for f in field_list]  # iterate through field objects and get field names
-        try:  # try removing the state field from the list
-            field_names.remove('_state')  # remove the _state field
-        except ValueError:  # raised if _state field is not in the dictionary list
-            pass
-        try:  # try removing the geom field from the list
-            field_names.remove('geom')
-        except ValueError:  # raised if geom field is not in the dictionary list
-            pass
-        # Replace the geom field with new fields
-        field_names.append('longitude')  # add new fields for coordinates of the geom object
-        field_names.append('latitude')
-        field_names.append('easting')
-        field_names.append('northing')
-        field_names.insert(field_names.index('taxon'), 'taxon_id')
+        # Fetch model field names. We need to account for data originating from tables, relations and methods.
+        concrete_field_names = b.get_concrete_field_names()  # fetch a list of concrete field names
+        method_field_names = b.method_fields_to_export()  # fetch a list for method field names
 
+        fk_fields = [f for f in b._meta.get_fields() if f.is_relation]  # get a list of field objects
+        fk_field_names = [f.name for f in fk_fields]  # fetch a list of foreign key field names
+
+        # Concatenate to make a master field list
+        field_names = concrete_field_names + method_field_names + fk_field_names
         writer.writerow(field_names)  # write column headers
 
-        for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
-            # The next line uses string comprehension to build a list of values for each field
-            occurrence_dict = occurrence.__dict__
-            # Check that instance has geom
+        def get_fk_values(occurrence, fk):
+            """
+            Get the values associated with a foreign key relation
+            :param occurrence:
+            :param fk:
+            :return:
+            """
+            qs = None
+            return_string = ''
             try:
-                occurrence_dict['longitude'] = occurrence.longitude()  # translate the occurrence geom object
-                occurrence_dict['latitude'] = occurrence.latitude()
-                occurrence_dict['easting'] = occurrence.easting()
-                occurrence_dict['northing'] = occurrence.northing()
-            except AttributeError:  # If no geom data exists write None to the dictionary
-                occurrence_dict['longitude'] = None
-                occurrence_dict['latitude'] = None
-                occurrence_dict['easting'] = None
-                occurrence_dict['northing'] = None
+                qs = [obj for obj in getattr(occurrence, fk).all()]  # if fk is one to many try getting all objects
+            except AttributeError:
+                return_string = str(getattr(occurrence, fk))  # if one2one or many2one get single related value
 
-            try:  # Try writing the taxon name in the taxon field
-                occurrence_dict['taxon'] = occurrence.taxon.name
-                occurrence_dict['taxon_id'] = occurrence.taxon.id
-            except ObjectDoesNotExist:
-                occurrence_dict['taxon'] = None
-                occurrence_dict['taxon_id'] = None
-            except AttributeError:  # Django specific exception
-                occurrence_dict['taxon'] = None
-                occurrence_dict['taxon_id'] = None
+            if qs:
+                try:
+                    # Getting the name of related objects requires calling the file or image object.
+                    # This solution may break if relation is neither file nor image.
+                    return_string = '|'.join([str(os.path.basename(i.image.name)) for i in qs])
+                except AttributeError:
+                    return_string = '|'.join([str(os.path.basename(i.file.name)) for i in qs])
 
+            return return_string
 
+        for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
+            # The next line uses string comprehension to build a list of values for each field.
+            # All values are converted to strings.
+            concrete_values = [str(getattr(occurrence, field)) for field in concrete_field_names]
+            # Create a list of values from method calls. Note the parenthesis after getattr in the list comprehension.
+            method_values = [str(getattr(occurrence, method)()) for method in method_field_names]
+            # Create a list of values from related tables. One to many fields have related values concatenated in str.
+            fk_values = [get_fk_values(occurrence, fk) for fk in fk_field_names]
 
-            # Next we use the field list to fetch the values from the dictionary.
-            # Dictionaries do not have a reliable ordering. This code insures we get the values
-            # in the same order as the field list.
-            try:  # Try writing values for all keys listed in both the occurrence and biology tables
-                writer.writerow([occurrence_dict.get(k) for k in field_names])
-            except ObjectDoesNotExist:  # Django specific exception
-                writer.writerow([occurrence_dict.get(k) for k in field_names])
-            except AttributeError:  # Django specific exception
-                writer.writerow([occurrence_dict.get(k) for k in field_names])
-
-
+            row_data = concrete_values + method_values + fk_values
+            cleaned_row_data = ['' if i in ['None', 'False'] else i for i in row_data]  # Replace None with empty strings.
+            writer.writerow(cleaned_row_data)
 
         return response
 
