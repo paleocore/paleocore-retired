@@ -214,7 +214,28 @@ class Occurrence(models.Model):
     thumbnail.mark_safe = True
 
     def get_all_field_names(self):
-        return self._meta.get_all_field_names()
+        """
+        Field names from model
+        :return: list with all field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list]  # return a list of names from each field
+
+    def get_foreign_key_field_names(self):
+        """
+        Get foreign key fields
+        :return: returns a list of for key field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list if f.is_relation]  # return a list of names for fk fields
+
+    def get_concrete_field_names(self):
+        """
+        Get field names that correspond to columns in the DB
+        :return: returns a lift
+        """
+        field_list = self._meta.get_fields()
+        return [f.name for f in field_list if f.concrete]
 
     class Meta:
         verbose_name = "LGRP Occurrence"
@@ -382,7 +403,8 @@ class Hydrology(models.Model):
 
 # Media Classes
 class Image(models.Model):
-    occurrence = models.ForeignKey("Occurrence", related_name='lgrp_occurrences')
+    # occurrence = models.ForeignKey("Occurrence")
+    occurrence = models.ForeignKey("Occurrence", related_name='images')
     image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 

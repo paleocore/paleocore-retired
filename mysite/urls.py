@@ -52,12 +52,12 @@ The following code insures that user uploaded media are properly served with the
 # in the django 1.4 documentation.
 # https://docs.djangoproject.com/en/1.4/howto/static-files/
 """
-#if settings.DEBUG:
-#    urlpatterns = patterns('',
-#        url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-#            {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-#        url(r'', include('django.contrib.staticfiles.urls')),
-#    ) + urlpatterns
+if settings.DEBUG:
+   urlpatterns = patterns('',
+       url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+           {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+       url(r'', include('django.contrib.staticfiles.urls')),
+   ) + urlpatterns
 
 """
 The following code insures users uploaded media are served with the development

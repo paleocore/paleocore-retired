@@ -76,6 +76,14 @@ class OccurrenceMethodTests(TestCase):
         dik1 = Occurrence.objects.get(barcode=1)
         self.assertEqual(dik1.point_y(), 11.1)
 
+    def test_latitude_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.latitude(), 11.1)
+
+    def test_longitude_method(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        self.assertEqual(dik1.longitude(), 41.1)
+
     def test_easting_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
         self.assertEqual(dik1.easting(), 729382.2689836712)
@@ -84,6 +92,26 @@ class OccurrenceMethodTests(TestCase):
         dik1 = Occurrence.objects.get(barcode=1)
         self.assertEqual(dik1.northing(), 1227846.080614904)
 
+    def test_get_all_field_names(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        field_names_list = dik1.get_all_field_names()
+        self.assertEqual(len(field_names_list), 56)  # check the length of the field name list.
+        self.assertTrue('basis_of_record' in field_names_list)
+        self.assertTrue('images' in field_names_list)
+
+    def test_get_foreign_key_field_names(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        foreign_key_list = dik1.get_foreign_key_field_names()
+        self.assertEqual(len(foreign_key_list), 5)
+        self.assertTrue('biology' in foreign_key_list)
+        self.assertFalse('basis_of_record' in foreign_key_list)
+
+    def test_get_concrete_field_names(self):
+        dik1 = Occurrence.objects.get(barcode=1)
+        concrete_field_list = dik1.get_concrete_field_names()
+        self.assertEqual(len(concrete_field_list), 51)
+        self.assertTrue('basis_of_record' in concrete_field_list)
+        self.assertFalse('biology' in concrete_field_list)
 
 
 class BiologyMethodTests(TestCase):
@@ -258,4 +286,4 @@ class HRPAdminViewTests(TestCase):
         self.client.login(username='test_user', password='password')
         response = self.client.get('/admin/lgrp/', follow=True)
         self.assertEqual(response.status_code, 403)
-        #self.assertContains(response, 'Username')  # redirects to login form
+        # self.assertContains(response, 'Username')  # redirects to login form
