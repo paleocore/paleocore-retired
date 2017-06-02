@@ -47,7 +47,7 @@ class OccurrenceCreationMethodTests(TestCase):
                                                    field_number=datetime.now())
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), starting_record_count+1)  # test that one record has been added
-        self.assertEqual(new_occurrence.old_catalog_number(), None)  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.old_cat_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.3)
 
@@ -64,33 +64,33 @@ class OccurrenceMethodTests(TestCase):
     def setUp(self):
 
         # Create one occurrence point in polygon 1
-        Occurrence.objects.create(geom=Point(41.1, 11.1),
+        Occurrence.objects.create(geom=Point(41.123456789, 11.123456789),
                                   barcode=1,
                                   field_number=datetime.now())
 
     def test_point_x_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.point_x(), 41.1)
+        self.assertEqual(dik1.point_x(), 41.123456789)
 
     def test_point_y_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.point_y(), 11.1)
+        self.assertEqual(dik1.point_y(), 11.123456789)
 
     def test_latitude_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.latitude(), 11.1)
+        self.assertEqual(dik1.latitude(), 11.123456789)
 
     def test_longitude_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.longitude(), 41.1)
+        self.assertEqual(dik1.longitude(), 41.123456789)
 
     def test_easting_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.easting(), 729382.2689836712)
+        self.assertEqual(dik1.easting(), 731926.9879201036)
 
     def test_northing_method(self):
         dik1 = Occurrence.objects.get(barcode=1)
-        self.assertEqual(dik1.northing(), 1227846.080614904)
+        self.assertEqual(dik1.northing(), 1230459.5853302025)
 
     def test_get_all_field_names(self):
         dik1 = Occurrence.objects.get(barcode=1)
@@ -140,9 +140,10 @@ class BiologyMethodTests(TestCase):
         new_bio = Biology(
             barcode=1111,
             basis_of_record="Collection",
-            collection_code="HRP",
+            collection_code="AA",
             locality_number="1",
             item_number="1",
+            old_cat_number='AA-1-1',
             geom="POINT (41.1 11.1)",
             taxon=new_taxon,
             identification_qualifier=id_qual,
@@ -153,7 +154,7 @@ class BiologyMethodTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), starting_occurrence_record_count+1)
         self.assertEqual(Biology.objects.count(), starting_biology_record_count+1)
 
-        self.assertEqual(new_bio.old_catalog_number(), "HRP 1-1")  # test catalog number generation in save method
+        self.assertEqual(new_bio.old_cat_number, "AA-1-1")  # test catalog number generation in save method
         self.assertEqual(new_bio.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_bio.point_x(), 41.1)
 
@@ -178,7 +179,7 @@ class BiologyMethodTests(TestCase):
         )
         now = datetime.now()
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # one record added?
-        self.assertEqual(new_occurrence.old_catalog_number(), None)  # test catalog number generation in save method
+        self.assertEqual(new_occurrence.old_cat_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
         self.assertEqual(new_occurrence.point_x(), 41.21)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # no biology record was added?

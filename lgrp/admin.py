@@ -1,14 +1,14 @@
-from django.contrib import admin
-from models import *  # import database models from models.py
-from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
-from olwidget.admin import GeoModelAdmin
+from django.contrib import admin
+from django.contrib.gis.admin import OSMGeoAdmin
+from django.http import HttpResponse
+from models import *
 import base.admin
 import unicodecsv
 
-###############
-# Media Admin #
-###############
+###########
+# Inlines #
+###########
 
 
 class ImagesInline(admin.TabularInline):
@@ -23,82 +23,105 @@ class FilesInline(admin.TabularInline):
     readonly_fields = ("id",)
 
 
-###################
-# Hydrology Admin #
-###################
-class HydrologyAdmin(GeoModelAdmin):
-    list_display = ("id", "size")
-    search_fields = ("id",)
-    list_filter = ("size",)
+##############
+# Fieldsets  #
+##############
 
-    options = {
-        'layers': ['google.terrain']
-    }
+occurrence_fieldsets = (
+    ('Record Details', {
+        'fields': [('id', 'date_last_modified',),
+                   ('basis_of_record',),
+                   ('problem', 'problem_comment'),
+                   ('remarks',)]
+    }),  # occurrence_fieldsets[0]
+    ('Find Details', {
+        'fields': [('date_recorded', 'year_collected',),
+                   ('barcode', 'catalog_number', 'field_number'),
+                   ('item_type', 'item_scientific_name', 'item_description', 'item_count', 'image'),
+                   ('collector', 'finder', 'collecting_method', ),
+                   ('locality_number', 'item_number', 'item_part', 'old_cat_number'),
+                   ('disposition', 'preparation_status'),
+                   ('collection_remarks',)]
+    }),  # occurrence_fieldsets[1]
+    ('Geological Context', {
+        'fields': [('stratigraphic_formation', 'stratigraphic_member',),
+                   ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
+                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
+                   ('in_situ', 'ranked'),
+                   ('geology_remarks',)]
+    }),  # occurrence_fieldsets[2]
+    ('Location Details', {
+        'fields': [('collection_code', 'drainage_region'),
+                   ('georeference_remarks',),
+                   ('longitude', 'latitude'),
+                   ('easting', 'northing',),
+                   ('geom',)]
+    }),  # occurrence_fieldsets[3]
+)
 
+biology_additional_fieldsets = (
+    ('Elements', {'fields': [
+        ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
+        ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
+        ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
+        ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),
+        ('lli1', 'lli2', 'llc', 'llp3', 'llp4', 'llm1', 'llm2', 'llm3'),
+        ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'), 'deciduous',
+        ('element_remarks',)]
+    }),
+    ('Taxonomy', {'fields': [('taxon', 'identification_qualifier'),
+                             ('identified_by', 'year_identified', 'type_status'),
+                             ('taxonomy_remarks',)]
+    }),
+    ('Taphonomic Details', {
+        'fields': [('weathering', 'surface_modification')],
+        # 'classes': ['collapse'],
+    }),
+)
+
+biology_fieldsets = (
+    occurrence_fieldsets[0],
+    occurrence_fieldsets[1],
+    biology_additional_fieldsets[0],
+    biology_additional_fieldsets[1],
+    biology_additional_fieldsets[2],
+    occurrence_fieldsets[2],
+    occurrence_fieldsets[3],
+)
+
+default_list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
+                            'item_type', 'collecting_method', 'collector', 'item_description', 'item_scientific_name',
+                            'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
+
+default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
+
+default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number', 'collection_code',
+                     'locality_number', 'item_number', 'item_part', 'old_cat_number']
 
 ####################
 # Occurrence Admin #
 ####################
-occurrence_fieldsets = (
-    ('Record Details', {
-        'fields': [('id', 'date_last_modified',)]
-    }),
-    ('Item Details', {
-        'fields': [('barcode', 'catalog_number'),
-                   ('date_recorded', 'year_collected',),
-                   ('collection_code', 'locality_number', 'item_number', 'item_part'),
-                   ('collection_remarks',)]
-    }),
-
-    ('Occurrence Details', {
-        'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                   ('collecting_method', 'finder', 'collector', 'individual_count'),
-                   ('item_description', 'item_scientific_name', 'image'),
-                   ('problem', 'problem_comment'),
-                   ('remarks',)]
-    }),
-    ('Geological Context', {
-        'fields': [('stratigraphic_marker_upper', 'distance_from_upper'),
-                   ('stratigraphic_marker_lower', 'distance_from_lower'),
-                   ('stratigraphic_marker_found', 'distance_from_found'),
-                   ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
-                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
-                   ('in_situ', 'ranked'),
-                   ('stratigraphic_member',),
-                   ('drainage_region',),
-                   ('geology_remarks',)]
-    }),
-
-    ('Location Details', {
-        'fields': [('georeference_remarks',),
-                   ('longitude', 'latitude'),
-                   ('easting', 'northing',),
-                   ('geom',)]
-    }),
-)
 
 
-class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    actions = ['create_data_csv', 'change_xy']
-    readonly_fields = base.admin.default_read_only_fields+('photo', 'catalog_number',
-                                                           'longitude', 'latitude')
-    # list_display = list(base.admin.default_list_display+('thumbnail',))
-    list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
-                    'item_type', 'item_scientific_name', 'item_description', 'collector', 'year_collected',
-                    'collecting_method', 'thumbnail', 'date_last_modified', 'easting', 'northing']
+class DGGeoAdmin(OSMGeoAdmin):
+    """
+    Modified Geographic Admin Class using Digital Globe basemaps
+    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
+    """
+    map_template = 'gis/admin/digital_globe.html'
+
+
+class OccurrenceAdmin(DGGeoAdmin):
+    actions = ['create_data_csv']
+    default_read_only_fields = Occurrence.method_fields_to_export()
+    readonly_fields = ['id', 'date_last_modified'] + default_read_only_fields
+    list_display = list(default_list_display)
     fieldsets = occurrence_fieldsets
-    list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collector', 'collection_code', 'problem',
-                   'weathering']
-    additional_search_fields = ['id', 'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
-    search_fields = list(base.admin.default_search_fields)+additional_search_fields
-    search_fields.pop(search_fields.index('catalog_number'))  # can't search on methods
+    list_filter = list(default_list_filter)
+    search_fields = list(default_search_fields)
     list_per_page = 500
-    # options = {
-    #     'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00,
-    # }
 
-    # admin action to download data in csv format
+    # Admin Actions
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="LGRP_Occurrences.csv"'  # declare the file name
@@ -148,112 +171,21 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
                 writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list])
 
         return response
-
     create_data_csv.short_description = 'Download Selected to .csv'
 
-
-###################
-# Taxonomy Admin  #
-###################
-
-class TaxonomyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'rank', 'taxon', 'full_lineage')
-    search_fields = ('taxon',)
-    list_filter = ('rank',)
-    readonly_fields = 'full_lineage'
 
 #################
 # Biology Admin #
 #################
 
 
-biology_inline_fieldsets = (
-    ('Taxonomy', {'fields': [('taxon', 'identification_qualifier'),
-                             ('identified_by', 'year_identified', 'type_status'),
-                             ('taxonomy_remarks',)]
-                  }),
-)
-
-biology_element_fieldsets = (
-    ('Elements', {'fields': (
-        ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
-        ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
-        ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
-        ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),
-        ('lli1', 'lli2', 'llc', 'llp3', 'llp4', 'llm1', 'llm2', 'llm3'),
-        ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'), 'deciduous',
-        ('element_remarks',)),
-
-    }),
-)
-
-
-biology_fieldsets = (
-    ('Record Details', {
-        'fields': [('id', 'date_last_modified',)]
-    }),
-    ('Item Details', {
-        'fields': [('barcode', 'catalog_number',),
-                   ('date_recorded', 'year_collected',),
-                   ('collection_code', 'locality_number', 'item_number', 'item_part'),
-                   ('collection_remarks',)]
-    }),
-
-    ('Occurrence Details', {
-        'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                   ('collecting_method', 'finder', 'collector', 'individual_count'),
-                   ('item_description', 'item_scientific_name', 'image'),
-                   ('problem', 'problem_comment'),
-                   ('remarks',),
-                   ('sex', 'life_stage'),
-                   ('biology_remarks',)
-                   ]
-    }),
-    biology_element_fieldsets[0],
-    ('Taphonomic Details', {
-        'fields': [('weathering', 'surface_modification')],
-        # 'classes': ['collapse'],
-    }),
-    ('Geological Context', {
-        'fields': [('stratigraphic_marker_upper', 'distance_from_upper'),
-                   ('stratigraphic_marker_lower', 'distance_from_lower'),
-                   ('stratigraphic_marker_found', 'distance_from_found'),
-                   ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
-                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
-                   ('in_situ', 'ranked'),
-                   ('stratigraphic_member',),
-                   ('drainage_region',),
-                   ('geology_remarks',)]
-    }),
-
-    ('Location Details', {
-        'fields': [('georeference_remarks',),
-                   ('longitude', 'latitude'),
-                   ('easting', 'northing',),
-                   ('geom',)]
-    }),
-)
-
-
-class BiologyInline(admin.TabularInline):
-    model = Biology
-    extra = 0
-    readonly_fields = ('id',)
-    fieldsets = biology_inline_fieldsets
-
-
-class ElementInLine(admin.StackedInline):
-    model = Biology
-    extra = 0
-    fieldsets = biology_element_fieldsets
-
-
 class BiologyAdmin(OccurrenceAdmin):
+    list_display = list(default_list_display)
+    list_display.insert(10, 'taxon')
     fieldsets = biology_fieldsets
-    inlines = (BiologyInline, ImagesInline, FilesInline)
-    list_filter = ['basis_of_record', 'year_collected', 'collector', 'collection_code', 'problem', 'element',
-                   'weathering']
+    inlines = (ImagesInline, FilesInline)
+    list_filter = list(default_list_filter)
+    search_fields = list(default_search_fields)
 
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
@@ -310,7 +242,6 @@ class BiologyAdmin(OccurrenceAdmin):
             writer.writerow(cleaned_row_data)
 
         return response
-
     create_data_csv.short_description = 'Download Selected to .csv'
 
 
@@ -320,6 +251,19 @@ class ArchaeologyAdmin(OccurrenceAdmin):
 
 class GeologyAdmin(OccurrenceAdmin):
     pass
+
+
+###################
+# Hydrology Admin #
+###################
+class HydrologyAdmin(DGGeoAdmin):
+    list_display = ("id", "size")
+    search_fields = ("id",)
+    list_filter = ("size",)
+
+    options = {
+        'layers': ['google.terrain']
+    }
 
 ##########################
 # Register Admin Classes #
