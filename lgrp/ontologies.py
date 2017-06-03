@@ -1,17 +1,4 @@
 import sqlite3
-from lgrp.models import *
-
-
-def find_unmatched_values(field_name):
-    lgrp_bio = Biology.objects.all()
-    values = list(set([getattr(bio, field_name) for bio in lgrp_bio]))
-    field = Biology._meta.get_field_by_name(field_name)[0]
-    choices = [i[0] for i in field.choices]
-    result = [v for v in values if v not in choices]
-    if (not result) or result == [None]:
-        return (False, None, None)
-    else:
-        return (True, len(result), result)
 
 
 LGRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
@@ -57,10 +44,10 @@ LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
 
 LGRP_IDENTIFIER_CHOICES = (
     ('I. Lazagabaster', 'I. Lazagabaster'),
-    ('K.E. Reed','K.E. Reed'),
+    ('K.E. Reed', 'K.E. Reed'),
     ('C. Seyoum', 'C. Seyoum'),
-    ('B. Villamoare','B. Villamoare'),
-    ('J. Robinson','J. Robinson'),
+    ('B. Villamoare', 'B. Villamoare'),
+    ('J. Robinson', 'J. Robinson'),
     ('I. Smail', 'I. Smail'),
     ('L.A. Werdelin', 'L.A. Werdelin'),
     ('E. Scott', 'E. Scott'),
@@ -70,7 +57,7 @@ LGRP_IDENTIFIER_CHOICES = (
     ('E. Locke', 'E. Locke')
 )
 
-OLD_LGRP_IDENTIFIER_CHOICES=(
+OLD_LGRP_IDENTIFIER_CHOICES = (
     (u'D. Braun', u'D. Braun'),
     (u'J. Thompson', u'J. Thompson'),
     (u'E. Scott', u'E. Scott'),
@@ -308,8 +295,10 @@ LGRP_WEATHERING_CHOICES = (
 )
 
 lgrp_db_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+
+
 def import_vocabulary(column_name, path=lgrp_db_path):
-    connection = sqlite3.connect(lgrp_db_path)
+    connection = sqlite3.connect(path)
     cursor = connection.cursor()
     colrs = cursor.execute("SELECT {} FROM LookUpTable WHERE {} IS NOT NULL".format(column_name, column_name))
     column_names = [c[0] for c in cursor.description]
