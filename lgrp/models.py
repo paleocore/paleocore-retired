@@ -248,6 +248,12 @@ class Occurrence(models.Model):
 
 
 class Biology(Occurrence):
+    # Biology
+    sex = models.CharField(null=True, blank=True, max_length=50)
+    life_stage = models.CharField(null=True, blank=True, max_length=50)
+    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
+
+    # Taxon
     taxon = models.ForeignKey(Taxon,
                               default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
                               related_name='lgrp_taxon_bio_occurrences')
@@ -260,40 +266,26 @@ class Biology(Occurrence):
                                         related_name='lgrp_qualifier_taxon_bio_occurrences')
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
-    verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
 
+    # Identification
     identified_by = models.CharField(null=True, blank=True, max_length=100, choices=LGRP_IDENTIFIER_CHOICES)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
-    sex = models.CharField(null=True, blank=True, max_length=50)
-    life_stage = models.CharField(null=True, blank=True, max_length=50)
-    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
-    preparations = models.CharField(null=True, blank=True, max_length=50)
-    morphobank_number = models.IntegerField(null=True, blank=True)
-    side = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_SIDE_CHOICES)
-    attributes = models.CharField(null=True, blank=True, max_length=50)
+    verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
-    tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
-    tooth_number = models.CharField(null=True, blank=True, max_length=50)
-    tooth_type = models.CharField(null=True, blank=True, max_length=50)
-    um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_1_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_1_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_1_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_1_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_2_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_2_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+
+    # Element
+    side = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_SIDE_CHOICES)
+
     element = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_CHOICES)
     element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_MODIFIER_CHOICES)
     element_portion = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_PORTION_CHOICES)
     element_number = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_NUMBER_CHOICES)
+
+    tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
+    tooth_number = models.CharField(null=True, blank=True, max_length=50)
+    tooth_type = models.CharField(null=True, blank=True, max_length=50)
+
     # upper dentition fields
     uli1 = models.BooleanField(default=False)
     uli2 = models.BooleanField(default=False)
@@ -356,6 +348,22 @@ class Biology(Occurrence):
     indet_tooth = models.BooleanField(default=False)
     deciduous = models.BooleanField(default=False)
     element_remarks = models.TextField(max_length=500, null=True, blank=True)
+
+    # Measurements
+    um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_1_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_1_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_1_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_1_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_2_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_2_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
 
     class Meta:
         verbose_name = "LGRP Biology"
