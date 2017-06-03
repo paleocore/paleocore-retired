@@ -125,7 +125,7 @@ LGRP_COLLECTION_CODES = (
     ("SS", "SS"),
 )
 
-LGRP_ELEMENT_CHOICES = (
+LGRP_ELEMENT_STANDARD = (
     ('astragalus', 'astragalus'),
     ('bacculum', 'bacculum'),
     ('bone (indet.)', 'bone (indet.)'),
@@ -216,6 +216,40 @@ LGRP_ELEMENT_CHOICES = (
     ('vomer', 'vomer'),
     ('zygomatic', 'zygomatic'),
 )
+
+LGRP_ELEMENT_ADDITIONAL = (('pharyngeal teeth', 'pharyngeal teeth'),
+                           ('molars', 'molars'), 
+                           ('tusk', 'tusk'), 
+                           ('horn corn', 'horn corn'),
+                           ('spine', 'spine'), 
+                           ('silicified wood', 'silicified wood'),
+                           ('dentary', 'dentary'), 
+                           ('cleithrum', 'cleithrum'), 
+                           ('skull plate', 'skull plate'), 
+                           ('basicranium', 'basicranium'), 
+                           ('angulararticular', 'angulararticular'), 
+                           ('ribs', 'ribs'), 
+                           ('lateral ethmoid', 'lateral ethmoid'),
+                           ('pterotic', 'pterotic'), 
+                           ('tooth roots', 'tooth roots'), 
+                           ('shells', 'shells'),
+                           ('pharyngeal tooth', 'pharyngeal tooth'), 
+                           ('ilium', 'ilium'), 
+                           ('hemimandible', 'hemimandible'), 
+                           ('pectoral spine', 'pectoral spine'), 
+                           ('palate', 'palate'),
+                           ('pelvis', 'pelvis'),
+                           ('long bone', 'long bone'),
+                           ('axis', 'axis'),
+                           ('acetabulum', 'acetabulum'),
+                           ('magnum', 'magnum'),
+                           ('hemi-mandible', 'hemi-mandible'),
+                           ('weberian', 'weberian'),
+                           ('supraoccipital', 'supraoccipital'),
+                           ('anguloarticular', 'anguloarticular')
+                           )
+
+LGRP_ELEMENT_CHOICES = LGRP_ELEMENT_STANDARD + LGRP_ELEMENT_ADDITIONAL
 
 LGRP_ELEMENT_PORTION_CHOICES = (
     ('almost complete', 'almost complete'),
