@@ -48,4 +48,10 @@ urlpatterns = patterns('projects.views',
                        # west_turkana url includes
                        # ex. /projects/west_turkana/upload
                        url(r'^west_turkana/', include('west_turkana.urls', namespace='west_turkana')),
+
+                       # lgrp project url includes
+                       # ex. /projects/lgrp/upload/
+                       url(r'^lgrp/', include('lgrp.urls', namespace='lgrp')),
+
                        )
+
