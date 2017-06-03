@@ -1,4 +1,17 @@
 import sqlite3
+from lgrp.models import *
+
+
+def find_unmatched_values(field_name):
+    lgrp_bio = Biology.objects.all()
+    values = list(set([getattr(bio, field_name) for bio in lgrp_bio]))
+    field = Biology._meta.get_field_by_name(field_name)[0]
+    choices = [i[0] for i in field.choices]
+    result = [v for v in values if v not in choices]
+    if (not result) or result == [None]:
+        return (False, None, None)
+    else:
+        return (True, len(result), result)
 
 
 LGRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
@@ -43,6 +56,21 @@ LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
 )
 
 LGRP_IDENTIFIER_CHOICES = (
+    ('I. Lazagabaster', 'I. Lazagabaster'),
+    ('K.E. Reed','K.E. Reed'),
+    ('C. Seyoum', 'C. Seyoum'),
+    ('B. Villamoare','B. Villamoare'),
+    ('J. Robinson','J. Robinson'),
+    ('I. Smail', 'I. Smail'),
+    ('L.A. Werdelin', 'L.A. Werdelin'),
+    ('E. Scott', 'E. Scott'),
+    ('J. Rowan', 'J. Rowan'),
+    ('W.H. Kimbel', 'W.H. Kimbel'),
+    ('J.A. Harris', 'J.A. Harris'),
+    ('E. Locke', 'E. Locke')
+)
+
+OLD_LGRP_IDENTIFIER_CHOICES=(
     (u'D. Braun', u'D. Braun'),
     (u'J. Thompson', u'J. Thompson'),
     (u'E. Scott', u'E. Scott'),
