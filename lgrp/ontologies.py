@@ -40,6 +40,14 @@ LGRP_COLLECTOR_CHOICES = (
 
 LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
     ("Afar", "Afar"),
+    ('Afar Team', 'Afar Team'),
+    ('Afar Rep', 'Afar Rep'),
+    ('Subudo', 'Subudo'),
+    ('ARCCH Rep', 'ARCCH Rep'),
+    ('J.R. Arrowsmith', 'J.R. Arrowsmith'),
+    ('D.A. Feary', 'D.A. Feary'),
+    ('TA', 'TA'),
+    ('daf', 'daf')
 )
 
 LGRP_IDENTIFIER_CHOICES = (
