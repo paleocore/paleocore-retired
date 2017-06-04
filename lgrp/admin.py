@@ -95,8 +95,8 @@ default_list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collecti
 
 default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
 
-default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number', 'collection_code',
-                     'locality_number', 'item_number', 'item_part', 'old_cat_number']
+default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
+                         'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
 
 ####################
 # Occurrence Admin #
