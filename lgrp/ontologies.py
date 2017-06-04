@@ -40,9 +40,32 @@ LGRP_COLLECTOR_CHOICES = (
 
 LGRP_FINDER_CHOICES = LGRP_COLLECTOR_CHOICES + (
     ("Afar", "Afar"),
+    ('Afar Team', 'Afar Team'),
+    ('Afar Rep', 'Afar Rep'),
+    ('Subudo', 'Subudo'),
+    ('ARCCH Rep', 'ARCCH Rep'),
+    ('J.R. Arrowsmith', 'J.R. Arrowsmith'),
+    ('D.A. Feary', 'D.A. Feary'),
+    ('TA', 'TA'),
+    ('daf', 'daf')
 )
 
 LGRP_IDENTIFIER_CHOICES = (
+    ('I. Lazagabaster', 'I. Lazagabaster'),
+    ('K.E. Reed', 'K.E. Reed'),
+    ('C. Seyoum', 'C. Seyoum'),
+    ('B. Villamoare', 'B. Villamoare'),
+    ('J. Robinson', 'J. Robinson'),
+    ('I. Smail', 'I. Smail'),
+    ('L.A. Werdelin', 'L.A. Werdelin'),
+    ('E. Scott', 'E. Scott'),
+    ('J. Rowan', 'J. Rowan'),
+    ('W.H. Kimbel', 'W.H. Kimbel'),
+    ('J.A. Harris', 'J.A. Harris'),
+    ('E. Locke', 'E. Locke')
+)
+
+OLD_LGRP_IDENTIFIER_CHOICES = (
     (u'D. Braun', u'D. Braun'),
     (u'J. Thompson', u'J. Thompson'),
     (u'E. Scott', u'E. Scott'),
@@ -102,7 +125,7 @@ LGRP_COLLECTION_CODES = (
     ("SS", "SS"),
 )
 
-LGRP_ELEMENT_CHOICES = (
+LGRP_ELEMENT_STANDARD = (
     ('astragalus', 'astragalus'),
     ('bacculum', 'bacculum'),
     ('bone (indet.)', 'bone (indet.)'),
@@ -194,6 +217,40 @@ LGRP_ELEMENT_CHOICES = (
     ('zygomatic', 'zygomatic'),
 )
 
+LGRP_ELEMENT_ADDITIONAL = (('pharyngeal teeth', 'pharyngeal teeth'),
+                           ('molars', 'molars'), 
+                           ('tusk', 'tusk'), 
+                           ('horn corn', 'horn corn'),
+                           ('spine', 'spine'), 
+                           ('silicified wood', 'silicified wood'),
+                           ('dentary', 'dentary'), 
+                           ('cleithrum', 'cleithrum'), 
+                           ('skull plate', 'skull plate'), 
+                           ('basicranium', 'basicranium'), 
+                           ('angulararticular', 'angulararticular'), 
+                           ('ribs', 'ribs'), 
+                           ('lateral ethmoid', 'lateral ethmoid'),
+                           ('pterotic', 'pterotic'), 
+                           ('tooth roots', 'tooth roots'), 
+                           ('shells', 'shells'),
+                           ('pharyngeal tooth', 'pharyngeal tooth'), 
+                           ('ilium', 'ilium'), 
+                           ('hemimandible', 'hemimandible'), 
+                           ('pectoral spine', 'pectoral spine'), 
+                           ('palate', 'palate'),
+                           ('pelvis', 'pelvis'),
+                           ('long bone', 'long bone'),
+                           ('axis', 'axis'),
+                           ('acetabulum', 'acetabulum'),
+                           ('magnum', 'magnum'),
+                           ('hemi-mandible', 'hemi-mandible'),
+                           ('weberian', 'weberian'),
+                           ('supraoccipital', 'supraoccipital'),
+                           ('anguloarticular', 'anguloarticular')
+                           )
+
+LGRP_ELEMENT_CHOICES = LGRP_ELEMENT_STANDARD + LGRP_ELEMENT_ADDITIONAL
+
 LGRP_ELEMENT_PORTION_CHOICES = (
     ('almost complete', 'almost complete'),
     ('anterior', 'anterior'),
@@ -280,8 +337,10 @@ LGRP_WEATHERING_CHOICES = (
 )
 
 lgrp_db_path = '/Users/reedd/Documents/projects/PaleoCore/projects/LGRP/LGRP_Paleobase4_2016.sqlite'
+
+
 def import_vocabulary(column_name, path=lgrp_db_path):
-    connection = sqlite3.connect(lgrp_db_path)
+    connection = sqlite3.connect(path)
     cursor = connection.cursor()
     colrs = cursor.execute("SELECT {} FROM LookUpTable WHERE {} IS NOT NULL".format(column_name, column_name))
     column_names = [c[0] for c in cursor.description]

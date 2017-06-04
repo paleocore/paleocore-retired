@@ -365,6 +365,18 @@ class Biology(Occurrence):
     lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
 
+    @staticmethod
+    def find_unmatched_values(field_name):
+        lgrp_bio = Biology.objects.all()
+        values = list(set([getattr(bio, field_name) for bio in lgrp_bio]))
+        field = Biology._meta.get_field_by_name(field_name)[0]
+        choices = [i[0] for i in field.choices]
+        result = [v for v in values if v not in choices]
+        if (not result) or result == [None]:
+            return (False, None, None)
+        else:
+            return (True, len(result), result)
+
     class Meta:
         verbose_name = "LGRP Biology"
         verbose_name_plural = "LGRP Biology"
