@@ -294,7 +294,7 @@ def match_barcode_from_catalog_number(catalog_number_string):
 
 def match_coordinates(longitude, latitude):
     """
-    Function to match an Occurrence instance given coordinates
+    Function to match an Occurrence instance given coordinates. Finds occurrences within 2 meters from given coords.
     :param longitude: in decimal degrees
     :param latitude: in decimal degrees
     :return: returns a two element tuple. The first element is True/False indicating whether there was a single match
@@ -304,7 +304,7 @@ def match_coordinates(longitude, latitude):
     lon = float(longitude)
     lat = float(latitude)
     pnt = Point(lon, lat)
-    result = Biology.objects.filter(geom__distance_lte=(pnt, Distance(m=1)))
+    result = Biology.objects.filter(geom__distance_lte=(pnt, Distance(m=2)))
     match_result = (False, None)
     if (len(result)) == 1:
         match_result = (True, result)
