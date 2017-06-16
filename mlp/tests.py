@@ -11,6 +11,7 @@ from mysite.ontologies import BASIS_OF_RECORD_VOCABULARY, \
     COLLECTING_METHOD_VOCABULARY, COLLECTOR_CHOICES, ITEM_TYPE_VOCABULARY
 from random import random
 
+
 ######################################
 # Tests for models and their methods #
 ######################################
@@ -125,15 +126,16 @@ class BiologyMethodsTests(TestCase):
                                  collecting_method="Surface Standard", field_number=datetime.now(),
                                  taxon=new_taxon,
                                  identification_qualifier=id_qualifier,
-                                 geom="POINT (-122.4376 37.7577)")
+                                 geom=Point(x=11.4376, y=40.7577, srid=4326)
+                                 )
         new_occurrence.save()
         now = datetime.now()
         self.assertEqual(Biology.objects.count(), starting_record_count+1)  # test that one record has been added
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_y(), 37.7577)
-        self.assertEqual(new_occurrence.point_x(), -122.4376)
-        self.assertEqual(new_occurrence.easting(), 549539.4374838244)
-        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
+        self.assertEqual(new_occurrence.point_y(), 40.7577)
+        self.assertEqual(new_occurrence.point_x(), 11.4376)
+        self.assertEqual(new_occurrence.easting(), -1837022.8930738051)
+        self.assertEqual(new_occurrence.northing(), 4894849.443359746)
 
     def test_biology_create_observation(self):
         """
@@ -151,7 +153,7 @@ class BiologyMethodsTests(TestCase):
             basis_of_record="HumanObservation",
             collection_code="COL",
             item_number="1",
-            geom="POINT (-122.4376 37.7577)",
+            geom=Point(x=11.4376, y=40.7577, srid=4326),
             taxon=new_taxon,
             identification_qualifier=id_qualifier,
             field_number=datetime.now()
@@ -160,8 +162,8 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that a record was added
         self.assertEqual(new_occurrence.catalog_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_y(), 37.7577)
-        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
+        self.assertEqual(new_occurrence.point_y(), 40.7577)
+        self.assertEqual(new_occurrence.northing(), 4894849.443359746)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test no biology record was added
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="HumanObservation").count(), 1)
 
@@ -183,7 +185,7 @@ class BiologyMethodsTests(TestCase):
             basis_of_record="FossilSpecimen",
             collection_code="COL",
             item_number="1",
-            geom=Point(-122.4376, 37.7577),  # An alternate point creation method
+            geom=Point(x=11.4376, y=40.7577, srid=4326),  # An alternate point creation method
             taxon=new_taxon,
             identification_qualifier=id_qualifier,
             field_number=datetime.now()
@@ -192,8 +194,8 @@ class BiologyMethodsTests(TestCase):
         self.assertEqual(Occurrence.objects.count(), occurrence_starting_record_count+1)  # test that a record was added
         self.assertEqual(new_occurrence.catalog_number, None)  # test catalog number generation in save method
         self.assertEqual(new_occurrence.date_last_modified.day, now.day)  # test date last modified is correct
-        self.assertEqual(new_occurrence.point_y(), 37.7577)
-        self.assertEqual(new_occurrence.northing(), 4179080.7650798513)
+        self.assertEqual(new_occurrence.point_y(), 40.7577)
+        self.assertEqual(new_occurrence.northing(), 4894849.443359746)
         self.assertEqual(Biology.objects.count(), biology_starting_record_count+1)  # test no biology record was added
         self.assertEqual(Biology.objects.filter(basis_of_record__exact="FossilSpecimen").count(), 1)
 

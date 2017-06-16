@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+import unicodecsv
+
 import base.admin  # import default PaleoCore admin classes
 from models import Occurrence, Biology
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
-import unicodecsv
-from django.core.exceptions import ObjectDoesNotExist
+import os
 
 
 class BiologyInline(admin.TabularInline):
@@ -15,7 +17,7 @@ class BiologyInline(admin.TabularInline):
 
 
 class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
-    actions = ["create_data_csv", "change_xy", "change_occurrence2biology"]
+    actions = ["change_xy", "change_occurrence2biology"]
     readonly_fields = base.admin.default_read_only_fields+('photo',)  # defaults plus photo
     list_display = base.admin.default_list_display+('thumbnail',)  # defaults plus thumbnail
     list_filter = ['basis_of_record', 'item_type', 'field_season',
@@ -54,6 +56,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
         })
     ]
 
+    # Admin Actions
     # admin action to manually enter coordinates
     def change_xy(self, request, queryset):
         selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
@@ -68,7 +71,7 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
     change_occurrence2biology.short_description = "Change Occurrence to Biology"
 
     # admin action to download data in csv format
-    def create_data_csv(self, request, queryset):
+    def create_data_csv_old(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="MLP_data.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
@@ -123,11 +126,11 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
                 writer.writerow([occurrence.__dict__.get(k) for k in occurrence_field_list])
 
         return response
-
-    create_data_csv.short_description = "Download Selected to .csv"
+    create_data_csv_old.short_description = "Download Selected to .csv"
 
 
 class BiologyAdmin(OccurrenceAdmin):
+    actions = ["change_xy", "change_occurrence2biology", "create_data_csv"]
     biology_fieldsets = list(OccurrenceAdmin.fieldsets)  # creates a separate copy of the fielset list
     taxonomy_fieldsets = ('Identification', {'fields': [('taxon', 'identification_qualifier', 'identified_by')]})
     element_fieldsets = ('Detailed Description', {'fields': [('element', 'element_modifier')]})
@@ -135,6 +138,68 @@ class BiologyAdmin(OccurrenceAdmin):
     biology_fieldsets.insert(3, element_fieldsets)
     fieldsets = biology_fieldsets
 
+    def create_data_csv(self, request, queryset):
+        """
+        Export data to csv format. Still some issues with unicode characters.
+        :param request:
+        :param queryset:
+        :return:
+        """
+        response = HttpResponse(content_type='text/csv')  # declare the response type
+        response['Content-Disposition'] = 'attachment; filename="LGRP_Biology.csv"'  # declare the file name
+        writer = unicodecsv.writer(response)  # open a .csv writer
+        b = Biology()  # create an empty instance of a biology object
+
+        # Fetch model field names. We need to account for data originating from tables, relations and methods.
+        concrete_field_names = b.get_concrete_field_names()  # fetch a list of concrete field names
+        method_field_names = b.method_fields_to_export()  # fetch a list for method field names
+
+        fk_fields = [f for f in b._meta.get_fields() if f.is_relation]  # get a list of field objects
+        fk_field_names = [f.name for f in fk_fields]  # fetch a list of foreign key field names
+
+        # Concatenate to make a master field list
+        field_names = concrete_field_names + method_field_names + fk_field_names
+        writer.writerow(field_names)  # write column headers
+
+        def get_fk_values(occurrence, fk):
+            """
+            Get the values associated with a foreign key relation
+            :param occurrence:
+            :param fk:
+            :return:
+            """
+            qs = None
+            return_string = ''
+            try:
+                qs = [obj for obj in getattr(occurrence, fk).all()]  # if fk is one to many try getting all objects
+            except AttributeError:
+                return_string = str(getattr(occurrence, fk))  # if one2one or many2one get single related value
+
+            if qs:
+                try:
+                    # Getting the name of related objects requires calling the file or image object.
+                    # This solution may break if relation is neither file nor image.
+                    return_string = '|'.join([str(os.path.basename(p.image.name)) for p in qs])
+                except AttributeError:
+                    return_string = '|'.join([str(os.path.basename(p.file.name)) for p in qs])
+
+            return return_string
+
+        for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
+            # The next line uses string comprehension to build a list of values for each field.
+            # All values are converted to strings.
+            concrete_values = [getattr(occurrence, field) for field in concrete_field_names]
+            # Create a list of values from method calls. Note the parenthesis after getattr in the list comprehension.
+            method_values = [getattr(occurrence, method)() for method in method_field_names]
+            # Create a list of values from related tables. One to many fields have related values concatenated in str.
+            fk_values = [get_fk_values(occurrence, fk) for fk in fk_field_names]
+
+            row_data = concrete_values + method_values + fk_values
+            cleaned_row_data = ['' if i in ['None', 'False'] else i for i in row_data]  # Replace None with ''.
+            writer.writerow(cleaned_row_data)
+
+        return response
+    create_data_csv.short_description = 'Download Selected to .csv'
 
 ############################
 #  Register Admin Classes  #
