@@ -146,7 +146,7 @@ class BiologyAdmin(OccurrenceAdmin):
         :return:
         """
         response = HttpResponse(content_type='text/csv')  # declare the response type
-        response['Content-Disposition'] = 'attachment; filename="LGRP_Biology.csv"'  # declare the file name
+        response['Content-Disposition'] = 'attachment; filename="MLP_Biology.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
         b = Biology()  # create an empty instance of a biology object
 
