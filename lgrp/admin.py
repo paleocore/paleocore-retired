@@ -1,6 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
 import base.admin
@@ -72,7 +72,7 @@ biology_additional_fieldsets = (
     ('Taxonomy', {'fields': [('taxon', 'identification_qualifier'),
                              ('identified_by', 'year_identified', 'type_status'),
                              ('taxonomy_remarks',)]
-    }),
+                  }),
     ('Taphonomic Details', {
         'fields': [('weathering', 'surface_modification')],
         # 'classes': ['collapse'],
@@ -90,8 +90,8 @@ biology_fieldsets = (
 )
 
 default_list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
-                            'item_type', 'collecting_method', 'collector', 'item_description', 'item_scientific_name',
-                            'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
+                        'item_type', 'collecting_method', 'collector', 'item_description', 'item_scientific_name',
+                        'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
 
 default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
 
@@ -188,6 +188,12 @@ class BiologyAdmin(OccurrenceAdmin):
     search_fields = list(default_search_fields)
 
     def create_data_csv(self, request, queryset):
+        """
+        Export data to csv format. Still some issues with unicode characters.
+        :param request:
+        :param queryset:
+        :return:
+        """
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="LGRP_Biology.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
@@ -222,23 +228,23 @@ class BiologyAdmin(OccurrenceAdmin):
                 try:
                     # Getting the name of related objects requires calling the file or image object.
                     # This solution may break if relation is neither file nor image.
-                    return_string = '|'.join([str(os.path.basename(i.image.name)) for i in qs])
+                    return_string = '|'.join([str(os.path.basename(p.image.name)) for p in qs])
                 except AttributeError:
-                    return_string = '|'.join([str(os.path.basename(i.file.name)) for i in qs])
+                    return_string = '|'.join([str(os.path.basename(p.file.name)) for p in qs])
 
             return return_string
 
         for occurrence in queryset:  # iterate through the occurrence instances selected in the admin
             # The next line uses string comprehension to build a list of values for each field.
             # All values are converted to strings.
-            concrete_values = [str(getattr(occurrence, field)) for field in concrete_field_names]
+            concrete_values = [getattr(occurrence, field) for field in concrete_field_names]
             # Create a list of values from method calls. Note the parenthesis after getattr in the list comprehension.
-            method_values = [str(getattr(occurrence, method)()) for method in method_field_names]
+            method_values = [getattr(occurrence, method)() for method in method_field_names]
             # Create a list of values from related tables. One to many fields have related values concatenated in str.
             fk_values = [get_fk_values(occurrence, fk) for fk in fk_field_names]
 
             row_data = concrete_values + method_values + fk_values
-            cleaned_row_data = ['' if i in ['None', 'False'] else i for i in row_data]  # Replace None with empty strings.
+            cleaned_row_data = ['' if i in ['None', 'False'] else i for i in row_data]  # Replace None with ''.
             writer.writerow(cleaned_row_data)
 
         return response

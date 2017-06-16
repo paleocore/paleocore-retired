@@ -6,7 +6,6 @@ from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCAB
     LGRP_COLLECTION_CODES
 from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
-import utm
 from django.contrib.gis.geos import Point
 
 
@@ -18,8 +17,10 @@ class Occurrence(models.Model):
     Fields are grouped by comments into logical sets (i.e. ontological classes)
     """
     # Record
-    date_last_modified = models.DateTimeField("Modified", auto_now=True,
-                                              help_text='The date and time this resource was last altered.')  # dwc:modified
+    # dwc:modified
+    date_last_modified = models.DateTimeField('Modified', auto_now=True,
+                                              help_text='The date and time this resource was last altered.')
+
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        help_text='e.g. Observed item or Collected item',
                                        choices=LGRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL, dwc:basisOfRecord
@@ -40,7 +41,8 @@ class Occurrence(models.Model):
     barcode = models.IntegerField("Barcode", null=True, blank=True,
                                   help_text='For collected items only.')  # dwc:recordNumber
     field_number = models.CharField(max_length=50, null=True, blank=True)  # dwc:fieldNumber
-    item_type = models.CharField("Item Type", max_length=255, blank=True, null=False, choices=ITEM_TYPE_VOCABULARY)
+    item_type = models.CharField(max_length=255, blank=True, null=False, choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
+
     # TODO merge with taxon
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)  # dwc:scientificName
     # TODO merge with element
@@ -88,10 +90,15 @@ class Occurrence(models.Model):
     # Media
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/lgrp", null=True)
 
-    @staticmethod
-    def fields_to_display():
-        fields = ("id", "barcode")
-        return fields
+    class Meta:
+        verbose_name = "LGRP Occurrence"
+        verbose_name_plural = "LGRP Occurrences"
+        ordering = ["collection_code", "item_number", "item_part"]
+
+    def __unicode__(self):
+        nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
+                    + str(self.item_description) + "]"
+        return nice_name.replace("None", "").replace("--", "")
 
     @staticmethod
     def method_fields_to_export():
@@ -102,6 +109,30 @@ class Occurrence(models.Model):
         :return:
         """
         return ['longitude', 'latitude', 'easting', 'northing', 'catalog_number', 'photo']
+
+    def get_all_field_names(self):
+        """
+        Field names from model
+        :return: list with all field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list]  # return a list of names from each field
+
+    def get_foreign_key_field_names(self):
+        """
+        Get foreign key fields
+        :return: returns a list of for key field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list if f.is_relation]  # return a list of names for fk fields
+
+    def get_concrete_field_names(self):
+        """
+        Get field names that correspond to columns in the DB
+        :return: returns a lift
+        """
+        field_list = self._meta.get_fields()
+        return [f.name for f in field_list if f.concrete]
 
     def point_x(self):
         """
@@ -211,40 +242,6 @@ class Occurrence(models.Model):
     thumbnail.short_description = 'Thumb'
     thumbnail.allow_tags = True
     thumbnail.mark_safe = True
-
-    def get_all_field_names(self):
-        """
-        Field names from model
-        :return: list with all field names
-        """
-        field_list = self._meta.get_fields()  # produce a list of field objects
-        return [f.name for f in field_list]  # return a list of names from each field
-
-    def get_foreign_key_field_names(self):
-        """
-        Get foreign key fields
-        :return: returns a list of for key field names
-        """
-        field_list = self._meta.get_fields()  # produce a list of field objects
-        return [f.name for f in field_list if f.is_relation]  # return a list of names for fk fields
-
-    def get_concrete_field_names(self):
-        """
-        Get field names that correspond to columns in the DB
-        :return: returns a lift
-        """
-        field_list = self._meta.get_fields()
-        return [f.name for f in field_list if f.concrete]
-
-    def __unicode__(self):
-        nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
-                    + str(self.item_description) + "]"
-        return nice_name.replace("None", "").replace("--", "")
-
-    class Meta:
-        verbose_name = "LGRP Occurrence"
-        verbose_name_plural = "LGRP Occurrences"
-        ordering = ["collection_code", "item_number", "item_part"]
 
 
 class Biology(Occurrence):
@@ -365,6 +362,13 @@ class Biology(Occurrence):
     lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
     lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
 
+    class Meta:
+        verbose_name = "LGRP Biology"
+        verbose_name_plural = "LGRP Biology"
+
+    def __unicode__(self):
+        return str(self.id)
+
     @staticmethod
     def find_unmatched_values(field_name):
         lgrp_bio = Biology.objects.all()
@@ -373,17 +377,11 @@ class Biology(Occurrence):
         choices = [i[0] for i in field.choices]
         result = [v for v in values if v not in choices]
         if (not result) or result == [None]:
-            return (False, None, None)
+            result_tuple = (False, None, None)
+            return result_tuple
         else:
-            return (True, len(result), result)
-
-    class Meta:
-        verbose_name = "LGRP Biology"
-        verbose_name_plural = "LGRP Biology"
-
-    def __unicode__(self):
-        return str(self.id)
-        #return str(self.taxon.__unicode__())
+            result_tuple = (True, len(result), result)
+            return result_tuple
 
 
 class Archaeology(Occurrence):
