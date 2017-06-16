@@ -195,7 +195,7 @@ class BiologyAdmin(OccurrenceAdmin):
             fk_values = [get_fk_values(occurrence, fk) for fk in fk_field_names]
 
             row_data = concrete_values + method_values + fk_values
-            cleaned_row_data = ['' if i in ['None', 'False'] else i for i in row_data]  # Replace None with ''.
+            cleaned_row_data = ['' if i in [None, False, 'None', 'False'] else i for i in row_data]  # Replace ''.
             writer.writerow(cleaned_row_data)
 
         return response
