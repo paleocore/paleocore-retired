@@ -95,7 +95,7 @@ class OccurrenceMethodTests(TestCase):
     def test_get_all_field_names(self):
         dik1 = Occurrence.objects.get(barcode=1)
         field_names_list = dik1.get_all_field_names()
-        self.assertEqual(len(field_names_list), 56)  # check the length of the field name list.
+        self.assertEqual(len(field_names_list), 47)  # check the length of the field name list.
         self.assertTrue('basis_of_record' in field_names_list)
         self.assertTrue('images' in field_names_list)
 
@@ -109,7 +109,7 @@ class OccurrenceMethodTests(TestCase):
     def test_get_concrete_field_names(self):
         dik1 = Occurrence.objects.get(barcode=1)
         concrete_field_list = dik1.get_concrete_field_names()
-        self.assertEqual(len(concrete_field_list), 51)
+        self.assertEqual(len(concrete_field_list), 42)
         self.assertTrue('basis_of_record' in concrete_field_list)
         self.assertFalse('biology' in concrete_field_list)
 
