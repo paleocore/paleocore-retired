@@ -20,7 +20,6 @@ class Occurrence(models.Model):
     # dwc:modified
     date_last_modified = models.DateTimeField('Modified', auto_now=True,
                                               help_text='The date and time this resource was last altered.')
-
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        help_text='e.g. Observed item or Collected item',
                                        choices=LGRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL, dwc:basisOfRecord
@@ -42,13 +41,11 @@ class Occurrence(models.Model):
                                   help_text='For collected items only.')  # dwc:recordNumber
     field_number = models.CharField(max_length=50, null=True, blank=True)  # dwc:fieldNumber
     item_type = models.CharField(max_length=255, blank=True, null=False, choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
-
     # TODO merge with taxon
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)  # dwc:scientificName
     # TODO merge with element
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)  # merge with element
     item_count = models.IntegerField(blank=True, null=True, default=1)
-
     collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)  # dwc:recordedBy
     finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
     collecting_method = models.CharField(max_length=50,
@@ -99,6 +96,19 @@ class Occurrence(models.Model):
         nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
                     + str(self.item_description) + "]"
         return nice_name.replace("None", "").replace("--", "")
+
+    def catalog_number(self):
+        """
+        Generate a pretty string formatted catalog number from constituent fields
+        dwc: catalogNumber
+        :return: catalog number as string
+        """
+
+        if self.basis_of_record == 'Collection':
+            catalog_number_string = str(self.collection_code) + " " + str(self.barcode)
+            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
+        else:
+            return None
 
     @staticmethod
     def method_fields_to_export():
@@ -210,19 +220,6 @@ class Occurrence(models.Model):
         except AttributeError:
             return None
 
-    def catalog_number(self):
-        """
-        Generate a pretty string formatted catalog number from constituent fields
-        dwc: catalogNumber
-        :return: catalog number as string
-        """
-
-        if self.basis_of_record == 'Collection':
-            catalog_number_string = str(self.collection_code) + " " + str(self.barcode)
-            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
-        else:
-            return None
-
     def photo(self):
         try:
             html_string = u'<a href="{}"><img src="{}" style="width:600px" /></a>'
@@ -262,13 +259,14 @@ class Biology(Occurrence):
                                         on_delete=models.SET_NULL,
                                         related_name='lgrp_qualifier_taxon_bio_occurrences')
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
+    verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
     taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Identification
     identified_by = models.CharField(null=True, blank=True, max_length=100, choices=LGRP_IDENTIFIER_CHOICES)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
-    verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
+
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
 
     # Element
@@ -371,6 +369,12 @@ class Biology(Occurrence):
 
     @staticmethod
     def find_unmatched_values(field_name):
+        """
+        For every field in the data model this function compares the values in the DB against the values
+        in the choice lists and reports any unmatched values, i.e. DB values not in choices lists.
+        :param field_name:
+        :return:
+        """
         lgrp_bio = Biology.objects.all()
         values = list(set([getattr(bio, field_name) for bio in lgrp_bio]))
         field = Biology._meta.get_field_by_name(field_name)[0]
