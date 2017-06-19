@@ -12,10 +12,10 @@ from django.contrib.gis.geos import Point
 # Occurrence Class and Subclasses
 class Occurrence(models.Model):
     """
-    Occurrence == Find, a general class for things discovered in the field.
-    Find's have three subtypes: Archaeology, Biology, Geology
-    Fields are grouped by comments into logical sets (i.e. ontological classes)
-    """
+            Occurrence == Find, a general class for things discovered in the field.
+            Find's have three subtypes: Archaeology, Biology, Geology
+            Fields are grouped by comments into logical sets (i.e. ontological classes)
+            """
     # Record
     # dwc:modified
     date_last_modified = models.DateTimeField('Modified', auto_now=True,
@@ -276,6 +276,7 @@ class Biology(Occurrence):
     element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_MODIFIER_CHOICES)
     element_portion = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_PORTION_CHOICES)
     element_number = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_ELEMENT_NUMBER_CHOICES)
+    element_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
     tooth_number = models.CharField(null=True, blank=True, max_length=50)
@@ -342,7 +343,6 @@ class Biology(Occurrence):
     indet_molar = models.BooleanField(default=False)
     indet_tooth = models.BooleanField(default=False)
     deciduous = models.BooleanField(default=False)
-    element_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Measurements
     um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
