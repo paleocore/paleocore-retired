@@ -1,9 +1,7 @@
 from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
-from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
-    HRP_COLLECTING_METHOD_VOCABULARY, HRP_BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
+from .ontologies import *
 import os
-import utm
 from django.contrib.gis.geos import Point
 
 
@@ -77,21 +75,26 @@ class Locality(models.Model):
         :return:
         """
         try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[0]
-        except:
-            return 0
+            if self.geom.srid == 32637:
+                return self.geom.x
+            else:
+                utm_point = self.geom.transform(32637, clone=True)  # get a copy of the point in utm
+                return utm_point.x
+        except AttributeError:
+            return None
 
     def northing(self):
         """
         Return the easting for the point in UTM meters using the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            utm_point = utm.from_latlon(pt.y, pt.x)
-            return utm_point[0]
-        else:
+        try:
+            if self.geom.srid == 32637:
+                return self.geom.y
+            else:
+                utm_point = self.geom.transform(32637, clone=True)
+                return utm_point.y
+        except AttributeError:
             return None
 
     class Meta:
@@ -102,48 +105,54 @@ class Locality(models.Model):
 
 # Occurrence Class and Subclasses
 class Occurrence(models.Model):
-    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
-    # TODO basis is Null for import Not Null afterwards
+    """
+        Occurrence == Find, a general class for things discovered in the field.
+        Find's have three subtypes: Archaeology, Biology, Geology
+        Fields are grouped by comments into logical sets (i.e. ontological classes)
+        """
+    # Record
+    # dwc:modified
+    date_last_modified = models.DateTimeField("Modified", auto_now=True,
+                                              help_text='The date and time this resource was last altered.')
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
-                                       choices=HRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
-    item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
-                                 choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
-    # During initial import remove collection code choices. Add later for validation.
-    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
-    # Foreign key to locality table
-    locality = models.ForeignKey(Locality, null=True, blank=True)
-    # Splitting item number and part allows more fine grained searches
-    item_number = models.IntegerField("Item #", null=True, blank=True)
-    item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
-    # Keep catalog number temporarily, but going forward create method to build from other fields
-    # catalog_number = models.CharField("Catalog #", max_length=255, blank=True, null=True)
+                                       help_text='e.g. Observed item or Collected item',
+                                       choices=HRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL  dwc:basisOfRecord
+    problem = models.BooleanField(default=False)
+    problem_comment = models.TextField(max_length=255, blank=True, null=True)
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
-    item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
-    item_description = models.CharField("Description", max_length=255, blank=True, null=True)
-    georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
-    collecting_method = models.CharField(max_length=50,
-                                         choices=HRP_COLLECTING_METHOD_VOCABULARY, null=True, blank=True)
-    related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
-    field_number = models.CharField(max_length=50, null=True, blank=True)
-    collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
-    finder = models.CharField(null=True, blank=True, max_length=50)
-    disposition = models.CharField(max_length=255, blank=True, null=True)
-    collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
+
+    # Event
     date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
     year_collected = models.IntegerField(blank=True, null=True)
-    individual_count = models.IntegerField(blank=True, null=True, default=1)
+
+    # Find
+    barcode = models.IntegerField("Barcode", null=True, blank=True)
+    field_number = models.CharField(max_length=50, null=True, blank=True)
+    item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
+                                 choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
+    # TODO merge with taxon
+    item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
+    # TODO merge with element
+    item_description = models.CharField("Description", max_length=255, blank=True, null=True)
+    item_count = models.IntegerField(blank=True, null=True, default=1)
+    collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
+    finder = models.CharField(null=True, blank=True, max_length=50)
+    collecting_method = models.CharField(max_length=50,
+                                         choices=HRP_COLLECTING_METHOD_VOCABULARY,
+                                         null=True, blank=True)
+    locality = models.ForeignKey(Locality, null=True, blank=True)  # dwc:sampling_protocol
+    item_number = models.IntegerField("Item #", null=True, blank=True)
+    item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
+    cat_number = models.CharField("Cat Number", max_length=255, blank=True, null=True)
+    disposition = models.CharField(max_length=255, blank=True, null=True)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
-    stratigraphic_marker_upper = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_upper = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_lower = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_lower = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_found = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_found = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_likely = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_likely = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_formation = models.CharField(max_length=255, blank=True, null=True)
-    stratigraphic_member = models.CharField(max_length=255, blank=True, null=True)
-    analytical_unit = models.CharField(max_length=255, blank=True, null=True)
+    # TODO rename collection remarks to find remarks
+    collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
+
+    # Geological Context
+    stratigraphic_formation = models.CharField("Formation", max_length=255, blank=True, null=True)
+    stratigraphic_member = models.CharField("Member", max_length=255, blank=True, null=True)
+    analytical_unit_1 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_found = models.CharField(max_length=255, blank=True, null=True)
@@ -151,22 +160,89 @@ class Occurrence(models.Model):
     analytical_unit_simplified = models.CharField(max_length=255, blank=True, null=True)
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
-    image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/hrp", null=True)
     weathering = models.SmallIntegerField(blank=True, null=True)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
-    problem = models.BooleanField(default=False)
-    problem_comment = models.TextField(max_length=255, blank=True, null=True)
-    barcode = models.IntegerField("Barcode", null=True, blank=True)
-    date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
+    geology_remarks = models.TextField(max_length=500, null=True, blank=True)
+
+    # Location
+    collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
+    drainage_region = models.CharField(null=True, blank=True, max_length=255)
+    georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
+    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
     objects = models.GeoManager()
 
-    # HRP Specific Fields
-    drainage_region = models.CharField(null=True, blank=True, max_length=255)
+    # Media
+    image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/hrp", null=True)
+
+    class Meta:
+        verbose_name = "HRP Occurrence"
+        verbose_name_plural = "HRP Occurrences"
+        ordering = ["collection_code", "locality", "item_number", "item_part"]
+
+    def __unicode__(self):
+        nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
+                    + str(self.item_description) + "]"
+        return nice_name.replace("None", "").replace("--", "")
+
+    def catalog_number(self):
+        """
+        Generate a pretty string formatted catalog number from constituent fields
+        :return: catalog number as string
+        """
+
+        if self.basis_of_record == 'Collection':
+            #  Crate catalog number string. Null values become None when converted to string
+            if self.item_number:
+                if self.item_part:
+                    item_text = '-' + str(self.item_number) + str(self.item_part)
+                else:
+                    item_text = '-' + str(self.item_number)
+            else:
+                item_text = ''
+
+            catalog_number_string = str(self.collection_code) + " " + str(self.locality_id) + item_text
+            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
+        else:
+            return None
 
     @staticmethod
     def fields_to_display():
         fields = ("id", "barcode")
         return fields
+
+    @staticmethod
+    def method_fields_to_export():
+        """
+        Method to store a list of fields that should be added to data exports.
+        Called by export admin actions.
+        These fields are defined in methods and are not concrete fields in the DB so have to be declared.
+        :return:
+        """
+        return ['longitude', 'latitude', 'easting', 'northing', 'catalog_number', 'photo']
+
+    def get_all_field_names(self):
+        """
+        Field names from model
+        :return: list with all field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list]  # return a list of names from each field
+
+    def get_foreign_key_field_names(self):
+        """
+        Get foreign key fields
+        :return: returns a list of for key field names
+        """
+        field_list = self._meta.get_fields()  # produce a list of field objects
+        return [f.name for f in field_list if f.is_relation]  # return a list of names for fk fields
+
+    def get_concrete_field_names(self):
+        """
+        Get field names that correspond to columns in the DB
+        :return: returns a lift
+        """
+        field_list = self._meta.get_fields()
+        return [f.name for f in field_list if f.concrete]
 
     def point_x(self):
         """
@@ -193,11 +269,13 @@ class Occurrence(models.Model):
         Return the longitude for the point in the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(4326)  # transform to GCS WGS84
-            return pt.x
-        else:
+        try:
+            if self.geom.srid == 4326:
+                return self.geom.x
+            else:
+                gcs_point = self.geom.transform(4326, clone=True)  # transform a clone of original point
+                return gcs_point.x
+        except AttributeError:
             return None
 
     def latitude(self):
@@ -205,11 +283,13 @@ class Occurrence(models.Model):
         Return the latitude for the point in the WGS84 datum
         :return:
         """
-        if self.geom and type(self.geom) == Point:
-            pt = self.geom
-            pt.transform(4326)
-            return pt.y
-        else:
+        try:
+            if self.geom.srid == 4326:
+                return self.geom.y
+            else:
+                gcs_point = self.geom.transform(4326, clone=True)  # transform a clone of original point
+                return gcs_point.y
+        except AttributeError:
             return None
 
     def easting(self):
@@ -218,9 +298,12 @@ class Occurrence(models.Model):
         :return:
         """
         try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[0]
-        except:
+            if self.geom.srid == 32637:
+                return self.geom.x
+            else:
+                utm_point = self.geom.transform(32637, clone=True)  # get a copy of the point in utm
+                return utm_point.x
+        except AttributeError:
             return None
 
     def northing(self):
@@ -229,36 +312,13 @@ class Occurrence(models.Model):
         :return:
         """
         try:
-            utmPoint = utm.from_latlon(self.geom.coords[1], self.geom.coords[0])
-            return utmPoint[1]
-        except:
-            return None
-
-    def catalog_number(self):
-        """
-        Generate a pretty string formatted catalog number from constituent fields
-        :return: catalog number as string
-        """
-
-        if self.basis_of_record == 'Collection':
-            #  Crate catalog number string. Null values become None when converted to string
-            if self.item_number:
-                if self.item_part:
-                    item_text = '-' + str(self.item_number) + str(self.item_part)
-                else:
-                    item_text = '-' + str(self.item_number)
+            if self.geom.srid == 32637:
+                return self.geom.y
             else:
-                item_text = ''
-
-            catalog_number_string = str(self.collection_code) + " " + str(self.locality_id) + item_text
-            return catalog_number_string.replace('None', '').replace('- ', '')  # replace None with empty string
-        else:
+                utm_point = self.geom.transform(32637, clone=True)
+                return utm_point.y
+        except AttributeError:
             return None
-
-    def __unicode__(self):
-        nice_name = str(self.catalog_number()) + ' ' + '[' + str(self.item_scientific_name) + ' ' \
-                    + str(self.item_description) + "]"
-        return nice_name.replace("None", "").replace("--", "")
 
     def save(self, *args, **kwargs):
         """
@@ -297,17 +357,14 @@ class Occurrence(models.Model):
     thumbnail.allow_tags = True
     thumbnail.mark_safe = True
 
-    def get_all_field_names(self):
-        return self._meta.get_all_field_names()
-
-    class Meta:
-        verbose_name = "HRP Occurrence"
-        verbose_name_plural = "HRP Occurrences"
-        ordering = ["collection_code", "locality", "item_number", "item_part"]
-
 
 class Biology(Occurrence):
-    # Foreign keys
+    # Biology
+    sex = models.CharField(null=True, blank=True, max_length=50)
+    life_stage = models.CharField(null=True, blank=True, max_length=50)
+    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
+
+    # Taxon
     taxon = models.ForeignKey(Taxon,
                               default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
                               related_name='hrp_taxon_bio_occurrences')
@@ -317,39 +374,33 @@ class Biology(Occurrence):
     qualifier_taxon = models.ForeignKey(Taxon, null=True, blank=True,
                                         on_delete=models.SET_NULL,
                                         related_name='hrp_qualifier_taxon_bio_occurrences')
-
-
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
+    taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
+
+    # Identification
     identified_by = models.CharField(null=True, blank=True, max_length=100)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
-    sex = models.CharField(null=True, blank=True, max_length=50)
-    life_stage = models.CharField(null=True, blank=True, max_length=50)
-    preparations = models.CharField(null=True, blank=True, max_length=50)
-    morphobank_number = models.IntegerField(null=True, blank=True)
-    side = models.CharField(null=True, blank=True, max_length=50)
-    attributes = models.CharField(null=True, blank=True, max_length=50)
+
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
+
+    # Element
+    side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
+    # TODO add element_choices once field is cleaned
+    element = models.CharField(null=True, blank=True, max_length=50)
+    # TODO add element_modifier choices once field is cleaned
+    element_modifier = models.CharField(null=True, blank=True, max_length=50)
+    # TODO populate portion after migrate
+    element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
+    # TODO populate number choices after migrate
+    element_number = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_NUMBER_CHOICES)
+    element_remarks = models.TextField(max_length=500, null=True, blank=True)
+
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
     tooth_number = models.CharField(null=True, blank=True, max_length=50)
     tooth_type = models.CharField(null=True, blank=True, max_length=50)
-    um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_1_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_1_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_1_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_1_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_2_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_2_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
-    element = models.CharField(null=True, blank=True, max_length=50)
-    element_modifier = models.CharField(null=True, blank=True, max_length=50)
+
     # upper dentition fields
     uli1 = models.BooleanField(default=False)
     uli2 = models.BooleanField(default=False)
@@ -412,12 +463,59 @@ class Biology(Occurrence):
     indet_tooth = models.BooleanField(default=False)
     deciduous = models.BooleanField(default=False)
 
+    # Measurements
+    um_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_1_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_1_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_2_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_2_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    um_3_width_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_tooth_row_length_mm = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_1_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_1_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_2_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_2_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_3_length = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    lm_3_width = models.DecimalField(max_digits=38, decimal_places=8, null=True, blank=True)
+    # TODO delete attributes, preparations and morphobank number
+    attributes = models.CharField(null=True, blank=True, max_length=50)
+    preparations = models.CharField(null=True, blank=True, max_length=50)
+    morphobank_number = models.IntegerField(null=True, blank=True)  # empty, ok to delete
+
     class Meta:
         verbose_name = "HRP Biology"
         verbose_name_plural = "HRP Biology"
 
     def __unicode__(self):
         return str(self.taxon.__unicode__())
+
+    @staticmethod
+    def find_unmatched_values(field_name):
+        """
+        For every field in the data model this function compares the values in the DB against the values
+        in the choice lists and reports any unmatched values, i.e. DB values not in choices lists.
+        :param field_name:
+        :return: returns a three-element tuple:
+        1. The first element is True/False and indicates if any non-matching values were found
+        2. The second element list how many unique non-matching values were found
+        3. The third is a list of all the uniuqe non-matching values
+        """
+        bio_objs = Biology.objects.all()  # get all biology objects
+        # get a list of unique values not in choice sets
+        values = list(set([getattr(bio, field_name) for bio in bio_objs]))
+        # get the field object based on the field_name argument
+        field = Biology._meta.get_field_by_name(field_name)[0]
+        # get the choices for that field, assumes field has a choice list
+        choices = [i[0] for i in field.choices]
+        # create a list of all unique values in the db that are not in the choice list
+        result = [v for v in values if v not in choices]
+        if (not result) or result == [None]:
+            result_tuple = (False, None, None)
+            return result_tuple
+        else:
+            result_tuple = (True, len(result), result)
+            return result_tuple
 
 
 class Archaeology(Occurrence):
@@ -461,12 +559,12 @@ class Hydrology(models.Model):
 
 # Media Classes
 class Image(models.Model):
-    occurrence = models.ForeignKey("Occurrence", related_name='hrp_occurrences')
+    occurrence = models.ForeignKey("Occurrence", related_name='images')
     image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
 
 class File(models.Model):
-    occurrence = models.ForeignKey("Occurrence")
+    occurrence = models.ForeignKey("Occurrence", related_name='files')
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)

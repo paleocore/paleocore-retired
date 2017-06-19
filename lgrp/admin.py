@@ -3,13 +3,24 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
-import base.admin
 import unicodecsv
+
+
+##########################
+# Custom geo admin class #
+##########################
+
+class DGGeoAdmin(OSMGeoAdmin):
+    """
+    Modified Geographic Admin Class using Digital Globe basemaps
+    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
+    """
+    map_template = 'gis/admin/digital_globe.html'
+
 
 ###########
 # Inlines #
 ###########
-
 
 class ImagesInline(admin.TabularInline):
     model = Image
@@ -98,21 +109,12 @@ default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collec
 default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
                          'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
 
+
 ####################
 # Occurrence Admin #
 ####################
 
-
-class DGGeoAdmin(OSMGeoAdmin):
-    """
-    Modified Geographic Admin Class using Digital Globe basemaps
-    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
-    """
-    map_template = 'gis/admin/digital_globe.html'
-
-
 class OccurrenceAdmin(DGGeoAdmin):
-    actions = ['create_data_csv']
     default_read_only_fields = Occurrence.method_fields_to_export()
     readonly_fields = ['id', 'date_last_modified'] + default_read_only_fields
     list_display = list(default_list_display)
@@ -120,8 +122,10 @@ class OccurrenceAdmin(DGGeoAdmin):
     list_filter = list(default_list_filter)
     search_fields = list(default_search_fields)
     list_per_page = 500
+    actions = ['create_data_csv']
 
     # Admin Actions
+    # TODO update occurrence download
     def create_data_csv(self, request, queryset):
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="LGRP_Occurrences.csv"'  # declare the file name
@@ -177,7 +181,6 @@ class OccurrenceAdmin(DGGeoAdmin):
 #################
 # Biology Admin #
 #################
-
 
 class BiologyAdmin(OccurrenceAdmin):
     list_display = list(default_list_display)
