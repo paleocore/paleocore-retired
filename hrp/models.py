@@ -387,10 +387,13 @@ class Biology(Occurrence):
 
     # Element
     side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
-
+    # TODO add element_choices once field is cleaned
     element = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
+    # TODO add element_modifier choices once field is cleaned
     element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
+    # TODO populate portion after migrate
     element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
+    # TODO populate number choices after migrate
     element_number = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_NUMBER_CHOICES)
 
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
@@ -492,12 +495,19 @@ class Biology(Occurrence):
         For every field in the data model this function compares the values in the DB against the values
         in the choice lists and reports any unmatched values, i.e. DB values not in choices lists.
         :param field_name:
-        :return:
+        :return: returns a three-element tuple:
+        1. The first element is True/False and indicates if any non-matching values were found
+        2. The second element list how many unique non-matching values were found
+        3. The third is a list of all the uniuqe non-matching values
         """
-        bio_objs = Biology.objects.all()
+        bio_objs = Biology.objects.all()  # get all biology objects
+        # get a list of unique values not in choice sets
         values = list(set([getattr(bio, field_name) for bio in bio_objs]))
+        # get the field object based on the field_name argument
         field = Biology._meta.get_field_by_name(field_name)[0]
+        # get the choices for that field, assumes field has a choice list
         choices = [i[0] for i in field.choices]
+        # create a list of all unique values in the db that are not in the choice list
         result = [v for v in values if v not in choices]
         if (not result) or result == [None]:
             result_tuple = (False, None, None)
