@@ -1,9 +1,7 @@
 from django.contrib.gis.db import models
 from taxonomy.models import Taxon, IdentificationQualifier
-from mysite.ontologies import ITEM_TYPE_VOCABULARY, HRP_COLLECTOR_CHOICES, \
-    HRP_COLLECTING_METHOD_VOCABULARY, HRP_BASIS_OF_RECORD_VOCABULARY, HRP_COLLECTION_CODES
+from .ontologies import *
 import os
-import utm
 from django.contrib.gis.geos import Point
 
 
@@ -136,8 +134,7 @@ class Occurrence(models.Model):
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     # TODO merge with element
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
-    # TODO rename to item_count
-    individual_count = models.IntegerField(blank=True, null=True, default=1)
+    item_count = models.IntegerField(blank=True, null=True, default=1)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
     finder = models.CharField(null=True, blank=True, max_length=50)
     collecting_method = models.CharField(max_length=50,
@@ -146,16 +143,15 @@ class Occurrence(models.Model):
     locality = models.ForeignKey(Locality, null=True, blank=True)  # dwc:sampling_protocol
     item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
-    # TODO return catalog_number as field for search and filter
-    # TODO remove related catalog items?
-    related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
+    cat_number = models.CharField("Cat Number", max_length=255, blank=True, null=True)
     disposition = models.CharField(max_length=255, blank=True, null=True)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
+    # TODO rename collection remarks to find remarks
     collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
 
     # Geological Context
-    stratigraphic_formation = models.CharField(max_length=255, blank=True, null=True)
-    stratigraphic_member = models.CharField(max_length=255, blank=True, null=True)
+    stratigraphic_formation = models.CharField("Formation", max_length=255, blank=True, null=True)
+    stratigraphic_member = models.CharField("Member", max_length=255, blank=True, null=True)
     analytical_unit = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
@@ -166,19 +162,9 @@ class Occurrence(models.Model):
     ranked = models.BooleanField(default=False)
     weathering = models.SmallIntegerField(blank=True, null=True)
     surface_modification = models.CharField(max_length=255, blank=True, null=True)
-
-    # TODO remove strat marker fields
-    stratigraphic_marker_upper = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_upper = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_lower = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_lower = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_found = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_found = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
-    stratigraphic_marker_likely = models.CharField(max_length=255, blank=True, null=True)
-    distance_from_likely = models.DecimalField(max_digits=38, decimal_places=8, blank=True, null=True)
+    geology_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Location
-    # Foreign key to locality table
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
     drainage_region = models.CharField(null=True, blank=True, max_length=255)
     georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
@@ -376,7 +362,7 @@ class Biology(Occurrence):
     # Biology
     sex = models.CharField(null=True, blank=True, max_length=50)
     life_stage = models.CharField(null=True, blank=True, max_length=50)
-    # TODO add biology_remarks
+    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Taxon
     taxon = models.ForeignKey(Taxon,
@@ -390,7 +376,7 @@ class Biology(Occurrence):
                                         related_name='hrp_qualifier_taxon_bio_occurrences')
     verbatim_taxon = models.CharField(null=True, blank=True, max_length=1024)
     verbatim_identification_qualifier = models.CharField(null=True, blank=True, max_length=255)
-    # TODO add taxonomy_remarks
+    taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Identification
     identified_by = models.CharField(null=True, blank=True, max_length=100)
@@ -400,12 +386,12 @@ class Biology(Occurrence):
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
 
     # Element
-    side = models.CharField(null=True, blank=True, max_length=50)
+    side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
 
-    element = models.CharField(null=True, blank=True, max_length=50)
-    element_modifier = models.CharField(null=True, blank=True, max_length=50)
-    # TODO add element_portion
-    # TODO add element_number
+    element = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
+    element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
+    element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
+    element_number = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_NUMBER_CHOICES)
 
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
     tooth_number = models.CharField(null=True, blank=True, max_length=50)
@@ -491,7 +477,7 @@ class Biology(Occurrence):
     # TODO delete attributes, preparations and morphobank number
     attributes = models.CharField(null=True, blank=True, max_length=50)
     preparations = models.CharField(null=True, blank=True, max_length=50)
-    morphobank_number = models.IntegerField(null=True, blank=True)
+    morphobank_number = models.IntegerField(null=True, blank=True)  # empty, ok to delete
 
     class Meta:
         verbose_name = "HRP Biology"
@@ -508,8 +494,8 @@ class Biology(Occurrence):
         :param field_name:
         :return:
         """
-        lgrp_bio = Biology.objects.all()
-        values = list(set([getattr(bio, field_name) for bio in lgrp_bio]))
+        bio_objs = Biology.objects.all()
+        values = list(set([getattr(bio, field_name) for bio in bio_objs]))
         field = Biology._meta.get_field_by_name(field_name)[0]
         choices = [i[0] for i in field.choices]
         result = [v for v in values if v not in choices]

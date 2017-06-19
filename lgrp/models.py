@@ -44,7 +44,7 @@ class Occurrence(models.Model):
     # TODO merge with taxon
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)  # dwc:scientificName
     # TODO merge with element
-    item_description = models.CharField("Description", max_length=255, blank=True, null=True)  # merge with element
+    item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     item_count = models.IntegerField(blank=True, null=True, default=1)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)  # dwc:recordedBy
     finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
