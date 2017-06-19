@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
-import base.admin
 from models import *
 import unicodecsv
 
@@ -234,7 +233,7 @@ class OccurrenceAdmin(DGGeoAdmin):
         # check if point is within any localities
         matching_localities = []
         for locality in Locality.objects.all():
-            if locality.geom.contains(queryset[0].geom):
+            if locality.geom and locality.geom.contains(queryset[0].geom):
                 matching_localities.append(str(locality.collection_code) + "-" + str(locality.locality_number))
         if matching_localities:
             # warning to user if the point is within multiple localities
@@ -249,11 +248,12 @@ class OccurrenceAdmin(DGGeoAdmin):
         # if the point is not within any locality, get the nearest locality
         distances = {}  # dictionary which will contain {<localityString>:key} entries
         for locality in Locality.objects.all():
-            locality_name = str(locality.collection_code) + "-" + str(locality.paleolocality)
-            #  how are units being dealt with here?
-            locality_distance_from_point = locality.geom.distance(queryset[0].geom)
-            distances.update({locality_name: locality_distance_from_point})
-            closest_locality_key = min(distances, key=distances.get)
+            if locality.geom:
+                locality_name = str(locality.collection_code) + "-" + str(locality.locality_number)
+                #  how are units being dealt with here?
+                locality_distance_from_point = locality.geom.distance(queryset[0].geom)
+                distances.update({locality_name: locality_distance_from_point})
+                closest_locality_key = min(distances, key=distances.get)
         self.message_user(request, "The point is %d meters from locality %s" % (distances.get(closest_locality_key),
                                                                                 closest_locality_key))
 
@@ -363,7 +363,7 @@ locality_fieldsets = (
         'fields': [('id',)]
     }),
     ('Item Details', {
-        'fields': [('collection_code', 'locality', 'sublocality')]
+        'fields': [('collection_code', 'locality_number', 'sublocality')]
     }),
 
     ('Occurrence Details', {

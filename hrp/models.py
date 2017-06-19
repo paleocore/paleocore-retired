@@ -152,7 +152,7 @@ class Occurrence(models.Model):
     # Geological Context
     stratigraphic_formation = models.CharField("Formation", max_length=255, blank=True, null=True)
     stratigraphic_member = models.CharField("Member", max_length=255, blank=True, null=True)
-    analytical_unit = models.CharField(max_length=255, blank=True, null=True)
+    analytical_unit_1 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_2 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_3 = models.CharField(max_length=255, blank=True, null=True)
     analytical_unit_found = models.CharField(max_length=255, blank=True, null=True)
@@ -395,6 +395,7 @@ class Biology(Occurrence):
     element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
     # TODO populate number choices after migrate
     element_number = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_NUMBER_CHOICES)
+    element_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     tooth_upper_or_lower = models.CharField(null=True, blank=True, max_length=50)
     tooth_number = models.CharField(null=True, blank=True, max_length=50)
@@ -558,12 +559,12 @@ class Hydrology(models.Model):
 
 # Media Classes
 class Image(models.Model):
-    occurrence = models.ForeignKey("Occurrence", related_name='hrp_occurrences')
+    occurrence = models.ForeignKey("Occurrence", related_name='images')
     image = models.ImageField(upload_to="uploads/images", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
 
 class File(models.Model):
-    occurrence = models.ForeignKey("Occurrence")
+    occurrence = models.ForeignKey("Occurrence", related_name='files')
     file = models.FileField(upload_to="uploads/files", null=True, blank=True)
     description = models.TextField(null=True, blank=True)
