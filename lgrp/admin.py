@@ -3,7 +3,6 @@ from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
-import base.admin
 import unicodecsv
 
 ###########
