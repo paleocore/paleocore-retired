@@ -85,7 +85,6 @@ class Biology(Occurrence):
         verbose_name_plural = "GDB Biology Items"
 
 
-
 class Locality(models.Model):
     locality_number = models.AutoField(primary_key=True)  # NOT NULL
     locality_field_number = models.CharField(null=True, blank=True, max_length=50)
