@@ -388,9 +388,9 @@ class Biology(Occurrence):
     # Element
     side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
     # TODO add element_choices once field is cleaned
-    element = models.CharField(null=True, blank=True, max_length=50)
+    element = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
     # TODO add element_modifier choices once field is cleaned
-    element_modifier = models.CharField(null=True, blank=True, max_length=50)
+    element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
     # TODO populate portion after migrate
     element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
     # TODO populate number choices after migrate
