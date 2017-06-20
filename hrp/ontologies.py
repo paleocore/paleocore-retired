@@ -36,7 +36,8 @@ HRP_COLLECTOR_CHOICES = (("C.J. Campisano", "C.J. Campisano"),
                          ("B.J. Schoville", "B.J. Schoville"),
                          ("A.E. Shapiro", "A.E. Shapiro"),
                          ("HFS Student", "HFS Student"),
-                         ("HRP Team", "HRP Team")
+                         ("HRP Team", "HRP Team"),
+                         ("Afar Team", "Afar Team"),
                          )
 
 HRP_COLLECTION_CODES = (("A.L.", "A.L."),)

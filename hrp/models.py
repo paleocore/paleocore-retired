@@ -136,7 +136,7 @@ class Occurrence(models.Model):
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     item_count = models.IntegerField(blank=True, null=True, default=1)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
-    finder = models.CharField(null=True, blank=True, max_length=50)
+    finder = models.CharField(null=True, blank=True, max_length=50, choices=HRP_COLLECTOR_CHOICES)
     collecting_method = models.CharField(max_length=50,
                                          choices=HRP_COLLECTING_METHOD_VOCABULARY,
                                          null=True, blank=True)
