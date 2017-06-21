@@ -379,7 +379,7 @@ class Biology(Occurrence):
     taxonomy_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Identification
-    identified_by = models.CharField(null=True, blank=True, max_length=100)
+    identified_by = models.CharField(null=True, blank=True, max_length=100, choices=HRP_IDENTIFIER_CHOICES)
     year_identified = models.IntegerField(null=True, blank=True)
     type_status = models.CharField(null=True, blank=True, max_length=50)
 
