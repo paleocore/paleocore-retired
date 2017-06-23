@@ -53,5 +53,9 @@ urlpatterns = patterns('projects.views',
                        # ex. /projects/lgrp/upload/
                        url(r'^lgrp/', include('lgrp.urls', namespace='lgrp')),
 
+                       # gdb project url includes
+                       # ex. /projects/gdb/upload/
+                       url(r'^gdb/', include('gdb.urls', namespace='gdb')),
+
                        )
 
