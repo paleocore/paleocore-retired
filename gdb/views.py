@@ -12,6 +12,7 @@ from zipfile import ZipFile
 
 from .models import Locality, Biology, Occurrence
 from .forms import UploadKMLForm
+from mysite.settings import MEDIA_ROOT
 
 
 class UploadKMLView(generic.FormView):
@@ -146,7 +147,7 @@ class UploadKMLView(generic.FormView):
             else:
                 locality=None
 
-            Biology.objects.create(
+            newbio = Biology.objects.create(
                 locality=locality,
                 date_time_collected=datetime.strptime(pd['date_time_collected'], datetime_format),
                 date_last_modified=datetime.now(),
@@ -156,14 +157,24 @@ class UploadKMLView(generic.FormView):
                 item_description=pd['item_description'],
                 geom=Point(x, y, srid=4326),
             )
+            return newbio
 
-        def import_images(placemark_dictionary):
-            image_file = placemark_dictionary['image_file']
+        def import_images(placemark_dictionary, bio):
+            image_tag = placemark_dictionary['image_file']  # e.g. 182.jpg
             for file_info in kmz_file.filelist:
-                if file_info.orig_filename == image_file:
+                if file_info.orig_filename == image_tag:
                     # grab the image file itself
-                    image_file = kmz_file.extract(file_info, "media/uploads/images/gdb")
-                    image_added = True
+                    media_path = os.path.join(MEDIA_ROOT, 'uploads/images/gdb')
+                    image_file = kmz_file.extract(file_info, media_path)
+                    # image_path = image_file[:image_file.rfind(os.sep)]
+                    # construct new file name
+                    new_file_name = 'uploads/images/gdb' + os.sep + image_tag
+                    # rename extracted file with DB record ID
+                    # os.rename(image_file, new_file_name)
+                    # need to strip off "media" folder from relative path saved to DB
+                    # bio.image = new_file_name[new_file_name.find(os.sep) + 1:]
+                    bio.image = new_file_name
+                    bio.save()
                     break
 
         # Parse the form data and get a handle on the import file
@@ -187,8 +198,8 @@ class UploadKMLView(generic.FormView):
             if type(p) is Placemark:
                 p_dict = parse_placemark(p)
                 if placemark_valid(p_dict):
-                    import_data(p.geometry.x, p.geometry.y, p_dict)
-                    import_images(p_dict)
+                    nb = import_data(p.geometry.x, p.geometry.y, p_dict)
+                    import_images(p_dict, nb)
 
         return super(UploadKMLView, self).form_valid(form)
 
