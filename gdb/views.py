@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.views import generic
 from django.contrib.gis.geos import Point
+from django.utils.html import escape
 from datetime import datetime
 from fastkml.kml import KML
 from fastkml import Placemark, Folder, Document
@@ -30,8 +31,22 @@ class UploadKMLView(generic.FormView):
         :param form:
         :return: returns and HttpResponse acknowledging the data have been uploaded
         """
-        upload_file = self.request.FILES['kmlfileUpload']  # get a handle on the file
-        file_name, file_extension = os.path.splitext(upload_file.name)  # split extension
+
+        # dictionary mapping form fields (keys) to model fields (values)
+        mapping = {
+            'Locality': 'locality_number',
+            'Existing Locality': 'locality_number',
+            'Date & Time': 'date_collected',
+            'DateTime': 'date_time_collected',
+            'Field Number': 'field_number',
+            'Basis': 'basis_of_record',
+            'Item Type': 'item_type',
+            'Method': 'collecting_method',
+            'Image': 'image',
+            'NALMA': 'NALMA',
+            'Item Description': 'item_description',
+            'Notes': 'notes'
+        }
 
         def read_kml_file():
             """
@@ -41,7 +56,6 @@ class UploadKMLView(generic.FormView):
             """
 
             # TODO parse the kml file more smartly to locate the first placemark and work from there.
-            # TODO ingest kmz and kml. See the zipfile python library
 
             kml_obj = KML()  # initiate a kml parser object
             kml_file = None  # initiate a kml file
@@ -78,17 +92,30 @@ class UploadKMLView(generic.FormView):
                     placemark_list = level2_elements
             return placemark_list
 
-        def placemark_valid(placemark):
+        def placemark_valid(pd):
+
+            # locality
+            # date collected
+            # field number
+            # basis of record
+            # item type
+            # collecting method
+            # image
+            # NALMA
+            # notes
             return True
 
-        def import_placemark(p):
+        def parse_placemark(placemark):
             """
             Parses the placemark data and writes it to the appropriate object.
             :param placemark:
             :return:
             """
-            table = etree.fromstring(p.description)
+            data = placemark.description
+            clean_data = data.replace('&', '&amp;')  # need to replace some special characters with html encodings
+            table = etree.fromstring(clean_data)
             attributes = table.xpath("//text()|//img")
+
             # TODO test attributes is even length
             # Create a dictionary from the attribute list. The list has key value pairs as alternating
             # elements in the list, the line below takes the first and every other elements and adds them
@@ -99,14 +126,69 @@ class UploadKMLView(generic.FormView):
             # zip creates a list of tuples  = [("Basis of Record", "Collection), ...]
             # which is converted to a dictionary.
             attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
+            result_dict = {}
+            for i in attributes_dict:
+                    result_dict[mapping[i]] = attributes_dict[i]  # adds a new entry to the dictionary
 
-            return attributes_dict
+            # Clean dictionary entries
+            if result_dict['locality_number'] == '-None Selected-':
+                result_dict['locality_number'] = None
+            result_dict['image_file'] = table.xpath("//img/@src")[0]  # add image file name
 
-        kml = read_kml_file()
-        placemarks = get_placemarks(kml)
+            return result_dict
+
+        def import_data(x, y, placemark_dictionary):
+            pd = placemark_dictionary
+            datetime_format = "%b %d, %Y, %I:%M %p"
+            datetime.strptime(pd['date_time_collected'], datetime_format)
+            if placemark_dictionary['locality_number']:
+                locality = Locality.objects.get(pk=pd['locality_number'])
+            else:
+                locality=None
+
+            Biology.objects.create(
+                locality=locality,
+                date_time_collected=datetime.strptime(pd['date_time_collected'], datetime_format),
+                date_last_modified=datetime.now(),
+                basis_of_record=pd['basis_of_record'],
+                item_type=pd['item_type'],
+                collecting_method=pd['collecting_method'],
+                item_description=pd['item_description'],
+                geom=Point(x, y, srid=4326),
+            )
+
+        def import_images(placemark_dictionary):
+            image_file = placemark_dictionary['image_file']
+            for file_info in kmz_file.filelist:
+                if file_info.orig_filename == image_file:
+                    # grab the image file itself
+                    image_file = kmz_file.extract(file_info, "media/uploads/images/gdb")
+                    image_added = True
+                    break
+
+        # Parse the form data and get a handle on the import file
+        upload_file = self.request.FILES['kmlfileUpload']  # get a handle on the file
+        file_name, file_extension = os.path.splitext(upload_file.name)  # split extension
+
+        # Read in the kml and pass the data to the kml parser
+        kml_obj = KML()  # initiate a kml parser object
+        kml_file = None  # initiate a kml file
+        if file_extension in ['.kmz', 'kmz', u'.kmz', u'kmz']:
+            kmz_file = ZipFile(upload_file, 'r')  # get a handle on the zipfile
+            kml_file = kmz_file.open('doc.kml', 'r').read()  # open the kml file inside the kmz
+        elif file_extension == ".kml":
+            # read() loads entire file as one string
+            kml_file = file
+        kml_obj.from_string(kml_file)  # pass contents of kml string to kml document instance for parsing
+
+
+        placemarks = get_placemarks(kml_obj)
         for p in placemarks:
             if type(p) is Placemark:
-                p_dict = import_placemark(p)
+                p_dict = parse_placemark(p)
+                if placemark_valid(p_dict):
+                    import_data(p.geometry.x, p.geometry.y, p_dict)
+                    import_images(p_dict)
 
         return super(UploadKMLView, self).form_valid(form)
 

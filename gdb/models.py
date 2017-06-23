@@ -7,8 +7,9 @@ import utm
 class Occurrence(models.Model):
     specimen_number = models.AutoField(primary_key=True)  # NOT NULL
     cm_specimen_number = models.IntegerField(null=True, blank=True)  # CM SPec #
-    locality = models.ForeignKey("Locality", to_field="locality_number")
-    date_collected = models.DateField(blank=True, null=True, editable=True)
+    locality = models.ForeignKey("Locality", to_field="locality_number", null=True, blank=True)
+    date_time_collected = models.DateTimeField(null=True, blank=True)
+    date_collected = models.DateField(null=True, blank=True, editable=True)
     time_collected = models.CharField(null=True, blank=True, max_length=50)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
