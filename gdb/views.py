@@ -192,7 +192,6 @@ class UploadKMLView(generic.FormView):
             kml_file = file
         kml_obj.from_string(kml_file)  # pass contents of kml string to kml document instance for parsing
 
-
         placemarks = get_placemarks(kml_obj)
         for p in placemarks:
             if type(p) is Placemark:
