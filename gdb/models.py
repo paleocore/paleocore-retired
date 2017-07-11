@@ -89,7 +89,7 @@ class Biology(Occurrence):
 
 
 class Locality(models.Model):
-    locality_number = models.AutoField(primary_key=True)  # NOT NULL
+    locality_number = models.IntegerField(primary_key=True)  # NOT NULL
     locality_field_number = models.CharField(null=True, blank=True, max_length=50)
     name = models.CharField(null=True, blank=True, max_length=50)  # Locality Name
     date_discovered = models.DateField(null=True, blank=True)

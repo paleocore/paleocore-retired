@@ -36,8 +36,9 @@ class UploadKMLView(generic.FormView):
         # dictionary mapping form fields (keys) to model fields (values)
         mapping = {
             'Locality': 'locality_number',
+            'Locality Number': 'locality_number',
             'Existing Locality': 'locality_number',
-            'Date & Time': 'date_collected',
+            'Date & Time': 'date_time_collected',
             'DateTime': 'date_time_collected',
             'Field Number': 'field_number',
             'Basis': 'basis_of_record',
@@ -46,7 +47,15 @@ class UploadKMLView(generic.FormView):
             'Image': 'image',
             'NALMA': 'NALMA',
             'Item Description': 'item_description',
-            'Notes': 'notes'
+            'Notes': 'notes',
+            'Elevation': 'elevation',
+            'BLM District': 'blm_district',
+            'County': 'county',
+            'Formation': 'formation',
+            'Locality Name': 'locality_name',
+            'Quad Sheet': 'quad_sheet',
+            'Region': 'region',
+            'Resource Area': 'resource_area',
         }
 
         def read_kml_file():
@@ -129,7 +138,8 @@ class UploadKMLView(generic.FormView):
             attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
             result_dict = {}
             for i in attributes_dict:
-                    result_dict[mapping[i]] = attributes_dict[i]  # adds a new entry to the dictionary
+                    clean_i = i.strip()  # remove excess whitespace
+                    result_dict[mapping[clean_i]] = attributes_dict[i]  # adds a new entry to the dictionary
 
             # Clean dictionary entries
             if result_dict['locality_number'] == '-None Selected-':
@@ -138,10 +148,10 @@ class UploadKMLView(generic.FormView):
 
             return result_dict
 
-        def import_data(model, x, y, placemark_dictionary):
+        def import_data(model_name_string, x, y, placemark_dictionary):
             new_obj = None
             datetime_format = "%b %d, %Y, %I:%M %p"
-            if model == Biology:
+            if model_name_string == 'Biology':
                 pd = placemark_dictionary
                 datetime.strptime(pd['date_time_collected'], datetime_format)
                 if placemark_dictionary['locality_number']:
@@ -158,14 +168,16 @@ class UploadKMLView(generic.FormView):
                     collecting_method=pd['collecting_method'],
                     item_description=pd['item_description'],
                     geom=Point(x, y, srid=4326),
+                    elevation=pd['elevation']
                 )
-            elif model == Locality:
+            elif model_name_string == 'Locality':
                 pd = placemark_dictionary
-                datetime.strptime(pd['date_time_collected'], datetime_format)
+                # datetime.strptime(pd['date_time_collected'], datetime_format)
                 new_obj = Locality.objects.create(
-                    locality_field_number=pd['locality_field_number'],
-                    name=pd['name'],
-                    date_discovered=datetime.date(pd['date_collected']),
+                    locality_number=pd['locality_number'],
+                    locality_field_number=pd['field_number'],
+                    name=pd['locality_name'],
+                    date_discovered=datetime.date(datetime.strptime(pd['date_time_collected'], datetime_format)),
                     formation=pd['formation'],
                     # member=pd['member'],
                     NALMA=pd['NALMA'],
@@ -176,26 +188,18 @@ class UploadKMLView(generic.FormView):
                     county=pd['county'],
                     notes=pd['notes'],
                     geom=Point(x, y, srid=4326),
+
                 )
 
             return new_obj
 
-        def import_images(placemark_dictionary, bio):
+        def import_images(placemark_dictionary, occurrence_object):
             image_tag = placemark_dictionary['image_file']  # e.g. 182.jpg
-            for file_info in kmz_file.filelist:
-                if file_info.orig_filename == image_tag:
-                    # grab the image file itself
-                    media_path = os.path.join(MEDIA_ROOT, 'uploads/images/gdb')
-                    image_file = kmz_file.extract(file_info, media_path)
-                    # image_path = image_file[:image_file.rfind(os.sep)]
-                    # construct new file name
-                    new_file_name = 'uploads/images/gdb' + os.sep + image_tag
-                    # rename extracted file with DB record ID
-                    # os.rename(image_file, new_file_name)
-                    # need to strip off "media" folder from relative path saved to DB
-                    # bio.image = new_file_name[new_file_name.find(os.sep) + 1:]
-                    bio.image = new_file_name
-                    bio.save()
+            for file_info in kmz_file.filelist:  # iterate through files in zipped in kmz
+                if file_info.orig_filename == image_tag:  # find the matching file name
+                    new_file_name = 'uploads/images/gdb' + os.sep + image_tag  # update the file name
+                    occurrence_object.image = new_file_name  # rename
+                    occurrence_object.save()
                     break
 
         def get_doc_type(kml_obj):
@@ -212,7 +216,7 @@ class UploadKMLView(generic.FormView):
                 doc_name = document.name.strip()
                 if doc_name in ['Prospecting', 'Biology', 'Fossils']:
                     model_name = 'Biology'
-                elif doc_name in ['Locality', 'New Locs']:
+                elif doc_name in ['Locality', 'New Locs', 'New Localities']:
                     model_name = 'Locality'
 
             return model_name
@@ -232,13 +236,12 @@ class UploadKMLView(generic.FormView):
             kml_file = file
         my_kml_obj.from_string(kml_file)  # pass contents of kml string to kml document instance for parsing
 
-        model = get_doc_type(my_kml_obj)
         placemarks = get_placemarks(my_kml_obj)
         for p in placemarks:
             if type(p) is Placemark:
                 p_dict = parse_placemark(p)
                 if placemark_valid(p_dict):
-                    nb = import_data(model, p.geometry.x, p.geometry.y, p_dict)
+                    nb = import_data(get_doc_type(my_kml_obj), p.geometry.x, p.geometry.y, p_dict)
                     import_images(p_dict, nb)
 
         return super(UploadKMLView, self).form_valid(form)
