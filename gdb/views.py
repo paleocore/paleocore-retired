@@ -110,7 +110,7 @@ class UploadKMLView(generic.FormView):
             """
             Parses the placemark data and writes it to the appropriate object.
             :param placemark:
-            :return:
+            :return: returns a dictionary of key value pairs
             """
             data = placemark.description
             clean_data = data.replace('&', '&amp;')  # need to replace some special characters with html encodings
@@ -138,26 +138,47 @@ class UploadKMLView(generic.FormView):
 
             return result_dict
 
-        def import_data(x, y, placemark_dictionary):
-            pd = placemark_dictionary
+        def import_data(model, x, y, placemark_dictionary):
+            new_obj = None
             datetime_format = "%b %d, %Y, %I:%M %p"
-            datetime.strptime(pd['date_time_collected'], datetime_format)
-            if placemark_dictionary['locality_number']:
-                locality = Locality.objects.get(pk=pd['locality_number'])
-            else:
-                locality=None
+            if model == Biology:
+                pd = placemark_dictionary
+                datetime.strptime(pd['date_time_collected'], datetime_format)
+                if placemark_dictionary['locality_number']:
+                    locality = Locality.objects.get(pk=pd['locality_number'])
+                else:
+                    locality = None
 
-            newbio = Biology.objects.create(
-                locality=locality,
-                date_time_collected=datetime.strptime(pd['date_time_collected'], datetime_format),
-                date_last_modified=datetime.now(),
-                basis_of_record=pd['basis_of_record'],
-                item_type=pd['item_type'],
-                collecting_method=pd['collecting_method'],
-                item_description=pd['item_description'],
-                geom=Point(x, y, srid=4326),
-            )
-            return newbio
+                new_obj = Biology.objects.create(
+                    locality=locality,
+                    date_time_collected=datetime.strptime(pd['date_time_collected'], datetime_format),
+                    date_last_modified=datetime.now(),
+                    basis_of_record=pd['basis_of_record'],
+                    item_type=pd['item_type'],
+                    collecting_method=pd['collecting_method'],
+                    item_description=pd['item_description'],
+                    geom=Point(x, y, srid=4326),
+                )
+            elif model == Locality:
+                pd = placemark_dictionary
+                datetime.strptime(pd['date_time_collected'], datetime_format)
+                new_obj = Locality.objects.create(
+                    locality_field_number=pd['locality_field_number'],
+                    name=pd['name'],
+                    date_discovered=datetime.date(pd['date_collected']),
+                    formation=pd['formation'],
+                    # member=pd['member'],
+                    NALMA=pd['NALMA'],
+                    quad_sheet=pd['quad_sheet'],
+                    resource_area=pd['resource_area'],
+                    region=pd['region'],
+                    blm_district=pd['blm_district'],
+                    county=pd['county'],
+                    notes=pd['notes'],
+                    geom=Point(x, y, srid=4326),
+                )
+
+            return new_obj
 
         def import_images(placemark_dictionary, bio):
             image_tag = placemark_dictionary['image_file']  # e.g. 182.jpg
@@ -177,12 +198,31 @@ class UploadKMLView(generic.FormView):
                     bio.save()
                     break
 
+        def get_doc_type(kml_obj):
+            """
+            Parses a kml/kmz document to determine what model or models the data are for. For
+            example if the form is for Locality data or for Biology data
+            :param kml_obj: a fastkml KML object
+            :return: returns the appropriate model name as a string, e.g. 'Biology', 'Locality' etc.
+            """
+            model_name = None
+            level1_elements = list(kml_obj.features())
+            if len(level1_elements) == 1 and type(level1_elements[0]) == Document:
+                document = level1_elements[0]
+                doc_name = document.name.strip()
+                if doc_name in ['Prospecting', 'Biology', 'Fossils']:
+                    model_name = 'Biology'
+                elif doc_name in ['Locality', 'New Locs']:
+                    model_name = 'Locality'
+
+            return model_name
+
         # Parse the form data and get a handle on the import file
         upload_file = self.request.FILES['kmlfileUpload']  # get a handle on the file
         file_name, file_extension = os.path.splitext(upload_file.name)  # split extension
 
         # Read in the kml and pass the data to the kml parser
-        kml_obj = KML()  # initiate a kml parser object
+        my_kml_obj = KML()  # initiate a kml parser object
         kml_file = None  # initiate a kml file
         if file_extension in ['.kmz', 'kmz', u'.kmz', u'kmz']:
             kmz_file = ZipFile(upload_file, 'r')  # get a handle on the zipfile
@@ -190,14 +230,15 @@ class UploadKMLView(generic.FormView):
         elif file_extension == ".kml":
             # read() loads entire file as one string
             kml_file = file
-        kml_obj.from_string(kml_file)  # pass contents of kml string to kml document instance for parsing
+        my_kml_obj.from_string(kml_file)  # pass contents of kml string to kml document instance for parsing
 
-        placemarks = get_placemarks(kml_obj)
+        model = get_doc_type(my_kml_obj)
+        placemarks = get_placemarks(my_kml_obj)
         for p in placemarks:
             if type(p) is Placemark:
                 p_dict = parse_placemark(p)
                 if placemark_valid(p_dict):
-                    nb = import_data(p.geometry.x, p.geometry.y, p_dict)
+                    nb = import_data(model, p.geometry.x, p.geometry.y, p_dict)
                     import_images(p_dict, nb)
 
         return super(UploadKMLView, self).form_valid(form)

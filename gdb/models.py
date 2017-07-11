@@ -6,21 +6,22 @@ import utm
 
 class Occurrence(models.Model):
     specimen_number = models.AutoField(primary_key=True)  # NOT NULL
+
     cm_specimen_number = models.IntegerField(null=True, blank=True)  # CM SPec #
     locality = models.ForeignKey("Locality", to_field="locality_number", null=True, blank=True)
     date_time_collected = models.DateTimeField(null=True, blank=True)
     date_collected = models.DateField(null=True, blank=True, editable=True)
     time_collected = models.CharField(null=True, blank=True, max_length=50)
     date_last_modified = models.DateTimeField("Date Last Modified", auto_now=True)
-    basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
+    basis_of_record = models.CharField("Basis of Record", max_length=50, blank=False, null=False,
                                        choices=BASIS_OF_RECORD_VOCABULARY)  # NOT NULL
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=True,
                                  choices=ITEM_TYPE_VOCABULARY)
-    collecting_method = models.CharField("Collecting Method", max_length=50, blank=True,
-                                         choices=COLLECTING_METHOD_VOCABULARY, null=True)
+    collecting_method = models.CharField("Collecting Method", max_length=50, blank=True, null=True,
+                                         choices=COLLECTING_METHOD_VOCABULARY, )
     related_catalog_items = models.CharField("Related Catalog Items", max_length=50, null=True, blank=True)
     item_scientific_name = models.CharField("Scientific Name", null=True, blank=True, max_length=255)  # Taxon
-    item_description = models.CharField(null=True, blank=True, max_length=255)
+    item_description = models.CharField("Description", null=True, blank=True, max_length=255)
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/gdb", null=True)
 
     # Disposition fields
@@ -30,6 +31,7 @@ class Occurrence(models.Model):
 
     # Geospatial
     geom = models.GeometryField(srid=4326, blank=True, null=True)
+    elevation = models.DecimalField(max_digits=10, decimal_places=4, blank=True, null=True)
 
     def __unicode__(self):
         return str(self.specimen_number)
@@ -162,7 +164,6 @@ class Locality(models.Model):
             return utmPoint[1]
         except:
             return 0
-
 
     class Meta:
         verbose_name_plural = "GDB Localities"
