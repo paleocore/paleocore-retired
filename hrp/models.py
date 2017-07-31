@@ -147,7 +147,7 @@ class Occurrence(models.Model):
     disposition = models.CharField(max_length=255, blank=True, null=True)
     preparation_status = models.CharField(max_length=50, blank=True, null=True)
     # TODO rename collection remarks to find remarks
-    collection_remarks = models.TextField("Remarks", null=True, blank=True, max_length=255)
+    collection_remarks = models.TextField("Collection Remarks", null=True, blank=True, max_length=255)
 
     # Geological Context
     stratigraphic_formation = models.CharField("Formation", max_length=255, blank=True, null=True)

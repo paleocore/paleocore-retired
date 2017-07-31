@@ -4,7 +4,7 @@ This loader/importer script is designed to read data from a sqlite database stor
 data, and load those data into the PaleoCore postgres database. The script:
 1) reads and validates the raw data read in from the occurrence table in the sqlite database and loads the data into
 a dictionary (row_dict).  The validation function cleans the data and converts the data to an appropriate format
-where necessar;
+where necessary;
 2) reads and validates related data from the biology table in the HRP sqlite database where appropriate and adds those
 data to separate dictionary (bio_dict);
 3) creates a new object of the appropriate subclass (e.g. Biology, Archaeology, Geology), validates the data in the
@@ -30,9 +30,9 @@ django.setup()
 # Global variables
 # initiate a list of barcodes used to verify that each barcode added in the validate_row function is unique
 barcode_list = []
-# absolute file path to the HRP sqlite database from whihc we are reading data
+# absolute file path to the HRP sqlite database from which we are reading data
 hrpdb_path = '/Users/reedd/Documents/projects/PaleoCore/projects/HRP/HRP_Paleobase4_2016.sqlite'
-record_limit = ('20000',)  # a limiter setting the maximum number of records to be read from the database, for debugging
+record_limit = ('200',)  # a limiter setting the maximum number of records to be read from the database, for debugging
 # list of fields as they occur in the HRP sqlite database occurrence table. The list is used to correctly find
 # specific data read in from each row of the occurrence table.
 occurrence_field_list = ["OBJECTID", "Shape", "CatalogNumberNumeric", "CatalogNumberNumeric_OLD", "BasisOfRecord",
@@ -257,7 +257,7 @@ def get_taxon_name_rank(brow):
 def get_matching_taxon(brow):
     """
     Searches taxon objects for taxa matching an occurrence
-    :param row:
+    :param brow:
     :return: returns a single element record set
     """
     # get data from all taxon fields and collect them in a list
@@ -605,7 +605,7 @@ def validate_row(row):
         return False
 
     # Validate Analytical Unit
-    row_dict['analytical_unit'] = row[occurrence_field_list.index('AnalyticalUnit1')]
+    row_dict['analytical_unit_1'] = row[occurrence_field_list.index('AnalyticalUnit1')]
     row_dict['analytical_unit_2'] = row[occurrence_field_list.index('AnalyticalUnit2')]
     row_dict['analytical_unit_3'] = row[occurrence_field_list.index('AnalyticalUnit3')]
     row_dict['analytical_unit_found'] = row[occurrence_field_list.index('AnalyticalUnitFound')]
@@ -647,6 +647,9 @@ def validate_row(row):
         print "Invalid problem %s for Occurrence %s" % (problem_integer, occurrence_id)
         return False
 
+    # Validate Geology Remarks
+    row_dict['geology_remarks'] = row[occurrence_field_list.index('GeologyRemarks')]
+
     # Validate Problem Comment
     row_dict['problem_comment'] = row[occurrence_field_list.index('ProblemComment')]
 
@@ -687,7 +690,7 @@ def validate_row(row):
         row_dict['date_last_modified'] = dlm
 
     # Validate length of row dictionary
-    if len(row_dict.keys()) != 49:
+    if len(row_dict.keys()) != 50:
         print "Invalid row dictionary length %s for Occurrence %s" % (len(row_dict.keys()), occurrence_id)
         print row_dict.keys()
     return row_dict
@@ -835,7 +838,7 @@ def validate_biology(row, brow, pk):
         biology_row_dict['element_number'] = brow[biology_field_list.index('ElementNumber')]
 
         # Validate element qualifier
-        biology_row_dict['element_qualifier'] = brow[biology_field_list.index('ElementQualifier')]
+        biology_row_dict['element_modifier'] = brow[biology_field_list.index('ElementQualifier')]
 
         # Validate size class
         biology_row_dict['size_class'] = brow[biology_field_list.index('SizeClass')]
@@ -923,7 +926,7 @@ def import_collection(row_dict, locality):
                                 year_collected=row_dict['year_collected'],
                                 individual_count=row_dict['individual_count'],
                                 preparation_status=row_dict['preparation_status'],
-                                analytical_unit=row_dict['analytical_unit'],
+                                analytical_unit_1=row_dict['analytical_unit_1'],
                                 analytical_unit_2=row_dict['analytical_unit_2'],
                                 analytical_unit_3=row_dict['analytical_unit_3'],
                                 analytical_unit_found=row_dict['analytical_unit_found'],
@@ -996,7 +999,7 @@ def import_observation(row_dict):
                                 year_collected=row_dict['year_collected'],
                                 individual_count=row_dict['individual_count'],
                                 preparation_status=row_dict['preparation_status'],
-                                analytical_unit=row_dict['analytical_unit'],
+                                analytical_unit_1=row_dict['analytical_unit_1'],
                                 analytical_unit_2=row_dict['analytical_unit_2'],
                                 analytical_unit_3=row_dict['analytical_unit_3'],
                                 analytical_unit_found=row_dict['analytical_unit_found'],
@@ -1084,9 +1087,9 @@ def validate_new_record(occurrence_object, row):
         print "Year collected %s does not match YearCollected %s for Occurrence %s" % \
               (occurrence_object.year_collected, row[occurrence_field_list.index('YearCollected')], occurrence_object.id)
         return False
-    if occurrence_object.analytical_unit != row[occurrence_field_list.index('AnalyticalUnit1')]:
+    if occurrence_object.analytical_unit_1 != row[occurrence_field_list.index('AnalyticalUnit1')]:
         print "Analytical Unit %s does not match AnalyticalUnit1 %s for Occurrence %s" % \
-              (occurrence_object.analytical_unit, row[occurrence_field_list.index('AnalyticalUnit1')], occurrence_object.id)
+              (occurrence_object.analytical_unit_1, row[occurrence_field_list.index('AnalyticalUnit1')], occurrence_object.id)
         return False
     if occurrence_object.barcode != row[occurrence_field_list.index('Barcode')]:
         print "Barcode %s does not match Barcode %s for Occurrence %s" % \

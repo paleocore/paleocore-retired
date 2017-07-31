@@ -71,8 +71,12 @@ occurrence_fieldsets = (
 )
 
 biology_additional_fieldsets = (
+    ('Biology Details', {'fields': [
+        ('life_stage', 'sex'),
+    ]}),
     ('Elements', {'fields': [
         ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
+
         ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
         ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
         ('lri1', 'lri2', 'lrc', 'lrp3', 'lrp4', 'lrm1', 'lrm2', 'lrm3'),
@@ -394,7 +398,6 @@ class LocalityAdmin(DGGeoAdmin):
     }
 
 
-
 ##########################
 # Register Admin Classes #
 ##########################
@@ -404,5 +407,3 @@ admin.site.register(Biology, BiologyAdmin)
 admin.site.register(Geology, GeologyAdmin)
 admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
-
-
