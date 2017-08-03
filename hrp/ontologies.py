@@ -1,3 +1,6 @@
+def choice2list(choice_tuple, index_value=0):
+    return [i[index_value] for i in choice_tuple]
+
 BASIS_OF_RECORD_VOCABULARY = (("FossilSpecimen", "Fossil"), ("HumanObservation", "Observation"))
 HRP_BASIS_OF_RECORD_VOCABULARY = (("Collection", "Collection"), ("Observation", "Observation"))
 ITEM_TYPE_VOCABULARY = (
@@ -367,7 +370,9 @@ HRP_ELEMENT_PORTION_CHOICES = (
     ('almost complete', 'almost complete'),
     ('anterior', 'anterior'),
     ('basal', 'basal'),
+    ('caudal', 'caudal'),
     ('complete', 'complete'),
+    ('cranial', 'cranial'),
     ('diaphysis', 'diaphysis'),
     ('diaphysis+distal', 'diaphysis+distal'),
     ('diaphysis+proximal', 'diaphysis+proximal'),
@@ -403,6 +408,11 @@ HRP_ELEMENT_NUMBER_CHOICES = (
     ('10', '10'),
     ('11', '11'),
     ('12', '12'),
+    ('13', '13'),
+    ('14', '14'),
+    ('15', '15'),
+    ('16', '16'),
+    ('17', '17'),
     ('2-7', '2-7'),
     ('8-12', '8-12'),
     ('indeterminate', 'indeterminate'),
@@ -421,6 +431,7 @@ HRP_ELEMENT_MODIFIER_CHOICES = (
     ('manual distal', 'manual distal'),
     ('manual intermediate', 'manual intermediate'),
     ('manual proximal', 'manual proximal'),
+    ('medial', 'medial'),
     ('pedal', 'pedal'),
     ('pedal distal', 'pedal distal'),
     ('pedal intermediate', 'pedal intermediate'),

@@ -361,7 +361,9 @@ class Occurrence(models.Model):
 class Biology(Occurrence):
     # Biology
     sex = models.CharField(null=True, blank=True, max_length=50)
+    # TODO Add choices for life_stage
     life_stage = models.CharField(null=True, blank=True, max_length=50)
+    # TODO Drop biology_remarks, no longer separate from occurrence.remarks
     biology_remarks = models.TextField(max_length=500, null=True, blank=True)
 
     # Taxon
@@ -387,7 +389,6 @@ class Biology(Occurrence):
 
     # Element
     side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
-    # TODO add element_choices once field is cleaned
     element = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
     # TODO add element_modifier choices once field is cleaned
     element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
