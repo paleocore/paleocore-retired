@@ -361,11 +361,8 @@ class Occurrence(models.Model):
 class Biology(Occurrence):
     # Biology
     sex = models.CharField(null=True, blank=True, max_length=50)
-    # TODO Add choices for life_stage
-    life_stage = models.CharField(null=True, blank=True, max_length=50)
-    # TODO Drop biology_remarks, no longer separate from occurrence.remarks
-    biology_remarks = models.TextField(max_length=500, null=True, blank=True)
-
+    life_stage = models.CharField(null=True, blank=True, max_length=50, choices=HRP_LIFE_STAGE_CHOICES)
+    size_class = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIZE_CLASS_CHOICES)
     # Taxon
     taxon = models.ForeignKey(Taxon,
                               default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted

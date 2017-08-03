@@ -450,6 +450,21 @@ HRP_SIDE_CHOICES = (
     (u'L+R', u'L+R')
 )
 
+HRP_LIFE_STAGE_CHOICES = (
+    ('infant', 'infant'),
+    ('juvenile', 'juvenile')
+)
+
+HRP_SIZE_CLASS_CHOICES = (
+    ('indeterminate', 'indeterminate'),
+    ('1', '1'),
+    ('2', '2'),
+    ('3', '3'),
+    ('4', '4'),
+    ('5', '5')
+)
+
+
 COUNTRY_CHOICES = (
     ('United States of America', 'United States of America'),
     ('Afghanistan', 'Afghanistan'),
