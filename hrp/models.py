@@ -117,35 +117,35 @@ class Occurrence(models.Model):
     basis_of_record = models.CharField("Basis of Record", max_length=50, blank=True, null=False,
                                        help_text='e.g. Observed item or Collected item',
                                        choices=HRP_BASIS_OF_RECORD_VOCABULARY)  # NOT NULL  dwc:basisOfRecord
-    problem = models.BooleanField(default=False)
-    problem_comment = models.TextField(max_length=255, blank=True, null=True)
+    problem = models.BooleanField("Problem", default=False)
+    problem_comment = models.TextField("Problem Comment", max_length=255, blank=True, null=True)
     remarks = models.TextField("Remarks", null=True, blank=True, max_length=2500)
 
     # Event
-    date_recorded = models.DateTimeField(blank=True, null=True, editable=True)  # NOT NULL
-    year_collected = models.IntegerField(blank=True, null=True)
+    date_recorded = models.DateTimeField("Date Recorded", blank=True, null=True, editable=True)  # NOT NULL
+    year_collected = models.IntegerField("Year Collected", blank=True, null=True)
 
     # Find
     barcode = models.IntegerField("Barcode", null=True, blank=True)
-    field_number = models.CharField(max_length=50, null=True, blank=True)
+    field_number = models.CharField("Field Number", max_length=50, null=True, blank=True)
     item_type = models.CharField("Item Type", max_length=255, blank=True, null=False,
                                  choices=ITEM_TYPE_VOCABULARY)  # NOT NULL
     # TODO merge with taxon
     item_scientific_name = models.CharField("Sci Name", max_length=255, null=True, blank=True)
     # TODO merge with element
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
-    item_count = models.IntegerField(blank=True, null=True, default=1)
-    collector = models.CharField(max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
-    finder = models.CharField(null=True, blank=True, max_length=50, choices=HRP_COLLECTOR_CHOICES)
-    collecting_method = models.CharField(max_length=50,
+    item_count = models.IntegerField("Item Count", blank=True, null=True, default=1)
+    collector = models.CharField("Collector", max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
+    finder = models.CharField("Finder", null=True, blank=True, max_length=50, choices=HRP_COLLECTOR_CHOICES)
+    collecting_method = models.CharField("Collecting Method", max_length=50,
                                          choices=HRP_COLLECTING_METHOD_VOCABULARY,
                                          null=True, blank=True)
-    locality = models.ForeignKey(Locality, null=True, blank=True)  # dwc:sampling_protocol
+    locality = models.ForeignKey("Locality", null=True, blank=True)  # dwc:sampling_protocol
     item_number = models.IntegerField("Item #", null=True, blank=True)
     item_part = models.CharField("Item Part", max_length=10, null=True, blank=True)
     cat_number = models.CharField("Cat Number", max_length=255, blank=True, null=True)
-    disposition = models.CharField(max_length=255, blank=True, null=True)
-    preparation_status = models.CharField(max_length=50, blank=True, null=True)
+    disposition = models.CharField("Disposition", max_length=255, blank=True, null=True)
+    preparation_status = models.CharField("Prep Status", max_length=50, blank=True, null=True)
     # TODO rename collection remarks to find remarks
     collection_remarks = models.TextField("Collection Remarks", null=True, blank=True, max_length=255)
 
@@ -161,14 +161,14 @@ class Occurrence(models.Model):
     in_situ = models.BooleanField(default=False)
     ranked = models.BooleanField(default=False)
     weathering = models.SmallIntegerField(blank=True, null=True)
-    surface_modification = models.CharField(max_length=255, blank=True, null=True)
-    geology_remarks = models.TextField(max_length=500, null=True, blank=True)
+    surface_modification = models.CharField("Surface Mod", max_length=255, blank=True, null=True)
+    geology_remarks = models.TextField("Geol Remarks", max_length=500, null=True, blank=True)
 
     # Location
     collection_code = models.CharField("Collection Code", max_length=20, blank=True, null=True)
-    drainage_region = models.CharField(null=True, blank=True, max_length=255)
-    georeference_remarks = models.TextField(max_length=50, null=True, blank=True)
-    geom = models.PointField(srid=4326, blank=True, null=True)  # NOT NULL
+    drainage_region = models.CharField("Drainage Region", null=True, blank=True, max_length=255)
+    georeference_remarks = models.TextField("Georef Remarks", max_length=50, null=True, blank=True)
+    geom = models.PointField("Location", srid=4326, blank=True, null=True)  # NOT NULL
     objects = models.GeoManager()
 
     # Media
@@ -360,9 +360,9 @@ class Occurrence(models.Model):
 
 class Biology(Occurrence):
     # Biology
-    sex = models.CharField(null=True, blank=True, max_length=50)
-    life_stage = models.CharField(null=True, blank=True, max_length=50, choices=HRP_LIFE_STAGE_CHOICES)
-    size_class = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIZE_CLASS_CHOICES)
+    sex = models.CharField("Sex", null=True, blank=True, max_length=50)
+    life_stage = models.CharField("Life Stage", null=True, blank=True, max_length=50, choices=HRP_LIFE_STAGE_CHOICES)
+    size_class = models.CharField("Size Class", null=True, blank=True, max_length=50, choices=HRP_SIZE_CLASS_CHOICES)
     # Taxon
     taxon = models.ForeignKey(Taxon,
                               default=0, on_delete=models.SET_DEFAULT,  # prevent deletion when taxa deleted
@@ -385,12 +385,12 @@ class Biology(Occurrence):
     fauna_notes = models.TextField(null=True, blank=True, max_length=64000)
 
     # Element
-    side = models.CharField(null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
-    element = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
+    side = models.CharField("Side", null=True, blank=True, max_length=50, choices=HRP_SIDE_CHOICES)
+    element = models.CharField("Element", null=True, blank=True, max_length=50, choices=HRP_ELEMENT_CHOICES)
     # TODO add element_modifier choices once field is cleaned
-    element_modifier = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
+    element_modifier = models.CharField("Element Mod", null=True, blank=True, max_length=50, choices=HRP_ELEMENT_MODIFIER_CHOICES)
     # TODO populate portion after migrate
-    element_portion = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
+    element_portion = models.CharField("Element Portion", null=True, blank=True, max_length=50, choices=HRP_ELEMENT_PORTION_CHOICES)
     # TODO populate number choices after migrate
     element_number = models.CharField(null=True, blank=True, max_length=50, choices=HRP_ELEMENT_NUMBER_CHOICES)
     element_remarks = models.TextField(max_length=500, null=True, blank=True)

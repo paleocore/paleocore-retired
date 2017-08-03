@@ -72,7 +72,7 @@ occurrence_fieldsets = (
 
 biology_additional_fieldsets = (
     ('Biology Details', {'fields': [
-        ('life_stage', 'sex'),
+        ('life_stage', 'sex', 'size_class'),
     ]}),
     ('Elements', {'fields': [
         ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
@@ -271,7 +271,7 @@ class BiologyAdmin(OccurrenceAdmin):
     list_display.insert(10, 'taxon')
     fieldsets = biology_fieldsets
     inlines = (ImagesInline, FilesInline)
-    list_filter = list(default_list_filter)+['life_stage']
+    list_filter = list(default_list_filter)+['life_stage', 'size_class']
     search_fields = list(default_search_fields)
 
     def create_data_csv(self, request, queryset):
