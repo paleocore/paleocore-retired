@@ -271,7 +271,7 @@ class BiologyAdmin(OccurrenceAdmin):
     list_display.insert(10, 'taxon')
     fieldsets = biology_fieldsets
     inlines = (ImagesInline, FilesInline)
-    list_filter = list(default_list_filter)
+    list_filter = list(default_list_filter)+['life_stage']
     search_fields = list(default_search_fields)
 
     def create_data_csv(self, request, queryset):
