@@ -49,7 +49,7 @@ occurrence_fieldsets = (
         'fields': [('date_recorded', 'year_collected',),
                    ('barcode', 'catalog_number', 'field_number'),
                    ('item_type', 'item_scientific_name', 'item_description', 'item_count', 'image'),
-                   ('collector', 'finder', 'collecting_method', ),
+                   ('recorded_by', 'finder', 'found_by', 'collecting_method', ),
                    ('locality', 'item_number', 'item_part', 'cat_number'),
                    ('disposition', 'preparation_status'),
                    ('collection_remarks',)]
@@ -105,10 +105,10 @@ biology_fieldsets = (
 )
 
 default_list_display = ['barcode', 'catalog_number', 'cat_number', 'collection_code', 'basis_of_record',
-                        'item_type', 'collecting_method', 'collector', 'item_description', 'item_scientific_name',
+                        'item_type', 'collecting_method', 'recorded_by', 'item_description', 'item_scientific_name',
                         'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
 
-default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
+default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'collector', 'recorded_by', 'problem']
 
 default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
                          'collection_code', 'locality__locality_number', 'item_number', 'item_part', 'cat_number']
@@ -116,41 +116,6 @@ default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barc
 ####################
 # Occurrence Admin #
 ####################
-occurrence_fieldsets_old = (
-    ('Record Details', {
-        'fields': [('id', 'date_last_modified',)]
-    }),
-    ('Item Details', {
-        'fields': [('barcode', 'catalog_number',),
-                   ('date_recorded', 'year_collected',),
-                   ("collection_code", "locality", "item_number", "item_part")]
-    }),
-
-    ('Occurrence Details', {
-        'fields': [('basis_of_record', 'item_type', 'disposition', 'preparation_status'),
-                   ('collecting_method', 'finder', 'collector', 'individual_count'),
-                   ('item_description', 'item_scientific_name', 'image'),
-                   ('problem', 'problem_comment'),
-                   ('remarks',)]
-    }),
-    ('Geological Context', {
-        'fields': [('stratigraphic_marker_upper', 'distance_from_upper'),
-                   ('stratigraphic_marker_lower', 'distance_from_lower'),
-                   ('stratigraphic_marker_found', 'distance_from_found'),
-                   ('stratigraphic_marker_likely', 'distance_from_likely'),
-                   ('analytical_unit', 'analytical_unit_2', 'analytical_unit_3'),
-                   ('in_situ', 'ranked'),
-                   ('stratigraphic_member',),
-                   ('locality', 'drainage_region')]
-    }),
-
-    ('Location Details', {
-        'fields': [('longitude', 'latitude'),
-                   ('easting', 'northing',),
-                   ('geom',)]
-    }),
-)
-
 
 class OccurrenceAdmin(DGGeoAdmin):
     default_read_only_fields = Occurrence.method_fields_to_export()
@@ -407,3 +372,4 @@ admin.site.register(Biology, BiologyAdmin)
 admin.site.register(Geology, GeologyAdmin)
 admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
+admin.site.register(Person)

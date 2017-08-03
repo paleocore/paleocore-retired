@@ -103,6 +103,25 @@ class Locality(models.Model):
         ordering = ("locality_number", "sublocality")
 
 
+# Personnel
+class Person(models.Model):
+    last_name = models.CharField("Last Name", null=True, blank=True, max_length=256)
+    first_name = models.CharField("First Name", null=True, blank=True, max_length=256)
+
+    class Meta:
+        verbose_name = "HRP Person"
+        verbose_name_plural = "HRP People"
+        ordering = ["last_name", "first_name"]
+
+    def __unicode__(self):
+        name = None
+        if self.last_name and self.first_name:
+            name = self.last_name+', '+self.first_name
+        else:
+            name = self.last_name
+        return name
+
+
 # Occurrence Class and Subclasses
 class Occurrence(models.Model):
     """
@@ -136,7 +155,9 @@ class Occurrence(models.Model):
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     item_count = models.IntegerField("Item Count", blank=True, null=True, default=1)
     collector = models.CharField("Collector", max_length=50, blank=True, null=True, choices=HRP_COLLECTOR_CHOICES)
+    recorded_by = models.ForeignKey("Person", null=True, blank=True, related_name="occurrence_recorded_by")
     finder = models.CharField("Finder", null=True, blank=True, max_length=50, choices=HRP_COLLECTOR_CHOICES)
+    found_by = models.ForeignKey("Person", null=True, blank=True, related_name="occurrence_found_by")
     collecting_method = models.CharField("Collecting Method", max_length=50,
                                          choices=HRP_COLLECTING_METHOD_VOCABULARY,
                                          null=True, blank=True)
