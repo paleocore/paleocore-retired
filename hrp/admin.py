@@ -105,18 +105,18 @@ biology_fieldsets = (
 )
 
 default_list_display = ['barcode', 'catalog_number', 'cat_number', 'collection_code', 'basis_of_record',
-                        'item_type', 'collecting_method', 'recorded_by', 'item_description', 'item_scientific_name',
+                        'item_type', 'collecting_method', 'recorded_by', 'found_by', 'item_description', 'item_scientific_name',
                         'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
 
-default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'collector', 'recorded_by', 'problem']
+default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
 
 default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
                          'collection_code', 'locality__locality_number', 'item_number', 'item_part', 'cat_number']
 
+
 ####################
 # Occurrence Admin #
 ####################
-
 class OccurrenceAdmin(DGGeoAdmin):
     default_read_only_fields = Occurrence.method_fields_to_export()
     readonly_fields = ['id', 'date_last_modified'] + default_read_only_fields
