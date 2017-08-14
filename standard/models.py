@@ -123,6 +123,7 @@ class Term(models.Model):
     status = models.ForeignKey(TermStatus)
     category = models.ForeignKey(TermCategory, null=True)
     example = models.TextField(null=True, blank=True)
+    remarks = models.TextField(null=True, blank=True)
     data_range = models.CharField(max_length=255, null=True, blank=True)
     uses_controlled_vocabulary = models.BooleanField(default=False)
     controlled_vocabulary = models.CharField(null=True, blank=True, max_length=75)

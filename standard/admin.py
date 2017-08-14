@@ -2,12 +2,14 @@ from django.contrib import admin
 from standard.models import Term, TermCategory, TermStatus, TermDataType, Comment
 from projects.models import ProjectTerm
 
+
 class ProjectTermInline(admin.TabularInline):
     model = ProjectTerm
     extra = 1
     ordering = 'project',
     readonly_fields = 'native_project',
     fields = 'project', 'native', 'mapping',
+
 
 class TermAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'native_project', 'get_projects', 'data_type', 'status', 'category', 'uri')
@@ -16,6 +18,7 @@ class TermAdmin(admin.ModelAdmin):
     ordering = ('name',)
     search_fields = ['name', ]
     inlines = (ProjectTermInline, )
+
 
 class TermCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'is_occurrence', 'description', 'parent', 'tree_visibility')
