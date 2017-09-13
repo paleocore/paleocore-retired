@@ -62,6 +62,7 @@ class Project(models.Model):
         except:
             return 0
 
+    # TODO Fix Bug!  If a standard project is added but is_standard checkbox is omitted, this code crashes projects page!
     def record_count(self):
         if self.is_standard:
             return 0
