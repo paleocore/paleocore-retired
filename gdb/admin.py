@@ -26,8 +26,9 @@ class LocalityAdmin(base.admin.DGGeoAdmin):
 class BiologyAdmin(admin.ModelAdmin):
     list_display = ('specimen_number', 'item_scientific_name', 'item_description', 'locality',
                     'date_collected', 'time_collected', 'date_time_collected', 'on_loan', 'date_last_modified')
-    list_filter = ['tax_order', 'family', 'genus', 'date_collected', 'on_loan', 'NALMA', 'date_last_modified']
+    list_filter = ['tax_order', 'family', 'genus', 'date_collected', 'on_loan', 'NALMA', 'date_last_modified', 'locality']
     list_per_page = 1000
+    search_fields = ['tax_class', 'tax_order', 'family', 'tribe', 'genus', 'specific_epithet', 'item_scientific_name']
     actions = ['create_data_csv']
 
     def create_data_csv(self, request, queryset):
