@@ -36,6 +36,24 @@ class Occurrence(models.Model):
     def __unicode__(self):
         return str(self.specimen_number)
 
+    @staticmethod
+    def method_fields_to_export():
+        """
+        Method to store a list of fields that should be added to data exports.
+        Called by export admin actions.
+        These fields are defined in methods and are not concrete fields in the DB so have to be declared.
+        :return:
+        """
+        return []  # The GDB project has no method fields to export
+
+    def get_concrete_field_names(self):
+        """
+        Get field names that correspond to columns in the DB
+        :return: returns a lift
+        """
+        field_list = self._meta.get_fields()
+        return [f.name for f in field_list if f.concrete]
+
     class Meta:
         verbose_name = "GDB Occurrence"
 
