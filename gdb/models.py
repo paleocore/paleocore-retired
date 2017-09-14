@@ -60,17 +60,17 @@ class Occurrence(models.Model):
 
 class Biology(Occurrence):
     # Taxonomy fields
-    kingdom = models.CharField(null=True, blank=True, max_length=50)
-    phylum = models.CharField(null=True, blank=True, max_length=50)
+    kingdom = models.CharField("Kingdom", null=True, blank=True, max_length=50)
+    phylum = models.CharField("Phylum", null=True, blank=True, max_length=50)
     tax_class = models.CharField("Class", null=True, blank=True, max_length=50)  # Class
     tax_order = models.CharField("Order", null=True, blank=True, max_length=50)  # Order
-    family = models.CharField(null=True, blank=True, max_length=50)
-    subfamily = models.CharField(null=True, blank=True, max_length=50)
-    tribe = models.CharField(null=True, blank=True, max_length=50)
-    genus = models.CharField(null=True, blank=True, max_length=50)
+    family = models.CharField("Family", null=True, blank=True, max_length=50)
+    subfamily = models.CharField("Subfamily", null=True, blank=True, max_length=50)
+    tribe = models.CharField("Tribe", null=True, blank=True, max_length=50)
+    genus = models.CharField("Genus", null=True, blank=True, max_length=50)
     specific_epithet = models.CharField("Species Name", null=True, blank=True, max_length=50)  # Species
-    infraspecific_epithet = models.CharField(null=True, blank=True, max_length=50)
-    infraspecific_rank = models.CharField(null=True, blank=True, max_length=50)
+    infraspecific_epithet = models.CharField("Infraspecies", null=True, blank=True, max_length=50)
+    infraspecific_rank = models.CharField("Infraspecies rank", null=True, blank=True, max_length=50)
     # Identification fields
     author_year_of_scientific_name = models.CharField(null=True, blank=True, max_length=50)
     nomenclatural_code = models.CharField(null=True, blank=True, max_length=50)
