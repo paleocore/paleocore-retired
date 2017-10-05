@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
 import unicodecsv
+import base.admin
 
 
 ##########################
@@ -113,7 +114,6 @@ default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barc
 ####################
 # Occurrence Admin #
 ####################
-
 class OccurrenceAdmin(DGGeoAdmin):
     default_read_only_fields = Occurrence.method_fields_to_export()
     readonly_fields = ['id', 'date_last_modified'] + default_read_only_fields
@@ -283,3 +283,6 @@ admin.site.register(Archaeology, ArchaeologyAdmin)
 admin.site.register(Geology, GeologyAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)
+admin.site.register(Taxon, base.admin.TaxonomyAdmin)
+admin.site.register(IdentificationQualifier, base.admin.IDQAdmin)
+admin.site.register(TaxonRank, base.admin.TaxonRankAdmin)

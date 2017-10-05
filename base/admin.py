@@ -200,6 +200,20 @@ class PaleoCoreLocalityAdmin(DGGeoAdmin):
     search_fields = ("paleolocality_number",)
 
 
+class TaxonomyAdmin(admin.ModelAdmin):
+    list_display = ['id', 'rank', 'name', 'full_lineage']
+    search_fields = ['name',]
+    list_filter = ['rank',]
+    readonly_fields = ['full_lineage']
+
+
+class IDQAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'qualified']
+
+
+class TaxonRankAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'ordinal']
+
 ##################
 # Register Admins #
 ###################

@@ -1,5 +1,5 @@
+import base.models
 from django.contrib.gis.db import models
-from taxonomy.models import Taxon, IdentificationQualifier
 from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCABULARY, LGRP_BASIS_OF_RECORD_VOCABULARY,\
     LGRP_FINDER_CHOICES, LGRP_ELEMENT_CHOICES, LGRP_ELEMENT_PORTION_CHOICES, LGRP_ELEMENT_NUMBER_CHOICES, \
     LGRP_ELEMENT_MODIFIER_CHOICES, LGRP_SIDE_CHOICES, LGRP_IDENTIFIER_CHOICES, LGRP_WEATHERING_CHOICES, \
@@ -7,6 +7,24 @@ from lgrp.ontologies import LGRP_COLLECTOR_CHOICES, LGRP_COLLECTING_METHOD_VOCAB
 from mysite.ontologies import ITEM_TYPE_VOCABULARY
 import os
 from django.contrib.gis.geos import Point
+
+
+class TaxonRank(base.models.TaxonRank):
+    class Meta:
+        verbose_name = "LGRP Taxon Rank"
+
+
+class Taxon(base.models.Taxon):
+    parent = models.ForeignKey('self', null=True, blank=True)
+    rank = models.ForeignKey(TaxonRank, null=True, blank=True)
+    class Meta:
+        verbose_name = "LGRP Taxon"
+        verbose_name_plural = "LGRP Taxa"
+
+
+class IdentificationQualifier(base.models.IdentificationQualifier):
+    class Meta:
+        verbose_name = "LGRP Idenfication Qualifer"
 
 
 # Occurrence Class and Subclasses
