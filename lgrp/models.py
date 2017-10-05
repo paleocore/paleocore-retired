@@ -17,6 +17,7 @@ class TaxonRank(base.models.TaxonRank):
 class Taxon(base.models.Taxon):
     parent = models.ForeignKey('self', null=True, blank=True)
     rank = models.ForeignKey(TaxonRank, null=True, blank=True)
+
     class Meta:
         verbose_name = "LGRP Taxon"
         verbose_name_plural = "LGRP Taxa"
