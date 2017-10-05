@@ -87,7 +87,7 @@ class Taxon(models.Model):
 
     class Meta:
         abstract = True
-        verbose_name = "LGRP Taxon"
+        verbose_name = "Taxon"
         verbose_name_plural = "taxa"
         ordering = ['rank__ordinal', 'name']
 

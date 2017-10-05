@@ -201,10 +201,11 @@ class PaleoCoreLocalityAdmin(DGGeoAdmin):
 
 
 class TaxonomyAdmin(admin.ModelAdmin):
-    list_display = ['id', 'rank', 'name', 'full_lineage']
-    search_fields = ['name',]
-    list_filter = ['rank',]
-    readonly_fields = ['full_lineage']
+    list_display = ('__unicode__', 'rank', 'full_name')
+    readonly_fields = ['id']
+    fields = ['id', 'name', 'parent', 'rank']
+    search_fields = ['name']
+    list_filter = ['rank']
 
 
 class IDQAdmin(admin.ModelAdmin):
