@@ -21,6 +21,8 @@ class Taxon(base.models.Taxon):
     class Meta:
         verbose_name = "LGRP Taxon"
         verbose_name_plural = "LGRP Taxa"
+        ordering = ['rank__ordinal', 'name']
+
 
 
 class IdentificationQualifier(base.models.IdentificationQualifier):
