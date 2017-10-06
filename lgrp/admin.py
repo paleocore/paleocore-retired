@@ -1,28 +1,15 @@
 from django.contrib import admin
-from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
 import unicodecsv
 import base.admin
-
-
-##########################
-# Custom geo admin class #
-##########################
-
-class DGGeoAdmin(OSMGeoAdmin):
-    """
-    Modified Geographic Admin Class using Digital Globe basemaps
-    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
-    """
-    map_template = 'gis/admin/digital_globe.html'
+from base.admin import DGGeoAdmin
 
 
 ###########
 # Inlines #
 ###########
-
 class ImagesInline(admin.TabularInline):
     model = Image
     extra = 0

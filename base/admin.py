@@ -14,7 +14,7 @@ class DGGeoAdmin(OSMGeoAdmin):
     Modified Geographic Admin Class using Digital Globe basemaps
     GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
     """
-    map_template = 'gis/admin/digital_globe.html'
+    map_template = 'gis/admin/bing.html'
 
 
 class PaleocoreUserAdmin(admin.ModelAdmin):
@@ -118,8 +118,7 @@ default_list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collec
                        'disposition']
 default_list_editable = ['problem', 'disposition']
 default_search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
-default_list_display_links = ['barcode',]
-#default_map_options = {'layers': ['google.terrain'], 'editable': False, 'default_lat': -122.00, 'default_lon': 38.00, }
+default_list_display_links = ['barcode']
 
 default_biology_inline_fieldsets = (
 
@@ -147,7 +146,6 @@ class PaleoCoreBiologyAdmin(DGGeoAdmin):
     search_fields = default_search_fields+('taxon__name',)
     readonly_fields = default_read_only_fields
     fieldsets = default_admin_fieldsets+default_biology_admin_fieldsets
-    #options = default_map_options
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size': '25'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},
@@ -174,7 +172,6 @@ class PaleoCoreOccurrenceAdmin(DGGeoAdmin):
     search_fields = default_search_fields
     readonly_fields = default_read_only_fields
     fieldsets = default_admin_fieldsets
-    #options = default_map_options
     formfield_overrides = {
         models.CharField: {'widget': TextInput(attrs={'size': '25'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 4, 'cols': 40})},

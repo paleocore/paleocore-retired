@@ -1,27 +1,15 @@
 from django.contrib import admin
-from django.contrib.gis.admin import OSMGeoAdmin
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
 import unicodecsv
 import base.admin
-
-##########################
-# Custom geo admin class #
-##########################
-
-class DGGeoAdmin(OSMGeoAdmin):
-    """
-    Modified Geographic Admin Class using Digital Globe basemaps
-    GeoModelAdmin -> OSMGeoAdmin -> DGGeoAdmin
-    """
-    map_template = 'gis/admin/digital_globe.html'
+from base.admin import DGGeoAdmin
 
 
 ###########
 # Inlines #
 ###########
-
 class ImagesInline(admin.TabularInline):
     model = Image
     extra = 0
@@ -105,7 +93,8 @@ biology_fieldsets = (
 )
 
 default_list_display = ['barcode', 'catalog_number', 'cat_number', 'collection_code', 'basis_of_record',
-                        'item_type', 'collecting_method', 'recorded_by', 'found_by', 'item_description', 'item_scientific_name',
+                        'item_type', 'collecting_method', 'recorded_by', 'found_by',
+                        'item_description', 'item_scientific_name',
                         'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
 
 default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
