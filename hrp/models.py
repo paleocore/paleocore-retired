@@ -1,8 +1,28 @@
 from django.contrib.gis.db import models
-from taxonomy.models import Taxon, IdentificationQualifier
+import base.models
 from .ontologies import *
 import os
 from django.contrib.gis.geos import Point
+
+
+class TaxonRank(base.models.TaxonRank):
+    class Meta:
+        verbose_name = "HRP Taxon Rank"
+
+
+class Taxon(base.models.Taxon):
+    parent = models.ForeignKey('self', null=True, blank=True)
+    rank = models.ForeignKey(TaxonRank, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "HRP Taxon"
+        verbose_name_plural = "HRP Taxa"
+        ordering = ['rank__ordinal', 'name']
+
+
+class IdentificationQualifier(base.models.IdentificationQualifier):
+    class Meta:
+        verbose_name = "HRP Idenfication Qualifer"
 
 
 # Locality Class

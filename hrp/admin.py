@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from models import *
 import unicodecsv
-
+import base.admin
 
 ##########################
 # Custom geo admin class #
@@ -373,3 +373,6 @@ admin.site.register(Geology, GeologyAdmin)
 admin.site.register(Locality, LocalityAdmin)
 admin.site.register(Hydrology, HydrologyAdmin)
 admin.site.register(Person)
+admin.site.register(Taxon, base.admin.TaxonomyAdmin)
+admin.site.register(IdentificationQualifier, base.admin.IDQAdmin)
+admin.site.register(TaxonRank, base.admin.TaxonRankAdmin)
