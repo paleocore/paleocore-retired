@@ -24,7 +24,6 @@ class Taxon(base.models.Taxon):
         ordering = ['rank__ordinal', 'name']
 
 
-
 class IdentificationQualifier(base.models.IdentificationQualifier):
     class Meta:
         verbose_name = "LGRP Idenfication Qualifer"
