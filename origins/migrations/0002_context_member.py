@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('standard', '0001_initial2'),
+        ('origins', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='term',
-            name='remarks',
-            field=models.TextField(null=True, blank=True),
+            model_name='context',
+            name='member',
+            field=models.CharField(max_length=50, null=True, blank=True),
         ),
     ]

@@ -4,11 +4,9 @@ from projects.models import Project
 from django.db import connection
 
 
-############################################
-# TermCategory
-############################################
 class TermCategory(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    uri = models.CharField(null=True, blank=True, max_length=255)
     description = models.CharField(max_length=4000)
     is_occurrence = models.BooleanField()
     parent = models.ForeignKey('self', null=True, blank=True)
@@ -24,9 +22,6 @@ class TermCategory(models.Model):
         db_table = "standard_term_category"
 
 
-############################################
-# TermStatus
-############################################
 class TermStatus(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=4000)
@@ -41,9 +36,6 @@ class TermStatus(models.Model):
         db_table = "standard_term_status"
 
 
-############################################
-# TermDataType
-############################################  
 class TermDataType(models.Model):
     name = models.CharField(max_length=50, unique=True)
     description = models.CharField(max_length=4000)
@@ -57,65 +49,7 @@ class TermDataType(models.Model):
         verbose_name = "Term Type"
         db_table = "standard_term_data_type"
 
-############################################
-# TermRelationshipType
-############################################
-# class TermRelationshipType(models.Model):
-#     name = models.CharField(max_length=50, unique=True)
-#     description = models.CharField(max_length=4000)
-#     preposition = models.CharField(max_length=15)
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     class Meta:
-#         ordering = ["name"]
-#         verbose_name_plural = "Term Relationship Types"
-#         verbose_name = "Term Relationship Type"
-#         db_table = "standard_term_relationship_type"
 
-############################################
-# Project
-############################################       
-# class Project(models.Model):
-#     name = models.CharField(max_length=50, unique=True)
-#     description = models.CharField(max_length=4000, null=True, blank=True)
-#     is_standard = models.BooleanField(default=False)
-#     website = models.URLField(null=True, blank=True)
-#     geographic = models.CharField(max_length=255, null=True, blank=True)
-#     temporal = models.CharField(max_length=255, null=True, blank=True)
-#     users = models.ManyToManyField(PaleocoreUser, blank=True, null=True)
-#     reused_terms = models.ManyToManyField('Term', blank=True, null=True, related_name='reused_by_projects')
-#
-#     def terms(self):
-#         return sorted(self.term_set.all(), key=lambda term: term.relatedTermCount(), reverse=True)
-#
-#     def occurrenceTerms(self):
-#         return sorted(self.term_set.filter(category__is_occurrence = True))
-#
-#     def relatedTermCount(self):
-#         r = 0
-#         for term in self.term_set.all():
-#             r = r + term.relatedTermCount()
-#         return r
-#
-#     def user_names(self):
-#         return ', '.join((str(u) for u in self.users.all()))
-#
-#     user_names.short_description = 'Project Users'
-#
-#     def __unicode__(self):
-#         return self.name
-#
-#     class Meta:
-#         ordering = ["name"]
-#         verbose_name_plural = "Projects"
-#         verbose_name = "Project"
-
-
-############################################
-# Term
-############################################        
 class Term(models.Model):
     name = models.CharField(max_length=50)
     definition = models.TextField()
@@ -130,6 +64,8 @@ class Term(models.Model):
     controlled_vocabulary_url = models.CharField(null=True, blank=True, max_length=155)
     uri = models.CharField(null=True, blank=True, max_length=255)
     projects = models.ManyToManyField('projects.Project', through='projects.ProjectTerm', blank=True)
+    is_class = models.BooleanField(default=False)
+    term_ordering = models.IntegerField(null=True, blank=True)
 
     def get_projects(self):
         return ', '.join([projects.short_name for projects in self.projects.all()])  # get all projects using a term
@@ -152,9 +88,7 @@ class Term(models.Model):
         verbose_name_plural = "Terms"
         verbose_name = "Term"
 
-############################################
-# Comment
-############################################
+
 class Comment(models.Model):
     term = models.ForeignKey(Term)
     subject = models.CharField(max_length=100)
@@ -170,27 +104,7 @@ class Comment(models.Model):
         verbose_name_plural = "Comments"
         verbose_name = "Comment"
 
-############################################
-# TermRelationship
-############################################       
-# class TermRelationship(models.Model):
-#     term = models.ForeignKey(Term, related_name='term_relationships')
-#     related_term = models.ForeignKey(Term, related_name='related_term_relationships')
-#     relationship_type = models.ForeignKey(TermRelationshipType)
-#
-#     def term_project(self):
-#         return self.term.project.name
-#
-#     def __unicode__(self):
-#         return "[" + str(self.term.project) + "] " + self.term.name + " (" + self.relationship_type.name + ") " + "[" + str(self.related_term.project) + "] " + self.related_term.name
-#
-#     class Meta:
-#         verbose_name = "Term Relationship"
-#         verbose_name_plural = "Term Relationships"
-#         unique_together = ("term", "related_term", "relationship_type")
-#         db_table = "standard_term_relationship"
 
-## ModelForms
 class CompareView():
 
     baseProject = Project

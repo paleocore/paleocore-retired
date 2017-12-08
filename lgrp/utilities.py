@@ -1,4 +1,6 @@
 from lgrp.models import *
+from difflib import SequenceMatcher
+from itertools import permutations
 
 
 def match_taxon(biology_object):
@@ -37,3 +39,32 @@ def update_taxa():
             print 'no match for {}'.format(bio)
             pass
         bio.save()
+
+
+def similar(t):
+    a, b = t
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def get_similar_taxa():
+    """
+    Get a list of all pairwise permutations of taxa sorted according to similarity
+    Useful for detecting duplicate and near-duplicate taxonomic entries
+    :return: list of 2-tuples ordered most similar to least
+    """
+    taxa = Taxon.objects.all()
+    taxon_name_set = set([t.name for t in taxa])
+    plist = [pair for pair in permutations(taxon_name_set, 2)]
+    return sorted(plist, key=similar, reverse=True)
+
+
+def prune_species():
+    """
+    Function to remove unused species
+    :return:
+    """
+    species = TaxonRank.objects.get(name='Species')
+    for taxon in Taxon.objects.all():
+        if Biology.objects.filter(taxon=taxon).count() == 0 and taxon.rank == species:
+            taxon.delete()
+

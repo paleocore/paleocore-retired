@@ -12,16 +12,19 @@ class ProjectTermInline(admin.TabularInline):
 
 
 class TermAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'native_project', 'get_projects', 'data_type', 'status', 'category', 'uri')
-    list_filter = ['data_type', 'status', 'category', 'projects']
+    list_display = ('id', 'term_ordering', 'name', 'uri', 'is_class', 'native_project', 'get_projects', 'data_type',
+                    'status', 'category')
+    list_filter = ['projects', 'category', 'is_class']
+    list_editable = ['term_ordering']
     read_only_fields = ['get_projects', ]
     ordering = ('name',)
     search_fields = ['name', ]
     inlines = (ProjectTermInline, )
+    list_per_page = 200
 
 
 class TermCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_occurrence', 'description', 'parent', 'tree_visibility')
+    list_display = ('name', 'uri', 'description', 'parent', 'tree_visibility')
     list_filter = ['is_occurrence']
     ordering = ('name',)
 

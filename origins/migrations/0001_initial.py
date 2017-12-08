@@ -1,0 +1,137 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import django.contrib.gis.db.models.fields
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name='Context',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('collection_no', models.IntegerField(null=True, blank=True)),
+                ('record_type', models.CharField(max_length=20, null=True, blank=True)),
+                ('formation', models.CharField(max_length=50, null=True, blank=True)),
+                ('lng', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('lat', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('collection_name', models.CharField(max_length=200, null=True, blank=True)),
+                ('collection_subset', models.CharField(max_length=20, null=True, blank=True)),
+                ('collection_aka', models.CharField(max_length=200, null=True, blank=True)),
+                ('n_occs', models.IntegerField(null=True, blank=True)),
+                ('early_interval', models.CharField(max_length=50, null=True, blank=True)),
+                ('late_interval', models.CharField(max_length=50, null=True, blank=True)),
+                ('max_ma', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('min_ma', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('reference_no', models.IntegerField(null=True, blank=True)),
+                ('source', models.CharField(max_length=20, null=True, blank=True)),
+                ('mio_plio', models.BooleanField(default=False)),
+                ('geom', django.contrib.gis.db.models.fields.PointField(srid=4326, null=True, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Fossil',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('PlaceName', models.CharField(max_length=100, null=True, blank=True)),
+                ('HomininElement', models.CharField(max_length=40, null=True, blank=True)),
+                ('HomininElementNotes', models.TextField(null=True, blank=True)),
+                ('SkeletalElement', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementSubUnit', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementSubUnitDescriptor', models.CharField(max_length=100, null=True, blank=True)),
+                ('SkeletalElementSide', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementPosition', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementComplete', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementClass', models.CharField(max_length=40, null=True, blank=True)),
+                ('Locality', models.CharField(max_length=40, null=True, blank=True)),
+                ('Country', models.CharField(max_length=20, null=True, blank=True)),
+                ('continent', models.CharField(max_length=20, null=True, blank=True)),
+                ('context', models.ForeignKey(blank=True, to='origins.Context', null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='FossilElement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('PlaceName', models.CharField(max_length=100, null=True, blank=True)),
+                ('HomininElement', models.CharField(max_length=40, null=True, blank=True)),
+                ('HomininElementNotes', models.TextField(null=True, blank=True)),
+                ('SkeletalElement', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementSubUnit', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementSubUnitDescriptor', models.CharField(max_length=100, null=True, blank=True)),
+                ('SkeletalElementSide', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementPosition', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementComplete', models.CharField(max_length=40, null=True, blank=True)),
+                ('SkeletalElementClass', models.CharField(max_length=40, null=True, blank=True)),
+                ('Locality', models.CharField(max_length=40, null=True, blank=True)),
+                ('Country', models.CharField(max_length=20, null=True, blank=True)),
+                ('continent', models.CharField(max_length=20, null=True, blank=True)),
+                ('fossil', models.ForeignKey(to='origins.Fossil', null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Reference',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('reference_no', models.IntegerField(null=True, blank=True)),
+                ('record_type', models.CharField(max_length=5, null=True, blank=True)),
+                ('ref_type', models.CharField(max_length=201, null=True, blank=True)),
+                ('author1init', models.CharField(max_length=202, null=True, blank=True)),
+                ('author1last', models.CharField(max_length=203, null=True, blank=True)),
+                ('author2init', models.CharField(max_length=204, null=True, blank=True)),
+                ('author2last', models.CharField(max_length=205, null=True, blank=True)),
+                ('otherauthors', models.TextField(null=True, blank=True)),
+                ('pubyr', models.CharField(max_length=207, null=True, blank=True)),
+                ('reftitle', models.TextField(null=True, blank=True)),
+                ('pubtitle', models.TextField(null=True, blank=True)),
+                ('editors', models.TextField(null=True, blank=True)),
+                ('pubvol', models.CharField(max_length=210, null=True, blank=True)),
+                ('pubno', models.CharField(max_length=211, null=True, blank=True)),
+                ('firstpage', models.CharField(max_length=212, null=True, blank=True)),
+                ('lastpage', models.CharField(max_length=213, null=True, blank=True)),
+                ('publication_type', models.CharField(max_length=200, null=True, blank=True)),
+                ('language', models.CharField(max_length=214, null=True, blank=True)),
+                ('doi', models.CharField(max_length=215, null=True, blank=True)),
+                ('source', models.CharField(max_length=216, null=True, blank=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Site',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('collection_no', models.IntegerField(null=True, blank=True)),
+                ('record_type', models.CharField(max_length=20, null=True, blank=True)),
+                ('formation', models.CharField(max_length=50, null=True, blank=True)),
+                ('lng', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('lat', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('collection_name', models.CharField(max_length=200, null=True, blank=True)),
+                ('collection_subset', models.CharField(max_length=20, null=True, blank=True)),
+                ('collection_aka', models.CharField(max_length=200, null=True, blank=True)),
+                ('n_occs', models.IntegerField(null=True, blank=True)),
+                ('early_interval', models.CharField(max_length=50, null=True, blank=True)),
+                ('late_interval', models.CharField(max_length=50, null=True, blank=True)),
+                ('max_ma', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('min_ma', models.DecimalField(null=True, max_digits=20, decimal_places=10, blank=True)),
+                ('reference_no', models.IntegerField(null=True, blank=True)),
+                ('name', models.CharField(max_length=40, null=True, blank=True)),
+                ('source', models.CharField(max_length=20, null=True, blank=True)),
+                ('mio_plio', models.BooleanField(default=False)),
+                ('geom', django.contrib.gis.db.models.fields.PointField(srid=4326, null=True, blank=True)),
+            ],
+        ),
+        migrations.AddField(
+            model_name='context',
+            name='reference',
+            field=models.ForeignKey(blank=True, to='origins.Reference', null=True),
+        ),
+        migrations.AddField(
+            model_name='context',
+            name='site',
+            field=models.ForeignKey(blank=True, to='origins.Site', null=True),
+        ),
+    ]

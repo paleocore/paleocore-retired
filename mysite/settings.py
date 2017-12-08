@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'olwidget',
 
     # Project Apps
+    'origins',  # Human Origins Project
     'mlp',  # Mille-Logya Project
     'drp',  # Dikika Research Project
     'hrp',  # Hadar Research Project
@@ -86,6 +87,7 @@ INSTALLED_APPS = (
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',
+    'proyecto',
 )
 
 # These entries extended by entries BELOW in Django Fiber section
@@ -114,6 +116,13 @@ DATABASES = {
         'PASSWORD': secrets.DATABASE_PASSWORD,   # password for local postgres server
         'HOST': secrets.DATABASE_HOST,   # for local development server
     },
+    'ppdb': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'PORT': 5432,
+        'NAME': 'ppdb',
+        'USER': 'reedd',
+        'HOST': 'localhost',
+    },
 
     # 'drp_carmen': {
     #     'ENGINE': 'django.contrib.gis.db.backends.postgis',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -130,6 +139,8 @@ DATABASES = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
+
+# DATABASE_ROUTERS = ['proyecto.router.PPDBRouter', ]
 
 LANGUAGE_CODE = 'en-us'
 
