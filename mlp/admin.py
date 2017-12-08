@@ -7,6 +7,7 @@ import unicodecsv
 import base.admin  # import default PaleoCore admin classes
 from models import Occurrence, Biology
 import os
+import barcode
 
 
 class BiologyInline(admin.TabularInline):
@@ -130,7 +131,8 @@ class OccurrenceAdmin(base.admin.PaleoCoreOccurrenceAdmin):
 
 
 class BiologyAdmin(OccurrenceAdmin):
-    actions = ["change_xy", "change_occurrence2biology", "create_data_csv"]
+    actions = ["change_xy", "change_occurrence2biology", "create_data_csv", "generate_specimen_labels",
+               "generate_barcode"]
     biology_fieldsets = list(OccurrenceAdmin.fieldsets)  # creates a separate copy of the fielset list
     taxonomy_fieldsets = ('Identification', {'fields': [('taxon', 'identification_qualifier', 'identified_by')]})
     element_fieldsets = ('Detailed Description', {'fields': [('element', 'element_modifier')]})
@@ -200,6 +202,39 @@ class BiologyAdmin(OccurrenceAdmin):
 
         return response
     create_data_csv.short_description = 'Download Selected to .csv'
+
+    def import_bio_from_kmz(self, queryset):
+        """
+        Import points from a kmz file
+        :param queryset:
+        :return:
+        """
+        pass
+
+    def generate_specimen_labels(self, request, queryset):
+        """
+        Export a text report with biology specimen data formatted for labels
+        :param queryset:
+        :param request:
+        :return:
+        """
+        content = ""
+        for b in queryset:
+            specimen_data = "Mille-Logya Project\n{catalog_number}\n{date_collected}\n{sci_name}\n" \
+                            "{description}\n\n".format(catalog_number=b.catalog_number, sci_name=b.item_scientific_name,
+                                                       description=b.item_description, date_collected=b.field_number)
+            content = content + specimen_data
+        response = HttpResponse(content, content_type='text/plain')  # declare the response type
+        response['Content-Disposition'] = 'attachment; filename="Specimens.txt"'  # declare the file name
+        return response
+    generate_specimen_labels.short_description = 'Specimen Labels'
+
+    def generate_barcode(self, request, queryset):
+        b=Biology.objects.get(barcode=1040)
+        d = barcode.MyBarcodeDrawing(b.barcode)
+        binaryStuff = d.asString('gif')
+        return HttpResponse(binaryStuff, 'image/gif')
+
 
 ############################
 #  Register Admin Classes  #
