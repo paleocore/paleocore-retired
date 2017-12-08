@@ -30,7 +30,7 @@ class BiologyAdmin(admin.ModelAdmin):
                    'locality']
     list_per_page = 1000
     search_fields = ['tax_class', 'tax_order', 'family', 'tribe', 'genus', 'specific_epithet', 'item_scientific_name']
-    actions = ['create_data_csv']
+    actions = ['create_data_csv', 'generate_specimen_labels']
 
     def create_data_csv(self, request, queryset):
         """
@@ -101,6 +101,28 @@ class BiologyAdmin(admin.ModelAdmin):
 
     create_data_csv.short_description = 'Download Selected to .csv'
 
+    def generate_specimen_labels(self, request, queryset):
+        """
+        Export a text report with biology specimen data formatted for labels
+        :param queryset:
+        :param request:
+        :return:
+        """
+        content = ""
+        for b in queryset:
+            specimen_data = "GDB Project\n{catalog_number}  {sci_name}\n" \
+                            "{description}\nLocality {locality}\n" \
+                            "{nalma} {date_collected}\n\n".format(catalog_number=b.specimen_number,
+                                                       sci_name=b.item_scientific_name,
+                                                       description=b.item_description,
+                                                              locality=b.locality,
+                                                              nalma=b.NALMA,
+                                                              date_collected=b.date_collected)
+            content = content + specimen_data
+        response = HttpResponse(content, content_type='text/plain')  # declare the response type
+        response['Content-Disposition'] = 'attachment; filename="Specimens.txt"'  # declare the file name
+        return response
+    generate_specimen_labels.short_description = 'Specimen Labels'
 
 admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Biology, BiologyAdmin)
