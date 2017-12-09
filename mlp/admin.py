@@ -203,14 +203,6 @@ class BiologyAdmin(OccurrenceAdmin):
         return response
     create_data_csv.short_description = 'Download Selected to .csv'
 
-    def import_bio_from_kmz(self, queryset):
-        """
-        Import points from a kmz file
-        :param queryset:
-        :return:
-        """
-        pass
-
     def generate_specimen_labels(self, request, queryset):
         """
         Export a text report with biology specimen data formatted for labels
