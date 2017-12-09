@@ -113,7 +113,7 @@ class UploadKMLView(generic.FormView):
                     # TODO test attributes is even length
                     attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-                    mlp_occ = Occurrence()
+                    mlp_occ = Biology()
 
                     ###################
                     # REQUIRED FIELDS #
@@ -275,7 +275,8 @@ class UploadKMLView(generic.FormView):
 
 class Confirmation(generic.ListView):
     template_name = 'projects/confirmation.html'
-    model = Occurrence
+    # form_class = ConfirmationForm
+    model = Biology
 
 
 # class UploadShapefileView(generic.FormView):
