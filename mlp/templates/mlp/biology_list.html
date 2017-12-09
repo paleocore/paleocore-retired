@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+    <h2>Specimens</h2>
+    <table>
+        <tr><th>ID</th><th>Barcode</th><th>Basis</th><th>Description</th></tr>
+        {% for biology in object_list %}
+            <tr>
+                <td>{{ biology.id }}</td> <td>{{ biology.barcode }}</td><td>{{ biology.basis_of_record }}</td>
+                <td>{{ biology.item_description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
