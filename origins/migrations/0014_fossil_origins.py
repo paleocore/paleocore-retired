@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('standard', '0001_initial'),
+        ('origins', '0013_auto_20171209_1833'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='term',
-            name='is_class',
+            model_name='fossil',
+            name='origins',
             field=models.BooleanField(default=False),
         ),
     ]

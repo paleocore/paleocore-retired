@@ -87,6 +87,7 @@ INSTALLED_APPS = (
     'leaflet',
     'djgeojson',
     'django.contrib.humanize',
+    'publications',
     'proyecto',
 )
 

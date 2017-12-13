@@ -33,8 +33,9 @@ urlpatterns = patterns('',
     url(r'^API/', include(v1_api.urls)),
     url(r'^standard/', include('standard.urls', namespace="standard")),
     url(r'^login/', include('login.urls', namespace="user_login")),
-    url(r'^projects/', include('projects.urls', namespace="projects")),  # note the lack of a terminal dollar sign in the re
+    url(r'^projects/', include('projects.urls', namespace="projects")),
     url(r'^paleosites/', include('paleosites.urls', namespace="paleosites")),
+    url(r'^publications/', include('publications.urls', namespace="publications")),
 
     # Admin URLS
     url(r'^admin/', include(admin.site.urls)),

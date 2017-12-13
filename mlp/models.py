@@ -186,6 +186,8 @@ class Occurrence(models.Model):
         except AttributeError:
             return None
 
+    # TODO if point is outside utm zone raises GDAL Exception: OGR Failure.
+    # Happened when I uploaded a test point in austin, can't convert those coordinates to 32637
     def easting(self):
         """
         Return the easting for the point in UTM meters using the WGS84 datum

@@ -71,20 +71,20 @@ class Reference(models.Model):
 
 class Site(models.Model):
     # Original fields from Paleobiology DB
-    collection_no = models.IntegerField(blank=True, null=True)
-    record_type = models.CharField(max_length=20, null=True, blank=True)
-    formation = models.CharField(max_length=50, null=True, blank=True)
-    lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    collection_name = models.CharField(max_length=200, null=True, blank=True)
-    collection_subset = models.CharField(max_length=20, null=True, blank=True)
-    collection_aka = models.CharField(max_length=200, null=True, blank=True)
-    n_occs = models.IntegerField(null=True, blank=True)
-    early_interval = models.CharField(max_length=50, null=True, blank=True)
-    late_interval = models.CharField(max_length=50, null=True, blank=True)
-    max_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    min_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    reference_no = models.IntegerField(null=True, blank=True)
+    verbatim_collection_no = models.IntegerField(blank=True, null=True)
+    verbatim_record_type = models.CharField(max_length=20, null=True, blank=True)
+    verbatim_formation = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_collection_name = models.CharField(max_length=200, null=True, blank=True)
+    verbatim_collection_subset = models.CharField(max_length=20, null=True, blank=True)
+    verbatim_collection_aka = models.CharField(max_length=200, null=True, blank=True)
+    verbatim_n_occs = models.IntegerField(null=True, blank=True)
+    verbatim_early_interval = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_late_interval = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_max_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_min_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_reference_no = models.IntegerField(null=True, blank=True)
 
     # Added fields
     name = models.CharField(max_length=40, null=True, blank=True)
@@ -98,8 +98,8 @@ class Site(models.Model):
         unicode_string = '['+unicode(self.id)+']'
         if self.name:
             unicode_string = unicode_string+' '+self.name
-        elif self.collection_name:
-            unicode_string = unicode_string+' '+self.collection_name
+        elif self.verbatim_collection_name:
+            unicode_string = unicode_string+' '+self.verbatim_collection_name
         return unicode_string
 
     def has_ref(self):
@@ -111,27 +111,28 @@ class Site(models.Model):
 
 class Context(models.Model):
     # Original Fields from Paleobiology DB
-    collection_no = models.IntegerField(blank=True, null=True)
-    record_type = models.CharField(max_length=20, null=True, blank=True)
-    formation = models.CharField(max_length=50, null=True, blank=True)
-    member = models.CharField(max_length=50, null=True, blank=True)
-    lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    collection_name = models.CharField(max_length=200, null=True, blank=True)
-    collection_subset = models.CharField(max_length=20, null=True, blank=True)
-    collection_aka = models.CharField(max_length=200, null=True, blank=True)
-    n_occs = models.IntegerField(null=True, blank=True)
-    early_interval = models.CharField(max_length=50, null=True, blank=True)
-    late_interval = models.CharField(max_length=50, null=True, blank=True)
-    max_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    min_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
-    reference_no = models.IntegerField(null=True, blank=True)
+    verbatim_collection_no = models.IntegerField(blank=True, null=True)
+    verbatim_record_type = models.CharField(max_length=20, null=True, blank=True)
+    verbatim_formation = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_member = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_lng = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_lat = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_collection_name = models.CharField(max_length=200, null=True, blank=True)
+    verbatim_collection_subset = models.CharField(max_length=20, null=True, blank=True)
+    verbatim_collection_aka = models.CharField(max_length=200, null=True, blank=True)
+    verbatim_n_occs = models.IntegerField(null=True, blank=True)
+
+    verbatim_early_interval = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_late_interval = models.CharField(max_length=50, null=True, blank=True)
+    verbatim_max_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_min_ma = models.DecimalField(max_digits=20, decimal_places=10, null=True, blank=True)
+    verbatim_reference_no = models.IntegerField(null=True, blank=True)
+
     # Added fields
-
     source = models.CharField(max_length=20, null=True, blank=True)
-
-    geological_formation = models.CharField(max_length=50, null=True, blank=True)
-    geological_member = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    geological_formation = models.CharField("Formation", max_length=50, null=True, blank=True)
+    geological_member = models.CharField("Member", max_length=50, null=True, blank=True)
     geological_bed = models.CharField(max_length=50, null=True, blank=True)
     older_interval = models.CharField(max_length=50, null=True, blank=True)
     younger_interval = models.CharField(max_length=50, null=True, blank=True)
@@ -148,8 +149,8 @@ class Context(models.Model):
 
     def __unicode__(self):
         unicode_string = '['+unicode(self.id)+']'
-        if self.collection_name:
-            unicode_string = unicode_string+' '+self.collection_name
+        if self.name:
+            unicode_string = unicode_string+' '+self.name
         return unicode_string
 
     def has_ref(self):
@@ -168,21 +169,22 @@ class Context(models.Model):
 
 
 class Fossil(models.Model):
-    # Original Fields from Paleobiology DB
-    PlaceName = models.CharField(max_length=100, null=True, blank=True)
-    HomininElement = models.CharField(max_length=40, null=True, blank=True)
-    HomininElementNotes = models.TextField(null=True, blank=True)
-    SkeletalElement = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementSubUnit = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementSubUnitDescriptor = models.CharField(max_length=100, null=True, blank=True)
-    SkeletalElementSide = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementPosition = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementComplete = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementClass = models.CharField(max_length=40, null=True, blank=True)
-    Locality = models.CharField(max_length=40, null=True, blank=True)
-    Country = models.CharField(max_length=20, null=True, blank=True)
+    # Original Fields from Human Origins Program DB
+    verbatim_PlaceName = models.CharField(max_length=100, null=True, blank=True)
+    verbatim_HomininElement = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_HomininElementNotes = models.TextField(null=True, blank=True)
+    verbatim_SkeletalElement = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementSubUnit = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementSubUnitDescriptor = models.CharField(max_length=100, null=True, blank=True)
+    verbatim_SkeletalElementSide = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementPosition = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementComplete = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementClass = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_Locality = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_Country = models.CharField(max_length=20, null=True, blank=True)
 
     # Added fields
+    place_name = models.CharField(max_length=100, null=True, blank=True)
 
     # Fossil(Find)
     guid = models.URLField(null=True, blank=True)
@@ -197,6 +199,7 @@ class Fossil(models.Model):
     project_name = models.CharField(max_length=100, null=True, blank=True)
     project_abbreviation = models.CharField(max_length=10, null=True, blank=True)
     collection_code = models.CharField(max_length=10, null=True, blank=True)
+    origins = models.BooleanField(default=False)
 
     # Record
     created_by = models.CharField(max_length=100, null=True, blank=True)
@@ -211,14 +214,13 @@ class Fossil(models.Model):
     continent = models.CharField(max_length=20, null=True, blank=True)
     verbatim_provenience = models.TextField(null=True, blank=True)
 
-
     image = models.ImageField(max_length=255, blank=True, upload_to="uploads/images/origins", null=True)
 
     # Added foreign keys
     context = models.ForeignKey(to=Context, on_delete=models.CASCADE, null=True, blank=True)
 
     def __unicode__(self):
-        return unicode(self.id)+' '+unicode(self.HomininElement)
+        return unicode(self.id)+' '+unicode(self.catalog_number)
 
     def element_count(self):
         return FossilElement.objects.filter(fossil=self.id).count()
@@ -227,37 +229,52 @@ class Fossil(models.Model):
         return self.fossilelement_set.all()
 
     def aapa(self):
+        """
+        Method to indicate if fossil belowns in analysis set for AAPA 2017.
+        Returns true if the fossil comes from a mio-pliocene locality in Africa
+        :return: True or False
+        """
         young_sites = [None, 'Olduvai', 'Border Cave', 'Lincoln Cave', 'Olorgesailie', 'Klasies River',
                        'Thomas Quarries', u'Sal\xe9', u'Haua Fteah', u'Melka-Kuntur\xe9 (cf. Locality)',
                        u'Olduvai Gorge', u'Cave of Hearths', u'Kanjera (Locality)']
-        return self.continent == 'Africa' and self.Locality not in young_sites
+        return self.continent == 'Africa' and self.locality not in young_sites
 
 
 class FossilElement(models.Model):
-    # hop db fields
-    PlaceName = models.CharField(max_length=100, null=True, blank=True)
-    HomininElement = models.CharField(max_length=40, null=True, blank=True)
-    HomininElementNotes = models.TextField(null=True, blank=True)
-    SkeletalElement = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementSubUnit = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementSubUnitDescriptor = models.CharField(max_length=100, null=True, blank=True)
-    SkeletalElementSide = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementPosition = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementComplete = models.CharField(max_length=40, null=True, blank=True)
-    SkeletalElementClass = models.CharField(max_length=40, null=True, blank=True)
-    Locality = models.CharField(max_length=40, null=True, blank=True)
-    Country = models.CharField(max_length=20, null=True, blank=True)
+    # Human Origins Program DB fields
+    verbatim_PlaceName = models.CharField(max_length=100, null=True, blank=True)
+    verbatim_HomininElement = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_HomininElementNotes = models.TextField(null=True, blank=True)
+    verbatim_SkeletalElement = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementSubUnit = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementSubUnitDescriptor = models.CharField(max_length=100, null=True, blank=True)
+    verbatim_SkeletalElementSide = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementPosition = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementComplete = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_SkeletalElementClass = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_Locality = models.CharField(max_length=40, null=True, blank=True)
+    verbatim_Country = models.CharField(max_length=20, null=True, blank=True)
+
     # added fields
+    hominin_element = models.CharField(max_length=40, null=True, blank=True)
+    hominin_element_notes = models.TextField(null=True, blank=True)
+    skeletal_element = models.CharField(max_length=40, null=True, blank=True)
+    skeletal_element_subunit = models.CharField(max_length=40, null=True, blank=True)
+    skeletal_element_subunit_descriptor = models.CharField(max_length=100, null=True, blank=True)
+    skeletal_element_side = models.CharField(max_length=40, null=True, blank=True)
+    skeletal_element_position = models.CharField(max_length=40, null=True, blank=True)
+    skeletal_element_complete = models.CharField(max_length=40, null=True, blank=True)
+    skeletal_element_class = models.CharField(max_length=40, null=True, blank=True)
     continent = models.CharField(max_length=20, null=True, blank=True)
     # foreign keys
-    fossil = models.ForeignKey(Fossil, on_delete=models.CASCADE, null=True, blank=False)
+    fossil = models.ForeignKey(Fossil, on_delete=models.CASCADE, null=True, blank=False, related_name='fossil_element')
 
     def __unicode__(self):
         unicode_string = '['+unicode(self.id)+']'
-        if self.SkeletalElementSide:
-            unicode_string = unicode_string+' '+self.SkeletalElementSide
-        if self.SkeletalElement:
-            unicode_string = unicode_string + ' ' + self.SkeletalElement
+        if self.skeletal_element_side:
+            unicode_string = unicode_string+' '+self.skeletal_element_side
+        if self.skeletal_element:
+            unicode_string = unicode_string + ' ' + self.skeletal_element
         return unicode_string
 
 

@@ -1,6 +1,6 @@
 from django.db import models
 from base.models import PaleocoreUser
-from projects.models import Project
+from projects.models import Project, ProjectTerm
 from django.db import connection
 
 
