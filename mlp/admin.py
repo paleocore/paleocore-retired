@@ -5,9 +5,17 @@ from django.http import HttpResponse, HttpResponseRedirect
 import unicodecsv
 
 import base.admin  # import default PaleoCore admin classes
-from models import Occurrence, Biology
+from models import Occurrence, Biology, Taxon, TaxonRank, IdentificationQualifier
 import os
 import barcode
+
+
+class TaxonAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'rank', 'full_name')
+    readonly_fields = ['id']
+    fields = ['id', 'name', 'parent', 'rank']
+    search_fields = ['name']
+    list_filter = ['rank']
 
 
 class BiologyInline(admin.TabularInline):
@@ -147,6 +155,7 @@ class BiologyAdmin(OccurrenceAdmin):
         :param queryset:
         :return:
         """
+        request.GET.getlist()
         response = HttpResponse(content_type='text/csv')  # declare the response type
         response['Content-Disposition'] = 'attachment; filename="MLP_Biology.csv"'  # declare the file name
         writer = unicodecsv.writer(response)  # open a .csv writer
@@ -233,3 +242,6 @@ class BiologyAdmin(OccurrenceAdmin):
 ############################
 admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Biology, BiologyAdmin)
+admin.site.register(TaxonRank)
+admin.site.register(Taxon, TaxonAdmin)
+admin.site.register(IdentificationQualifier)
