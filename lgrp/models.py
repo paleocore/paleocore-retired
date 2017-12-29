@@ -24,9 +24,22 @@ class Taxon(base.models.Taxon):
         ordering = ['rank__ordinal', 'name']
 
 
+
+
 class IdentificationQualifier(base.models.IdentificationQualifier):
     class Meta:
         verbose_name = "LGRP Idenfication Qualifer"
+
+
+class Person(models.Model):
+    name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __unicode__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = "LGRP Person"
+        verbose_name_plural = "LGRP People"
 
 
 # Occurrence Class and Subclasses
@@ -68,6 +81,12 @@ class Occurrence(models.Model):
     item_count = models.IntegerField(blank=True, null=True, default=1)
     collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)  # dwc:recordedBy
     finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
+    collector_person = models.ForeignKey(Person, null=True, blank=True,
+                                         related_name='person_collector',
+                                         on_delete=models.SET_NULL)
+    finder_person = models.ForeignKey(Person, null=True, blank=True,
+                                      related_name='person_finder',
+                                      on_delete=models.SET_NULL)
     collecting_method = models.CharField(max_length=50,
                                          choices=LGRP_COLLECTING_METHOD_VOCABULARY,
                                          null=True, blank=True)  # dwc:sampling_protocol

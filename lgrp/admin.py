@@ -38,6 +38,7 @@ occurrence_fieldsets = (
                    ('barcode', 'catalog_number', 'field_number'),
                    ('item_type', 'item_scientific_name', 'item_description', 'item_count', 'image'),
                    ('collector', 'finder', 'collecting_method', ),
+                   ('collector_person', 'finder_person'),
                    ('locality_number', 'item_number', 'item_part', 'old_cat_number'),
                    ('disposition', 'preparation_status'),
                    ('collection_remarks',)]
@@ -89,13 +90,23 @@ biology_fieldsets = (
 )
 
 default_list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
-                        'item_type', 'collecting_method', 'collector', 'item_description', 'item_scientific_name',
+                        'item_type', 'collecting_method', 'collector', 'collector_person', 'item_description', 'item_scientific_name',
                         'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
 
 default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
 
 default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
                          'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
+
+
+###################
+# Person Admin    #
+###################
+
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    fields = ['name']
+    search_fields = ['name']
 
 
 ####################
@@ -273,3 +284,4 @@ admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Taxon, base.admin.TaxonomyAdmin)
 admin.site.register(IdentificationQualifier, base.admin.IDQAdmin)
 admin.site.register(TaxonRank, base.admin.TaxonRankAdmin)
+admin.site.register(Person, PersonAdmin)
