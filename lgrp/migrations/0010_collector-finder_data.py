@@ -44,6 +44,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(update_collector, reverse_code=reverse),
+        migrations.RunPython(update_finder, reverse_code=reverse)
     ]
 
 

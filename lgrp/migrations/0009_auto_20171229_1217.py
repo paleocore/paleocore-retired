@@ -26,11 +26,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='occurrence',
             name='collector_person',
-            field=models.ForeignKey(related_name='person_collector', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='lgrp.Person', null=True),
+            field=models.ForeignKey(related_name='person_collector', on_delete=django.db.models.deletion.SET_NULL,
+                                    blank=True, to='lgrp.Person', null=True),
         ),
         migrations.AddField(
             model_name='occurrence',
             name='finder_person',
-            field=models.ForeignKey(related_name='person_finder', on_delete=django.db.models.deletion.SET_NULL, blank=True, to='lgrp.Person', null=True),
+            field=models.ForeignKey(related_name='person_finder', on_delete=django.db.models.deletion.SET_NULL,
+                                    blank=True, to='lgrp.Person', null=True),
         ),
     ]
