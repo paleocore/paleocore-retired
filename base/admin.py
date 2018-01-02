@@ -44,7 +44,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
             if 'subject' in request.POST:
                 if request.POST["subject"] == '':
                     self.message_user(request, "Message is missing a subject")
-                    t = loader.get_template("base/templates/email.html")
+                    t = loader.get_template("base/email.html")
                     c = RequestContext(request, {'returnURL': return_url, 'emails': queryset,
                                                  'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME, })
                     return HttpResponse(t.render(c))
@@ -53,7 +53,7 @@ class PaleocoreUserAdmin(admin.ModelAdmin):
             if 'message' in request.POST:
                 if request.POST["message"] == '':
                     self.message_user(request, "Message is empty")
-                    t = loader.get_template("base/templates/email.html")
+                    t = loader.get_template("base/email.html")
                     c = RequestContext(request, {'returnURL': return_url, 'emails': queryset,
                                                  'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME, })
                     return HttpResponse(t.render(c))
@@ -117,7 +117,8 @@ default_admin_fieldsets = (
 default_list_filter = ['basis_of_record', 'year_collected', 'item_type', 'collector', 'problem', 'field_number',
                        'disposition']
 default_list_editable = ['problem', 'disposition']
-default_search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number')
+default_search_fields = ('id', 'item_scientific_name', 'item_description', 'barcode', 'catalog_number',
+                         'finder', 'collector')
 default_list_display_links = ['barcode']
 
 default_biology_inline_fieldsets = (
@@ -180,7 +181,8 @@ class PaleoCoreOccurrenceAdmin(DGGeoAdmin):
     def get_search_results(self, request, queryset, search_term):
         # search_term is what you input in admin site
         # queryset is search results
-        queryset, use_distinct = super(PaleoCoreOccurrenceAdmin, self).get_search_results(request, queryset, search_term)
+        queryset, use_distinct = super(PaleoCoreOccurrenceAdmin, self).get_search_results(request,
+                                                                                          queryset, search_term)
 
         try:
             search_term_as_int = int(search_term)
@@ -211,6 +213,7 @@ class IDQAdmin(admin.ModelAdmin):
 
 class TaxonRankAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'ordinal']
+
 
 ##################
 # Register Admins #
