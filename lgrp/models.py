@@ -79,8 +79,10 @@ class Occurrence(models.Model):
     # TODO merge with element
     item_description = models.CharField("Description", max_length=255, blank=True, null=True)
     item_count = models.IntegerField(blank=True, null=True, default=1)
-    collector = models.CharField(max_length=50, blank=True, null=True, choices=LGRP_COLLECTOR_CHOICES)  # dwc:recordedBy
-    finder = models.CharField(null=True, blank=True, max_length=50, choices=LGRP_FINDER_CHOICES)
+    collector = models.CharField(max_length=50, blank=True, null=True,
+                                 choices=LGRP_COLLECTOR_CHOICES)  # dwc:recordedBy
+    finder = models.CharField(null=True, blank=True, max_length=50,
+                              choices=LGRP_FINDER_CHOICES)
     collector_person = models.ForeignKey(Person, null=True, blank=True,
                                          related_name='person_collector',
                                          on_delete=models.SET_NULL)
@@ -271,7 +273,7 @@ class Occurrence(models.Model):
 
     def thumbnail(self):
         try:
-            html_string = u'<a href="%s"><img src="%s" style="width:100px" /></a>'
+            html_string = u'<a href="{}"><img src="{}" style="width:100px" /></a>'
             return html_string.format(os.path.join(self.image.url), os.path.join(self.image.url))
         except:
             return None

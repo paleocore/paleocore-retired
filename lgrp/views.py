@@ -1,13 +1,14 @@
 from django.conf import settings
 from django.views import generic
 import os
-from lgrp.models import Occurrence, Biology, Archaeology, Geology
+from lgrp.models import Occurrence, Biology, Archaeology, Geology, Person
 from taxonomy.models import Taxon, IdentificationQualifier
 from lgrp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm, Occurrence2Biology
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
 from datetime import datetime
+from dateutil.parser import parse
 from django.contrib.gis.geos import GEOSGeometry
 import utm
 from zipfile import ZipFile
@@ -120,7 +121,6 @@ class UploadKMLView(generic.FormView):
                     # which is converted to a dictionary.
                     attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
-                    #lgrp_occ = Occurrence()
                     lgrp_occ = None
                     item_type = attributes_dict.get("Item Type")
                     if item_type in ("Artifact", "Artifactual", "Archeology", "Archaeological"):
@@ -128,8 +128,7 @@ class UploadKMLView(generic.FormView):
                     elif item_type in ("Faunal", "Fauna", "Floral", "Flora"):
                         lgrp_occ = Biology()
                     elif item_type in ("Geological", "Geology"):
-                        lgrp_occ = Geology
-
+                        lgrp_occ = Geology()
 
                     ###################
                     # REQUIRED FIELDS #
@@ -152,14 +151,14 @@ class UploadKMLView(generic.FormView):
                     elif item_type in ("Geological", "Geology"):
                         lgrp_occ.item_type = "Geological"
 
-
-
-
                     # Date Recorded
                     try:
                         # parse the time
-                        lgrp_occ.date_recorded = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
-                        lgrp_occ.year_collected = lgrp_occ.date_recorded.year  # set the year collected form field number
+                        # lgrp_occ.date_recorded = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
+                        # lgrp_occ.date_recorded = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y at %I:%M %p")
+                        lgrp_occ.date_recorded = parse(attributes_dict.get("Time"))
+                        # set the year collected form field number
+                        lgrp_occ.year_collected = lgrp_occ.date_recorded.year
                     except ValueError:
                         # If there's a problem getting the fieldnumber, use the current date time and set the
                         # problem flag to True.
@@ -194,8 +193,27 @@ class UploadKMLView(generic.FormView):
                     #     lgrp_occ.problem_comment = lgrp_occ.problem_comment + " problem importing collecting method"
 
                     lgrp_occ.collecting_method = attributes_dict.get("Collection Method")
-                    lgrp_occ.finder = attributes_dict.get("Finder")
-                    lgrp_occ.collector = attributes_dict.get("Collector")
+                    finder_string = attributes_dict.get("Finder")
+                    lgrp_occ.finder = finder_string
+                    # import person object, validated against look up data in Person table
+                    from django.core.exceptions import ObjectDoesNotExist
+                    try:
+                        lgrp_occ.finder_person = Person.objects.get(name=finder_string)
+                    except ObjectDoesNotExist:
+                        if finder_string:  # if finder is not None
+                            p = Person.objects.create(name=finder_string)
+                            lgrp_occ.finder_person = p
+
+                    collector_string = attributes_dict.get("Collector")
+                    lgrp_occ.collector = collector_string
+                    # import person object, validated against look up data in Person table
+                    try:
+                        lgrp_occ.collector_person = Person.objects.get(name=collector_string)
+                    except ObjectDoesNotExist:
+                        if collector_string:  # if finder is not None
+                            p = Person.objects.create(name=collector_string)
+                            lgrp_occ.collector_person = p
+
                     lgrp_occ.individual_count = attributes_dict.get("Count")
 
                     if attributes_dict.get("In Situ") in ('No', "NO", 'no'):
@@ -213,8 +231,6 @@ class UploadKMLView(generic.FormView):
                     lgrp_occ.analytical_unit_2 = attributes_dict.get("Unit 2")
                     lgrp_occ.analytical_unit_3 = attributes_dict.get("Unit 3")
                     lgrp_occ.analytical_unit_likely = attributes_dict.get("Unit Likely")
-
-
 
                     ##############
                     # Save Image #

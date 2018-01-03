@@ -36,13 +36,16 @@ occurrence_fieldsets = (
     ('Find Details', {
         'fields': [('date_recorded', 'year_collected',),
                    ('barcode', 'catalog_number', 'field_number'),
-                   ('item_type', 'item_scientific_name', 'item_description', 'item_count', 'image'),
-                   ('collector', 'finder', 'collecting_method', ),
-                   ('collector_person', 'finder_person'),
+                   ('item_type', 'item_scientific_name', 'item_description', 'item_count',),
+                   ('collector_person', 'finder_person', 'collecting_method'),
                    ('locality_number', 'item_number', 'item_part', 'old_cat_number'),
                    ('disposition', 'preparation_status'),
                    ('collection_remarks',)]
     }),  # occurrence_fieldsets[1]
+    ('Photos', {
+        'fields': [('photo', 'image')],
+        # 'classes': ['collapse'],
+    }),
     ('Geological Context', {
         'fields': [('stratigraphic_formation', 'stratigraphic_member',),
                    ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
@@ -82,21 +85,27 @@ biology_additional_fieldsets = (
 biology_fieldsets = (
     occurrence_fieldsets[0],
     occurrence_fieldsets[1],
+    occurrence_fieldsets[2],
     biology_additional_fieldsets[0],
     biology_additional_fieldsets[1],
     biology_additional_fieldsets[2],
-    occurrence_fieldsets[2],
     occurrence_fieldsets[3],
+    occurrence_fieldsets[4],  # Need colon, Don't accidentally omit fieldsets.
 )
 
-default_list_display = ['barcode', 'catalog_number', 'old_cat_number', 'collection_code', 'basis_of_record',
-                        'item_type', 'collecting_method', 'collector', 'collector_person', 'item_description', 'item_scientific_name',
-                        'year_collected', 'in_situ', 'problem', 'disposition', 'easting', 'northing', 'thumbnail']
+default_list_display = ['barcode', 'date_recorded', 'catalog_number', 'basis_of_record',
+                        'item_type', 'collecting_method', 'collector_person', 'item_description',
+                        'item_scientific_name',
+                        'year_collected', 'in_situ', 'problem', 'disposition',
+                         'thumbnail']
 
-default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code', 'problem']
+default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code',
+                       'collector_person__name', 'problem']
 
 default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
-                         'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number']
+                         'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number',
+                         'collector_person__name',  'finder_person__name',
+                         ]
 
 
 ###################
@@ -185,8 +194,6 @@ class BiologyAdmin(OccurrenceAdmin):
     list_display.insert(10, 'taxon')
     fieldsets = biology_fieldsets
     inlines = (ImagesInline, FilesInline)
-    list_filter = list(default_list_filter)
-    search_fields = list(default_search_fields)
 
     def create_data_csv(self, request, queryset):
         """
