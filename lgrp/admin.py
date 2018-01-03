@@ -40,7 +40,9 @@ occurrence_fieldsets = (
                    ('collector_person', 'finder_person', 'collecting_method'),
                    ('locality_number', 'item_number', 'item_part', 'old_cat_number'),
                    ('disposition', 'preparation_status'),
-                   ('collection_remarks',)]
+                   ('collection_remarks',),
+                   ('verbatim_kml_data'),
+                   ]
     }),  # occurrence_fieldsets[1]
     ('Photos', {
         'fields': [('photo', 'image')],

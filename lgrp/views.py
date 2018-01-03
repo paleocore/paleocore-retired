@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.views import generic
 import os
-from lgrp.models import Occurrence, Biology, Archaeology, Geology, Person
-from taxonomy.models import Taxon, IdentificationQualifier
+from lgrp.models import Occurrence, Biology, Archaeology, Geology, Person, Taxon, IdentificationQualifier
 from lgrp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm, Occurrence2Biology
+from lgrp.utilities import match_taxon, match_element
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
@@ -133,6 +133,8 @@ class UploadKMLView(generic.FormView):
                     ###################
                     # REQUIRED FIELDS #
                     ###################
+                    # Verbatim Data
+                    lgrp_occ.verbatim_kml_data = attributes
 
                     # Validate Basis of Record
                     if attributes_dict.get("Basis Of Record") in ("Fossil", "FossilSpecimen", "Collection"):
@@ -154,8 +156,6 @@ class UploadKMLView(generic.FormView):
                     # Date Recorded
                     try:
                         # parse the time
-                        # lgrp_occ.date_recorded = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y, %I:%M %p")
-                        # lgrp_occ.date_recorded = datetime.strptime(attributes_dict.get("Time"), "%b %d, %Y at %I:%M %p")
                         lgrp_occ.date_recorded = parse(attributes_dict.get("Time"))
                         # set the year collected form field number
                         lgrp_occ.year_collected = lgrp_occ.date_recorded.year
@@ -175,6 +175,19 @@ class UploadKMLView(generic.FormView):
                     pnt = GEOSGeometry("POINT (" + str(o.geometry.x) + " " + str(o.geometry.y) + ")", 4326)  # WKT
                     lgrp_occ.geom = pnt
 
+                    scientific_name_string = attributes_dict.get("Scientific Name")
+                    lgrp_occ.item_scientific_name = scientific_name_string
+                    if lgrp_occ.item_scientific_name:
+                        match, match_count, match_list = match_taxon(lgrp_occ)
+                        if match and match_count == 1:
+                            lgrp_occ.taxon = match_list[0]
+
+                    lgrp_occ.item_description = attributes_dict.get("Description")
+                    if lgrp_occ.item_description:
+                        match, match_count, match_list = match_element(lgrp_occ)
+                        if match and match_count ==1:
+                            lgrp_occ.element = lgrp_occ.item_description.lower()
+
                     #######################
                     # NON-REQUIRED FIELDS #
                     #######################
@@ -182,15 +195,6 @@ class UploadKMLView(generic.FormView):
                     lgrp_occ.item_number = lgrp_occ.barcode
                     lgrp_occ.collection_remarks = attributes_dict.get("Collecting Remarks")
                     lgrp_occ.geology_remarks = attributes_dict.get("Geology Remarks")
-                    lgrp_occ.item_scientific_name = attributes_dict.get("Scientific Name")
-                    lgrp_occ.item_description = attributes_dict.get("Description")
-
-                    # Validate Collecting Method
-                    # TODO Validate Collecting Method
-                    # else:
-                    #     lgrp_occ.collecting_method = None
-                    #     lgrp_occ.problem = True
-                    #     lgrp_occ.problem_comment = lgrp_occ.problem_comment + " problem importing collecting method"
 
                     lgrp_occ.collecting_method = attributes_dict.get("Collection Method")
                     finder_string = attributes_dict.get("Finder")

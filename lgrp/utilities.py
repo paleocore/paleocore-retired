@@ -8,12 +8,31 @@ def match_taxon(biology_object):
     find taxon objects from item_scientific_name
     Return: (True/False, match_count, match_list)
     """
+    # match, match_count, match_list = (False, 0, None)
     match_list = Taxon.objects.filter(name=biology_object.item_scientific_name)
     if len(match_list) == 1:  # one match
         result_tuple = (True, 1, match_list)
     else:
         result_tuple = (False, len(match_list), match_list)
     return result_tuple
+
+
+def match_element(biology_object):
+    """
+    find anatomical element from string in item_description. Returns a result tuple. The first element is true
+    only if there is one and only one match
+    :param biology_object:
+    :return: (True/False, match_count, match_list)
+    """
+    match, match_count, match_list = (False, 0, None)
+    element_list = [e[1] for e in LGRP_ELEMENT_CHOICES]
+    description = biology_object.item_description
+    if description.lower() in element_list:
+        match = True
+        match_count = 1
+        match_list = description
+    result = (match, match_count, match_list)
+    return result
 
 
 def update_taxa():

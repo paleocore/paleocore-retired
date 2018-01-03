@@ -128,6 +128,9 @@ class Occurrence(models.Model):
     # Media
     image = models.FileField(max_length=255, blank=True, upload_to="uploads/images/lgrp", null=True)
 
+    # Verbatim
+    verbatim_kml_data = models.TextField(null=True, blank=True)
+
     class Meta:
         verbose_name = "LGRP Occurrence"
         verbose_name_plural = "LGRP Occurrences"
