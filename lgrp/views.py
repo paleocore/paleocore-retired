@@ -1,22 +1,28 @@
+import os
+import urllib
+
 from django.conf import settings
 from django.views import generic
-import os
+from django.http import HttpResponse
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
+from django.contrib import messages
+from django.contrib.gis.geos import GEOSGeometry
+from django.core.files import File
+from django.core.files.base import ContentFile
+
 from lgrp.models import Occurrence, Biology, Archaeology, Geology, Person, Taxon, IdentificationQualifier
 from lgrp.forms import UploadKMLForm, DownloadKMLForm, ChangeXYForm, Occurrence2Biology
 from lgrp.utilities import match_taxon, match_element
+
 from fastkml import kml
 from fastkml import Placemark, Folder, Document
 from lxml import etree
 from datetime import datetime
 from dateutil.parser import parse
-from django.contrib.gis.geos import GEOSGeometry
 import utm
 from zipfile import ZipFile
 from shapely.geometry import Point
-from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
-from django.contrib import messages
 
 
 class DownloadKMLView(generic.FormView):
@@ -101,15 +107,20 @@ class UploadKMLView(generic.FormView):
 
         # Define a routine for importing Placemarks from a list of placemark elements
         def import_placemarks(kml_placemark_list):
+            """
+            A procedure that reads a KML placemark list and saves the data into the django database
+            :param kml_placemark_list:
+            :return:
+            """
             feature_count = 0
 
             for o in kml_placemark_list:
 
                 # Check to make sure that the object is a Placemark, filter out folder objects
                 if type(o) is Placemark:
-
+                    # Step 1 - parse the xml and copy placemark attributes to a dictionary
                     table = etree.fromstring(o.description)  # get the table element with all the data from the xml.
-                    attributes = table.xpath("//text()|//img")  # get all text values, imaage tags from xml string
+                    attributes = table.xpath("//text()|//img")  # get all text values and image tags from xml string
                     # TODO test attributes is even length
                     # Create a diction ary from the attribute list. The list has key value pairs as alternating
                     # elements in the list, the line below takes the first and every other elements and adds them
@@ -121,7 +132,9 @@ class UploadKMLView(generic.FormView):
                     # which is converted to a dictionary.
                     attributes_dict = dict(zip(attributes[0::2], attributes[1::2]))
 
+                    # Step 2 - Create a new Occurrence object (or subtype)
                     lgrp_occ = None
+                    # Determine the appropriate subtype and initialize
                     item_type = attributes_dict.get("Item Type")
                     if item_type in ("Artifact", "Artifactual", "Archeology", "Archaeological"):
                         lgrp_occ = Archaeology()
@@ -130,10 +143,11 @@ class UploadKMLView(generic.FormView):
                     elif item_type in ("Geological", "Geology"):
                         lgrp_occ = Geology()
 
-                    ###################
-                    # REQUIRED FIELDS #
-                    ###################
-                    # Verbatim Data
+                    # Step 3 - Copy attributes from dictionary to Occurrence object, validate as we go.
+                    # Improve by checking each field to see if it has a choice list. If so validate against choice
+                    # list.
+
+                    # Verbatim Data - save a verbatim copy of the original kml placemark attributes.
                     lgrp_occ.verbatim_kml_data = attributes
 
                     # Validate Basis of Record
@@ -235,42 +249,29 @@ class UploadKMLView(generic.FormView):
                     lgrp_occ.analytical_unit_2 = attributes_dict.get("Unit 2")
                     lgrp_occ.analytical_unit_3 = attributes_dict.get("Unit 3")
                     lgrp_occ.analytical_unit_likely = attributes_dict.get("Unit Likely")
+                    # Save Occurrence before saving media. Need id to rename media files
+                    lgrp_occ.save()
 
-                    ##############
-                    # Save Image #
-                    ##############
-                    image_file = ""
-                    image_added = False
-                    # Now look for images if this is a KMZ
+                    # Save image
                     if kml_file_extension.lower() == "kmz":
                         # grab image names from XML
-                        image_tags = table.xpath("//img/@src")
+                        image_names = table.xpath("//img/@src")
                         # grab the name of the first image
-                        try:
-                            image_tag = image_tags[0]
-                            # grab the file info from the zip list
-                            for file_info in kmz_file.filelist:
-                                if image_tag == file_info.orig_filename:
-                                    # grab the image file itself
-                                    image_file = kmz_file.extract(file_info, "media/uploads/images/lgrp")
-                                    image_added = True
-                                    break
-                        except IndexError:
-                            pass
-
-                    lgrp_occ.save()
-                    # need to save record before adding image in order to obtain the DB ID
-                    if image_added:
-                        # strip off the file name from the path
-                        image_path = image_file[:image_file.rfind(os.sep)]
-                        # construct new file name
-                        new_file_name = image_path + os.sep + str(lgrp_occ.id) + "_" + image_tag
-                        # rename extracted file with DB record ID
-                        os.rename(image_file, new_file_name)
-                        # need to strip off "media" folder from relative path saved to DB
-                        lgrp_occ.image = new_file_name[new_file_name.find(os.sep)+1:]
-                        lgrp_occ.save()
-                    feature_count += 1
+                        # Future: add functionality to import multiple images
+                        if image_names and len(image_names) == 1:  # This will break if image_names is None
+                            image_name = image_names[0]
+                            # Check that the image name is in the kmz file list
+                            kmz_file.filenames = [f.orig_filename for f in kmz_file.filelist]
+                            if image_name in kmz_file.filenames:
+                                # etch the kmz image file object, this is a ZipInfo object not a File object
+                                image_file_obj = next(f for f in kmz_file.filelist if f.orig_filename == image_name)
+                                # fetch the upload directory from the model definition
+                                upload_dir = Biology._meta.get_field_by_name('image')[0].upload_to
+                                # update image name to include upload path and occurrence id
+                                # e.g. /uploads/images/lgrp/14775_188.jpg
+                                new_image_name = os.path.join(upload_dir, str(lgrp_occ.id)+'_'+image_name)
+                                # Save the image
+                                lgrp_occ.image.save(new_image_name, ContentFile(kmz_file.read(image_file_obj)))
 
                 elif type(o) is not Placemark:
                     raise IOError("KML File is badly formatted")
@@ -315,32 +316,6 @@ class UploadKMLView(generic.FormView):
 class Confirmation(generic.ListView):
     template_name = 'projects/confirmation.html'
     model = Occurrence
-
-
-# class UploadShapefileView(generic.FormView):
-#     template_name = 'projects/upload_shapefile.html'
-#     form_class = UploadForm
-#     context_object_name = 'upload'
-#     success_url = 'confirmation'
-#
-#     def form_valid(self, form):
-#         # This method is called when valid form data has been POSTed.
-#         # It should return an HttpResponse.
-#         shapefileProper = self.request.FILES['shapefileUpload']
-#         shapefileIndex = self.request.FILES['shapefileIndexUpload']
-#         shapefileData = self.request.FILES['shapefileDataUpload']
-#         shapefileProperName = self.request.FILES['shapefileUpload'].name
-#         shapefileIndexName = self.request.FILES['shapefileIndexUpload'].name
-#         shapefileDataName = self.request.FILES['shapefileDataUpload'].name
-#         shapefileProperSaved = default_storage.save(shapefileProperName, ContentFile(shapefileProper.read()))
-#         shapefileIndexSaved = default_storage.save(shapefileIndexName, ContentFile(shapefileIndex.read()))
-#         shapefileDataSaved = default_storage.save(shapefileDataName, ContentFile(shapefileData.read()))
-#         shapefilePath = os.path.join(settings.MEDIA_ROOT)
-#         shapefileName = shapefileProperName[:shapefileProperName.rfind('.')]
-#         sf = shapefile.Reader(shapefilePath + "\\" + shapefileName)
-#
-#         shapes = sf.shapes()
-#         return super(UploadShapefileView, self).form_valid(form)
 
 
 def change_coordinates_view(request):
