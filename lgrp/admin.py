@@ -27,45 +27,49 @@ class FilesInline(admin.TabularInline):
 ##############
 
 occurrence_fieldsets = (
-    ('Record Details', {
+    ('Record Details', {  # occurrence_fieldsets[0]
         'fields': [('id', 'date_last_modified',),
                    ('basis_of_record',),
-                   ('problem', 'problem_comment'),
                    ('remarks',)]
-    }),  # occurrence_fieldsets[0]
-    ('Find Details', {
+    }),
+    ('Find Details', {  # occurrence_fieldsets[1]
         'fields': [('date_recorded', 'year_collected',),
-                   ('barcode', 'catalog_number', 'field_number'),
+                   ('barcode', 'catalog_number', 'old_cat_number', 'field_number',),
                    ('item_type', 'item_scientific_name', 'item_description', 'item_count',),
                    ('collector_person', 'finder_person', 'collecting_method'),
-                   ('locality_number', 'item_number', 'item_part', 'old_cat_number'),
+                   # ('locality_number', 'item_number', 'item_part', ),
                    ('disposition', 'preparation_status'),
                    ('collection_remarks',),
                    ('verbatim_kml_data'),
                    ]
-    }),  # occurrence_fieldsets[1]
-    ('Photos', {
+    }),
+    ('Photos', {  # occurrence_fieldsets[2]
         'fields': [('photo', 'image')],
         # 'classes': ['collapse'],
     }),
-    ('Geological Context', {
-        'fields': [('stratigraphic_formation', 'stratigraphic_member',),
+    ('Geological Context', {  # occurrence_fieldsets[3]
+        'fields': [('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
                    ('analytical_unit_1', 'analytical_unit_2', 'analytical_unit_3'),
-                   ('analytical_unit_found', 'analytical_unit_likely', 'analytical_unit_simplified'),
+                   ('stratigraphic_formation', 'stratigraphic_member',),
                    ('in_situ', 'ranked'),
                    ('geology_remarks',)]
-    }),  # occurrence_fieldsets[2]
-    ('Location Details', {
+    }),
+    ('Location', {  # occurrence_fieldsets[4]
         'fields': [('collection_code', 'drainage_region'),
                    ('georeference_remarks',),
                    ('longitude', 'latitude'),
                    ('easting', 'northing',),
                    ('geom',)]
-    }),  # occurrence_fieldsets[3]
+    }),
+    ('Problems', {  # occurrence_fieldsets[5]
+        'fields': [('problem', 'problem_comment'),
+                   ],
+        'classes': ['collapse']
+    }),
 )
 
 biology_additional_fieldsets = (
-    ('Elements', {'fields': [
+    ('Elements', {'fields': [  # biology_additional_fieldsets[0]
         ('element', 'element_portion', 'side', 'element_number', 'element_modifier'),
         ('uli1', 'uli2', 'ulc', 'ulp3', 'ulp4', 'ulm1', 'ulm2', 'ulm3'),
         ('uri1', 'uri2', 'urc', 'urp3', 'urp4', 'urm1', 'urm2', 'urm3'),
@@ -74,39 +78,63 @@ biology_additional_fieldsets = (
         ('indet_incisor', 'indet_canine', 'indet_premolar', 'indet_molar', 'indet_tooth'), 'deciduous',
         ('element_remarks',)]
     }),
-    ('Taxonomy', {'fields': [('taxon', 'identification_qualifier'),
+    ('Taxonomy', {'fields': [  # biology_additional_fieldsets[1]
+        ('taxon', 'identification_qualifier'),
                              ('identified_by', 'year_identified', 'type_status'),
                              ('taxonomy_remarks',)]
                   }),
-    ('Taphonomic Details', {
+    ('Taphonomy', {  # biology_additional_fieldsets[2]
         'fields': [('weathering', 'surface_modification')],
         # 'classes': ['collapse'],
     }),
 )
 
 biology_fieldsets = (
-    occurrence_fieldsets[0],
-    occurrence_fieldsets[1],
-    occurrence_fieldsets[2],
-    biology_additional_fieldsets[0],
-    biology_additional_fieldsets[1],
-    biology_additional_fieldsets[2],
-    occurrence_fieldsets[3],
-    occurrence_fieldsets[4],  # Need colon, Don't accidentally omit fieldsets.
+    occurrence_fieldsets[0],  # Record Details
+    occurrence_fieldsets[1],  # Find Details
+    occurrence_fieldsets[2],  # Photos
+    biology_additional_fieldsets[0],  # Elements
+    biology_additional_fieldsets[1],  # Taxonomy
+    biology_additional_fieldsets[2],  # Taphonomy
+    occurrence_fieldsets[3],  # Geological Context
+    occurrence_fieldsets[4],  # Location
+    occurrence_fieldsets[5],  # Problems
 )
 
-default_list_display = ['barcode', 'date_recorded', 'catalog_number', 'basis_of_record',
-                        'item_type', 'collecting_method', 'collector_person', 'item_description',
+default_list_display = ['barcode',
+                        'date_recorded',
+                        'catalog_number',
+                        'basis_of_record',
+                        'item_type',
+                        'collecting_method',
+                        'collector_person',
                         'item_scientific_name',
-                        'year_collected', 'in_situ', 'problem', 'disposition',
-                         'thumbnail']
+                        'item_description',
+                        'year_collected',
+                        'in_situ',
+                        'problem',
+                        # 'disposition',
+                        'thumbnail'
+                        ]
 
-default_list_filter = ['basis_of_record', 'item_type', 'year_collected', 'collection_code',
-                       'collector_person__name', 'problem']
+default_list_filter = ['basis_of_record',
+                       'item_type',
+                       'year_collected',
+                       'collection_code',
+                       'collector_person__name',
+                       'problem'
+                       ]
 
-default_search_fields = ['id', 'item_scientific_name', 'item_description', 'barcode',
-                         'collection_code', 'locality_number', 'item_number', 'item_part', 'old_cat_number',
-                         'collector_person__name',  'finder_person__name',
+default_search_fields = ['id',
+                         'item_scientific_name',
+                         'item_description',
+                         'barcode',
+                         'collection_code',
+                         'locality_number',
+                         'item_number', 'item_part',
+                         'old_cat_number',
+                         'collector_person__name',
+                         'finder_person__name',
                          ]
 
 
